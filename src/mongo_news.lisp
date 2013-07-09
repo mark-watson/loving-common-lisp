@@ -36,14 +36,12 @@
 
 ;; try: (cl-mongo:pp (cl-mongo:iter (cl-mongo:db.find "article" (cl-mongo:kv "uri" "http://test.com"))))
 
-;; try: (cl-mongo:pp (cl-mongo:iter (cl-mongo:db.find "article" (cl-mongo:kv "title" (cl-mongo:kv "$regex" "article")))))
-
-;;;;  BUG: the following two functions only return 1 result:
+;; try: (cl-mongo:pp (cl-mongo:iter (cl-mongo:db.find "article" (cl-mongo:kv "title" (cl-mongo:kv "$regex" "article")) :limit 10)))
 
 (defun search-articles-title (str) ;; find documents where substring 'str' is in the title
   (article-results->lisp-data
-    (cadr (cl-mongo:iter (cl-mongo:db.find "article" (cl-mongo:kv "title" (cl-mongo:kv "$regex" str)))))))
+    (cadr (cl-mongo:iter (cl-mongo:db.find "article" (cl-mongo:kv "title" (cl-mongo:kv "$regex" str)) :limit 10)))))
 
 (defun search-articles-text (str) ;; find documents where substring 'str' is in the text element
   (article-results->lisp-data
-    (cadr (cl-mongo:db.find "article" (cl-mongo:kv "text" (cl-mongo:kv "$regex" str))))))
+    (cadr (cl-mongo:db.find "article" (cl-mongo:kv "text" (cl-mongo:kv "$regex" str)) :limit 10))))
