@@ -1,3 +1,8 @@
+;; Copyright Mark Watson 2001-2013. All Rights Reserved.
+;; License: AGPL version 3 (http://www.gnu.org/licenses/agpl-3.0.txt)
+;; Alternative license: you may also use this software under the Apache 2 License.
+;; This copyright notice should not be removed from this file and in files derived from this file.
+
 (ql:quickload "cl-mongo")
 
 (cl-mongo:db.use "news")
