@@ -2,6 +2,8 @@
 ;; License: AGPL version 3 (http://www.gnu.org/licenses/agpl-3.0.txt)
 ;; Alternative license: you may also use this software under the Apache 2 License.
 ;; This copyright notice should not be removed from this file and in files derived from this file.
+;;
+;; Common Lisp stemming code in this file was written by Steven M. Haflich based on the work of Martin Porter.
 
 (defpackage kbnlp
   (:use :cl :asdf)
@@ -43,7 +45,6 @@
 
 (load "data/FastTagData")
 (load "data/cat-data-tables")
-(load "load-misc-data")
 
 (let (line)
   (with-open-file
@@ -58,8 +59,8 @@
       (setq line (read-line in nil nil))
       (if (null line) (return))
       (if (null (gethash line *first-name-hash*))
-	  (setf (gethash line *first-name-hash*) *female*)
-	  (setf (gethash line *first-name-hash*) *male-or-female*)))))
+          (setf (gethash line *first-name-hash*) *female*)
+          (setf (gethash line *first-name-hash*) *male-or-female*)))))
 
 (let (line)
   (with-open-file
@@ -104,7 +105,7 @@
   (let ((ss (tokenize-string str)))
     (make-array (list (length ss)) :initial-contents ss)))
 
-(defun parse (words &aux lcw r w)
+(defun part-of-speech-tagger (words &aux lcw r w)
   (if (typep words 'string) (setq words (words-from-string words)))
   (let* ((len (length words))
          (ret (make-array (list len)))
@@ -128,7 +129,7 @@
                 (setq r (list lcw)))))
       (if (null r)
           (setq r "NN")
-	  (if (listp r) (setq r (car r))))
+          (if (listp r) (setq r (car r))))
       ;; apply transformation rules:
 
                                         ; rule 1: DT, {VBD, VBP, VB} --> DT, NN
@@ -187,33 +188,33 @@
     ret))
 
 
-;; (parse #("the" "cat" "ran"))
-;; (parse "President Bush went to China. He wanted a good trade agreement.")
+;; (part-of-speech-tagger #("the" "cat" "ran"))
+;; (part-of-speech-tagger "President Bush went to China. He wanted a good trade agreement.")
 
 (defun tokenize-string (string 
                         &key 
-			  (delimiters '(#\Space #\Return #\Linefeed #\Newline #\. #\, #\; #\: #\! #\" #\'
-					#\? #\/ #\( #\) #\- #\< #\>))
-			  (discard '(#\Space #\Return #\Linefeed #\Newline #\, #\" #\' #\- #\< #\>))
-			  (test (lambda (c) (find c delimiters)))
-			  (start 0) (end (length string)) (omit-delimiters nil))
+                          (delimiters '(#\Space #\Return #\Linefeed #\Newline #\. #\, #\; #\: #\! #\" #\'
+                                        #\? #\/ #\( #\) #\- #\< #\>))
+                          (discard '(#\Space #\Return #\Linefeed #\Newline #\, #\" #\' #\- #\< #\>))
+                          (test (lambda (c) (find c delimiters)))
+                          (start 0) (end (length string)) (omit-delimiters nil))
   (flet ((get-token (start)
            (if (< start end)
                (let* ((delimiterp (funcall test (char string start)))
                       (end-of-token (funcall (if delimiterp #'position-if-not #'position-if)
                                              test string :start start)))
                  (values (subseq string start end-of-token) end-of-token delimiterp))
-	       (values nil nil nil))))
+               (values nil nil nil))))
     (let ((tokens nil)
           token delimiterp)
       (loop (multiple-value-setq (token start delimiterp) (get-token start))
-	 (unless (and delimiterp omit-delimiters)
-	   (let ((tok (string-trim discard token)))
-	     ;;(print (list "tok:" tok))
-	     (if (not (find tok discard))
-		 (if (> (length tok) 0)
-		     (push tok tokens)))))
-	 (unless start (return-from tokenize-string (nreverse tokens)))))))
+         (unless (and delimiterp omit-delimiters)
+           (let ((tok (string-trim discard token)))
+             ;;(print (list "tok:" tok))
+             (if (not (find tok discard))
+                 (if (> (length tok) 0)
+                     (push tok tokens)))))
+         (unless start (return-from tokenize-string (nreverse tokens)))))))
 
 ;; e.g.:
 ;;
@@ -225,6 +226,7 @@
 
 ;;  utility for string replacement:
 
+;; http://cl-cookbook.sourceforge.net/strings.html#manip:
 (defun replace-all (string part replacement &key (test #'char=))
   "Returns a new string in which all the occurrences of the part 
 is replaced with replacement."
@@ -232,11 +234,11 @@ is replaced with replacement."
     (loop with part-length = (length part)
        for old-pos = 0 then (+ pos part-length)
        for pos = (search part string
-			 :start2 old-pos
-			 :test test)
+                         :start2 old-pos
+                         :test test)
        do (write-string string out
-			:start old-pos
-			:end (or pos (length string)))
+                        :start old-pos
+                        :end (or pos (length string)))
        when pos do (write-string replacement out)
        while pos))) 
 
@@ -254,16 +256,28 @@ is replaced with replacement."
 (defun not-in-list-find-names-helper (a-list start end &aux (rval t))
   (dolist (x a-list)
     (let ((i1 (car x))
-	  (i2 (cadr x)))
+          (i2 (cadr x)))
       (if (or
-	   (and
-	    (>= start i1)
-	    (<= start i2))
-	   (and
-	    (>= end i1)
-	    (<= end i2)))
-	  (setq rval nil))))
+           (and
+            (>= start i1)
+            (<= start i2))
+           (and
+            (>= end i1)
+            (<= end i2)))
+          (setq rval nil))))
   rval)
+
+(defun string-starts-with (str test-prefix)
+  (let ((len (length test-prefix))
+        (ret t))
+    (if (>= (length str) len)
+        (dotimes (i len)
+          (if (not (equal (char str i) (char test-prefix i)))
+              (let ()
+                (setq ret nil)
+                (return))))
+        (setq ret nil))
+    ret))
 
 ;;
 ;; utility for detecting names in a word list
@@ -274,97 +288,97 @@ is replaced with replacement."
 ;;
 (defun find-names (words tags exclusion-list)
   (let* ((len (length words))
-	 word
-	 (ret '()))
+         word
+         (ret '()))
     (dotimes (i len)
       (setq word (aref words i))
       ;; process 4 word names:
       (if (< i (- len 3))
-	  ;; case #1: single element from '*name-prefix-list*'
-	  (if (and
-	       (not-in-list-find-names-helper ret i (+ i 4))
-	       (not-in-list-find-names-helper exclusion-list i (+ i 4))
-	       (member word *name-prefix-list* :test #'equal)
-	       (equal "." (aref words (1+ i)))
-	       (gethash (aref words (+ i 2)) *first-name-hash*)
-	       (gethash (aref words (+ i 3)) *last-name-hash*))
-	      (if (and
-		   (string-starts-with (aref tags (+ i 2)) "NN")
-		   (string-starts-with (aref tags (+ i 3)) "NN"))
-		  (setq ret (cons (list i (+ i 4)) ret))))
-	  ;; case #1: two elements from '*name-prefix-list*'
-	  (if (and
-	       (not-in-list-find-names-helper ret i (+ i 4))
-	       (not-in-list-find-names-helper exclusion-list i (+ i 4))
-	       (member word *name-prefix-list* :test #'equal)
-	       (member (aref words (1+ i)) *name-prefix-list* :test #'equal)
-	       (gethash (aref words (+ i 2)) *first-name-hash*)
-	       (gethash (aref words (+ i 3)) *last-name-hash*))
-	      (if (and
-		   (string-starts-with (aref tags (+ i 2)) "NN")
-		   (string-starts-with (aref tags (+ i 3)) "NN"))
-		  (setq ret (cons (list i (+ i 4)) ret)))))
+          ;; case #1: single element from '*name-prefix-list*'
+          (if (and
+               (not-in-list-find-names-helper ret i (+ i 4))
+               (not-in-list-find-names-helper exclusion-list i (+ i 4))
+               (member word *name-prefix-list* :test #'equal)
+               (equal "." (aref words (1+ i)))
+               (gethash (aref words (+ i 2)) *first-name-hash*)
+               (gethash (aref words (+ i 3)) *last-name-hash*))
+              (if (and
+                   (string-starts-with (aref tags (+ i 2)) "NN")
+                   (string-starts-with (aref tags (+ i 3)) "NN"))
+                  (setq ret (cons (list i (+ i 4)) ret))))
+          ;; case #1: two elements from '*name-prefix-list*'
+          (if (and
+               (not-in-list-find-names-helper ret i (+ i 4))
+               (not-in-list-find-names-helper exclusion-list i (+ i 4))
+               (member word *name-prefix-list* :test #'equal)
+               (member (aref words (1+ i)) *name-prefix-list* :test #'equal)
+               (gethash (aref words (+ i 2)) *first-name-hash*)
+               (gethash (aref words (+ i 3)) *last-name-hash*))
+              (if (and
+                   (string-starts-with (aref tags (+ i 2)) "NN")
+                   (string-starts-with (aref tags (+ i 3)) "NN"))
+                  (setq ret (cons (list i (+ i 4)) ret)))))
       ;; process 3 word names:
       (if (< i (- len 2))
-	  (if (and
-	       (not-in-list-find-names-helper ret i (+ i 3))
-	       (not-in-list-find-names-helper exclusion-list i (+ i 3)))
-	      (if (or
-		   (and
-		    (member word *name-prefix-list* :test #'equal)
-		    (gethash (aref words (1+ i)) *first-name-hash*)
-		    (gethash (aref words (+ i 2)) *last-name-hash*)
-		    (string-starts-with (aref tags (+ i 1)) "NN")
-		    (string-starts-with (aref tags (+ i 2)) "NN"))
-		   (and
-		    (member word *name-prefix-list* :test #'equal)
-		    (member (aref words (1+ i)) *name-prefix-list* :test #'equal)
-		    (gethash (aref words (+ i 2)) *last-name-hash*)
-		    (string-starts-with (aref tags (+ i 1)) "NN")
-		    (string-starts-with (aref tags (+ i 2)) "NN"))
-		   (and
-		    (member word *name-prefix-list* :test #'equal)
-		    (equal "." (aref words (1+ i)))
-		    (gethash (aref words (+ i 2)) *last-name-hash*)
-		    (string-starts-with (aref tags (+ i 2)) "NN"))
-		   (and
-		    (gethash word *first-name-hash*)
-		    (gethash (aref words (1+ i)) *first-name-hash*)
-		    (gethash (aref words (+ i 2)) *last-name-hash*)
-		    (string-starts-with (aref tags i) "NN")
-		    (string-starts-with (aref tags (+ i 1)) "NN")
-		    (string-starts-with (aref tags (+ i 2)) "NN")))
-		  (setq ret (cons (list i (+ i 3)) ret)))))
+          (if (and
+               (not-in-list-find-names-helper ret i (+ i 3))
+               (not-in-list-find-names-helper exclusion-list i (+ i 3)))
+              (if (or
+                   (and
+                    (member word *name-prefix-list* :test #'equal)
+                    (gethash (aref words (1+ i)) *first-name-hash*)
+                    (gethash (aref words (+ i 2)) *last-name-hash*)
+                    (string-starts-with (aref tags (+ i 1)) "NN")
+                    (string-starts-with (aref tags (+ i 2)) "NN"))
+                   (and
+                    (member word *name-prefix-list* :test #'equal)
+                    (member (aref words (1+ i)) *name-prefix-list* :test #'equal)
+                    (gethash (aref words (+ i 2)) *last-name-hash*)
+                    (string-starts-with (aref tags (+ i 1)) "NN")
+                    (string-starts-with (aref tags (+ i 2)) "NN"))
+                   (and
+                    (member word *name-prefix-list* :test #'equal)
+                    (equal "." (aref words (1+ i)))
+                    (gethash (aref words (+ i 2)) *last-name-hash*)
+                    (string-starts-with (aref tags (+ i 2)) "NN"))
+                   (and
+                    (gethash word *first-name-hash*)
+                    (gethash (aref words (1+ i)) *first-name-hash*)
+                    (gethash (aref words (+ i 2)) *last-name-hash*)
+                    (string-starts-with (aref tags i) "NN")
+                    (string-starts-with (aref tags (+ i 1)) "NN")
+                    (string-starts-with (aref tags (+ i 2)) "NN")))
+                  (setq ret (cons (list i (+ i 3)) ret)))))
       ;; process 2 word names:
       (if (< i (1- len))
-	  (if (and
-	       (not-in-list-find-names-helper ret i (+ i 2))
-	       (not-in-list-find-names-helper exclusion-list i (+ i 2)))
-	      (if (or
-		   (and
-		    (member word '("Mr" "Mrs" "Ms" "Doctor" "President" "Premier") :test #'equal)
-		    (string-starts-with (aref tags (1+ i)) "NN")
-		    (gethash (aref words (1+ i)) *last-name-hash*))
-		   (and
-		    (gethash word *first-name-hash*)
-		    (gethash (aref words (1+ i)) *last-name-hash*)
-		    (string-starts-with (aref tags i) "NN")
-		    (string-starts-with (aref tags (1+ i)) "NN")))
-		  (setq ret (cons (list i (+ i 2)) ret)))))
+          (if (and
+               (not-in-list-find-names-helper ret i (+ i 2))
+               (not-in-list-find-names-helper exclusion-list i (+ i 2)))
+              (if (or
+                   (and
+                    (member word '("Mr" "Mrs" "Ms" "Doctor" "President" "Premier") :test #'equal)
+                    (string-starts-with (aref tags (1+ i)) "NN")
+                    (gethash (aref words (1+ i)) *last-name-hash*))
+                   (and
+                    (gethash word *first-name-hash*)
+                    (gethash (aref words (1+ i)) *last-name-hash*)
+                    (string-starts-with (aref tags i) "NN")
+                    (string-starts-with (aref tags (1+ i)) "NN")))
+                  (setq ret (cons (list i (+ i 2)) ret)))))
       ;; 1 word names:
       (if (gethash word *last-name-hash*)
-	  (if (and
-	       (string-starts-with (aref tags i) "NN")
-	       (not-in-list-find-names-helper ret i (1+ i))
-	       (not-in-list-find-names-helper exclusion-list i (1+ i)))
-	      (setq ret (cons (list i (1+ i)) ret)))))
+          (if (and
+               (string-starts-with (aref tags i) "NN")
+               (not-in-list-find-names-helper ret i (1+ i))
+               (not-in-list-find-names-helper exclusion-list i (1+ i)))
+              (setq ret (cons (list i (1+ i)) ret)))))
     (reverse ret)))
 
 
 (defun test-names ()
   (let* ((words '#("President" "Bush" "went" "to" "San" "Diego" "to" "meet" "Ms" "." "Jones"
-		   "and" "Gen" "." "Pervez" "Musharraf" "."))
-	 (tags (parse words)))
+                   "and" "Gen" "." "Pervez" "Musharraf" "."))
+         (tags (part-of-speech-tagger words)))
     (print tags)
     (find-names words tags nil)))
 
@@ -382,15 +396,15 @@ is replaced with replacement."
 (defun not-in-list-find-places-helper (a-list start end &aux (rval t))
   (dolist (x a-list)
     (let ((i1 (car x))
-	  (i2 (cadr x)))
+          (i2 (cadr x)))
       (if (or
-	   (and
-	    (>= start i1)
-	    (<= start i2))
-	   (and
-	    (>= end i1)
-	    (<= end i2)))
-	  (setq rval nil))))
+           (and
+            (>= start i1)
+            (<= start i2))
+           (and
+            (>= end i1)
+            (<= end i2)))
+          (setq rval nil))))
   rval)
 
 
@@ -403,32 +417,32 @@ is replaced with replacement."
 ;;
 (defun find-places (words exclusion-list)
   (let* ((len (length words))
-	 (ret '())
-	 word)
+         (ret '())
+         word)
     (dotimes (i len)
       (setq word (aref words i))
       ;; process 3 word place names:
       (if (< i (- len 2))
-	  (if (and
-	       (not-in-list-find-places-helper ret i (+ i 3))
-	       (not-in-list-find-places-helper exclusion-list i (+ i 3)))
-	      (let ((words (concatenate 'string word " " (aref words (1+ i)) " " (aref words (+ i 2)))))
-		(if (gethash words place-hash)
-		    (setq ret (cons (list i (+ i 3)) ret))))))
+          (if (and
+               (not-in-list-find-places-helper ret i (+ i 3))
+               (not-in-list-find-places-helper exclusion-list i (+ i 3)))
+              (let ((words (concatenate 'string word " " (aref words (1+ i)) " " (aref words (+ i 2)))))
+                (if (gethash words place-hash)
+                    (setq ret (cons (list i (+ i 3)) ret))))))
       ;; process 2 word place names:
       (if (< i (1- len))
-	  (if (and
-	       (not-in-list-find-places-helper ret i (+ i 2))
-	       (not-in-list-find-places-helper exclusion-list i (+ i 2)))
-	      (let ((words (concatenate 'string word " " (aref words (1+ i)))))
-		(if (gethash words place-hash)
-		    (setq ret (cons (list i (+ i 2)) ret))))))
+          (if (and
+               (not-in-list-find-places-helper ret i (+ i 2))
+               (not-in-list-find-places-helper exclusion-list i (+ i 2)))
+              (let ((words (concatenate 'string word " " (aref words (1+ i)))))
+                (if (gethash words place-hash)
+                    (setq ret (cons (list i (+ i 2)) ret))))))
       ;; 1 word place names:
       (if (and
-	   (not-in-list-find-places-helper ret i (+ i 1))
-	   (not-in-list-find-places-helper exclusion-list i (+ i 1)))
-	  (if (gethash word place-hash)
-	      (setq ret (cons (list i (1+ i)) ret)))))
+           (not-in-list-find-places-helper ret i (+ i 1))
+           (not-in-list-find-places-helper exclusion-list i (+ i 1)))
+          (if (gethash word place-hash)
+              (setq ret (cons (list i (1+ i)) ret)))))
     ;;(print (list "debug: places:" (reverse ret)))
     (reverse ret)))
 
@@ -440,7 +454,7 @@ is replaced with replacement."
 
 
 
-;;                       TOP EVEL FUNCTIONS FOR FINDING BOTH NAMES AND PLACES IN TEXT:
+;;                       TOP LEVEL FUNCTIONS FOR FINDING BOTH NAMES AND PLACES IN TEXT:
 
 
 
@@ -448,22 +462,22 @@ is replaced with replacement."
   (dotimes (i num)
     (dotimes (j num)
       (if (not (= i j))
-	  (let* ((s-i (nth i lst))
-		 (s-j (nth j lst))
-		 (tokens-i (tokenize-string s-i))
-		 (tokens-j (tokenize-string s-j)))
-	    ;;(format t "~%* s-i: ~A s-j: ~A~%" s-i s-j)
-	    (if (and
-		 (> (length s-i) (length s-j))
-		 (> (length s-j) 6))
-		(if (or
-		     (search s-j s-i)
-		     (let ((test t))
-		       (dolist (token tokens-j)
-			 (if (not (member token tokens-i :test #'equal))
-			     (setf test nil)))
-		       test))
-		    (setf c-lst (remove s-j c-lst :test #'string-equal))))))))
+          (let* ((s-i (nth i lst))
+                 (s-j (nth j lst))
+                 (tokens-i (tokenize-string s-i))
+                 (tokens-j (tokenize-string s-j)))
+            ;;(format t "~%* s-i: ~A s-j: ~A~%" s-i s-j)
+            (if (and
+                 (> (length s-i) (length s-j))
+                 (> (length s-j) 6))
+                (if (or
+                     (search s-j s-i)
+                     (let ((test t))
+                       (dolist (token tokens-j)
+                         (if (not (member token tokens-i :test #'equal))
+                             (setf test nil)))
+                       test))
+                    (setf c-lst (remove s-j c-lst :test #'string-equal))))))))
   c-lst)
 
 
@@ -472,16 +486,16 @@ is replaced with replacement."
   (let ((ret '()))
     (dolist (x indices)
       (let* ((start (car x))
-	     (stop (cadr x))
-	     (str "")
-	     (num (- stop start)))
-	(dotimes (i num)
-	  (if (equal i 0)
-	      (setq str (concatenate 'string str (aref v (+ i start)) " "))
-	      (if (equal i (1- num))
-		  (setq str (concatenate 'string str (aref v (+ i start))))
-		  (setq str (concatenate 'string str (aref v (+ i start)) " ")))))
-	(setq ret (cons (string-trim '(#\Space) str) ret))))
+             (stop (cadr x))
+             (str "")
+             (num (- stop start)))
+        (dotimes (i num)
+          (if (equal i 0)
+              (setq str (concatenate 'string str (aref v (+ i start)) " "))
+              (if (equal i (1- num))
+                  (setq str (concatenate 'string str (aref v (+ i start))))
+                  (setq str (concatenate 'string str (aref v (+ i start)) " ")))))
+        (setq ret (cons (string-trim '(#\Space) str) ret))))
     (reverse ret)))
 
 
@@ -490,15 +504,15 @@ is replaced with replacement."
 ;;
 (defun find-names-places (txt-object)
   (let* ((words (text-text txt-object))
-	 (tags (text-tags txt-object))
-	 (place-indices (find-places words nil))
-	 (name-indices (find-names words tags place-indices))
-	 (name-list (remove-duplicates (build-list-find-name-helper words name-indices) :test #'equal))
-	 (place-list (remove-duplicates (build-list-find-name-helper words place-indices) :test #'equal)))
+         (tags (text-tags txt-object))
+         (place-indices (find-places words nil))
+         (name-indices (find-names words tags place-indices))
+         (name-list (remove-duplicates (build-list-find-name-helper words name-indices) :test #'equal))
+         (place-list (remove-duplicates (build-list-find-name-helper words place-indices) :test #'equal)))
     (let ((ret '()))
       (dolist (x name-list)
-	(if (search " " x)
-	    (setq ret (cons x ret))))
+        (if (search " " x)
+            (setq ret (cons x ret))))
       (setq name-list (reverse ret)))
     (list
      (remove-shorter-names name-list)
@@ -522,26 +536,15 @@ is replaced with replacement."
 
 (defun stem-text (txt-object)
   (let* ((words (text-text txt-object))
-	 (len (length words))
-	 (stems (make-array (list len))))
-    ;; license check:
-					;    (let* ((l (gethash "$$LIC1" lex-hash))
-					;	   (len1 (length l))
-					;	   (x 0)
-					;	   (y 0))
-					;      (dotimes (i len1)
-					;	(setq x (+ x (* (char-code (char l i)) (1+ (mod i 11))))))
-					;      (setq x (* 87324667 x))
-					;      (setq y (read-from-string (gethash "$$LIC4" lex-hash)))
-					;      (if (not (equal x y)) (setq lex-hash nil))) ;; mismatch on license key
-    
+         (len (length words))
+         (stems (make-array (list len))))
     (dotimes (i len)
       (let* ((word (aref words i))
-	     (st (stem (string-downcase word))))
-	(setf (aref stems i) st)))
+             (st (stem (string-downcase word))))
+        (setf (aref stems i) st)))
     stems))
 
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; The Porter Stemming Algorithm, somewhat mechanically hand translated to Common Lisp by
 ;; Steven M. Haflich smh@franz.com Feb 2002.  Most of the inline comments refer to the
 ;; original C code.  At the time of this translation the code passes the associated Porter
@@ -562,7 +565,7 @@ is replaced with replacement."
 ;; the C version to implement proper reentrancy.  The CL version is now also served from
 ;; his central site.  It should be functionally identical to this one, modulo the current
 ;; comment and a couple harmless formatting and comment changes.
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; This is the Porter stemming algorithm, coded up in ANSI C by the
 ;; author. It may be be regarded as cononical, in that it follows the
@@ -600,17 +603,17 @@ is replaced with replacement."
 
 ;; cons(i) is TRUE <=> b[i] is a consonant.
 
-	;;; Common Lisp port Version 1.01
+        ;;; Common Lisp port Version 1.01
 
-	;;;
-	;;; Common Lisp port Version history
-	;;;
-	;;; 1.0  -- smh@franz.com Feb 2002
-	;;;         initial release
-	;;;
-	;;; 1.01 -- smh@franz.com 25 Apr 2004
-	;;;         step4 signalled error for "ion" "ions".  Thanks to Jeff Heard
-	;;;         for detecting this and suggesting the fix.
+        ;;;
+        ;;; Common Lisp port Version history
+        ;;;
+        ;;; 1.0  -- smh@franz.com Feb 2002
+        ;;;         initial release
+        ;;;
+        ;;; 1.01 -- smh@franz.com 25 Apr 2004
+        ;;;         step4 signalled error for "ion" "ions".  Thanks to Jeff Heard
+        ;;;         for detecting this and suggesting the fix.
 
 
 ;; cons(i) is TRUE <=> b[i] is a consonant.
@@ -618,9 +621,9 @@ is replaced with replacement."
 (defun consonantp (str i)
   (let ((char (char str i)))
     (cond ((member char '(#\a #\e #\i #\o #\u)) nil)
-	  ((eql char #\y)
-	   (if (= i 0) t (not (consonantp str (1- i)))))
-	  (t t))))
+          ((eql char #\y)
+           (if (= i 0) t (not (consonantp str (1- i)))))
+          (t t))))
 
 ;; m() measures the number of consonant sequences between k0 and j. if c is
 ;; a consonant sequence and v a vowel sequence, and <..> indicates arbitrary
@@ -634,7 +637,7 @@ is replaced with replacement."
 
 (defun m (str lim)
   (let ((n 0)
-	(i 0))
+        (i 0))
     (loop
        (when (>= i lim) (return-from m n))
        (if (not (consonantp str i)) (return nil))
@@ -642,15 +645,15 @@ is replaced with replacement."
     (incf i)
     (loop
        (loop
-	  (if (>= i lim) (return-from m n))
-	  (if (consonantp str i) (return nil))
-	  (incf i))
+          (if (>= i lim) (return-from m n))
+          (if (consonantp str i) (return nil))
+          (incf i))
        (incf i)
        (incf n)
        (loop
-	  (if (>= i lim) (return-from m n))
-	  (if (not (consonantp str i)) (return nil))
-	  (incf i))
+          (if (>= i lim) (return-from m n))
+          (if (not (consonantp str i)) (return nil))
+          (incf i))
        (incf i))))
 
 ;; vowelinstem() is TRUE <=> k0,...j contains a vowel
@@ -663,8 +666,8 @@ is replaced with replacement."
 
 (defun doublec (str i)
   (cond ((< i 1) nil)
-	((not (eql (char str i) (char str (1- i)))) nil)
-	(t (consonantp str i))))
+        ((not (eql (char str i) (char str (1- i)))) nil)
+        (t (consonantp str i))))
 
 ;; cvc(i) is TRUE <=> i-2,i-1,i has the form consonant - vowel - consonant
 ;; and also if the second c is not w,x or y. this is used when trying to
@@ -676,9 +679,9 @@ is replaced with replacement."
 (defun cvc (str lim)
   (decf lim)
   (if (or (< lim 2)
-	  (not (consonantp str lim))
-	  (consonantp str (1- lim))
-	  (not (consonantp str (- lim 2))))
+          (not (consonantp str lim))
+          (consonantp str (1- lim))
+          (not (consonantp str (- lim 2))))
       (return-from cvc nil))
   (if (member (char str lim) '(#\w #\x #\y)) (return-from cvc nil))
   t)
@@ -694,8 +697,8 @@ is replaced with replacement."
        unless (eql (char str pa) (char ending pb))
        return nil
        finally (return (when (< pb 0)
-			 (decf (fill-pointer str) len2)
-			 t)))))
+                         (decf (fill-pointer str) len2)
+                         t)))))
 
 ;; setto(s) sets (j+1),...k to the characters in the string s, readjusting k.
 
@@ -734,27 +737,27 @@ is replaced with replacement."
 (defun step1ab (str)
   (when (eql (char str (1- (fill-pointer str))) #\s)
     (cond ((ends str "sses") (incf (fill-pointer str) 2))
-	  ((ends str "ies")  (setto str "i"))
-	  ((not (eql (char str (- (fill-pointer str) 2)) #\s)) (decf (fill-pointer str)))))
+          ((ends str "ies")  (setto str "i"))
+          ((not (eql (char str (- (fill-pointer str) 2)) #\s)) (decf (fill-pointer str)))))
   (cond ((ends str "eed") (if (> (m str (fill-pointer str)) 0)
-			      (incf (fill-pointer str) 2)
-			      (incf (fill-pointer str) 3)))
-	((let ((sfp (fill-pointer str)))
-	   (if (or (ends str "ed")
-		   (ends str "ing"))
-	       (if (vowelinstem str)
-		   t
-		   (progn (setf (fill-pointer str) sfp)
-			  nil))))
-	 (cond ((ends str "at") (setto str "ate"))
-	       ((ends str "bl") (setto str "ble"))
-	       ((ends str "iz") (setto str "ize"))
-	       ((doublec str (1- (fill-pointer str)))
-		(unless (member (char str (1- (fill-pointer str))) '(#\l #\s #\z))
-		  (decf (fill-pointer str))))
-	       (t (if (and (= (m str (fill-pointer str)) 1)
-			   (cvc str (fill-pointer str)))
-		      (setto str "e"))))))
+                              (incf (fill-pointer str) 2)
+                              (incf (fill-pointer str) 3)))
+        ((let ((sfp (fill-pointer str)))
+           (if (or (ends str "ed")
+                   (ends str "ing"))
+               (if (vowelinstem str)
+                   t
+                   (progn (setf (fill-pointer str) sfp)
+                          nil))))
+         (cond ((ends str "at") (setto str "ate"))
+               ((ends str "bl") (setto str "ble"))
+               ((ends str "iz") (setto str "ize"))
+               ((doublec str (1- (fill-pointer str)))
+                (unless (member (char str (1- (fill-pointer str))) '(#\l #\s #\z))
+                  (decf (fill-pointer str))))
+               (t (if (and (= (m str (fill-pointer str)) 1)
+                           (cvc str (fill-pointer str)))
+                      (setto str "e"))))))
   str)
 
 ;; step1c() turns terminal y to i when there is another vowel in the stem.
@@ -762,7 +765,7 @@ is replaced with replacement."
 (defun step1c (str)
   (let ((saved-fill-pointer (fill-pointer str)))
     (when (and (ends str "y")
-	       (vowelinstem str))
+               (vowelinstem str))
       (setf (char str (fill-pointer str)) #\i))
     (setf (fill-pointer str) saved-fill-pointer))
   str)
@@ -775,33 +778,33 @@ is replaced with replacement."
   (let ((sfp (fill-pointer str)))
     (when (> sfp 2)
       (block nil
-	(case (char str (- (length str) 2))
-	  (#\a (when (ends str "ational") (r str "ate"  sfp)  (return))
-	       (when (ends str "tional")  (r str "tion" sfp) (return)))
-	  (#\c (when (ends str "enci")    (r str "ence" sfp) (return))
-	       (when (ends str "anci")    (r str "ance" sfp) (return)))
-	  (#\e (when (ends str "izer")    (r str "ize"  sfp)  (return)))
-	  (#\l (when (ends str "bli")     (r str "ble"  sfp)  (return))
-	       ;; -DEPARTURE-
-	       ;; To match the published algorithm, replace prev line with
-	       ;; ((when (ends str "abli")    (r str "able" sfp) (return))
-	       (when (ends str "alli")    (r str "al"  sfp)   (return))
-	       (when (ends str "entli")   (r str "ent" sfp)  (return))
-	       (when (ends str "eli")     (r str "e"   sfp)    (return))
-	       (when (ends str "ousli")   (r str "ous" sfp)  (return)))
-	  (#\o (when (ends str "ization") (r str "ize" sfp)  (return))
-	       (when (ends str "ation")   (r str "ate" sfp)  (return))
-	       (when (ends str "ator")    (r str "ate" sfp)  (return)))
-	  (#\s (when (ends str "alism")   (r str "al"  sfp)   (return))
-	       (when (ends str "iveness") (r str "ive" sfp)  (return))
-	       (when (ends str "fulness") (r str "ful" sfp)  (return))
-	       (when (ends str "ousness") (r str "ous" sfp)  (return)))
-	  (#\t (when (ends str "aliti")   (r str "al"  sfp)   (return))
-	       (when (ends str "iviti")   (r str "ive" sfp)  (return))
-	       (when (ends str "biliti")  (r str "ble" sfp)  (return)))
-	  ;; -DEPARTURE-
-	  ;; To match the published algorithm, delete next line.
-	  (#\g (when (ends str "logi")    (r str "log" sfp)  (return)))))))
+        (case (char str (- (length str) 2))
+          (#\a (when (ends str "ational") (r str "ate"  sfp)  (return))
+               (when (ends str "tional")  (r str "tion" sfp) (return)))
+          (#\c (when (ends str "enci")    (r str "ence" sfp) (return))
+               (when (ends str "anci")    (r str "ance" sfp) (return)))
+          (#\e (when (ends str "izer")    (r str "ize"  sfp)  (return)))
+          (#\l (when (ends str "bli")     (r str "ble"  sfp)  (return))
+               ;; -DEPARTURE-
+               ;; To match the published algorithm, replace prev line with
+               ;; ((when (ends str "abli")    (r str "able" sfp) (return))
+               (when (ends str "alli")    (r str "al"  sfp)   (return))
+               (when (ends str "entli")   (r str "ent" sfp)  (return))
+               (when (ends str "eli")     (r str "e"   sfp)    (return))
+               (when (ends str "ousli")   (r str "ous" sfp)  (return)))
+          (#\o (when (ends str "ization") (r str "ize" sfp)  (return))
+               (when (ends str "ation")   (r str "ate" sfp)  (return))
+               (when (ends str "ator")    (r str "ate" sfp)  (return)))
+          (#\s (when (ends str "alism")   (r str "al"  sfp)   (return))
+               (when (ends str "iveness") (r str "ive" sfp)  (return))
+               (when (ends str "fulness") (r str "ful" sfp)  (return))
+               (when (ends str "ousness") (r str "ous" sfp)  (return)))
+          (#\t (when (ends str "aliti")   (r str "al"  sfp)   (return))
+               (when (ends str "iviti")   (r str "ive" sfp)  (return))
+               (when (ends str "biliti")  (r str "ble" sfp)  (return)))
+          ;; -DEPARTURE-
+          ;; To match the published algorithm, delete next line.
+          (#\g (when (ends str "logi")    (r str "log" sfp)  (return)))))))
   str)
 
 ;; step3() deals with -ic-, -full, -ness etc. similar strategy to step2.
@@ -810,50 +813,50 @@ is replaced with replacement."
   (let ((sfp (fill-pointer str)))
     (block nil
       (case (char str (1- (length str)))
-	(#\e (when (ends str "icate") (r str "ic" sfp) (return))
-	     (when (ends str "ative") (r str "" sfp)   (return)) ; huh?
-	     (when (ends str "alize") (r str "al" sfp) (return)))
-	(#\i (when (ends str "iciti") (r str "ic" sfp) (return)))
-	(#\l (when (ends str "ical")  (r str "ic" sfp) (return))
-	     (when (ends str "ful")   (r str "" sfp)   (return))) ; huh?
-	(#\s (when (ends str "ness")  (r str "" sfp)   (return))) ; huh?
-	)))
+        (#\e (when (ends str "icate") (r str "ic" sfp) (return))
+             (when (ends str "ative") (r str "" sfp)   (return)) ; huh?
+             (when (ends str "alize") (r str "al" sfp) (return)))
+        (#\i (when (ends str "iciti") (r str "ic" sfp) (return)))
+        (#\l (when (ends str "ical")  (r str "ic" sfp) (return))
+             (when (ends str "ful")   (r str "" sfp)   (return))) ; huh?
+        (#\s (when (ends str "ness")  (r str "" sfp)   (return))) ; huh?
+        )))
   str)
 
 ;; step4() takes off -ant, -ence etc., in context <c>vcvc<v>.
 
 (defun step4 (str)
   (let ((sfp (fill-pointer str)))
-    (when (> sfp 2)			; Unnecessary?
+    (when (> sfp 2)                     ; Unnecessary?
       (block nil
-	(case (char str (- sfp 2))
-	  (#\a (if (ends str "al")    (return)))
-	  (#\c (if (ends str "ance")  (return))
-	       (if (ends str "ence")  (return)))
-	  (#\e (if (ends str "er")    (return)))
-	  (#\i (if (ends str "ic")    (return)))
-	  (#\l (if (ends str "able")  (return))
-	       (if (ends str "ible")  (return)))
-	  (#\n (if (ends str "ant")   (return))
-	       (if (ends str "ement") (return))
-	       (if (ends str "ment")  (return))
-	       (if (ends str "ent")   (return)))
-	    ;;;;(#\o (if (ends str "ion")
-	  (#\o (if (and (> (length str) 3) (ends str "ion"))  ;; MLW 6/19/2002
-		   (if (let ((c (char str (1- (length str)))))
-			 (or (eql c #\s) (eql c #\t)))
-		       (return)
-		       (setf (fill-pointer str) sfp)))
-	       (if (ends str "ou")    (return))) ; takes care of -ous
-	  (#\s (if (ends str "ism")   (return)))
-	  (#\t (if (ends str "ate")   (return))
-	       (if (ends str "iti")   (return)))
-	  (#\u (if (ends str "ous")   (return)))
-	  (#\v (if (ends str "ive")   (return)))
-	  (#\z (if (ends str "ize")   (return))))
-	(return-from step4 str))
+        (case (char str (- sfp 2))
+          (#\a (if (ends str "al")    (return)))
+          (#\c (if (ends str "ance")  (return))
+               (if (ends str "ence")  (return)))
+          (#\e (if (ends str "er")    (return)))
+          (#\i (if (ends str "ic")    (return)))
+          (#\l (if (ends str "able")  (return))
+               (if (ends str "ible")  (return)))
+          (#\n (if (ends str "ant")   (return))
+               (if (ends str "ement") (return))
+               (if (ends str "ment")  (return))
+               (if (ends str "ent")   (return)))
+            ;;;;(#\o (if (ends str "ion")
+          (#\o (if (and (> (length str) 3) (ends str "ion"))  ;; MLW 6/19/2002
+                   (if (let ((c (char str (1- (length str)))))
+                         (or (eql c #\s) (eql c #\t)))
+                       (return)
+                       (setf (fill-pointer str) sfp)))
+               (if (ends str "ou")    (return))) ; takes care of -ous
+          (#\s (if (ends str "ism")   (return)))
+          (#\t (if (ends str "ate")   (return))
+               (if (ends str "iti")   (return)))
+          (#\u (if (ends str "ous")   (return)))
+          (#\v (if (ends str "ive")   (return)))
+          (#\z (if (ends str "ize")   (return))))
+        (return-from step4 str))
       (unless (> (m str (fill-pointer str)) 1)
-	(setf (fill-pointer str) sfp)))
+        (setf (fill-pointer str) sfp)))
     str))
 
 ;; step5() removes a final -e if m() > 1, and changes -ll to -l if m() > 1.
@@ -861,16 +864,16 @@ is replaced with replacement."
 (defun step5 (str)
   (let ((len (fill-pointer str)))
     (if (eql (char str (1- len)) #\e)
-	(let ((a (m str len)))
-	  (if (or (> a 1)
-		  (and (= a 1)
-		       (not (cvc str (1- len)))))
-	      (decf (fill-pointer str))))))
+        (let ((a (m str len)))
+          (if (or (> a 1)
+                  (and (= a 1)
+                       (not (cvc str (1- len)))))
+              (decf (fill-pointer str))))))
   (let ((len (fill-pointer str)))
     (if (and (eql (char str (1- len)) #\l)
-	     (doublec str (1- len))
-	     (> (m str len) 1))
-	(decf (fill-pointer str))))
+             (doublec str (1- len))
+             (> (m str len) 1))
+        (decf (fill-pointer str))))
   str)
 
 ;;     code for main 'stem' function
@@ -891,10 +894,10 @@ is replaced with replacement."
   ;; algorithm.
   (let ((len (length str)))
     (if (<= len 2) (return-from stem str)) ; /*-DEPARTURE-*/
-    (if (typep str 'simple-string)	; Primarily for testing.
-	(setf str
-	      (make-array len :element-type 'character
-			  :fill-pointer len :initial-contents str)))
+    (if (typep str 'simple-string)      ; Primarily for testing.
+        (setf str
+              (make-array len :element-type 'character
+                          :fill-pointer len :initial-contents str)))
     (step1ab str) (step1c str) (step2 str) (step3 str) (step4 str) (step5 str)
     str))
 
@@ -910,47 +913,50 @@ is replaced with replacement."
   categoryNames)
 
 (defun get-word-list-category (words)
-  (let ((v nil)
-        (x nil)
-        (ss nil)
-        (cat-hash nil)
-        ;;(tags nil)
-        (word nil)
-        (len nil)
-        (len2 nil))
+  (let* ((x nil)
+         (ss nil)
+         (cat-hash nil)
+         (word nil)
+         (len (length words))
+         (num-categories (length categoryHashtables))
+         (category-score-accumulation-array
+          (make-array num-categories :initial-element 0)))
 
-    (defun list-sort (x)
-      ;;(pprint x)
-      (sort x #'(lambda 	(x y)
-		  (> (cadr x) (cadr y)))))
+    (defun list-sort (list-to-sort)
+      ;;(pprint list-to-sort)
+      (sort list-to-sort
+            #'(lambda (list-element-1 list-element-2)
+                (> (cadr list-element-1) (cadr list-element-2)))))
 
-    ;;(setf words (words-from-string words))
-    ;;(setf tags (parse words))
-    (setf len (length words))
-    (setf len2 (length categoryHashtables))
-    (setf v (make-array len2 :initial-element 0))
-    ;;(pprint v)
     (do ((k 0 (+ k 1)))
         ((equal k len))
       (setf word (string-downcase (aref words k)))
       (do ((i 0 (+ i 1)))
-          ((equal i len2))
+          ((equal i num-categories))
         (setf cat-hash (nth i categoryHashtables))
         (setf x (gethash word cat-hash))
         (if x
-            (setf (aref v i) (+ x (aref v i))))))
+            (setf 
+             (aref category-score-accumulation-array i)
+             (+ x (aref category-score-accumulation-array i))))))
     (setf ss '())
     (do ((i 0 (+ i 1)))
-        ((equal i len2))
-      (if (> (aref v i) 0.01)
-          (setf ss (cons (list (nth i categoryNames) (round (* (aref v i) 10))) ss))))
+        ((equal i num-categories))
+      (if (> (aref category-score-accumulation-array i) 0.01)
+          (setf
+           ss
+           (cons
+            (list
+             (nth i categoryNames)
+             (round (* (aref category-score-accumulation-array i) 10)))
+            ss))))
     (setf ss (list-sort ss))
     (let ((cutoff (/ (cadar ss) 2))
-          (v '()))
+          (results-array '()))
       (dolist (hit ss)
         (if (> (cadr hit) cutoff)
-            (setf v (cons hit v))))
-      (reverse v))))
+            (setf results-array (cons hit results-array))))
+      (reverse results-array))))
 
 
 ;; test:  (get-word-list-category (words-from-string "banking in Europe is a good business. The Euro is strong and account balances are up. Interest rates are remaining steady."))
@@ -968,37 +974,47 @@ is replaced with replacement."
 (defun summarize (txt-obj)
   (let* ((words (text-text txt-obj))
          (num-words (length words))
-	 (cats (text-category-tags txt-obj))
+         (cats (text-category-tags txt-obj))
          (sentence-count 0)
-	 best-sentences sentence (score 0))
+         best-sentences sentence (score 0))
     ;; loop over sentences:
     (dotimes (i num-words)
       (let* ((word (svref words i)))
-	(dolist (cat cats)
-	  (let* ((hash (gethash (car cat) categoryToHash))
-		 (value (gethash word hash)))
-	    (if value
-		(setq score (+ score (* 0.01 value (cadr cat)))))))
-	(push word sentence)
-	(if (or (equal word ".") (equal word "!") (equal word ";"))
-	    (let ()
-	      (setq sentence (reverse sentence))
-	      (setq score (/ score (1+ (length sentence))))
-	      (setq sentence-count (1+ sentence-count))
-	      (format t "~%~A : ~A~%" sentence score)
-	      ;; process this sentence:
-	      (if (and (> score 0.4) (> (length sentence) 4) (< (length sentence) 30))
-		  (progn
-		    (setq sentence
-                          (reduce #'(lambda (x y) (concatenate 'string x " " y)) (coerce sentence 'list)))
-		    (push (list sentence score) best-sentences)))
-	      (setf sentence nil score 0)))))
-    (setf best-sentences (sort best-sentences #'(lambda (x y) (> (cadr x) (cadr y)))))
+        (dolist (cat cats)
+          (let* ((hash (gethash (car cat) categoryToHash))
+                 (value (gethash word hash)))
+            (if value
+                (setq score (+ score (* 0.01 value (cadr cat)))))))
+        (push word sentence)
+        (if (or (equal word ".") (equal word "!") (equal word ";"))
+            (let ()
+              (setq sentence (reverse sentence))
+              (setq score (/ score (1+ (length sentence))))
+              (setq sentence-count (1+ sentence-count))
+              (format t "~%~A : ~A~%" sentence score)
+              ;; process this sentence:
+              (if (and
+                   (> score 0.4)
+                   (> (length sentence) 4)
+                   (< (length sentence) 30))
+                  (progn
+                    (setq sentence
+                          (reduce
+                           #'(lambda (x y) (concatenate 'string x " " y))
+                           (coerce sentence 'list)))
+                    (push (list sentence score) best-sentences)))
+              (setf sentence nil score 0)))))
+    (setf
+     best-sentences
+     (sort
+      best-sentences
+      #'(lambda (x y) (> (cadr x) (cadr y)))))
     (if best-sentences
         (replace-all
-         (reduce #'(lambda (x y) (concatenate 'string x " " y)) (mapcar #'(lambda (x) (car x)) best-sentences))
+         (reduce #'(lambda (x y) (concatenate 'string x " " y))
+                 (mapcar #'(lambda (x) (car x)) best-sentences))
          " ." ".")
-	"<no summary>")))
+        "<no summary>")))
 
 
 ;;                             TOP LEVEL NLP FUNCTION:
@@ -1006,7 +1022,7 @@ is replaced with replacement."
 (defun make-text-object (words &key (url "") (title ""))
   (if (typep words 'string) (setq words (words-from-string words)))
   (let* ((txt-obj (make-text :text words :url url :title title))) ;;;  :classification cat)))
-    (setf (text-tags txt-obj) (parse words))
+    (setf (text-tags txt-obj) (part-of-speech-tagger words))
     (setf (text-stems txt-obj) (stem-text txt-obj))
     ;; note: we must find human and place names before calling
     ;; pronoun-resolution:
