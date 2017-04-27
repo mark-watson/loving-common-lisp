@@ -1,0 +1,7 @@
+*.class
+simple.jar
+dl.jar
+uber-lisp-deep-learning.jar
+.DS_Store
+java_code_for_jar_library/target
+

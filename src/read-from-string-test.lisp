@@ -5,6 +5,5 @@
      (input-stream str)
      (dotimes (i 1000)
        (let ((x (read input-stream nil nil)))
-	 (if (null x) (return)) ;; break out of the 'dotimes' loop
-	 (format t "next expression in string: ~S~%" x))))))
-
+         (if (null x) (return)) ;; break out of the 'dotimes' loop
+         (format t "next expression in string: ~S~%" x))))))

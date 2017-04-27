@@ -9,7 +9,7 @@
 
 ;; utility from http://cl-cookbook.sourceforge.net/strings.html#manip:
 (defun replace-all (string part replacement &key (test #'char=))
-  "Returns a new string in which all the occurrences of the part 
+  "Returns a new string in which all the occurrences of the part
 is replaced with replacement."
   (with-output-to-string (out)
     (loop with part-length = (length part)
@@ -27,7 +27,7 @@ is replaced with replacement."
 
 (defun dbpedia-lookup (search-string)
   (let* ((s-str (replace-all search-string " " "+"))
-         (s-uri 
+         (s-uri
           (concatenate
            'string
            "http://lookup.dbpedia.org/api/search.asmx/KeywordSearch?QueryString="
@@ -64,10 +64,3 @@ is replaced with replacement."
     (reverse ret)))
 
 ;; (dbpedia-lookup "berlin")
-
-
-
-
-
-
-

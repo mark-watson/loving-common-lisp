@@ -6,7 +6,7 @@
 ;; Common Lisp stemming code in this file was written by Steven M. Haflich based on the work of Martin Porter.
 
 (defpackage kbnlp
-  (:use :cl :asdf)
+  (:use :cls :asdf)
   (:export
    :make-text-object)
   (:documentation
@@ -43,18 +43,18 @@
 (defvar *company-name-hash* (make-hash-table :test #'equal :size 400))
 (defvar *product-name-hash* (make-hash-table :test #'equal :size 400))
 
-(load "data/FastTagData")
-(load "data/cat-data-tables")
+(load "linguistic_data/FastTagData")
+(load "linguistic_data/cat-data-tables")
 
 (let (line)
   (with-open-file
-      (in "data/names/names.male")
+      (in "linguistic_data/names/names.male")
     (dotimes (i 50000)
       (setq line (read-line in nil nil))
       (if (null line) (return))
       (setf (gethash line *first-name-hash*) *male*)))
   (with-open-file
-      (in "data/names/names.female")
+      (in "linguistic_data/names/names.female")
     (dotimes (i 50000)
       (setq line (read-line in nil nil))
       (if (null line) (return))
@@ -64,7 +64,7 @@
 
 (let (line)
   (with-open-file
-      (in "data/names/names.last")
+      (in "linguistic_data/names/names.last")
     (dotimes (i 5000000)
       (setq line (read-line in nil nil))
       (if (null line) (return))
@@ -72,15 +72,15 @@
 
 (if (not (boundp 'place-hash))
     (progn
-      (load "data/names/PlaceData.ldat")))
+      (load "linguistic_data/names/PlaceData.ldat")))
 
 (if (not (boundp 'stop-word-hash))
     (progn
-      (load "data/names/StopWords.ldat")))
+      (load "linguistic_data/names/StopWords.ldat")))
 
 (let (line)
   (with-open-file
-      (in "data/names/names.companies")
+      (in "linguistic_data/names/names.companies")
     (dotimes (i 500000)
       (setq line (read-line in nil nil))
       (if (null line) (return))
@@ -88,7 +88,7 @@
 
 (let (line)
   (with-open-file
-      (in "data/names/names.products")
+      (in "linguistic_data/names/names.products")
     (dotimes (i 500000)
       (setq line (read-line in nil nil))
       (if (null line) (return))
