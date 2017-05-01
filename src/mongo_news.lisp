@@ -25,15 +25,13 @@
     (print (list "size of result=" (length mdata)))
     (dolist (a mdata)
       (print a)
-      (setf 
-       ret
-       (cons
-         (list
-          (cl-mongo:get-element "uri" a)
-          (cl-mongo:get-element "title" a)
-          (cl-mongo:get-element "text" a))
-         ret)))
-     ret))
+      (push
+       (list
+        (cl-mongo:get-element "uri" a)
+        (cl-mongo:get-element "title" a)
+        (cl-mongo:get-element "text" a))
+       ret))
+    ret))
 
 (defun get-articles ()
   (article-results->lisp-data
