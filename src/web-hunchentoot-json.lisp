@@ -3,7 +3,7 @@
 
 (defvar *h* (make-instance 'hunchentoot:easy-acceptor :port 3000))
 
-;; define a handler with the arbitrary name my-greetings:
+;; define a handler with the name animal:
 
 (hunchentoot:define-easy-handler (animal :uri "/animal") (name)
   (print name)
