@@ -1,0 +1,108 @@
+Rede Globo	<http://dbpedia.org/resource/Rede_Globo>
+Telemundo	<http://dbpedia.org/resource/Telemundo>
+Inmigrante TV	<http://dbpedia.org/resource/Inmigrante_TV>
+Repretel	<http://dbpedia.org/resource/Repretel>
+GMA Network	<http://dbpedia.org/resource/GMA_Network>
+NTR	<http://dbpedia.org/resource/Omroep_NTR>
+Overmyer Network	<http://dbpedia.org/resource/Overmyer_Network>
+United Network	<http://dbpedia.org/resource/Overmyer_Network>
+PTL Satellite Network	<http://dbpedia.org/resource/PTL_Satellite_Network>
+Pakistan Broadcasting Corporation	<http://dbpedia.org/resource/Pakistan_Broadcasting_Corporation>
+Radio Luxembourg	<http://dbpedia.org/resource/Radio_Luxembourg_(English)>
+Radio Niederösterreich	<http://dbpedia.org/resource/Radio_Nieder%C3%B6sterreich>
+Radio Slovakia International	<http://dbpedia.org/resource/Radio_Slovakia_International>
+Radio Ukraine International	<http://dbpedia.org/resource/Radio_Ukraine_International>
+Televisão de Moçambique	<http://dbpedia.org/resource/Televis%C3%A3o_de_Mo%C3%A7ambique>
+Tri-State Christian Television	<http://dbpedia.org/resource/Tri-State_Christian_Television>
+Univision	<http://dbpedia.org/resource/Univision>
+Z Channel	<http://dbpedia.org/resource/Z_Channel>
+Voice of Mongolia	<http://dbpedia.org/resource/Voice_of_Mongolia>
+Aswat al-Iraq	<http://dbpedia.org/resource/Aswat_al-Iraq>
+BBC World Service	<http://dbpedia.org/resource/BBC_World_Service>
+DuMont Television Network	<http://dbpedia.org/resource/DuMont_Television_Network>
+Hughes Television Network	<http://dbpedia.org/resource/Hughes_Television_Network>
+iaTV	<http://dbpedia.org/resource/ImaginAsian>
+Mehr News Agency	<http://dbpedia.org/resource/Mehr_News_Agency>
+Radio Zamaneh	<http://dbpedia.org/resource/Radio_Zamaneh>
+Canal A	<http://dbpedia.org/resource/Canal_A>
+Victory Sports One	<http://dbpedia.org/resource/Victory_Sports_One>
+Animation Fixation	<http://dbpedia.org/resource/Animation_Fixation>
+NBC Kids	<http://dbpedia.org/resource/NBC_Kids>
+Fox Kids	<http://dbpedia.org/resource/Fox_Kids>
+BBC Ukrainian Service	<http://dbpedia.org/resource/BBC_Ukrainian>
+Fox Broadcasting Company	<http://dbpedia.org/resource/Fox_Broadcasting_Company>
+National Broadcasting Company	<http://dbpedia.org/resource/NBC>
+Canal Uno	<http://dbpedia.org/resource/Canal_Uno>
+SEC Network	<http://dbpedia.org/resource/SEC_Network>
+Super Hero Time	<http://dbpedia.org/resource/Super_Hero_Time>
+Österreich 2	<http://dbpedia.org/resource/%C3%962>
+Al-Baghdadia TV	<http://dbpedia.org/resource/Al-Baghdadia_TV>
+Channel Africa	<http://dbpedia.org/resource/Channel_Africa>
+Jefferson Public Radio	<http://dbpedia.org/resource/Jefferson_Public_Radio>
+Kids WB	<http://dbpedia.org/resource/Kids'_WB>
+Mutual Broadcasting System	<http://dbpedia.org/resource/Mutual_Broadcasting_System>
+Première Chaîne	<http://dbpedia.org/resource/Premi%C3%A8re_Cha%C3%AEne>
+Radio_FM	<http://dbpedia.org/resource/R%C3%A1dio_FM_%E2%80%93_Slovak_Radio_4>
+Radio Rebelde	<http://dbpedia.org/resource/Radio_Rebelde>
+Discover Barbados Television	<http://dbpedia.org/resource/Discover_Barbados_TV>
+Shamshad TV	<http://dbpedia.org/resource/Shamshad_TV>
+ABS-CBN	<http://dbpedia.org/resource/ABS-CBN>
+Hans Des Vignes	<http://dbpedia.org/resource/Hans_des_Vignes>
+LRA Radio Nacional	<http://dbpedia.org/resource/LRA_Radio_Nacional>
+Mega TV	<http://dbpedia.org/resource/Mega_TV_(Malaysia)>
+Singapore Broadcasting Corporation	<http://dbpedia.org/resource/Singapore_Broadcasting_Corporation>
+Rede 21	<http://dbpedia.org/resource/Rede_21>
+Union Broadcasting System	<http://dbpedia.org/resource/Union_Broadcasting_System>
+ABC News Radio	<http://dbpedia.org/resource/ABC_News_Radio>
+Ekushey Television	<http://dbpedia.org/resource/Ekushey_Television>
+Radiolicious	<http://dbpedia.org/resource/Radiolicious>
+United Nations Radio	<http://dbpedia.org/resource/United_Nations_Radio>
+Radio Oberösterreich	<http://dbpedia.org/resource/Radio_Ober%C3%B6sterreich>
+Virgin TV	<http://dbpedia.org/resource/Virgin_TV>
+Anime Theater X	<http://dbpedia.org/resource/AT-X_(company)>
+MyNetworkTV	<http://dbpedia.org/resource/MyNetworkTV>
+Radio Reloj	<http://dbpedia.org/resource/Radio_Reloj>
+Local AccuWeather Channel	<http://dbpedia.org/resource/The_Local_AccuWeather_Channel>
+Teletica	<http://dbpedia.org/resource/Teletica>
+Australian Broadcasting Corporation	<http://dbpedia.org/resource/Australian_Broadcasting_Corporation>
+American Broadcasting Company	<http://dbpedia.org/resource/American_Broadcasting_Company>
+CBS Broadcasting Inc	<http://dbpedia.org/resource/CBS>
+CW Television Network	<http://dbpedia.org/resource/The_CW_Television_Network>
+Voice of America	<http://dbpedia.org/resource/Voice_of_America>
+Hitradio Ö3	<http://dbpedia.org/resource/Hitradio_%C3%963>
+Theater Television Network	<http://dbpedia.org/resource/Theater_Television_Network>
+B92	<http://dbpedia.org/resource/B92>
+People TV	<http://dbpedia.org/resource/People_TV>
+Radio Guerrilla	<http://dbpedia.org/resource/Radio_Guerrilla>
+TV Åland	<http://dbpedia.org/resource/TV_%C3%85land>
+Radio FM4	<http://dbpedia.org/resource/FM4>
+Kids WB!	<http://dbpedia.org/resource/Kids'_WB_Australia>
+Radio Slovenia International	<http://dbpedia.org/resource/Radio_Slovenia_International>
+Pajhwok Afghan News	<http://dbpedia.org/resource/Pajhwok_Afghan_News>
+NPR	<http://dbpedia.org/resource/NPR>
+Xinhua News Agency	<http://dbpedia.org/resource/Xinhua_News_Agency>
+Radio Singapore International	<http://dbpedia.org/resource/Radio_Singapore_International>
+WCTR Talk Radio	<http://dbpedia.org/resource/West_Coast_Talk_Radio>
+Fox Sports Radio	<http://dbpedia.org/resource/Fox_Sports_Radio>
+Radio Netherlands Worldwide	<http://dbpedia.org/resource/Radio_Netherlands_Worldwide>
+Badger Television Network	<http://dbpedia.org/resource/Badger_Television_Network>
+NTA Film Network	<http://dbpedia.org/resource/NTA_Film_Network>
+Paramount Television Network	<http://dbpedia.org/resource/Paramount_Television_Network>
+Liberia Broadcasting System	<http://dbpedia.org/resource/Liberia_Broadcasting_System>
+RBS TV	<http://dbpedia.org/resource/RBS_TV>
+Saudi Press Agency	<http://dbpedia.org/resource/Saudi_Press_Agency>
+Croatian Radiotelevision	<http://dbpedia.org/resource/Croatian_Radiotelevision>
+Hrvatska radiotelevizija	<http://dbpedia.org/resource/Croatian_Radiotelevision>
+NBC News Radio	<http://dbpedia.org/resource/NBC_Red_Network>
+PBS	<http://dbpedia.org/resource/PBS>
+Voice of Croatia	<http://dbpedia.org/resource/Voice_of_Croatia>
+Radio France Internationale	<http://dbpedia.org/resource/Radio_France_Internationale>
+Canalsat	<http://dbpedia.org/resource/Canalsat>
+Doordarshan	<http://dbpedia.org/resource/Doordarshan>
+Radio Prague	<http://dbpedia.org/resource/Radio_Prague>
+TX Network	<http://dbpedia.org/resource/TX_Network>
+Movies!	<http://dbpedia.org/resource/Movies!>
+WightFibre Ltd	<http://dbpedia.org/resource/WightFibre>
+Cozi TV	<http://dbpedia.org/resource/Cozi_TV>
+Big Frame	<http://dbpedia.org/resource/Big_Frame>
+Television Writers Vault	<http://dbpedia.org/resource/Television_Writers_Vault>

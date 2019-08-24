@@ -1,0 +1,486 @@
+AFL	<http://dbpedia.org/resource/American_Federation_of_Labor>
+CTV	<http://dbpedia.org/resource/Confederaci%C3%B3n_de_Trabajadores_de_Venezuela>
+IGM	<http://dbpedia.org/resource/IG_Metall>
+German Metalworkers Union	<http://dbpedia.org/resource/IG_Metall>
+CGIL	<http://dbpedia.org/resource/Italian_General_Confederation_of_Labour>
+Screen Actors Guild	<http://dbpedia.org/resource/Screen_Actors_Guild>
+United Services Union	<http://dbpedia.org/resource/Vereinte_Dienstleistungsgewerkschaft>
+verdi	<http://dbpedia.org/resource/Vereinte_Dienstleistungsgewerkschaft>
+UGTA	<http://dbpedia.org/resource/General_Union_of_Algerian_Workers>
+IWW	<http://dbpedia.org/resource/Industrial_Workers_of_the_World>
+Solidarnosc	<http://dbpedia.org/resource/Solidarity_(Polish_trade_union)>
+TCO	<http://dbpedia.org/resource/Swedish_Confederation_of_Professional_Employees>
+UFWA	<http://dbpedia.org/resource/United_Farm_Workers>
+CCOO	<http://dbpedia.org/resource/Workers'_Commissions>
+Workers Commissions	<http://dbpedia.org/resource/Workers'_Commissions>
+UNAPA	<http://dbpedia.org/resource/UNAPA>
+Intersindical Canaria	<http://dbpedia.org/resource/Intersindical_Canaria>
+Leicestershire Miners Association	<http://dbpedia.org/resource/Leicestershire_Miners'_Association>
+Manufacturing Grocers Union	<http://dbpedia.org/resource/Manufacturing_Grocers'_Employees'_Federation_of_Australia>
+PCWLU	<http://dbpedia.org/resource/Permanent_&_Casual_Wharf_Labourers_Union_of_Australia>
+SWSWU	<http://dbpedia.org/resource/Sheffield_Wool_Shear_Workers_Union>
+LO	<http://dbpedia.org/resource/Danish_Confederation_of_Trade_Unions>
+AFAP	<http://dbpedia.org/resource/Australian_Federation_of_Air_Pilots>
+ALAEA	<http://dbpedia.org/resource/Australian_Licenced_Aircraft_Engineers_Association>
+AWG	<http://dbpedia.org/resource/Australian_Writers'_Guild>
+Australian Writers Guild	<http://dbpedia.org/resource/Australian_Writers'_Guild>
+British Seafarers Union	<http://dbpedia.org/resource/British_Seafarers'_Union>
+BSU	<http://dbpedia.org/resource/British_Seafarers'_Union>
+CTM	<http://dbpedia.org/resource/Confederation_of_Mexican_Workers>
+KSSh	<http://dbpedia.org/resource/Confederation_of_Trade_Unions_(Albania)>
+Democrats Abroad	<http://dbpedia.org/resource/Democrats_Abroad>
+DWRGLU	<http://dbpedia.org/resource/Dock,_Wharf,_Riverside_and_General_Labourers'_Union>
+ETU	<http://dbpedia.org/resource/Electrical_Trades_Union_of_Australia>
+GEFONT	<http://dbpedia.org/resource/General_Federation_of_Nepalese_Trade_Unions>
+GWU	<http://dbpedia.org/resource/General_Workers'_Union_(Malta)>
+General Workers Union	<http://dbpedia.org/resource/General_Workers'_Union_(Malta)>
+GESO	<http://dbpedia.org/resource/Graduate_Employees_and_Students_Organization>
+HSU	<http://dbpedia.org/resource/Health_Services_Union>
+Health Services Union	<http://dbpedia.org/resource/Health_Services_Union>
+IF Metall	<http://dbpedia.org/resource/IF_Metall>
+IAFF	<http://dbpedia.org/resource/International_Association_of_Fire_Fighters>
+IFATCA	<http://dbpedia.org/resource/International_Federation_of_Air_Traffic_Controllers'_Associations>
+ICEM	<http://dbpedia.org/resource/International_Federation_of_Chemical,_Energy,_Mine_and_General_Workers'_Unions>
+IUOE	<http://dbpedia.org/resource/International_Union_of_Operating_Engineers>
+IMPACT	<http://dbpedia.org/resource/Irish_Municipal,_Public_and_Civil_Trade_Union>
+KTU	<http://dbpedia.org/resource/Korean_Teachers_&_Education_Workers'_Union>
+Monash Student Association	<http://dbpedia.org/resource/Monash_Student_Association>
+RMT	<http://dbpedia.org/resource/National_Union_of_Rail,_Maritime_and_Transport_Workers>
+NUT	<http://dbpedia.org/resource/National_Union_of_Teachers>
+NNTA	<http://dbpedia.org/resource/Nepal_National_Teachers_Association>
+PFA	<http://dbpedia.org/resource/Police_Federation_of_Australia>
+PTC	<http://dbpedia.org/resource/Public_Services,_Tax_and_Commerce_Union>
+SUB	<http://dbpedia.org/resource/Seafarers'_Union_of_Burma>
+Trades Union Congress	<http://dbpedia.org/resource/Trades_Union_Congress>
+TWU	<http://dbpedia.org/resource/Transport_Workers_Union_of_America>
+UNITE HERE	<http://dbpedia.org/resource/UNITE_HERE>
+UNI global union	<http://dbpedia.org/resource/UNI_Global_Union>
+UDM	<http://dbpedia.org/resource/Union_of_Democratic_Mineworkers>
+UE	<http://dbpedia.org/resource/United_Electrical,_Radio_and_Machine_Workers_of_America>
+United Scenic Artists	<http://dbpedia.org/resource/United_Scenic_Artists>
+United Steelworkers	<http://dbpedia.org/resource/United_Steelworkers>
+USW	<http://dbpedia.org/resource/United_Steelworkers>
+VTHC	<http://dbpedia.org/resource/Victorian_Trades_Hall_Council>
+ATUC	<http://dbpedia.org/resource/African_Trade_Union_Congress>
+ATU	<http://dbpedia.org/resource/Amalgamated_Transit_Union>
+Amalgamated Transit Union	<http://dbpedia.org/resource/Amalgamated_Transit_Union>
+FAT	<http://dbpedia.org/resource/Authentic_Labor_Front>
+BMS	<http://dbpedia.org/resource/Bharatiya_Mazdoor_Sangh>
+Indian Workers Union	<http://dbpedia.org/resource/Bharatiya_Mazdoor_Sangh>
+SAK	<http://dbpedia.org/resource/Central_Organisation_of_Finnish_Trade_Unions>
+Akava	<http://dbpedia.org/resource/Confederation_of_Unions_for_Academic_Professionals_in_Finland>
+DECONT	<http://dbpedia.org/resource/Democratic_Confederation_of_Nepalese_Trade_Unions>
+FTUB	<http://dbpedia.org/resource/Federation_of_Trade_Unions_of_Burma>
+GSEE	<http://dbpedia.org/resource/General_Confederation_of_Greek_Workers>
+IFTU	<http://dbpedia.org/resource/Iraqi_Federation_of_Trade_Unions>
+KCTU	<http://dbpedia.org/resource/Korean_Confederation_of_Trade_Unions>
+MVS	<http://dbpedia.org/resource/Mezin%C3%A1rodn%C3%AD_v%C5%A1eodborov%C3%BD_svaz>
+International All-Union League	<http://dbpedia.org/resource/Mezin%C3%A1rodn%C3%AD_v%C5%A1eodborov%C3%BD_svaz>
+UNTA	<http://dbpedia.org/resource/National_Union_of_Angolan_Workers>
+CROM	<http://dbpedia.org/resource/Regional_Confederation_of_Mexican_Workers>
+CGT-FO	<http://dbpedia.org/resource/Workers'_Force>
+ACW	<http://dbpedia.org/resource/Amalgamated_Clothing_Workers_of_America>
+4As	<http://dbpedia.org/resource/Associated_Actors_and_Artistes_of_America>
+AUT	<http://dbpedia.org/resource/Association_of_University_Teachers>
+AEU	<http://dbpedia.org/resource/Australian_Education_Union>
+Australian Education Union	<http://dbpedia.org/resource/Australian_Education_Union>
+AIMPE	<http://dbpedia.org/resource/Australian_Institute_of_Marine_and_Power_Engineers>
+RTBU	<http://dbpedia.org/resource/Australian_Rail_Tram_and_Bus_Industry_Union>
+BWU	<http://dbpedia.org/resource/Barbados_Workers'_Union>
+Barbados Workers Union	<http://dbpedia.org/resource/Barbados_Workers'_Union>
+BASSA	<http://dbpedia.org/resource/British_Airlines_Stewards_and_Stewardesses_Association>
+BDA	<http://dbpedia.org/resource/British_Dietetic_Association>
+British Dietetic Association	<http://dbpedia.org/resource/British_Dietetic_Association>
+CMG	<http://dbpedia.org/resource/Canadian_Media_Guild>
+Canadian Media Guild	<http://dbpedia.org/resource/Canadian_Media_Guild>
+CEP	<http://dbpedia.org/resource/Communications,_Energy_and_Paperworkers_Union_of_Canada>
+CMTU	<http://dbpedia.org/resource/Confederation_of_Malta_Trade_Unions>
+Education Minnesota	<http://dbpedia.org/resource/Education_Minnesota>
+FTQ	<http://dbpedia.org/resource/F%C3%A9d%C3%A9ration_des_travailleurs_et_travailleuses_du_Qu%C3%A9bec>
+Finance Sector Union	<http://dbpedia.org/resource/Finance_and_Information_Workers_Union>
+Finsec	<http://dbpedia.org/resource/Finance_and_Information_Workers_Union>
+AWIU	<http://dbpedia.org/resource/International_Association_of_Heat_and_Frost_Insulators_and_Allied_Workers>
+JLC	<http://dbpedia.org/resource/Jewish_Labor_Committee>
+Jewish Labor Committee	<http://dbpedia.org/resource/Jewish_Labor_Committee>
+NUB	<http://dbpedia.org/resource/National_Union_of_Blastfurnacemen,_Ore_Miners,_Coke_Workers_and_Kindred_Trades>
+Northumberland Miners Association	<http://dbpedia.org/resource/Northumberland_Miners'_Association>
+Nottinghamshire Miners Association	<http://dbpedia.org/resource/Nottinghamshire_Miners'_Association>
+OWTU	<http://dbpedia.org/resource/Oilfields_Workers'_Trade_Union>
+PERC	<http://dbpedia.org/resource/Pan-European_Regional_Council>
+Pan-European Regional Council	<http://dbpedia.org/resource/Pan-European_Regional_Council>
+SLOMR	<http://dbpedia.org/resource/SLOMR>
+SIU	<http://dbpedia.org/resource/Seafarers_International_Union_of_North_America>
+Seafarers International Union	<http://dbpedia.org/resource/Seafarers_International_Union_of_North_America>
+SWMF	<http://dbpedia.org/resource/South_Wales_Miners'_Federation>
+Toronto Paramedic Association	<http://dbpedia.org/resource/Toronto_Paramedic_Association>
+Toronto Paramedic Association	<http://dbpedia.org/resource/Toronto_Paramedic_Association>
+United Voice	<http://dbpedia.org/resource/United_Voice>
+WTUL	<http://dbpedia.org/resource/Women's_Trade_Union_League>
+WGC	<http://dbpedia.org/resource/Writers_Guild_of_Canada>
+IFJ	<http://dbpedia.org/resource/International_Federation_of_Journalists>
+IUPAT	<http://dbpedia.org/resource/International_Union_of_Painters_and_Allied_Trades>
+AFL Players Association	<http://dbpedia.org/resource/AFL_Players_Association>
+AFLPA	<http://dbpedia.org/resource/AFL_Players_Association>
+Agricultural Workers Organization	<http://dbpedia.org/resource/Agricultural_Workers_Organization>
+APALA	<http://dbpedia.org/resource/Asian_Pacific_American_Labor_Alliance>
+ANF	<http://dbpedia.org/resource/Australian_Nursing_Federation>
+Australian Nursing Federation	<http://dbpedia.org/resource/Australian_Nursing_Federation>
+MUA	<http://dbpedia.org/resource/Maritime_Union_of_Australia>
+NSWNMA	<http://dbpedia.org/resource/New_South_Wales_Nurses'_Association>
+Unite	<http://dbpedia.org/resource/Unite_Union_(Australia)>
+ITUC Asia Pacific	<http://dbpedia.org/resource/ITUC-Asia_Pacific>
+SARTUC	<http://dbpedia.org/resource/South_Asian_Regional_Trade_Union_Council>
+UMWA	<http://dbpedia.org/resource/United_Mine_Workers>
+RLEA	<http://dbpedia.org/resource/Railway_Labor_Executives'_Association>
+NANDA International	<http://dbpedia.org/resource/NANDA>
+NANDA-I	<http://dbpedia.org/resource/NANDA>
+ASMOF	<http://dbpedia.org/resource/Australian_Salaried_Medical_Officers'_Federation>
+UASA	<http://dbpedia.org/resource/UASA>
+AFL-CIO	<http://dbpedia.org/resource/AFL%E2%80%93CIO>
+United Auto Workers	<http://dbpedia.org/resource/United_Auto_Workers>
+Alliance for Finance	<http://dbpedia.org/resource/Alliance_for_Finance>
+BEFI	<http://dbpedia.org/resource/Bank_Employees_Federation_of_India>
+Bartolina Sisa Confederation	<http://dbpedia.org/resource/Bartolina_Sisa_Confederation>
+File:CAWCouncil4000 logopng	<http://dbpedia.org/resource/CAW_National_Council_4000>
+CTH	<http://dbpedia.org/resource/Confederation_des_Travailleurs_Ha%C3%AFtiens>
+CCISUA	<http://dbpedia.org/resource/Coordinating_Committee_of_International_Staff_Unions_and_Associations_of_the_United_Nations_System>
+HSU East	<http://dbpedia.org/resource/Health_Services_Union_East>
+IAPMO R&T	<http://dbpedia.org/resource/IAPMO_R&T>
+Industri Energi	<http://dbpedia.org/resource/Industri_Energi>
+Obreros Unidos	<http://dbpedia.org/resource/Obreros_Unidos>
+OECTA	<http://dbpedia.org/resource/Ontario_English_Catholic_Teachers'_Association>
+Plankanu	<http://dbpedia.org/resource/Planka.nu>
+SFTU	<http://dbpedia.org/resource/Swaziland_Federation_of_Trade_Unions>
+TTD	<http://dbpedia.org/resource/Transportation_Trades_Department,_AFL%E2%80%93CIO>
+USAPA	<http://dbpedia.org/resource/US_Airline_Pilots_Association>
+USTN	<http://dbpedia.org/resource/Union_of_Workers'_Trade_Unions_of_Niger>
+AFTRA	<http://dbpedia.org/resource/American_Federation_of_Television_and_Radio_Artists>
+APESMA	<http://dbpedia.org/resource/Association_of_Professional_Engineers,_Scientists_and_Managers,_Australia>
+AMWU	<http://dbpedia.org/resource/Australian_Manufacturing_Workers_Union>
+AMOU	<http://dbpedia.org/resource/Australian_Maritime_Officers_Union>
+VÖWG	<http://dbpedia.org/resource/Austrian_Association_for_Public_and_Social_Economy>
+BALPA	<http://dbpedia.org/resource/British_Airline_Pilots'_Association>
+CUT	<http://dbpedia.org/resource/Central_%C3%9Anica_dos_Trabalhadores>
+Unified Workers Central	<http://dbpedia.org/resource/Central_%C3%9Anica_dos_Trabalhadores>
+Cobas	<http://dbpedia.org/resource/Confederazione_dei_Comitati_di_Base>
+IG Bauen-Agrar-Umwelt	<http://dbpedia.org/resource/IG_Bauen-Agrar-Umwelt>
+IGBAU	<http://dbpedia.org/resource/IG_Bauen-Agrar-Umwelt>
+NLC	<http://dbpedia.org/resource/Nigeria_Labour_Congress>
+Nigeria Labour Congress	<http://dbpedia.org/resource/Nigeria_Labour_Congress>
+PACE	<http://dbpedia.org/resource/Paper,_Allied-Industrial,_Chemical_and_Energy_Workers_International_Union>
+PSAC	<http://dbpedia.org/resource/Public_Service_Alliance_of_Canada>
+RCN	<http://dbpedia.org/resource/Royal_College_of_Nursing>
+Sif	<http://dbpedia.org/resource/Swedish_Union_of_Clerical_and_Technical_Employees_in_Industry>
+FZZ	<http://dbpedia.org/resource/Trade_Unions_Forum>
+Trade Unions Forum	<http://dbpedia.org/resource/Trade_Unions_Forum>
+TSSA	<http://dbpedia.org/resource/Transport_Salaried_Staffs'_Association>
+USDAW	<http://dbpedia.org/resource/Union_of_Shop,_Distributive_and_Allied_Workers>
+WFM	<http://dbpedia.org/resource/Western_Federation_of_Miners>
+ATSGWTU	<http://dbpedia.org/resource/All_Trinidad_Sugar_and_General_Workers'_Trade_Union>
+NFSP	<http://dbpedia.org/resource/National_Federation_of_SubPostmasters>
+NATUC	<http://dbpedia.org/resource/National_Trade_Union_Centre_of_Trinidad_and_Tobago>
+NUAW	<http://dbpedia.org/resource/National_Union_of_Agricultural_and_Allied_Workers>
+OCAW	<http://dbpedia.org/resource/Oil,_Chemical_and_Atomic_Workers_International_Union>
+Operative Bricklayers Society	<http://dbpedia.org/resource/Operative_Bricklayers'_Society>
+OBS	<http://dbpedia.org/resource/Operative_Bricklayers'_Society>
+VDWWA	<http://dbpedia.org/resource/Vancouver_and_District_Waterfront_Workers'_Association>
+Chemical Workers Union	<http://dbpedia.org/resource/Chemical_Workers'_Union_(Czechoslovakia)>
+NUDE	<http://dbpedia.org/resource/National_Union_of_Domestic_Employees>
+UFAWU	<http://dbpedia.org/resource/United_Fishermen_and_Allied_Workers'_Union>
+AUBTW	<http://dbpedia.org/resource/Amalgamated_Union_of_Building_Trade_Workers>
+CGTA	<http://dbpedia.org/resource/Conf%C3%A9d%C3%A9ration_g%C3%A9n%C3%A9rale_des_travailleurs_africains>
+Diageo Staff Association	<http://dbpedia.org/resource/Diageo_Staff_Association>
+FTAT	<http://dbpedia.org/resource/Furniture,_Timber_and_Allied_Trades_Union>
+UGTE	<http://dbpedia.org/resource/General_Union_of_Ecuadorian_Workers>
+AUNBT	<http://dbpedia.org/resource/Association_of_University_of_New_Brunswick_Teachers>
+CGT	<http://dbpedia.org/resource/Confederaci%C3%B3n_General_del_Trabajo>
+CNT	<http://dbpedia.org/resource/Confederaci%C3%B3n_Nacional_del_Trabajo>
+Frontlash	<http://dbpedia.org/resource/Frontlash>
+AC	<http://dbpedia.org/resource/AC_%E2%80%93_The_Danish_Confederation_of_Professional_Associations>
+Advance	<http://dbpedia.org/resource/Advance_(trade_union)>
+AITUC	<http://dbpedia.org/resource/All_India_Trade_Union_Congress>
+AMWU	<http://dbpedia.org/resource/Amalgamated_Marine_Workers'_Union>
+BOS	<http://dbpedia.org/resource/British_Orthodontic_Society>
+British Orthodontic Society	<http://dbpedia.org/resource/British_Orthodontic_Society>
+CAW Local 111	<http://dbpedia.org/resource/CAW_Local_111>
+COPE	<http://dbpedia.org/resource/Canadian_Office_and_Professional_Employees_Union>
+EAKL	<http://dbpedia.org/resource/Confederation_of_Estonian_Trade_Unions>
+CFW	<http://dbpedia.org/resource/Confederation_of_Filipino_Workers_(CFW)>
+CSC	<http://dbpedia.org/resource/Congolese_Trade_Union_Confederation>
+Corpul Muncitoresc Legionar	<http://dbpedia.org/resource/Corpul_Muncitoresc_Legionar>
+FTUC	<http://dbpedia.org/resource/Fiji_Trades_Union_Congress>
+GCC	<http://dbpedia.org/resource/Gauhati_Cine_Club>
+Gauhati Cine Club	<http://dbpedia.org/resource/Gauhati_Cine_Club>
+CGT	<http://dbpedia.org/resource/General_Confederation_of_Workers_(Mexico)>
+GFTUK	<http://dbpedia.org/resource/General_Federation_of_Trade_Unions_of_Korea>
+IBEW	<http://dbpedia.org/resource/International_Brotherhood_of_Electrical_Workers>
+Bricklayers	<http://dbpedia.org/resource/International_Union_of_Bricklayers_and_Allied_Craftworkers>
+IUF	<http://dbpedia.org/resource/International_Union_of_Food,_Agricultural,_Hotel,_Restaurant,_Catering,_Tobacco_and_Allied_Workers'_Association>
+IUSW	<http://dbpedia.org/resource/International_Union_of_Sex_Workers>
+MTS	<http://dbpedia.org/resource/Manitoba_Teachers'_Society>
+Manitoba Teachers Society	<http://dbpedia.org/resource/Manitoba_Teachers'_Society>
+NASS	<http://dbpedia.org/resource/National_Association_of_Stable_Staff>
+NYSUT	<http://dbpedia.org/resource/New_York_State_United_Teachers>
+NZCTU	<http://dbpedia.org/resource/New_Zealand_Council_of_Trade_Unions>
+OFL	<http://dbpedia.org/resource/Ontario_Federation_of_Labour>
+OPSEU	<http://dbpedia.org/resource/Ontario_Public_Service_Employees_Union>
+PGFTU	<http://dbpedia.org/resource/Palestinian_General_Federation_of_Trade_Unions>
+SUNTRACS	<http://dbpedia.org/resource/SUNTRACS>
+SUP	<http://dbpedia.org/resource/Sailors'_Union_of_the_Pacific>
+TBGKS	<http://dbpedia.org/resource/Telangana_Boggu_Ghani_Karimka_Sangham>
+TUCA - CSA	<http://dbpedia.org/resource/Trade_Union_Confederation_of_the_Americas>
+UCAC	<http://dbpedia.org/resource/Undeb_Cenedlaethol_Athrawon_Cymru>
+UCATT	<http://dbpedia.org/resource/Union_of_Construction,_Allied_Trades_and_Technicians>
+Unite	<http://dbpedia.org/resource/Unite_Union>
+Unite Union Inc	<http://dbpedia.org/resource/Unite_Union>
+VGCL	<http://dbpedia.org/resource/Vietnam_General_Confederation_of_Labour>
+Voluntary Arts Network	<http://dbpedia.org/resource/Voluntary_Arts_Network>
+ASCJ	<http://dbpedia.org/resource/Amalgamated_Society_of_Carpenters_and_Joiners>
+AMAPCEO	<http://dbpedia.org/resource/Association_of_Management,_Administrative_and_Professional_Crown_Employees_of_Ontario>
+CAW Local 1285	<http://dbpedia.org/resource/CAW_Local_1285>
+Caribbean ALPA	<http://dbpedia.org/resource/Caribbean_Airline_Pilots_Association>
+CUT	<http://dbpedia.org/resource/Caribbean_Union_of_Teachers>
+CGT-B	<http://dbpedia.org/resource/Conf%C3%A9d%C3%A9ration_g%C3%A9n%C3%A9rale_du_travail_du_Burkina>
+CONTAG	<http://dbpedia.org/resource/Confedera%C3%A7%C3%A3o_Nacional_dos_Trabalhadores_na_Agricultura>
+FICTU	<http://dbpedia.org/resource/Fiji_Islands_Council_of_Trade_Unions>
+Florida AFL-CIO	<http://dbpedia.org/resource/Florida_AFL%E2%80%93CIO>
+GFWTUB	<http://dbpedia.org/resource/General_Federation_of_Workers_Trade_Unions_in_Bahrain>
+IFPTE	<http://dbpedia.org/resource/International_Federation_of_Professional_and_Technical_Engineers>
+Marine Firemens Union	<http://dbpedia.org/resource/Marine_Firemen's_Union>
+SNTMMSRM	<http://dbpedia.org/resource/National_Union_of_Mine_and_Metal_Workers_of_the_Mexican_Republic>
+NGSU	<http://dbpedia.org/resource/Nationwide_Group_Staff_Union>
+NSTU	<http://dbpedia.org/resource/Nova_Scotia_Teachers_Union>
+Oregon AFL-CIO	<http://dbpedia.org/resource/Oregon_AFL%E2%80%93CIO>
+Rhode Island AFL-CIO	<http://dbpedia.org/resource/Rhode_Island_AFL%E2%80%93CIO>
+Solidarity	<http://dbpedia.org/resource/Solidarity_(South_African_trade_union)>
+Solidarity Union	<http://dbpedia.org/resource/Solidarity_Union>
+SWASMO	<http://dbpedia.org/resource/Swaziland_Single_Mothers_Organization>
+CSCIB	<http://dbpedia.org/resource/Syndicalist_Confederation_of_Intercultural_Communities_of_Bolivia>
+TLC	<http://dbpedia.org/resource/Trades_and_Labour_Congress_of_Canada>
+UNT	<http://dbpedia.org/resource/Uni%C3%B3n_Nacional_de_Trabajadores_de_Venezuela>
+ASTE	<http://dbpedia.org/resource/Association_of_Staff_in_Tertiary_Education>
+BACM-TEAM	<http://dbpedia.org/resource/British_Association_of_Colliery_Management_%E2%80%93_Technical,_Energy_and_Administrative_Management>
+BCTD	<http://dbpedia.org/resource/Building_and_Construction_Trades_Department,_AFL%E2%80%93CIO>
+CGEU	<http://dbpedia.org/resource/Coalition_of_Graduate_Employee_Unions>
+CYWU	<http://dbpedia.org/resource/Community_and_Youth_Workers'_Union>
+KOZ SR	<http://dbpedia.org/resource/Confederation_of_Trade_Unions_of_the_Slovak_Republic>
+Farmakonomforeningen	<http://dbpedia.org/resource/Danish_Association_of_Pharmaconomists>
+FSTMB	<http://dbpedia.org/resource/Federaci%C3%B3n_Sindical_de_Trabajadores_Mineros_de_Bolivia>
+FERA	<http://dbpedia.org/resource/Federation_of_European_Film_Directors>
+AFC	<http://dbpedia.org/resource/French_Society_of_Cinematographers>
+General Union	<http://dbpedia.org/resource/General_Union>
+TUC	<http://dbpedia.org/resource/Hong_Kong_and_Kowloon_Trades_Union_Council>
+LMGA	<http://dbpedia.org/resource/Location_Managers_Guild_of_America>
+Maine AFL-CIO	<http://dbpedia.org/resource/Maine_AFL%E2%80%93CIO>
+MEBA	<http://dbpedia.org/resource/Marine_Engineers'_Beneficial_Association>
+NIPSA	<http://dbpedia.org/resource/NIPSA>
+NACODS	<http://dbpedia.org/resource/National_Association_of_Colliery_Overmen,_Deputies_and_Shotfirers>
+UNTC	<http://dbpedia.org/resource/National_Union_of_Congolese_Workers>
+NUGW	<http://dbpedia.org/resource/National_Union_of_General_Workers>
+NLFL	<http://dbpedia.org/resource/Newfoundland_and_Labrador_Federation_of_Labour>
+SAMWU	<http://dbpedia.org/resource/South_African_Municipal_Workers'_Union>
+SUDF	<http://dbpedia.org/resource/Swaziland_United_Democratic_Front>
+Together	<http://dbpedia.org/resource/Together_(union)>
+TUAC	<http://dbpedia.org/resource/Trade_Union_Advisory_Committee_to_the_OECD>
+UFCW Local 832	<http://dbpedia.org/resource/UFCW_Local_832>
+STIBYS	<http://dbpedia.org/resource/Union_of_Beverage_and_Related_Industry_Workers>
+Tehy	<http://dbpedia.org/resource/Union_of_Health_and_Social_Care_Professionals_%E2%80%93_Tehy>
+UNITRAV	<http://dbpedia.org/resource/Union_of_Trekking_Travels_Rafting_Workers_Nepal>
+Fellesforbundet	<http://dbpedia.org/resource/United_Federation_of_Trade_Unions>
+Workers Unity League	<http://dbpedia.org/resource/Workers'_Unity_League>
+BECTU	<http://dbpedia.org/resource/Broadcasting,_Entertainment,_Cinematograph_and_Theatre_Union>
+BWI	<http://dbpedia.org/resource/Building_and_Wood_Workers'_International>
+CWU	<http://dbpedia.org/resource/Communication_Workers_Union_(UK)>
+Communication Workers Union	<http://dbpedia.org/resource/Communication_Workers_Union_(UK)>
+CWA	<http://dbpedia.org/resource/Communications_Workers_of_America>
+GdP	<http://dbpedia.org/resource/Gewerkschaft_der_Polizei>
+ITF	<http://dbpedia.org/resource/International_Transport_Workers'_Federation>
+International Workers Association	<http://dbpedia.org/resource/International_Workers'_Association>
+IWA	<http://dbpedia.org/resource/International_Workers'_Association>
+FENASTRAS	<http://dbpedia.org/resource/Federaci%C3%B3n_Nacional_Sindical_de_Trabajadores_Salvadore%C3%B1os>
+FICSA	<http://dbpedia.org/resource/Federation_of_International_Civil_Servants'_Associations>
+FWCUI	<http://dbpedia.org/resource/Federation_of_Workers_Councils_and_Unions_in_Iraq>
+LBAS	<http://dbpedia.org/resource/Free_Trade_Union_Confederation_of_Latvia>
+IAWG	<http://dbpedia.org/resource/International_Affiliation_of_Writers_Guilds>
+IFLWU	<http://dbpedia.org/resource/International_Fur_&_Leather_Workers_Union>
+ILCA	<http://dbpedia.org/resource/International_Labor_Communications_Association>
+LAWCHA	<http://dbpedia.org/resource/Labor_and_Working-Class_History_Association>
+UHM	<http://dbpedia.org/resource/Malta_Workers'_Union>
+Malta Workers Union	<http://dbpedia.org/resource/Malta_Workers'_Union>
+Massachusetts AFL-CIO	<http://dbpedia.org/resource/Massachusetts_AFL%E2%80%93CIO>
+Mass AFL-CIO	<http://dbpedia.org/resource/Massachusetts_AFL%E2%80%93CIO>
+Batay Ouvriye	<http://dbpedia.org/resource/May_1st_%E2%80%93_Workers'_Fight_Federation>
+NATCA	<http://dbpedia.org/resource/National_Air_Traffic_Controllers_Association>
+CNSLR-Frăţia	<http://dbpedia.org/resource/National_Confederation_of_Free_Trade_Unions_of_Romania_%E2%80%93_Brotherhood>
+CONAMAQ	<http://dbpedia.org/resource/National_Council_of_Ayllus_and_Markas_of_Qullasuyu>
+NUPGE	<http://dbpedia.org/resource/National_Union_of_Public_and_General_Employees>
+Norsk Sjømannsforbund	<http://dbpedia.org/resource/Norwegian_Seafarers'_Union>
+Norwegian Seafarers Union	<http://dbpedia.org/resource/Norwegian_Seafarers'_Union>
+ONA	<http://dbpedia.org/resource/Ontario_Nurses'_Association>
+Ontario Nurses Association	<http://dbpedia.org/resource/Ontario_Nurses'_Association>
+Oregon Education Association	<http://dbpedia.org/resource/Oregon_Education_Association>
+Oregon Education Association	<http://dbpedia.org/resource/Oregon_Education_Association>
+PWF	<http://dbpedia.org/resource/Pakistan_Workers'_Federation>
+Pakistan Workers Federation	<http://dbpedia.org/resource/Pakistan_Workers'_Federation>
+Transport	<http://dbpedia.org/resource/Swedish_Transport_Workers'_Union>
+TFWU	<http://dbpedia.org/resource/Texas_Farm_Workers_Union>
+ASBSBSW	<http://dbpedia.org/resource/Amalgamated_Society_of_Boilermakers,_Shipwrights,_Blacksmiths_and_Structural_Workers>
+TUCP	<http://dbpedia.org/resource/Trade_Union_Congress_of_the_Philippines>
+UTLA	<http://dbpedia.org/resource/United_Teachers_Los_Angeles>
+AAWL	<http://dbpedia.org/resource/Australia_Asia_Worker_Links>
+SAC Syndikalisterna	<http://dbpedia.org/resource/Central_Organisation_of_the_Workers_of_Sweden>
+CTE	<http://dbpedia.org/resource/Confederaci%C3%B3n_de_Trabajadores_del_Ecuador>
+LWUIC	<http://dbpedia.org/resource/Lumber_Workers_Industrial_Union_of_Canada>
+QNU	<http://dbpedia.org/resource/Queensland_Nurses'_Union>
+TNG-CWA	<http://dbpedia.org/resource/The_Newspaper_Guild>
+Newspaper Guild	<http://dbpedia.org/resource/The_Newspaper_Guild>
+UFT	<http://dbpedia.org/resource/United_Federation_of_Teachers>
+NFLPA	<http://dbpedia.org/resource/National_Football_League_Players_Association>
+NUGSAT	<http://dbpedia.org/resource/National_Union_of_Gold,_Silver_and_Allied_Trades>
+CNTCB	<http://dbpedia.org/resource/National_Confederation_of_Peasant_Workers_of_Bolivia>
+YS	<http://dbpedia.org/resource/Confederation_of_Vocational_Unions>
+Ottawa Panhandlers Union	<http://dbpedia.org/resource/Ottawa_Panhandlers'_Union>
+UTU	<http://dbpedia.org/resource/United_Transportation_Union>
+United Transportation Union	<http://dbpedia.org/resource/United_Transportation_Union>
+CSQ	<http://dbpedia.org/resource/Centrale_des_syndicats_du_Qu%C3%A9bec>
+EPMU	<http://dbpedia.org/resource/Engineering,_Printing_and_Manufacturing_Union>
+CFTC	<http://dbpedia.org/resource/French_Confederation_of_Christian_Workers>
+NATFHE	<http://dbpedia.org/resource/National_Association_of_Teachers_in_Further_and_Higher_Education>
+Positive Women	<http://dbpedia.org/resource/Positive_Women>
+PIPSC	<http://dbpedia.org/resource/Professional_Institute_of_the_Public_Service_of_Canada>
+Serbuni	<http://dbpedia.org/resource/Serbuni>
+OBESSU	<http://dbpedia.org/resource/Organising_Bureau_of_European_School_Student_Unions>
+UTUC	<http://dbpedia.org/resource/United_Trade_Union_Congress>
+GLBKS	<http://dbpedia.org/resource/Godavari_Loya_Boggugani_Karmika_Sangham>
+Community	<http://dbpedia.org/resource/Community_(trade_union)>
+SNTE	<http://dbpedia.org/resource/Sindicato_Nacional_de_Trabajadores_de_la_Educaci%C3%B3n>
+ITUC Africa	<http://dbpedia.org/resource/African_Regional_Organisation_of_the_International_Trade_Union_Confederation>
+ATLC	<http://dbpedia.org/resource/Atomic_Trades_and_Labor_Council>
+BRS	<http://dbpedia.org/resource/Brotherhood_of_Railroad_Signalmen>
+CMAA	<http://dbpedia.org/resource/Club_Managers'_Association_Australia>
+DPE, AFL-CIO	<http://dbpedia.org/resource/Department_for_Professional_Employees,_AFL%E2%80%93CIO>
+ETUF	<http://dbpedia.org/resource/Egyptian_Trade_Union_Federation>
+FTF	<http://dbpedia.org/resource/FTF_%E2%80%93_Confederation_of_Professionals_in_Denmark>
+FFW	<http://dbpedia.org/resource/Federation_of_Free_Workers>
+FARSA	<http://dbpedia.org/resource/Flight_Attendants_and_Related_Services_Association>
+Green Student Council	<http://dbpedia.org/resource/Green_Student_Council>
+HERE	<http://dbpedia.org/resource/Hotel_Employees_and_Restaurant_Employees_Union>
+ITU	<http://dbpedia.org/resource/International_Typographical_Union>
+International Typographical Union	<http://dbpedia.org/resource/International_Typographical_Union>
+Kent Miners Association	<http://dbpedia.org/resource/Kent_Miners'_Association>
+Kick It Out	<http://dbpedia.org/resource/Kick_It_Out_(organisation)>
+NDU	<http://dbpedia.org/resource/National_Distribution_Union>
+National Distribution Union	<http://dbpedia.org/resource/National_Distribution_Union>
+NUDL	<http://dbpedia.org/resource/National_Union_of_Dock_Labourers>
+NWSEO	<http://dbpedia.org/resource/National_Weather_Service_Employees_Organization>
+NZNO	<http://dbpedia.org/resource/New_Zealand_Nurses_Organisation>
+NSFL	<http://dbpedia.org/resource/Nova_Scotia_Federation_of_Labour>
+PNA	<http://dbpedia.org/resource/Philippine_Nurses_Association>
+Philippine Nurses Association	<http://dbpedia.org/resource/Philippine_Nurses_Association>
+PAIRO	<http://dbpedia.org/resource/Professional_Association_of_Internes_and_Residents_of_Ontario>
+SEIU UHW	<http://dbpedia.org/resource/SEIU_United_Healthcare_Workers_West>
+SUA	<http://dbpedia.org/resource/Seamen's_Union_of_Australia>
+SBIOA	<http://dbpedia.org/resource/State_Bank_of_India_Officers'_Association_(Chandigarh_Circle)>
+Handels	<http://dbpedia.org/resource/Swedish_Commercial_Employees'_Union>
+Kommunal	<http://dbpedia.org/resource/Swedish_Municipal_Workers'_Union>
+Union Label	<http://dbpedia.org/resource/Union_Label_Department,_AFL%E2%80%93CIO>
+UCMU	<http://dbpedia.org/resource/United_Corporations_and_Mercantile_Union>
+UTNO	<http://dbpedia.org/resource/United_Teachers_of_New_Orleans>
+Wales TUC	<http://dbpedia.org/resource/Wales_TUC>
+AFSCME	<http://dbpedia.org/resource/American_Federation_of_State,_County_and_Municipal_Employees>
+FAU	<http://dbpedia.org/resource/Friends_of_the_African_Union>
+Can Do Canines	<http://dbpedia.org/resource/Hearing_and_Service_Dogs_of_Minnesota>
+AIHA	<http://dbpedia.org/resource/American_Industrial_Hygiene_Association>
+General Labour Union	<http://dbpedia.org/resource/General_Labour_Union_(Italy)>
+UGL	<http://dbpedia.org/resource/General_Labour_Union_(Italy)>
+Napo	<http://dbpedia.org/resource/Napo_(trade_union)>
+SIPTU	<http://dbpedia.org/resource/Services,_Industrial,_Professional_and_Technical_Union>
+Canadian Artists’ Representation	<http://dbpedia.org/resource/Canadian_Artists'_Representation>
+CARFAC	<http://dbpedia.org/resource/Canadian_Artists'_Representation>
+SEK	<http://dbpedia.org/resource/Cyprus_Workers'_Confederation>
+Cyprus Workers Confederation	<http://dbpedia.org/resource/Cyprus_Workers'_Confederation>
+Defence Police Federation	<http://dbpedia.org/resource/Defence_Police_Federation>
+IFTU	<http://dbpedia.org/resource/International_Federation_of_Trade_Unions>
+AMFA	<http://dbpedia.org/resource/Aircraft_Mechanics_Fraternal_Association>
+AMO	<http://dbpedia.org/resource/American_Maritime_Officers>
+American Maritime Officers	<http://dbpedia.org/resource/American_Maritime_Officers>
+CBTU	<http://dbpedia.org/resource/Coalition_of_Black_Trade_Unionists>
+Culinary Workers Union	<http://dbpedia.org/resource/Culinary_Workers_Union>
+IUPA	<http://dbpedia.org/resource/International_Union_of_Police_Associations>
+IFA	<http://dbpedia.org/resource/Irish_Farmers'_Association>
+Irish Farmers Association	<http://dbpedia.org/resource/Irish_Farmers'_Association>
+Jockeys Guild	<http://dbpedia.org/resource/Jockeys'_Guild>
+LCLAA	<http://dbpedia.org/resource/Labor_Council_for_Latin_American_Advancement>
+LIUNA	<http://dbpedia.org/resource/Laborers'_International_Union_of_North_America>
+PHPA	<http://dbpedia.org/resource/Professional_Hockey_Players'_Association>
+Animation Guild	<http://dbpedia.org/resource/The_Animation_Guild,_I.A.T.S.E._Local_839>
+Workers United	<http://dbpedia.org/resource/Workers_United>
+Working America	<http://dbpedia.org/resource/Working_America>
+Accord	<http://dbpedia.org/resource/Accord_(trade_union)>
+ATA	<http://dbpedia.org/resource/Alberta_Teachers'_Association>
+Alberta Teachers Association	<http://dbpedia.org/resource/Alberta_Teachers'_Association>
+Aspect	<http://dbpedia.org/resource/Aspect_(trade_union)>
+BCTGM	<http://dbpedia.org/resource/Bakery,_Confectionery,_Tobacco_Workers_and_Grain_Millers'_International_Union>
+CDA-ADC	<http://dbpedia.org/resource/Canadian_Dental_Association>
+CPA	<http://dbpedia.org/resource/Canadian_Police_Association>
+Canadian Police Association	<http://dbpedia.org/resource/Canadian_Police_Association>
+CMTC	<http://dbpedia.org/resource/Central_del_Movimiento_de_Trabajadores_Costarricenses>
+CITU	<http://dbpedia.org/resource/Centre_of_Indian_Trade_Unions>
+CETU	<http://dbpedia.org/resource/Confederation_of_Ethiopian_Trade_Unions>
+CSD	<http://dbpedia.org/resource/Congress_of_Democratic_Trade_Unions_(Quebec)>
+ETA	<http://dbpedia.org/resource/Ethiopian_Teachers'_Association>
+Ethiopian Teachers Association	<http://dbpedia.org/resource/Ethiopian_Teachers'_Association>
+FDA	<http://dbpedia.org/resource/FDA_(trade_union)>
+GFTU	<http://dbpedia.org/resource/General_Federation_of_Trade_Unions_(Syria)>
+IFBWW	<http://dbpedia.org/resource/International_Federation_of_Building_and_Wood_Workers>
+MM&P	<http://dbpedia.org/resource/International_Organization_of_Masters,_Mates_&_Pilots>
+ITGLWF	<http://dbpedia.org/resource/International_Textile,_Garment_and_Leather_Workers'_Federation>
+LCT	<http://dbpedia.org/resource/Labour_Congress_of_Thailand>
+NASD	<http://dbpedia.org/resource/National_Amalgamated_Stevedores_and_Dockers>
+NACO	<http://dbpedia.org/resource/National_Association_of_Co-operative_Officials>
+UNITE!	<http://dbpedia.org/resource/Union_of_Needletrades,_Industrial_and_Textile_Employees>
+UCU	<http://dbpedia.org/resource/University_and_College_Union>
+ULF	<http://dbpedia.org/resource/Farm_Workers_Union_of_Uppland>
+FSF	<http://dbpedia.org/resource/Federaci%C3%B3n_de_Sindicatos_Ferroviarios>
+White Rats	<http://dbpedia.org/resource/The_White_Rats>
+FTU	<http://dbpedia.org/resource/Fiji_Teachers_Union>
+Fiji Teachers Union	<http://dbpedia.org/resource/Fiji_Teachers_Union>
+ELA	<http://dbpedia.org/resource/Basque_Workers'_Solidarity>
+Basque Workers Solidarity	<http://dbpedia.org/resource/Basque_Workers'_Solidarity>
+BKMU	<http://dbpedia.org/resource/Bharatiya_Khet_Mazdoor_Union>
+CGTG	<http://dbpedia.org/resource/Conf%C3%A9d%C3%A9ration_g%C3%A9n%C3%A9rale_du_travail_de_Guadeloupe>
+TOSU	<http://dbpedia.org/resource/Tuvalu_Overseas_Seamen's_Union>
+FVdG	<http://dbpedia.org/resource/Free_Association_of_German_Trade_Unions>
+CSUTCB	<http://dbpedia.org/resource/Unified_Syndical_Confederation_of_Rural_Workers_of_Bolivia>
+CoN	<http://dbpedia.org/resource/The_College_of_Nursing_(Australia)>
+College of Nursing	<http://dbpedia.org/resource/The_College_of_Nursing_(Australia)>
+CEPU	<http://dbpedia.org/resource/Communications,_Electrical_and_Plumbing_Union_of_Australia>
+IEU	<http://dbpedia.org/resource/Independent_Education_Union_of_Australia>
+Norsk Toppfotball	<http://dbpedia.org/resource/Norsk_Toppfotball>
+NITO	<http://dbpedia.org/resource/Norwegian_Society_of_Engineers_and_Technologists>
+Sikasa	<http://dbpedia.org/resource/Singareni_Karmika_Samakya>
+Singareni Karmika Samakya	<http://dbpedia.org/resource/Singareni_Karmika_Samakya>
+Public Services International	<http://dbpedia.org/resource/Public_Services_International>
+PSI	<http://dbpedia.org/resource/Public_Services_International>
+COB	<http://dbpedia.org/resource/Bolivian_Workers'_Center>
+Bolivian Workers Union	<http://dbpedia.org/resource/Bolivian_Workers'_Center>
+DGB	<http://dbpedia.org/resource/Confederation_of_German_Trade_Unions>
+EuroCOP	<http://dbpedia.org/resource/European_Confederation_of_Police>
+ICN	<http://dbpedia.org/resource/International_Council_of_Nurses>
+IFALPA	<http://dbpedia.org/resource/International_Federation_of_Air_Line_Pilots'_Associations>
+International Metalworkers Federation	<http://dbpedia.org/resource/International_Metalworkers'_Federation>
+IMF	<http://dbpedia.org/resource/International_Metalworkers'_Federation>
+National Education Association	<http://dbpedia.org/resource/National_Education_Association>
+GPA-DJP	<http://dbpedia.org/resource/Union_of_Private_Sector_Employees,_Printing,_Journalism,_and_Paper>
+AIIEA	<http://dbpedia.org/resource/Aiiea>
+Durham Miners Association	<http://dbpedia.org/resource/Durham_Miners'_Association>
+DMU	<http://dbpedia.org/resource/Durham_Miners'_Association>
+NUSMWCH&D	<http://dbpedia.org/resource/National_Union_of_Sheet_Metal_Workers,_Coppersmiths,_Heating_and_Domestic_Engineers>
+NLBD	<http://dbpedia.org/resource/National_League_of_the_Blind_and_Disabled>
+IndustriALL Global Union	<http://dbpedia.org/resource/IndustriALL_Global_Union>
+Ukoopspilka	<http://dbpedia.org/resource/Central_Union_of_Consumer_Associations_of_Ukraine>
+CATC-AEF	<http://dbpedia.org/resource/Conf%C3%A9d%C3%A9ration_africaine_des_travailleurs_croyants_de_l'A.E.F>
+CDTC	<http://dbpedia.org/resource/Conf%C3%A9d%C3%A9ration_dahom%C3%A9enne_des_travailleurs_croyants>
+AE-COPSD	<http://dbpedia.org/resource/European_Association_of_Bodies_and_Public_Organizations_of_Security_and_Defense>
+AMCU	<http://dbpedia.org/resource/Association_of_Mineworkers_and_Construction_Union>
+FMPR	<http://dbpedia.org/resource/Puerto_Rico_Teachers_Federation>
