@@ -5,7 +5,7 @@ try:
 (ql:quickload "kgcreator")
 (in-package #:kgcreator)
         
-## Making a standalone executable (just one file):
+## Making a standalone executable command line file (just one file):
 
 ````
 $ sbcl
@@ -26,11 +26,4 @@ Then, run using:
 (kgcweb)
 
 http://localhost:3000
-
-I setup DNS so this works:
-
-http://kgcreator.kbsportal.com/
-
-Currently running using tmux
-
 
