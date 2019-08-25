@@ -8,12 +8,7 @@
                 ;;:iolib
                 ))
 
-(defpackage #:clml-test1
-  (:use #:cl #:clml.hjs.read-data)
-  (:export plot-fill-rect plot-frame-rect plot-size-rect
-	   plot-line plot-string plot-string-bold))
-
-(in-package #:clml-test1)
+(in-package #:clmltest)
 
 (defun similar-word-test (word1 word2)
   (let ((word-similarity (clml.text.utilities:calculate-levenshtein-similarity word1 word2)))
@@ -44,13 +39,13 @@
 (defun cancer-data-classifier-example ()
   (let ((train1
          (clml.hjs.read-data:read-data-from-file
-          "./machine_learning_data/labeled_cancer_training_data.csv"
+          "../machine_learning_data/labeled_cancer_training_data.csv"
           :type :csv
           :csv-type-spec (append (make-list 9 :initial-element 'double-float)
                                  '(symbol))))
         (test1
          (clml.hjs.read-data:read-data-from-file
-          "./machine_learning_data/labeled_cancer_test_data.csv"
+          "../machine_learning_data/labeled_cancer_test_data.csv"
           :type :csv
           :csv-type-spec (append (make-list 9 :initial-element 'double-float)
                                  '(symbol)))))
@@ -80,7 +75,7 @@
 (defun cancer-data-classifier-example3 ()
   (let ((train1
          (clml.hjs.read-data:read-data-from-file
-          "./machine_learning_data/labeled_cancer_training_data.csv"
+          "../machine_learning_data/labeled_cancer_training_data.csv"
           :type :csv
           :csv-type-spec (append (make-list 9 :initial-element 'double-float)
                                  '(symbol)))))
@@ -95,4 +90,5 @@
        do
          (print td))))
 
-(cancer-data-classifier-example3)
+(defun clml-tests-example()
+  (cancer-data-classifier-example3))

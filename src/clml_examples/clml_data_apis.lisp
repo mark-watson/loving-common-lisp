@@ -3,15 +3,12 @@
 (ql:quickload '(:clml
                 :clml.hjs)) ; read data sets
 
-(defpackage #:clml-data-test
-  (:use #:cl #:clml.hjs.read-data))
-
-(in-package #:clml-data-test)
+(in-package #:clmltest)
 
 (defun read-data ()
   (let ((train1
          (clml.hjs.read-data:read-data-from-file
-          "./machine_learning_data/labeled_cancer_training_data.csv"
+          "../machine_learning_data/labeled_cancer_training_data.csv"
           :type :csv
           :csv-type-spec (append (make-list 9 :initial-element 'double-float)
                                  '(symbol)))))
@@ -24,4 +21,5 @@
        do
          (print td))))
 
-(read-data)
+(defun clml-read-data-example()
+  (read-data))

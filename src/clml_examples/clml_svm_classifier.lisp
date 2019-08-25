@@ -4,10 +4,10 @@
                 :clml.hjs ; utilities
                 :clml.svm))
 
-(defpackage #:clml-svm-classifier-example1
-  (:use #:cl #:clml.hjs.read-data))
+;;(defpackage #:clml-svm-classifier-example1
+;;  (:use #:cl #:clml.hjs.read-data))
 
-(in-package #:clml-svm-classifier-example1)
+(in-package #:clmltest)
 
 (defun svm-classifier-test (kernel train test)
   "train and test are lists of lists, with first elements being negative
@@ -51,7 +51,7 @@
 
   (let* ((train1
           (clml.hjs.read-data:read-data-from-file
-           "./machine_learning_data/labeled_cancer_training_data.csv"
+           "../machine_learning_data/labeled_cancer_training_data.csv"
            :type :csv
            :csv-type-spec (append (make-list 9 :initial-element 'double-float)
                                   '(symbol))))
@@ -64,7 +64,7 @@
             'list)))
          (test1
           (clml.hjs.read-data:read-data-from-file
-           "./machine_learning_data/labeled_cancer_test_data.csv"
+           "../machine_learning_data/labeled_cancer_test_data.csv"
            :type :csv
            :csv-type-spec (append (make-list 9 :initial-element 'double-float)
                                   '(symbol))))
@@ -82,4 +82,5 @@
      (clml.svm.mu:gaussian-kernel 2.0d0)
      train-as-list test-as-list)))
 
-(cancer-data-svm-example-read-data)
+(defun clml-cancer-data-svm-example()
+  (cancer-data-svm-example-read-data))

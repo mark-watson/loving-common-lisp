@@ -4,10 +4,7 @@
                 :clml.hjs ; utilities
                 :clml.clustering))
 
-(defpackage #:clml-knn-cluster-example1
-  (:use #:cl #:clml.hjs.read-data))
-
-(in-package #:clml-knn-cluster-example1)
+(in-package #:clmltest)
 
 ;; folowing is derived from test code in CLML:
 (defun cluster-using-k-nn (test train objective-param-name  manhattan)
@@ -28,17 +25,18 @@
 (defun cancer-data-cluster-example-read-data ()
   (let ((train1
          (clml.hjs.read-data:read-data-from-file
-          "./machine_learning_data/labeled_cancer_training_data.csv"
+          "../machine_learning_data/labeled_cancer_training_data.csv"
           :type :csv
           :csv-type-spec (append (make-list 9 :initial-element 'double-float)
                                  '(symbol))))
         (test1
          (clml.hjs.read-data:read-data-from-file
-          "./machine_learning_data/labeled_cancer_test_data.csv"
+          "../machine_learning_data/labeled_cancer_test_data.csv"
           :type :csv
           :csv-type-spec (append (make-list 9 :initial-element 'double-float)
                                  '(symbol)))))
     ;;(print test1)
     (print (cluster-using-k-nn test1 train1 "Class" :double-manhattan))))
 
-(cancer-data-cluster-example-read-data)
+(defun clml-kmeans-example ()
+  (cancer-data-cluster-example-read-data))
