@@ -128,7 +128,7 @@ public class DeepBeliefNetworkLispInterfaceData {
 
     log.info("\nEvaluating model using new data:\n");
     Evaluation eval2 = new Evaluation(outputNum);
-    INDArray output = model.output(test.getFeatureMatrix());
+    INDArray output = model.output(test.getFeatures());  // .getFeatureMatrix());
 
     int [] predictedOutputClassIndex = new int[output.rows()];
 
