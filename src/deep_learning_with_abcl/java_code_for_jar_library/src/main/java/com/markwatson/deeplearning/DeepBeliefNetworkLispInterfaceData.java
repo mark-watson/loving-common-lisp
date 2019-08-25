@@ -99,7 +99,9 @@ public class DeepBeliefNetworkLispInterfaceData {
 
     log.info("\nEvaluating model:\n");
     Evaluation eval = new Evaluation(outputNum);
-    INDArray output = model.output(test.getFeatureMatrix());
+    
+    //INDArray output = model.output(test.getFeatureMatrix());
+    INDArray output = model.output(test.getFeatures());
 
     for (int i = 0; i < output.rows(); i++) {
       String target = test.getLabels().getRow(i).toString();

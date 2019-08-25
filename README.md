@@ -1,4 +1,6 @@
-# Loving Common Lisp, 4th Edition
+# Loving Common Lisp, 5th Edition
+
+August 25, 2019: the master branch is now for the new edition of my book that will be released around October 1, 2019. The fifth edition will be free update for purchasers of earlier editions of my book.
 
 Open source examples for my book "Loving Common Lisp, or the Savvy Programmer's Secret Weapon" that is available at https://leanpub.com/lovinglisp
 

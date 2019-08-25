@@ -16,9 +16,10 @@
     <dependencies>
         <dependency>
             <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-x86</artifactId>
-            <version>0.4-rc3.5</version>
+            <artifactId>nd4j-cuda-10.0</artifactId>
+            <version>1.0.0-beta3</version>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
