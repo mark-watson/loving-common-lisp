@@ -100,3 +100,8 @@
   '(("<b>Key phrase</b>" "<b>Ranking value</b>")
     ("this is a test" 3.3)))
  (get-html-string x))
+
+(princ "There is 1 test function for the HTMLstream CLOS class. Try:")
+(terpri)
+(princ "(test)")
+(terpri)

@@ -151,23 +151,24 @@
   (init-network)
   (reverse (caddr (a*-helper))))
 
-;;      Throw away test code:
+;;      test code:
 
-(defvar n1 '(30 201))
-(defvar  n2 '(25 140))
-(defvar  n3 '(55 30))
-(defvar  n4 '(105 190))
-(defvar  n5 '(95 110))
-(defvar  n6 '(140 22))
-(defvar  n7 '(160 150))
-(defvar  n8 '(170 202))
-(defvar  n9 '(189 130))
-(defvar  n10 '(200 55))
-(defvar  n11 '(205 201))
+(defun test ()
+  (defvar n1 '(30 201))
+  (defvar  n2 '(25 140))
+  (defvar  n3 '(55 30))
+  (defvar  n4 '(105 190))
+  (defvar  n5 '(95 110))
+  (defvar  n6 '(140 22))
+  (defvar  n7 '(160 150))
+  (defvar  n8 '(170 202))
+  (defvar  n9 '(189 130))
+  (defvar  n10 '(200 55))
+  (defvar  n11 '(205 201))
 
-(print (A*search
-        '(n1 n2 n3 n4 n5 n6 n7 n8 n9 n10 n11) ;; nodes
-        '((n1 n2) (n2 n3) (n3 n5) (n3 n6) (n6 n10) ;; paths
-          (n9 n10) (n7 n9) (n1 n4) (n4 n2) (n5 n8)
-          (n8 n4) (n7 n11))
-        'n1 'n11)) ;; starting and goal nodes
+ (print (A*search
+         '(n1 n2 n3 n4 n5 n6 n7 n8 n9 n10 n11) ;; nodes
+         '((n1 n2) (n2 n3) (n3 n5) (n3 n6) (n6 n10) ;; paths
+           (n9 n10) (n7 n9) (n1 n4) (n4 n2) (n5 n8)
+           (n8 n4) (n7 n11))
+         'n1 'n11))) ;; starting and goal nodes

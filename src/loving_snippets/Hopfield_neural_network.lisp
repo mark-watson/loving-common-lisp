@@ -5,12 +5,12 @@
 ;; the book [Loving Common Lisp, or the Savvy Programmer's Secret Weapon](https://leanpub.com/lovinglisp)
 ;; that can be read free online and is released under a Creative Commons License
 
-(load "plotlib.lisp")
+(ql:quickload "plotlib")
 
 (defpackage #:hopfield
   (:use #:cl #:plotlib))  ;; TBD: define exports
 
-(in-package #:#:hopfield)
+(in-package #:hopfield)
 
 (proclaim '(special *num-inputs* *num-training-examples* *training-list*
             *inputCells* *tempStorage* *HopfieldWeights*))
@@ -174,3 +174,10 @@
           (vecto::save-png
            (concatenate 'string
                         "output_plot_hopfield_nn_" (format nil "~5,'0d" iter) ".png")))))))
+
+(princ "There is 1 test function for the Hopfield neural network model. Try:")
+(terpri)
+(princ "(in-package #:hopfield)")
+(terpri)
+(princ "(test)")
+(terpri)

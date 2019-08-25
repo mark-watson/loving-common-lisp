@@ -50,7 +50,7 @@
 
 ;;;;;;;;;;;;;;;;;;; End of list of externally callable functions ;;;;;;;;;;;;;
 
-(load "plotlib.lisp")
+(ql:quickload "plotlib")
 
 (defpackage #:deltarule
   (:use #:cl #:plotlib))  ;; TBD: define exports
@@ -598,3 +598,14 @@
       (princ " RMS error = ")
       (princ RMSerror)
       (terpri))))))
+
+(princ "There are 3 test functions for 2, 3, and 4 layered backprop models. Try:")
+(terpri)
+(princ "(in-package #:deltarule)")
+(terpri)
+(princ "(test2)")
+(terpri)
+(princ "(test3)")
+(terpri)
+(princ "(test4)")
+(terpri)

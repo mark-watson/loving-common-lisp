@@ -1,7 +1,5 @@
-(defun test ()
+(defun test1 ()
   (let ((my-func
 	 (lambda (x) (+ x 1))))
     (funcall my-func 1)))
 
-(defun testfn (a-function a-value)
-  (a-function a-value))
