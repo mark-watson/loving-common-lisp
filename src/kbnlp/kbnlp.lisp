@@ -293,7 +293,7 @@ is replaced with replacement."
 (defun test-names ()
   (let* ((words '#("President" "Bush" "went" "to" "San" "Diego" "to" "meet" "Ms" "." "Jones"
                    "and" "Gen" "." "Pervez" "Musharraf" "."))
-         (tags (part-of-speech-tagger words)))
+         (tags (fasttag:part-of-speech-tagger words)))
     (print tags)
     (find-names words tags nil)))
 
@@ -556,7 +556,7 @@ is replaced with replacement."
 (defun make-text-object (words &key (url "") (title ""))
   (if (typep words 'string) (setq words (words-from-string words)))
   (let* ((txt-obj (make-text :text words :url url :title title))) ;;;  :classification cat)))
-    (setf (text-tags txt-obj) (part-of-speech-tagger words))
+    (setf (text-tags txt-obj) (fasttag:part-of-speech-tagger words))
     ;; note: we must find human and place names before calling
     ;; pronoun-resolution:
     (let ((names-places (find-names-places txt-obj)))

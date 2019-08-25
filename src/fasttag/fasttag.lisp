@@ -16,7 +16,7 @@
 
 (defvar *base-pathname* #.(or *compile-file-truename* *load-truename*))
 (defvar a1 (write-to-string *base-pathname*))
-(defvar *current-directory* (subseq a1 3 (- (length a1) 11)))
+(defvar *current-directory* (subseq a1 3 (- (length a1) 13)))
 
 (load (concatenate 'string *current-directory* "linguistic_data/FastTagData"))
 (defun words-from-string (str)
