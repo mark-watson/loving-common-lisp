@@ -1,5 +1,3 @@
-;; Misc. plotting examples using the vecto library
-
 (in-package #:kgcreator)
 
 (let ((*entity-nodes-hash*))
