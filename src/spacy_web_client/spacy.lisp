@@ -18,7 +18,6 @@
 	 (fetched-data
 	  (flexi-streams:octets-to-string the-bytes :external-format :utf-8))
 	 (lists (with-input-from-string (s fetched-data)
-		  (json:decode-json s)))
-	 (ret 'values))
+		  (json:decode-json s))))
     (print lists)
     (make-spacy-data :entities (cadar lists) :tokens (cdadr lists))))

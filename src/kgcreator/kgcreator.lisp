@@ -2,10 +2,6 @@
 
 (in-package #:kgcreator)
 
-(defvar *base-pathname-pl* #.(or *compile-file-truename* *load-truename*))
-(defvar a1 (write-to-string *base-pathname-pl*))
-(defvar *current-directory-pl* (subseq a1 3 (- (length a1) 13)))
-
 (ensure-directories-exist "temp/")
 
 (defun get-files-and-meta (fpath)
