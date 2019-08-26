@@ -3,7 +3,6 @@
 ;; Alternative license: you may also use this software under the Apache 2 License.
 ;; This copyright notice should not be removed from this file and in files derived from this file.
 ;;
-;; Common Lisp stemming code in this file was written by Steven M. Haflich based on the work of Martin Porter.
 
 (defpackage categorize_summarize
   ;;(:use :cls :asdf)
@@ -105,7 +104,7 @@
 
 ;;
 ;; This function performs a simple summarization by forming a word use histogram
-;; and after tossing out common words (stemmed, of course), ranking sentences
+;; and after tossing out common words, ranking sentences
 ;; based on how frequently words are used in them.
 ;;
 (defun summarize (words cats)
@@ -200,11 +199,11 @@ Unemployment stood at 9.5 percent in June ")
 
 (print words1)
 
-(setq cats1 (categorize words1))
+(setq cats1 (categorize_summarize:categorize words1))
 
 (print cats1)
 
-(defvar sum1 (summarize words1 cats1))
+(defvar sum1 (categorize_summarize:summarize words1 cats1))
 
 (print sum1)
 
