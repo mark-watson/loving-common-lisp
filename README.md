@@ -8,7 +8,7 @@ If you notice any errors or have suggestions for improvement, then git pull requ
 
 Note: the MongoDB examples will only run on MongoDB version 2.6 or earlier (released in 2016) because the cl-mongo library does not support newer versions.
 
-Note: files updated May 1, 2017 for 4th edition of ["Loving Common Lisp, or the Savvy Programmer's Secret Weapon"\(https://leanpub.com/lovinglisp)
+Note: files updated May 1, 2017 for 4th edition of ["Loving Common Lisp, or the Savvy Programmer's Secret Weapon" (https://leanpub.com/lovinglisp)
 
 If you have purchased a previous edition of this book from leanpub you should have received an email notification of a free update to the 4th edition. Otherwise, please visit the "My Books" page on leanpub and download a new copy.
 
