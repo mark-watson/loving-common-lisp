@@ -1,6 +1,6 @@
 # install Python library 'spacystub' - one time
 
-cd PYTHON_SPACY_STUP_install
+cd PYTHON_SPACY_SETUP_install
 python setup.py install
 
 # running 
