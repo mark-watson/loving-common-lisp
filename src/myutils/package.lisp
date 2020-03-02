@@ -2,5 +2,5 @@
 
 (defpackage #:myutils
   (:use #:cl)
-  (:export #:replace-all #:words-from-string #:file-to-string #:node-name-from-uri))
+  (:export #:replace-all #:tokenize-string  #:words-from-string #:file-to-string #:node-name-from-uri))
 

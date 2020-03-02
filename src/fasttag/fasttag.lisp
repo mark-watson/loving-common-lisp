@@ -20,7 +20,7 @@
 
 (load (concatenate 'string *current-directory* "linguistic_data/FastTagData"))
 (defun words-from-string (str)
-  (let ((ss (tokenize-string str)))
+  (let ((ss (myutils:tokenize-string str)))
     (make-array (list (length ss)) :initial-contents ss)))
 
 (defun part-of-speech-tagger (words &aux lcw r w)

@@ -3,7 +3,9 @@ This is the stub README.txt for the "kbnlp" project.
 try:
 
 ````
-        (ql:quickload "fasttag")
+ (ql:quickload "fasttag")
+ (fasttag:part-of-speech-tagger "President Bush went to China. He wanted a good trade agreement.")
+
 ````
 
 ## Making a standalone executable (just one file):
