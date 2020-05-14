@@ -3,6 +3,7 @@
 ;; Alternative license: you may also use this software under the Apache 2 License.
 ;; This copyright notice should not be removed from this file and in files derived from this file.
 ;;
+;; Common Lisp stemming code in this file was written by Steven M. Haflich based on the work of Martin Porter.
 
 (defpackage categorize_summarize
   ;;(:use :cls :asdf)
@@ -60,51 +61,52 @@
          (category-score-accumulation-array
           (make-array num-categories :initial-element 0)))
 
-    (defun list-sort (list-to-sort)
-      ;;(pprint list-to-sort)
-      (sort list-to-sort
-            #'(lambda (list-element-1 list-element-2)
-                (> (cadr list-element-1) (cadr list-element-2)))))
+    (labels
+        ((list-sort (list-to-sort)
+           ;;(pprint list-to-sort)
+           (sort list-to-sort
+                 #'(lambda (list-element-1 list-element-2)
+                     (> (cadr list-element-1) (cadr list-element-2))))))
 
-    (do ((k 0 (+ k 1)))
-        ((equal k len))
-      (setf word (string-downcase (aref words k)))
+      (do ((k 0 (+ k 1)))
+          ((equal k len))
+        (setf word (string-downcase (aref words k)))
+        (do ((i 0 (+ i 1)))
+            ((equal i num-categories))
+          (setf cat-hash (nth i categoryHashtables))
+          (setf x (gethash word cat-hash))
+          (if x
+              (setf 
+               (aref category-score-accumulation-array i)
+               (+ x (aref category-score-accumulation-array i))))))
+      (setf ss '())
       (do ((i 0 (+ i 1)))
           ((equal i num-categories))
-        (setf cat-hash (nth i categoryHashtables))
-        (setf x (gethash word cat-hash))
-        (if x
-            (setf 
-             (aref category-score-accumulation-array i)
-             (+ x (aref category-score-accumulation-array i))))))
-    (setf ss '())
-    (do ((i 0 (+ i 1)))
-        ((equal i num-categories))
-      (if (> (aref category-score-accumulation-array i) 0.01)
-          (setf
-           ss
-           (cons
-            (list
-             (nth i categoryNames)
-             (round (* (aref category-score-accumulation-array i) 10)))
-            ss))))
-    (setf ss (remove-duplicates ss :test #'equal)) ;; new bug? not sure why this is now required.
-    (print (list "______ categorize  ss:" ss))
-    (setf ss (list-sort ss))
-    (let ((cutoff (/ (cadar ss) 1.25))
-          (results-array '()))
-      (print (list "______ cutoff=" cutoff))
-      (dolist (hit ss)
-        (if (> (cadr hit) cutoff)
-            (setf results-array (cons hit results-array))))
-      (reverse results-array))))
+        (if (> (aref category-score-accumulation-array i) 0.01)
+            (setf
+             ss
+             (cons
+              (list
+               (nth i categoryNames)
+               (round (* (aref category-score-accumulation-array i) 10)))
+              ss))))
+      (setf ss (remove-duplicates ss :test #'equal)) ;; new bug? not sure why this is now required.
+      (print (list "______ categorize  ss:" ss))
+      (setf ss (list-sort ss))
+      (let ((cutoff (/ (or (cadar ss) 0) 1.25))
+            (results-array '()))
+        (print (list "______ cutoff=" cutoff))
+        (dolist (hit ss)
+          (if (> (cadr hit) cutoff)
+              (setf results-array (cons hit results-array))))
+        (reverse results-array)))))
 
 
 ;;               SUMMARIZE TEXT:
 
 ;;
 ;; This function performs a simple summarization by forming a word use histogram
-;; and after tossing out common words, ranking sentences
+;; and after tossing out common words (stemmed, of course), ranking sentences
 ;; based on how frequently words are used in them.
 ;;
 (defun summarize (words cats)
@@ -151,11 +153,13 @@
          " ." ".")
         "<no summary>")))
 
+#|
+
 (defvar s1 "Plunging European stocks, wobbly bonds and grave concerns about
 the health of Portuguese lender Banco Espirito Santo SA made last
 week feel like a rerun of the euro crisis, but most investors say
 it was no more than a blip for a resurgent region. Banco Espirito
-Santo has been in investors’ sights since December, when The Wall
+Santo has been in investorsa sights since December, when The Wall
 Street Journal first reported on accounting irregularities at the
 complex firm. Nerves frayed on Thursday when Banco Espirito Santo's
 parent company said it wouldn't be able to meet some short-term debt
@@ -177,7 +181,7 @@ as taught at the American University.")
   (helper0a (myutils:words-from-string s3)))
 
 
-#|
+
 
 (defvar x "President Bill Clinton ran for president of the USA in two elections. George W Bush also ran twice. Bill Clinton took a long vacation in Europe to visit his daughter. Bill Clinton said that banking in Europe is a good business. The Euro is strong and account balances are up. Interest rates are remaining steady. The question is whether or not the US dollar remains the world's reserve currency - if not, the US economy will face a depression. In their zeal to protect their members from politically hazardous votes on issues such as gay marriage and gun control, Democrats running the House of Representatives are taking extraordinary steps to muzzle Republicans in this summer's debates on spending bills.
 
@@ -199,11 +203,11 @@ Unemployment stood at 9.5 percent in June ")
 
 (print words1)
 
-(setq cats1 (categorize_summarize:categorize words1))
+(setq cats1 (categorize words1))
 
 (print cats1)
 
-(defvar sum1 (categorize_summarize:summarize words1 cats1))
+(defvar sum1 (summarize words1 cats1))
 
 (print sum1)
 
