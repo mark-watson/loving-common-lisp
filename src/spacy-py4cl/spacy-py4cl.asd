@@ -1,4 +1,4 @@
-;;;; spacy.asd
+;;;; spacy-py4cl.asd
 
 (asdf:defsystem #:spacy-py4cl
   :description "Use py4cl to use Python spaCy library embedded in Common Lisp"

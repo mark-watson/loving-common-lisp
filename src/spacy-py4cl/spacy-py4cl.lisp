@@ -1,4 +1,4 @@
-;;;; spacy.lisp
+;;;; spacy-py4cl.lisp
 
 (in-package #:spacy-py4cl)
 
