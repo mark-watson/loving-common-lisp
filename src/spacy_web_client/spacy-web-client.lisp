@@ -1,6 +1,6 @@
 ;;;; spacy.lisp
 
-(in-package spacy)
+(in-package spacy-web-client)
 
 (defvar base-url "http://127.0.0.1:8008?text=")
 
