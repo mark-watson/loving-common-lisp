@@ -1,6 +1,6 @@
 ;;;; spacy.lisp
 
-(in-package #:spacy)
+(in-package #:spacy-py4cl)
 
 ;;(ql:quickload :py4cl)
 (py4cl:python-exec "from spacystub.parse import parse")

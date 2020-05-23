@@ -1,6 +1,6 @@
 ;;;; package.lisp
 
-(defpackage #:spacy
+(defpackage #:spacy-py4cl
   (:use #:cl #:py4cl)
   (:export #:nlp))
 
