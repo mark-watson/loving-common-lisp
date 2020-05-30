@@ -28,7 +28,7 @@
 
 ;;                    INITIALIZE DATA - this may take a minute or two
 
-(print "Startng to load data....")
+(print "Starting to load data....")
 
 (defvar *base-pathname-cs* #.(or *compile-file-truename* *load-truename*))
 (defvar a1-cs (write-to-string *base-pathname-cs*))

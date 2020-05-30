@@ -5,13 +5,6 @@
 ;;
 ;; Common Lisp stemming code in this file was written by Steven M. Haflich based on the work of Martin Porter.
 
-(defpackage kbnlp
-  ;;(:use :cls :asdf)
-  (:export
-   :make-text-object
-   :replace-all)
-  (:documentation
-   "Mark Watson's NLP utilities released under the AGPL and Apache 2 Licenses"))
 
 (in-package :kbnlp)
 
@@ -26,6 +19,7 @@
   key-phrases
   human-names
   place-names
+  company-names
   text
   tags)
 
@@ -33,7 +27,7 @@
 
 ;;                    INITIALIZE DATA - this may take a minute or two
 
-(print "Startng to load data....")
+(print "Starting to load data....")
 
 (defvar *male* "male")
 (defvar *female* "female")
@@ -103,33 +97,8 @@
 
 
 (defun words-from-string (str)
-  (let ((ss (tokenize-string str)))
+  (let ((ss (myutils:tokenize-string str)))
     (make-array (list (length ss)) :initial-contents ss)))
-
-(defun tokenize-string (string 
-                        &key 
-                          (delimiters '(#\Space #\Return #\Linefeed #\Newline #\. #\, #\; #\: #\! #\" #\'
-                                        #\? #\/ #\( #\) #\- #\< #\>))
-                          (discard '(#\Space #\Return #\Linefeed #\Newline #\, #\" #\' #\- #\< #\>))
-                          (test (lambda (c) (find c delimiters)))
-                          (start 0) (end (length string)) (omit-delimiters nil))
-  (flet ((get-token (start)
-           (if (< start end)
-               (let* ((delimiterp (funcall test (char string start)))
-                      (end-of-token (funcall (if delimiterp #'position-if-not #'position-if)
-                                             test string :start start)))
-                 (values (subseq string start end-of-token) end-of-token delimiterp))
-               (values nil nil nil))))
-    (let ((tokens nil)
-          token delimiterp)
-      (loop (multiple-value-setq (token start delimiterp) (get-token start))
-         (unless (and delimiterp omit-delimiters)
-           (let ((tok (string-trim discard token)))
-             ;;(print (list "tok:" tok))
-             (if (not (find tok discard))
-                 (if (> (length tok) 0)
-                     (push tok tokens)))))
-         (unless start (return-from tokenize-string (nreverse tokens)))))))
 
 ;; e.g.:
 ;;
@@ -368,6 +337,59 @@ is replaced with replacement."
     (find-places words '((10 11)))))
 
 
+;;
+;; utility for detecting company names in a word list
+;;
+;;
+;; argument: a list of words as strings
+;; return: a list of lists. each sub-list contains a starting and ending index)
+;;
+(defun find-companies (words exclusion-list)
+  (let* ((len (length words))
+         (ret '())
+         word)
+    (dotimes (i len)
+      (setq word (aref words i))
+      ;; process 3 word company names:
+      (if (< i (- len 2))
+          (if (and
+               (not-in-list-find-companies-helper ret i (+ i 3))
+               (not-in-list-find-companies-helper exclusion-list i (+ i 3)))
+              (let ((words (concatenate 'string word " " (aref words (1+ i)) " " (aref words (+ i 2)))))
+                (if (gethash words *company-name-hash*)
+                    (setq ret (cons (list i (+ i 3)) ret))))))
+      ;; process 2 word company names:
+      (if (< i (1- len))
+          (if (and
+               (not-in-list-find-companies-helper ret i (+ i 2))
+               (not-in-list-find-companies-helper exclusion-list i (+ i 2)))
+              (let ((words (concatenate 'string word " " (aref words (1+ i)))))
+                (if (gethash words *company-name-hash*)
+                    (setq ret (cons (list i (+ i 2)) ret))))))
+      ;; 1 word company names:
+      (if (and
+           (not-in-list-find-companies-helper ret i (+ i 1))
+           (not-in-list-find-companies-helper exclusion-list i (+ i 1)))
+          (if (gethash word *company-name-hash*)
+              (setq ret (cons (list i (1+ i)) ret)))))
+    ;;(print (list "debug: companies:" (reverse ret)))
+    (reverse ret)))
+
+(defun not-in-list-find-companies-helper (a-list start end &aux (rval t))
+  (dolist (x a-list)
+    (let ((i1 (car x))
+          (i2 (cadr x)))
+      (if (or
+           (and
+            (>= start i1)
+            (<= start i2))
+           (and
+            (>= end i1)
+            (<= end i2)))
+          (setq rval nil))))
+  rval)
+
+
 
 ;;                       TOP LEVEL FUNCTIONS FOR FINDING BOTH NAMES AND PLACES IN TEXT:
 
@@ -379,8 +401,8 @@ is replaced with replacement."
       (if (not (= i j))
           (let* ((s-i (nth i lst))
                  (s-j (nth j lst))
-                 (tokens-i (tokenize-string s-i))
-                 (tokens-j (tokenize-string s-j)))
+                 (tokens-i (myutils:tokenize-string s-i))
+                 (tokens-j (myutils:tokenize-string s-j)))
             ;;(format t "~%* s-i: ~A s-j: ~A~%" s-i s-j)
             (if (and
                  (> (length s-i) (length s-j))
@@ -485,7 +507,7 @@ is replaced with replacement."
              (round (* (aref category-score-accumulation-array i) 10)))
             ss))))
     (setf ss (list-sort ss))
-    (let ((cutoff (/ (cadar ss) 2))
+    (let ((cutoff (/ (or (cadar ss) 0) 2))
           (results-array '()))
       (dolist (hit ss)
         (if (> (cadr hit) cutoff)
@@ -562,6 +584,7 @@ is replaced with replacement."
     (let ((names-places (find-names-places txt-obj)))
       (setf (text-human-names txt-obj) (car names-places))
       (setf (text-place-names txt-obj) (cadr names-places)))
+    (setf (text-company-names txt-obj) ( build-list-find-name-helper words (find-companies words '())))
     (setf (text-category-tags txt-obj)
           (mapcar #'(lambda (x) (list (car x) (/ (cadr x) 1000000.0))) (get-word-list-category (text-text txt-obj))))
     (setf (text-summary txt-obj) (summarize txt-obj))
@@ -591,3 +614,5 @@ Unemployment stood at 9.5 percent in June " :title "test doc 1" :url "http://kno
 
 
 |#
+
+

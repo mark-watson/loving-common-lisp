@@ -2,5 +2,4 @@
 
 (defpackage #:entities_dbpedia
   (:use #:cl #:myutils)
-  (:export #:get-entity-names #:find-entities-in-text #:entity-iterator)) ;; update this!  TBD
-
+  (:export #:get-entity-names #:find-entities-in-text #:entity-iterator))

@@ -26,6 +26,11 @@
   (let ((ss (tokenize-string str)))
     (make-array (list (length ss)) :initial-contents ss)))
 
+(defun tokenize-string-keep-uri (string)
+  (tokenize-string string 
+                   :delimiters '(#\Space #\Return #\Linefeed #\Newline #\, #\;  #\( #\)) ;;  #\?) ;; will fail with URIs with '?' or "\""
+                   :discard '(#\Space #\Return #\Linefeed #\Newline #\,)))
+
 (defun tokenize-string (string 
                         &key 
                           (delimiters '(#\Space #\Return #\Linefeed #\Newline #\. #\, #\; #\: #\! #\" #\'

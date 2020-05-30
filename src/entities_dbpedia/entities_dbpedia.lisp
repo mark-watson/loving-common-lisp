@@ -1,17 +1,7 @@
 ;; Copyright Mark Watson 2019. All Rights Reserved.   http://markwatson.com
 ;; License: AGPL version 3 (http://www.gnu.org/licenses/agpl-3.0.txt)
 
-(defpackage entities_dbpedia
-  ;;(:use :cls :asdf)
-  (:export
-   :entity-iterator
-   :get-entity-names
-   :find-entities-in-text)
-  (:documentation
-   "Mark Watson's NLP utilities released under the AGPL and Apache 2 Licenses"))
-
 (in-package :entities_dbpedia)
-
 
 (defvar *base-pathname* #.(or *compile-file-truename* *load-truename*))
 (defvar a1 (write-to-string *base-pathname*))
