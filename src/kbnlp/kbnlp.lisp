@@ -468,6 +468,11 @@ is replaced with replacement."
 (defun get-cat-tag-names ()
   categoryNames)
 
+(defun list-sort (list-to-sort)
+    (sort list-to-sort
+        #'(lambda (list-element-1 list-element-2)
+            (> (cadr list-element-1) (cadr list-element-2)))))
+
 (defun get-word-list-category (words)
   (let* ((x nil)
          (ss nil)
@@ -477,12 +482,6 @@ is replaced with replacement."
          (num-categories (length categoryHashtables))
          (category-score-accumulation-array
           (make-array num-categories :initial-element 0)))
-
-    (defun list-sort (list-to-sort)
-      ;;(pprint list-to-sort)
-      (sort list-to-sort
-            #'(lambda (list-element-1 list-element-2)
-                (> (cadr list-element-1) (cadr list-element-2)))))
 
     (do ((k 0 (+ k 1)))
         ((equal k len))

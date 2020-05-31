@@ -66,12 +66,6 @@
 
 ;;;   done loading data
 
-;; Conversion of KnowledgeBooks.com Java FastTag to Common Lisp
-
-(defun find-entities-in-string (entity-hash str)
-    (let* ((words (myutils:words-from-string str)))
-      (find-entities-word-list entity-hash words)))
-
 ;; make sure that URIs have < > brackets:
 (defun ensure-uri-brackets (a-uri)
   (if (string-equal (subseq a-uri 0 1) "<")
@@ -116,6 +110,10 @@
 	    (setq ret (cons (list word (ensure-uri-brackets a-uri)) ret)))))
     (reverse ret)))
 
+
+(defun find-entities-in-string (entity-hash str)
+    (let* ((words (myutils:words-from-string str)))
+      (find-entities-word-list entity-hash words)))
 
 (defun find-entities-in-text (str)
   (let* ((words (myutils:words-from-string str))
