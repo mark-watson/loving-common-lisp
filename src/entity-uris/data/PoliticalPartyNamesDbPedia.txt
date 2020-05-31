@@ -1,0 +1,573 @@
+Awami National Party	<http://dbpedia.org/resource/Awami_National_Party>
+Cambio 90-Nueva Mayoría	<http://dbpedia.org/resource/Cambio_90>
+Change 90-New Majority	<http://dbpedia.org/resource/Cambio_90>
+Civic Conservative Party	<http://dbpedia.org/resource/Civic_Conservative_Party>
+Ökologisch-Demokratische Partei	<http://dbpedia.org/resource/Ecological_Democratic_Party>
+Deutsche Vaterlandspartei	<http://dbpedia.org/resource/Fatherland_Party_(Germany)>
+Most–Híd	<http://dbpedia.org/resource/Most%E2%80%93H%C3%ADd>
+New Aliyah Party	<http://dbpedia.org/resource/New_Aliyah_Party>
+Pakistan Muslim League	<http://dbpedia.org/resource/Pakistan_Muslim_League_(Q)>
+Pakistan Tehreek-e-Insaf	<http://dbpedia.org/resource/Pakistan_Tehreek-e-Insaf>
+Peoples United Party	<http://dbpedia.org/resource/People's_United_Party>
+Un Nuevo Tiempo	<http://dbpedia.org/resource/A_New_Era>
+African National Congress	<http://dbpedia.org/resource/African_National_Congress>
+Authentic Falange	<http://dbpedia.org/resource/Authentic_Falange>
+Basque National Party	<http://dbpedia.org/resource/Basque_Nationalist_Party>
+Euzko Alderdi Jeltzalea	<http://dbpedia.org/resource/Basque_Nationalist_Party>
+Bulgarian Communist Party	<http://dbpedia.org/resource/Bulgarian_Communist_Party>
+Balgarska Komunisticheska Partiya	<http://dbpedia.org/resource/Bulgarian_Communist_Party>
+Christen-Democratisch Appèl	<http://dbpedia.org/resource/Christian_Democratic_Appeal>
+Communist International	<http://dbpedia.org/resource/Comintern>
+Soviet Union	<http://dbpedia.org/resource/Communist_Party_of_the_Soviet_Union>
+Constitutional Party	<http://dbpedia.org/resource/Constitutional_Party_(Spain)>
+Partido Constitucional	<http://dbpedia.org/resource/Constitutional_Party_(Spain)>
+Basque Christian Democracy	<http://dbpedia.org/resource/Democracia_Cristiana_Vasca>
+Democratic Centre	<http://dbpedia.org/resource/Democratic_Centre_(Croatia)>
+Demokratski centar	<http://dbpedia.org/resource/Democratic_Centre_(Croatia)>
+Demokratska stranka	<http://dbpedia.org/resource/Democratic_Party_(Serbia)>
+Democratic Union	<http://dbpedia.org/resource/Democratic_Union_(Poland)>
+Freie Demokratische Partei	<http://dbpedia.org/resource/Free_Democratic_Party_(Germany)>
+Freedom Union	<http://dbpedia.org/resource/Freedom_Union_(Poland)>
+Deutsche Volksunion	<http://dbpedia.org/resource/German_People's_Union>
+(Federal Party)	<http://dbpedia.org/resource/Illankai_Tamil_Arasu_Kachchi>
+Internet Party	<http://dbpedia.org/resource/Internet_Party>
+Partido de Internet	<http://dbpedia.org/resource/Internet_Party>
+Iron Guard	<http://dbpedia.org/resource/Iron_Guard>
+Garda de fier	<http://dbpedia.org/resource/Iron_Guard>
+Zveza Komunistov Slovenije	<http://dbpedia.org/resource/League_of_Communists_of_Slovenia>
+National Democracy	<http://dbpedia.org/resource/National_Democracy_(Spain)>
+Democracia Nacional	<http://dbpedia.org/resource/National_Democracy_(Spain)>
+Nouveau Centre	<http://dbpedia.org/resource/New_Centre>
+Lijst Pim Fortuyn	<http://dbpedia.org/resource/Pim_Fortuyn_List>
+Pim Fortuyn List	<http://dbpedia.org/resource/Pim_Fortuyn_List>
+Polisario Front	<http://dbpedia.org/resource/Polisario_Front>
+Jabhat al-Bōlīsāryū	<http://dbpedia.org/resource/Polisario_Front>
+Frente Popular	<http://dbpedia.org/resource/Popular_Front_(Spain)>
+Popular Front	<http://dbpedia.org/resource/Popular_Front_(Spain)>
+Peoples Socialist Party	<http://dbpedia.org/resource/Popular_Socialist_Party_(Spain)>
+Partido Socialista Popular	<http://dbpedia.org/resource/Popular_Socialist_Party_(Spain)>
+Progress Party	<http://dbpedia.org/resource/Progress_Party_(Norway)>
+Social Democratic Front	<http://dbpedia.org/resource/Social_Democratic_Front_(Cameroon)>
+Socialist Party USA	<http://dbpedia.org/resource/Socialist_Party_USA>
+Sverigedemokraterna	<http://dbpedia.org/resource/Sweden_Democrats>
+Sweden Democrats	<http://dbpedia.org/resource/Sweden_Democrats>
+Perussuomalaiset	<http://dbpedia.org/resource/True_Finns>
+Sannfinländarna	<http://dbpedia.org/resource/True_Finns>
+British National Party	<http://dbpedia.org/resource/British_National_Party_(1960)>
+Constitutional Democratic Party	<http://dbpedia.org/resource/Constitutional_Democratic_Party>
+Fellowship Party	<http://dbpedia.org/resource/Fellowship_Party>
+Freedom Party	<http://dbpedia.org/resource/Freedom_Party_(United_Kingdom)>
+German Peoples Party	<http://dbpedia.org/resource/German_People's_Party_(1868)>
+MP3 Party	<http://dbpedia.org/resource/MP3_Party>
+Marxist Party	<http://dbpedia.org/resource/Marxist_Party>
+National Liberal Party	<http://dbpedia.org/resource/National_Liberal_Party_(Germany)>
+Pro-Euro Conservative Party	<http://dbpedia.org/resource/Pro-Euro_Conservative_Party>
+SDP-Liberal Alliance	<http://dbpedia.org/resource/SDP%E2%80%93Liberal_Alliance>
+Social Democratic Federation	<http://dbpedia.org/resource/Social_Democratic_Federation>
+Social Democratic Party	<http://dbpedia.org/resource/Social_Democratic_Party_(UK)>
+Social Democratic Party	<http://dbpedia.org/resource/Social_Democratic_Party_(UK,_1988)>
+Amaiur	<http://dbpedia.org/resource/Amaiur>
+Bloc identitaire	<http://dbpedia.org/resource/Bloc_identitaire>
+Argentine Fascist Party	<http://dbpedia.org/resource/Argentine_Fascist_Party>
+Partido Fascista Argentino	<http://dbpedia.org/resource/Argentine_Fascist_Party>
+Juntas Nacional Española	<http://dbpedia.org/resource/Philippine_Falange>
+Spanish National Assemblies	<http://dbpedia.org/resource/Philippine_Falange>
+Regional Action	<http://dbpedia.org/resource/Regional_Action>
+Acción Regional	<http://dbpedia.org/resource/Regional_Action>
+Stranka Srpskog Jedinstva	<http://dbpedia.org/resource/Party_of_Serbian_Unity>
+Union for Republic	<http://dbpedia.org/resource/Union_for_the_Republic_(Mauritania)>
+Badr Organization	<http://dbpedia.org/resource/Badr_Organization>
+Bolshevik Samasamaja Party	<http://dbpedia.org/resource/Bolshevik_Samasamaja_Party>
+Partido Popular Cristiano	<http://dbpedia.org/resource/Christian_People's_Party_(Peru)>
+Partidul Conservator	<http://dbpedia.org/resource/Conservative_Party_(Romania,_1880%E2%80%931918)>
+Ettajdid Movement	<http://dbpedia.org/resource/Ettajdid_Movement>
+Free Egyptians Party	<http://dbpedia.org/resource/Free_Egyptians_Party>
+German Socialist Party	<http://dbpedia.org/resource/German_Socialist_Party>
+Deutschsozialistische Partei	<http://dbpedia.org/resource/German_Socialist_Party>
+Liberalno Demokratska Stranka	<http://dbpedia.org/resource/Liberal_Democratic_Party_(Bosnia_and_Herzegovina)>
+Partidul Liberal Democrat	<http://dbpedia.org/resource/Liberal_Democratic_Party_(Romania)>
+Liberal Union	<http://dbpedia.org/resource/Liberal_Union_(Germany)>
+National Party	<http://dbpedia.org/resource/National_Party_(Syria)>
+União Nacional	<http://dbpedia.org/resource/National_Union_(Portugal)>
+Nova Srbija	<http://dbpedia.org/resource/New_Serbia>
+Aotearoa Tuatahi	<http://dbpedia.org/resource/New_Zealand_First>
+Peoples Alliance	<http://dbpedia.org/resource/People's_Alliance_(Bulgaria)>
+Naroden Sgovor	<http://dbpedia.org/resource/People's_Alliance_(Bulgaria)>
+Partido Comunista Peruano	<http://dbpedia.org/resource/Peruvian_Communist_Party>
+Progressive Peoples Party	<http://dbpedia.org/resource/Progressive_People's_Party_(Germany)>
+Socialist Alternative	<http://dbpedia.org/resource/Socialist_Alternative_(Quebec)>
+Socialist Equality Party	<http://dbpedia.org/resource/Socialist_Equality_Party_(Sri_Lanka)>
+Samajavadi Samanathmatha Pakshaya	<http://dbpedia.org/resource/Socialist_Equality_Party_(Sri_Lanka)>
+Common Good	<http://dbpedia.org/resource/The_Common_Good_(political_party)>
+FULRO	<http://dbpedia.org/resource/United_Front_for_the_Liberation_of_Oppressed_Races>
+Suomen Maaseudun Puolue	<http://dbpedia.org/resource/Finnish_Rural_Party>
+Madaraka Peoples Movement	<http://dbpedia.org/resource/Madaraka_People's_Movement>
+New National Party	<http://dbpedia.org/resource/New_National_Party_(South_Africa)>
+Safina Party	<http://dbpedia.org/resource/Safina>
+Tōhōkai	<http://dbpedia.org/resource/T%C5%8Dh%C5%8Dkai>
+東方会	<http://dbpedia.org/resource/T%C5%8Dh%C5%8Dkai>
+Deutsch-Vlämische Arbeitsgemeinschaft	<http://dbpedia.org/resource/Devlag>
+Republican Left	<http://dbpedia.org/resource/Republican_Left_(Spain)>
+Izquierda Republicana	<http://dbpedia.org/resource/Republican_Left_(Spain)>
+All Basotho Convention	<http://dbpedia.org/resource/All_Basotho_Convention>
+National Democratic Party	<http://dbpedia.org/resource/National_Democratic_Party_(Iraq)>
+Al-Nour Party	<http://dbpedia.org/resource/Al-Nour_Party>
+Foro Asturias	<http://dbpedia.org/resource/Asturias_Forum>
+Communist Labour Party	<http://dbpedia.org/resource/Communist_Labour_Party_(Syria)>
+Communist League	<http://dbpedia.org/resource/Communist_League_(UK,_1990)>
+Croatian True Revival	<http://dbpedia.org/resource/Croatian_True_Revival>
+Hrvatski istinski preporod	<http://dbpedia.org/resource/Croatian_True_Revival>
+Democratic Party	<http://dbpedia.org/resource/Democratic_Party_(Northern_Mariana_Islands)>
+Democratic Peoples Front	<http://dbpedia.org/resource/Democratic_People's_Front>
+Frente Republicano Guatemalteco	<http://dbpedia.org/resource/Guatemalan_Republican_Front>
+Guatemalan Republican Front	<http://dbpedia.org/resource/Guatemalan_Republican_Front>
+New Democratic Front	<http://dbpedia.org/resource/New_Democratic_Front_(Sri_Lanka)>
+Nova srpska demokratija	<http://dbpedia.org/resource/New_Serb_Democracy>
+Hizb al-Ikha al-Watani	<http://dbpedia.org/resource/Party_of_National_Brotherhood>
+Peoples Alliance	<http://dbpedia.org/resource/People's_Alliance_(Sri_Lanka)>
+Trots op Nederland	<http://dbpedia.org/resource/Proud_of_the_Netherlands>
+Radical Party	<http://dbpedia.org/resource/Radical_Party_(Italy)>
+Rikken Minseitō	<http://dbpedia.org/resource/Rikken_Minseit%C5%8D>
+立憲民政党	<http://dbpedia.org/resource/Rikken_Minseit%C5%8D>
+Suomen Sosialistinen Työväenpuolue	<http://dbpedia.org/resource/Socialist_Workers'_Party_of_Finland>
+Tamil National Alliance	<http://dbpedia.org/resource/Tamil_National_Alliance>
+Ulster Third Way	<http://dbpedia.org/resource/Ulster_Third_Way>
+Ujedinjeni regioni Srbije	<http://dbpedia.org/resource/United_Regions_of_Serbia>
+Rio Republican Party	<http://dbpedia.org/resource/Rio_Republican_Party>
+Partido Republicano Fluminense	<http://dbpedia.org/resource/Rio_Republican_Party>
+Welfare Party	<http://dbpedia.org/resource/Welfare_Party>
+Refah Partisi	<http://dbpedia.org/resource/Welfare_Party>
+Democratic Republican Party	<http://dbpedia.org/resource/Democratic_Republican_Party_(South_Korea)>
+Minju Gonghwadong	<http://dbpedia.org/resource/Democratic_Republican_Party_(South_Korea)>
+민주공화당	<http://dbpedia.org/resource/Democratic_Republican_Party_(South_Korea)>
+Kokumin Dōmei	<http://dbpedia.org/resource/Kokumin_D%C5%8Dmei>
+国民同盟	<http://dbpedia.org/resource/Kokumin_D%C5%8Dmei>
+Australian Greens	<http://dbpedia.org/resource/Australian_Greens>
+Suomen Kommunistinen Puolue	<http://dbpedia.org/resource/Communist_Party_of_Finland>
+Democratic Alliance	<http://dbpedia.org/resource/Democratic_Alliance_(South_Africa)>
+Radical Democratic Party	<http://dbpedia.org/resource/Radical_Democratic_Party_(Spain)>
+Partido Demócrata Radical	<http://dbpedia.org/resource/Radical_Democratic_Party_(Spain)>
+Arab Socialist Movement	<http://dbpedia.org/resource/Arab_Socialist_Movement>
+Armenian Revolutionary Federation	<http://dbpedia.org/resource/Armenian_Revolutionary_Federation>
+Mapai	<http://dbpedia.org/resource/Mapai>
+Shin Shakai-tō	<http://dbpedia.org/resource/New_Socialist_Party_(Japan)>
+新社会党	<http://dbpedia.org/resource/New_Socialist_Party_(Japan)>
+New Socialist Party	<http://dbpedia.org/resource/New_Socialist_Party_(Japan)>
+Socialist Unity Party	<http://dbpedia.org/resource/Socialist_Unity_Party_(Finland)>
+Sosialistinen Yhtenäisyyspuolue	<http://dbpedia.org/resource/Socialist_Unity_Party_(Finland)>
+Socialist Workers Party	<http://dbpedia.org/resource/Socialist_Workers_Party_(Finland)>
+Sosialistinen Työväenpuolue	<http://dbpedia.org/resource/Socialist_Workers_Party_(Finland)>
+Onafhankelijke Senaatsfractie	<http://dbpedia.org/resource/Independent_Senate_Group>
+Ceidwadwyr Cymreig	<http://dbpedia.org/resource/Welsh_Conservative_Party>
+Assyrian Democratic Movement	<http://dbpedia.org/resource/Assyrian_Democratic_Movement>
+香港公民協會	<http://dbpedia.org/resource/Hong_Kong_Civic_Association>
+Grupo Independiente Liberal	<http://dbpedia.org/resource/Independent_Liberal_Group>
+Independent Liberal Group	<http://dbpedia.org/resource/Independent_Liberal_Group>
+Liberal Party	<http://dbpedia.org/resource/Liberal_Party_(Croatia)>
+Liberalna stranka	<http://dbpedia.org/resource/Liberal_Party_(Croatia)>
+Alternativa Sociale	<http://dbpedia.org/resource/Social_Alternative>
+Social Alternative	<http://dbpedia.org/resource/Social_Alternative>
+OMLE	<http://dbpedia.org/resource/Organisation_of_Marxists%E2%80%93Leninists_of_Greece>
+Arab Liberation Movement	<http://dbpedia.org/resource/Arab_Liberation_Movement>
+Authenticity Party	<http://dbpedia.org/resource/Authenticity_Party>
+Labour Party	<http://dbpedia.org/resource/Labour_Party_(UK)>
+Alleanza Democratica	<http://dbpedia.org/resource/Democratic_Alliance_(Italy)>
+Democratic Party	<http://dbpedia.org/resource/Democratic_Party_(United_States)>
+Movimento Libertario	<http://dbpedia.org/resource/Libertarian_Movement_(Italy)>
+Japanese Communist Party	<http://dbpedia.org/resource/Japanese_Communist_Party>
+Kurdistan Workers Party	<http://dbpedia.org/resource/Kurdistan_Workers'_Party>
+Partiya Karkerên Kurdistan	<http://dbpedia.org/resource/Kurdistan_Workers'_Party>
+Liberal Party	<http://dbpedia.org/resource/Liberal_Party_(UK)>
+Republican Party	<http://dbpedia.org/resource/Republican_Party_(United_States)>
+Sgarbi Liberals	<http://dbpedia.org/resource/Sgarbi_Liberals>
+People of Freedom	<http://dbpedia.org/resource/The_People_of_Freedom>
+Demokratska stranka federalista	<http://dbpedia.org/resource/Democratic_Party_of_Federalists>
+Eretz Yisrael Shelanu	<http://dbpedia.org/resource/Eretz_Yisrael_Shelanu>
+Geroa Bai	<http://dbpedia.org/resource/Geroa_Bai>
+Pokret Mađarske Nade	<http://dbpedia.org/resource/Hungarian_Hope_Movement>
+Charter for Rijeka	<http://dbpedia.org/resource/List_for_Fiume>
+Hizb Al-Wifak	<http://dbpedia.org/resource/National_Conciliation_Party_(Egypt)>
+Piratepartei Lëtzebuerg	<http://dbpedia.org/resource/Pirate_Party_Luxembourg>
+ULDY	<http://dbpedia.org/resource/Union_of_Lebanese_Democratic_Youth>
+Yugoslav Left	<http://dbpedia.org/resource/Yugoslav_Left>
+Jugoslovenska Levica	<http://dbpedia.org/resource/Yugoslav_Left>
+ACT New Zealand	<http://dbpedia.org/resource/ACT_New_Zealand>
+African Peoples Convention	<http://dbpedia.org/resource/African_People's_Convention>
+Australian Democrats	<http://dbpedia.org/resource/Australian_Democrats>
+Constitutional Union Party	<http://dbpedia.org/resource/Constitutional_Union_Party_(United_States)>
+Croatian Bunjevac-Šokac Party	<http://dbpedia.org/resource/Croatian_Bunjevac-%C5%A0okac_Party>
+Democratic Alliance	<http://dbpedia.org/resource/Democratic_Alliance_(Portugal)>
+Democratic Party	<http://dbpedia.org/resource/Democratic_Party_(UK,_1998)>
+Democratic Progressive Party	<http://dbpedia.org/resource/Democratic_Progressive_Party>
+Mínzhǔ Jìnbù Dǎng	<http://dbpedia.org/resource/Democratic_Progressive_Party>
+民主進步黨	<http://dbpedia.org/resource/Democratic_Progressive_Party>
+Constitutional Liberal Party	<http://dbpedia.org/resource/Destour>
+Fatherland League	<http://dbpedia.org/resource/Fatherland_League_(Norway)>
+Cymru Ymlaen	<http://dbpedia.org/resource/Forward_Wales>
+International Socialist League	<http://dbpedia.org/resource/International_Socialist_League_(UK)>
+Jathika Hela Urumaya	<http://dbpedia.org/resource/Jathika_Hela_Urumaya>
+National Heritage Party	<http://dbpedia.org/resource/Jathika_Hela_Urumaya>
+Leefbaar Rotterdam	<http://dbpedia.org/resource/Livable_Rotterdam>
+Gauche Moderne	<http://dbpedia.org/resource/Modern_Left>
+Muttahida Qaumi Movement	<http://dbpedia.org/resource/Muttahida_Qaumi_Movement>
+New Patriotic Party	<http://dbpedia.org/resource/New_Patriotic_Party>
+Peoples Justice Party	<http://dbpedia.org/resource/People's_Justice_Party_(Malaysia)>
+Parti radical	<http://dbpedia.org/resource/Radical_Party_(France)>
+Social Democrats, USA	<http://dbpedia.org/resource/Social_Democrats,_USA>
+Workers International League	<http://dbpedia.org/resource/Workers'_International_League_(1985)>
+Croatian Bloc	<http://dbpedia.org/resource/Croatian_Bloc_(political_party)>
+Hrvatski blok	<http://dbpedia.org/resource/Croatian_Bloc_(political_party)>
+Peoples Democratic Party	<http://dbpedia.org/resource/Democratic_Popular_Party_(Spain)>
+Partido Demócrata Popular	<http://dbpedia.org/resource/Democratic_Popular_Party_(Spain)>
+Srpska Demokratska Stranka	<http://dbpedia.org/resource/Serb_Democratic_Party_(Croatia)>
+Spartacus League	<http://dbpedia.org/resource/Spartacus_League>
+Breton Democratic Union	<http://dbpedia.org/resource/Union_D%C3%A9mocratique_Bretonne>
+Unvaniezh demokratel Breizh	<http://dbpedia.org/resource/Union_D%C3%A9mocratique_Bretonne>
+Fazilet Partisi	<http://dbpedia.org/resource/Virtue_Party>
+Virtue Party	<http://dbpedia.org/resource/Virtue_Party>
+Workers Party	<http://dbpedia.org/resource/Workers'_Party_(Algeria)>
+Köyhien Asialla	<http://dbpedia.org/resource/For_the_Poor>
+Greater Romania Party	<http://dbpedia.org/resource/Greater_Romania_Party>
+Partidul România Mare	<http://dbpedia.org/resource/Greater_Romania_Party>
+Funny Party	<http://dbpedia.org/resource/Funny_Party>
+Revolutionary Workers Party	<http://dbpedia.org/resource/Revolutionary_Workers'_Party_(Trotskyist)>
+Al-Muthanna Club	<http://dbpedia.org/resource/Al-Muthanna_Club>
+Bolivian Union Party	<http://dbpedia.org/resource/Bolivian_Union_Party>
+Partido Unión Boliviana	<http://dbpedia.org/resource/Bolivian_Union_Party>
+Christian National Union	<http://dbpedia.org/resource/Christian_National_Union>
+Zjednoczenie Chrześcijańsko-Narodowe	<http://dbpedia.org/resource/Christian_National_Union>
+Lapiang Malaya	<http://dbpedia.org/resource/Lapiang_Malaya>
+Te Karu	<http://dbpedia.org/resource/Ruatoki_Kapa_Haka>
+Russian All-Peoples Union	<http://dbpedia.org/resource/Russian_All-People's_Union>
+Suomen Pientalonpoikien Puolue	<http://dbpedia.org/resource/Small_Peasants'_Party_of_Finland>
+Institutional Revolutionary Party	<http://dbpedia.org/resource/Institutional_Revolutionary_Party>
+Labour Party	<http://dbpedia.org/resource/Labour_Party_(Norway)>
+National Fascist Party	<http://dbpedia.org/resource/National_Fascist_Party>
+Taisei Yokusankai	<http://dbpedia.org/resource/Taisei_Yokusankai>
+CDU	<http://dbpedia.org/resource/CDU/CSU>
+Unity	<http://dbpedia.org/resource/Batasuna>
+Batasuna	<http://dbpedia.org/resource/Batasuna>
+Croatian Liberation Movement	<http://dbpedia.org/resource/Croatian_Liberation_Movement>
+National Liberal Party	<http://dbpedia.org/resource/National_Liberal_Party_(Romania)>
+Partidul Naţional Liberal	<http://dbpedia.org/resource/National_Liberal_Party_(Romania)>
+Vietnamese Nationalist Party	<http://dbpedia.org/resource/Viet_Nam_Quoc_Dan_Dang>
+Primorje-Gorski Kotar	<http://dbpedia.org/resource/Alliance_of_Primorje-Gorski_Kotar>
+Primorsko goranski savez	<http://dbpedia.org/resource/Alliance_of_Primorje-Gorski_Kotar>
+Alliance of	<http://dbpedia.org/resource/Alliance_of_Primorje-Gorski_Kotar>
+Boston Bypass Independents	<http://dbpedia.org/resource/Boston_Bypass_Independents>
+Centre Party	<http://dbpedia.org/resource/Centre_Party_(Norway)>
+Christian Democratic Party	<http://dbpedia.org/resource/Christian_Democratic_Party_(Norway)>
+Christlichdemokratische Volkspartei	<http://dbpedia.org/resource/Christian_Democratic_People's_Party_of_Switzerland>
+Partida Cristiandemocratica	<http://dbpedia.org/resource/Christian_Democratic_People's_Party_of_Switzerland>
+Partito Popolare Democratico	<http://dbpedia.org/resource/Christian_Democratic_People's_Party_of_Switzerland>
+a Moravy	<http://dbpedia.org/resource/Communist_Party_of_Bohemia_and_Moravia>
+Conservative Party	<http://dbpedia.org/resource/Conservative_Party_(Romania)>
+Golden Dawn	<http://dbpedia.org/resource/Golden_Dawn_(Greece)>
+Associazione Nazionalista Italiana	<http://dbpedia.org/resource/Italian_Nationalist_Association>
+Left Party	<http://dbpedia.org/resource/Left_Party_(Sweden)>
+Libertarian Party	<http://dbpedia.org/resource/Libertarian_Party_(United_States)>
+National Religious Party	<http://dbpedia.org/resource/National_Religious_Party>
+National Salvation Party	<http://dbpedia.org/resource/National_Salvation_Party>
+Millî Selamet Partisi	<http://dbpedia.org/resource/National_Salvation_Party>
+Pirates de Catalunya	<http://dbpedia.org/resource/Pirates_of_Catalonia>
+Progressive Party	<http://dbpedia.org/resource/Progressive_Party_(Spain)>
+Partido Progresista	<http://dbpedia.org/resource/Progressive_Party_(Spain)>
+Socialist Left Party	<http://dbpedia.org/resource/Socialist_Left_Party_(Norway)>
+Welsh Labour	<http://dbpedia.org/resource/Welsh_Labour>
+Llafur Cymru	<http://dbpedia.org/resource/Welsh_Labour>
+Yugoslav Radical Union	<http://dbpedia.org/resource/Yugoslav_Radical_Union>
+Afek Tounes	<http://dbpedia.org/resource/Afek_Tounes>
+Baloch Republican Army	<http://dbpedia.org/resource/Baloch_Republican_Army>
+Countercurrent	<http://dbpedia.org/resource/Countercurrent_(PRC_faction,_Italy)>
+Covenant Party	<http://dbpedia.org/resource/Covenant_Party_(Northern_Mariana_Islands)>
+Fadhila	<http://dbpedia.org/resource/Islamic_Virtue_Party>
+Mahajana Eksath Peramuna	<http://dbpedia.org/resource/Mahajana_Eksath_Peramuna>
+Peoples United Front	<http://dbpedia.org/resource/Mahajana_Eksath_Peramuna>
+Pokret za promjene	<http://dbpedia.org/resource/Movement_for_Changes>
+Movimiento Unión Soberanista	<http://dbpedia.org/resource/Movimiento_Uni%C3%B3n_Soberanista>
+新民黨	<http://dbpedia.org/resource/New_People's_Party_(Hong_Kong)>
+New Peoples Party	<http://dbpedia.org/resource/New_People's_Party_(Hong_Kong)>
+Pacific Green Party	<http://dbpedia.org/resource/Pacific_Green_Party>
+of Oregon	<http://dbpedia.org/resource/Pacific_Green_Party>
+Partido Bandera Roja	<http://dbpedia.org/resource/Red_Flag_Party>
+Revolutionary Workers Party	<http://dbpedia.org/resource/Revolutionary_Workers_Party_(Sri_Lanka)>
+Akcija socijaldemokrata Hrvatske	<http://dbpedia.org/resource/Social_Democratic_Action_of_Croatia>
+1920 Revolution Brigades	<http://dbpedia.org/resource/1920_Revolution_Brigade>
+Demokratski omladinski pokret	<http://dbpedia.org/resource/Democratic_Youth_Movement>
+Libyan National Movement	<http://dbpedia.org/resource/Libyan_National_Movement>
+ML-Gruppa Revolusjon	<http://dbpedia.org/resource/Marxist%E2%80%93Leninist_Group_Revolution>
+New Socialist Alternative	<http://dbpedia.org/resource/New_Socialist_Alternative_(India)>
+Revolutionary Socialist Alternative	<http://dbpedia.org/resource/Revolutionary_Socialist_Alternative_(Bolivia)>
+Democratic National Alliance	<http://dbpedia.org/resource/Democratic_National_Alliance_(Sri_Lanka)>
+Democratic Way	<http://dbpedia.org/resource/Democratic_Way>
+Islamic Democratic Alliance	<http://dbpedia.org/resource/Islami_Jamhoori_Ittehad>
+National Fascist Union	<http://dbpedia.org/resource/National_Fascist_Union_(Argentina)>
+Union Nacional Fascista	<http://dbpedia.org/resource/National_Fascist_Union_(Argentina)>
+Stranka hrvatskog prava	<http://dbpedia.org/resource/Party_of_Croatian_Right>
+Partido Humanista Peruano	<http://dbpedia.org/resource/Peruvian_Humanist_Party>
+Revolutionary Socialism	<http://dbpedia.org/resource/Revolutionary_Socialism_(Portugal)>
+Arbejderpartiet Kommunisterne	<http://dbpedia.org/resource/Workers'_Communist_Party_(Denmark)>
+All Peoples Congress	<http://dbpedia.org/resource/All_People's_Congress>
+Democratic Party	<http://dbpedia.org/resource/Democratic_Party_(Spain)>
+Partido Demócratico	<http://dbpedia.org/resource/Democratic_Party_(Spain)>
+Freedom and Solidarity	<http://dbpedia.org/resource/Freedom_and_Solidarity>
+Sloboda a Solidarita	<http://dbpedia.org/resource/Freedom_and_Solidarity>
+Hatikva	<http://dbpedia.org/resource/Hatikva_(political_party)>
+National Advancement Party	<http://dbpedia.org/resource/National_Advancement_Party>
+Unidad Nacional	<http://dbpedia.org/resource/National_Unity_(Peru)>
+Peoples National Party	<http://dbpedia.org/resource/People's_National_Party_(Ghana)>
+Rhodesiese Front	<http://dbpedia.org/resource/Rhodesian_Front>
+Rhodesian Front	<http://dbpedia.org/resource/Rhodesian_Front>
+Srpski pokret obnove	<http://dbpedia.org/resource/Serbian_Renewal_Movement>
+Socialist Alternative	<http://dbpedia.org/resource/Socialist_Alternative_(Australia)>
+Terra Galega	<http://dbpedia.org/resource/Terra_Galega>
+Galician Land	<http://dbpedia.org/resource/Terra_Galega>
+Union for Peru	<http://dbpedia.org/resource/Union_for_Peru>
+Vermont Progressive Party	<http://dbpedia.org/resource/Vermont_Progressive_Party>
+Yugoslav National Movement	<http://dbpedia.org/resource/Yugoslav_National_Movement>
+Corsica Libera	<http://dbpedia.org/resource/Corsica_Libera>
+Democratic Renewal Party	<http://dbpedia.org/resource/Democratic_Renewal_Party_(Portugal)>
+Free Scotland Party	<http://dbpedia.org/resource/Free_Scotland_Party>
+Italian Marxist-Leninist Party	<http://dbpedia.org/resource/Italian_Marxist%E2%80%93Leninist_Party>
+Jedinstvena Srbija	<http://dbpedia.org/resource/United_Serbia>
+Constitutional Democratic Rally	<http://dbpedia.org/resource/Constitutional_Democratic_Rally>
+Kenseikai	<http://dbpedia.org/resource/Kenseikai>
+憲政会	<http://dbpedia.org/resource/Kenseikai>
+Kenseitō	<http://dbpedia.org/resource/Kenseit%C5%8D>
+憲政党	<http://dbpedia.org/resource/Kenseit%C5%8D>
+Rikken Kokumintō	<http://dbpedia.org/resource/Rikken_Kokumint%C5%8D>
+立憲民政党	<http://dbpedia.org/resource/Rikken_Kokumint%C5%8D>
+Shakai Taishūtō	<http://dbpedia.org/resource/Shakai_Taish%C5%ABt%C5%8D>
+Socijaldemokratska Partija	<http://dbpedia.org/resource/Social_Democratic_Party_of_Bosnia_and_Herzegovina>
+A Just Russia	<http://dbpedia.org/resource/A_Just_Russia>
+Coalition for Melilla	<http://dbpedia.org/resource/Coalition_for_Melilla>
+Democratic Turnhalle Alliance	<http://dbpedia.org/resource/Democratic_Turnhalle_Alliance>
+Kach	<http://dbpedia.org/resource/Kach_and_Kahane_Chai>
+Rikken Dōshikai	<http://dbpedia.org/resource/Rikken_D%C5%8Dshikai>
+立憲同志会	<http://dbpedia.org/resource/Rikken_D%C5%8Dshikai>
+Rikken Kaishintō	<http://dbpedia.org/resource/Rikken_Kaishint%C5%8D>
+立憲改進党	<http://dbpedia.org/resource/Rikken_Kaishint%C5%8D>
+Rikken Teiseitō	<http://dbpedia.org/resource/Rikken_Teiseit%C5%8D>
+立憲帝政党	<http://dbpedia.org/resource/Rikken_Teiseit%C5%8D>
+Srpska Demokratska Stranka	<http://dbpedia.org/resource/Serbian_Democratic_Party_(Bosnia_and_Herzegovina)>
+Solidarity and Equality	<http://dbpedia.org/resource/Solidarity_and_Equality>
+Söödschlaswiksche Wäälerferbånd	<http://dbpedia.org/resource/South_Schleswig_Voter_Federation>
+Die Republikaner	<http://dbpedia.org/resource/The_Republicans_(Germany)>
+Unity Party	<http://dbpedia.org/resource/Unity_Party_(Liberia)>
+Ghadar Party	<http://dbpedia.org/resource/Ghadar_Party>
+Strana zelených	<http://dbpedia.org/resource/Green_Party_(Czech_Republic)>
+Reagrupament	<http://dbpedia.org/resource/Reagrupament>
+Rikken Seiyūkai	<http://dbpedia.org/resource/Rikken_Seiy%C5%ABkai>
+立憲政友会	<http://dbpedia.org/resource/Rikken_Seiy%C5%ABkai>
+Аҧсны Акзаара	<http://dbpedia.org/resource/United_Abkhazia>
+Coalició Compromís	<http://dbpedia.org/resource/Coalici%C3%B3_Comprom%C3%ADs>
+Commitment Coalition	<http://dbpedia.org/resource/Coalici%C3%B3_Comprom%C3%ADs>
+Sortu	<http://dbpedia.org/resource/Sortu>
+Elliniko Metopo	<http://dbpedia.org/resource/Hellenic_Front>
+Albanian Fascist Party	<http://dbpedia.org/resource/Albanian_Fascist_Party>
+Front national	<http://dbpedia.org/resource/National_Front_(France)>
+Parti socialiste	<http://dbpedia.org/resource/Socialist_Party_(France)>
+Partida Populara Svizra	<http://dbpedia.org/resource/Swiss_People's_Party>
+Schweizerische Volkspartei	<http://dbpedia.org/resource/Swiss_People's_Party>
+Partido dos Trabalhadores	<http://dbpedia.org/resource/Workers'_Party_(Brazil)>
+Yisrael Beiteinu	<http://dbpedia.org/resource/Yisrael_Beiteinu>
+Democratic-Republican Party	<http://dbpedia.org/resource/Democratic-Republican_Party>
+Minnesota Democratic–Farmer–Labor Party	<http://dbpedia.org/resource/Minnesota_Democratic%E2%80%93Farmer%E2%80%93Labor_Party>
+公明党	<http://dbpedia.org/resource/New_Komeito>
+New Komeito	<http://dbpedia.org/resource/New_Komeito>
+Ceylon Communist Party	<http://dbpedia.org/resource/Ceylon_Communist_Party_(Maoist)>
+Alianza Libertadora Nacionalista	<http://dbpedia.org/resource/Nationalist_Liberation_Alliance>
+Nationalist Liberation Alliance	<http://dbpedia.org/resource/Nationalist_Liberation_Alliance>
+Srpska radikalna stranka	<http://dbpedia.org/resource/Serbian_Radical_Party>
+United National Party	<http://dbpedia.org/resource/United_National_Party>
+Eksath Jathika Pakshaya	<http://dbpedia.org/resource/United_National_Party>
+香港民主同盟	<http://dbpedia.org/resource/United_Democrats_of_Hong_Kong>
+Liberal Socialist Party	<http://dbpedia.org/resource/Liberal_Socialist_Party>
+Parti Liberal Sosialis	<http://dbpedia.org/resource/Liberal_Socialist_Party>
+Liberal Union	<http://dbpedia.org/resource/Liberal_Union_(Spain)>
+Unión Liberal	<http://dbpedia.org/resource/Liberal_Union_(Spain)>
+Popular Arab Bloc	<http://dbpedia.org/resource/Popular_Arab_Bloc>
+National Salvation Front	<http://dbpedia.org/resource/National_Salvation_Front_(Romania)>
+Oriental Revolutionary Movement	<http://dbpedia.org/resource/Oriental_Revolutionary_Movement>
+Movimiento Revolucionario Oriental	<http://dbpedia.org/resource/Oriental_Revolutionary_Movement>
+Animals Count	<http://dbpedia.org/resource/Animals_Count>
+Cruciada Românismului	<http://dbpedia.org/resource/Crusade_of_Romanianism>
+Democratic Party	<http://dbpedia.org/resource/Democratic_Party_(Burma)>
+Elliniki Aristera	<http://dbpedia.org/resource/Greek_Left>
+Labour Party Pakistan	<http://dbpedia.org/resource/Labour_Party_Pakistan>
+Lincolnshire Independents	<http://dbpedia.org/resource/Lincolnshire_Independents>
+Mohajir Qaumi Movement	<http://dbpedia.org/resource/Muhajir_Qaumi_Movement_(Haqiqi)>
+New Aspiration Party	<http://dbpedia.org/resource/New_Aspiration_Party>
+Science Party	<http://dbpedia.org/resource/Science_Party>
+Senior Citizens Party	<http://dbpedia.org/resource/Senior_Citizens_Party>
+Alternative	<http://dbpedia.org/resource/The_Alternative_(Palestine)>
+Bangladesh Khilafat Andolan	<http://dbpedia.org/resource/Bangladesh_Khilafat_Andolan>
+Democratic National Alliance	<http://dbpedia.org/resource/Democratic_National_Alliance_(Bahamas)>
+Donald Duck Party	<http://dbpedia.org/resource/Donald_Duck_Party>
+Savez komunista Srbije	<http://dbpedia.org/resource/League_of_Communists_of_Serbia>
+Left Liberation Front	<http://dbpedia.org/resource/Left_Liberation_Front>
+Libertas Partei Deutschland	<http://dbpedia.org/resource/Libertas_Germany>
+Oklahoma Democratic Party	<http://dbpedia.org/resource/Oklahoma_Democratic_Party>
+Pakistan Muslim League	<http://dbpedia.org/resource/Pakistan_Muslim_League_(F)>
+Pakistan Muslim League	<http://dbpedia.org/resource/Pakistan_Muslim_League_(Z)>
+Pakistan National Alliance	<http://dbpedia.org/resource/Pakistan_National_Alliance>
+Up-Country Peoples Front	<http://dbpedia.org/resource/Up-Country_People's_Front>
+Constitution Party	<http://dbpedia.org/resource/Constitution_Party_(Egypt)>
+Hebrew Communists	<http://dbpedia.org/resource/Hebrew_Communists>
+Basotho National Party	<http://dbpedia.org/resource/Basotho_National_Party>
+Crnogorska Partija	<http://dbpedia.org/resource/Montenegrin_Party>
+Likud	<http://dbpedia.org/resource/Likud>
+Popular Orthodox Rally	<http://dbpedia.org/resource/Popular_Orthodox_Rally>
+Sozialdemokratische Partei Deutschlands	<http://dbpedia.org/resource/Social_Democratic_Party_of_Germany>
+Whig Party	<http://dbpedia.org/resource/Whig_Party_(United_States)>
+EQUO	<http://dbpedia.org/resource/Equo>
+Forza Italia	<http://dbpedia.org/resource/Forza_Italia>
+Marxistisch-Leninistische Partei Deutschlands	<http://dbpedia.org/resource/Marxist%E2%80%93Leninist_Party_of_Germany>
+Osaka Restoration Association	<http://dbpedia.org/resource/Osaka_Restoration_Association>
+Party of Socialists–Revolutionaries	<http://dbpedia.org/resource/Socialist_Revolutionary_Party>
+East Kilbride Alliance	<http://dbpedia.org/resource/East_Kilbride_Alliance>
+Libertarische Partij	<http://dbpedia.org/resource/Libertarian_Party_(Netherlands)>
+Oi Fileleftheroi	<http://dbpedia.org/resource/The_Liberals_(Greece)>
+Minority Front	<http://dbpedia.org/resource/Minority_Front>
+National Peoples Party	<http://dbpedia.org/resource/National_People's_Party_(South_Africa)>
+Social Democratic Youth	<http://dbpedia.org/resource/24_October_Movement>
+Democratic Renewal Movement	<http://dbpedia.org/resource/Democratic_Renewal_(Lebanon)>
+Partidul Ecologist Român	<http://dbpedia.org/resource/Ecologist_Party_of_Romania>
+Romanian Ecologist Party	<http://dbpedia.org/resource/Ecologist_Party_of_Romania>
+Norwegian Green Party	<http://dbpedia.org/resource/Green_Party_(Norway)>
+Rōpū Kākāriki	<http://dbpedia.org/resource/Green_Party_of_Aotearoa_New_Zealand>
+National Socialist Movement	<http://dbpedia.org/resource/National_Socialist_Movement_(United_States)>
+Wendish Peoples Party	<http://dbpedia.org/resource/Wendish_People's_Party>
+White Patriot Party	<http://dbpedia.org/resource/White_Patriot_Party>
+Civic List	<http://dbpedia.org/resource/Civic_List_(Slovenia)>
+Hrvatska srijemska inicijativa	<http://dbpedia.org/resource/Croatian_Syrmian_Initiative>
+Free Patriotic Union	<http://dbpedia.org/resource/Free_Patriotic_Union>
+Democracia Cristiana Guatemalteca	<http://dbpedia.org/resource/Guatemalan_Christian_Democracy>
+Guatemalan Christian Democracy	<http://dbpedia.org/resource/Guatemalan_Christian_Democracy>
+Frente Independiente Moralizador	<http://dbpedia.org/resource/Independent_Moralizing_Front>
+Independent Moralizing Front	<http://dbpedia.org/resource/Independent_Moralizing_Front>
+Labour Front	<http://dbpedia.org/resource/Labour_Front>
+Liberal Party Bangladesh	<http://dbpedia.org/resource/Liberal_Party_Bangladesh>
+National Integration Party	<http://dbpedia.org/resource/National_Integration_Party_(Costa_Rica)>
+Partido Integración Nacional	<http://dbpedia.org/resource/National_Integration_Party_(Costa_Rica)>
+Progressive Labor Party	<http://dbpedia.org/resource/Progressive_Labor_Party_(United_States)>
+Progressive Peoples Alliance	<http://dbpedia.org/resource/Progressive_Peoples_Alliance>
+革新党	<http://dbpedia.org/resource/Reform_Party_(Singapore)>
+Republican Governors Association	<http://dbpedia.org/resource/Republican_Governors_Association>
+Republican Party	<http://dbpedia.org/resource/Republican_Party_(Northern_Mariana_Islands)>
+Socialist Party Scotland	<http://dbpedia.org/resource/Socialist_Party_Scotland>
+Majlis-e-Ahrar-e-Islam	<http://dbpedia.org/resource/Majlis-e-Ahrar-ul-Islam>
+New Vision	<http://dbpedia.org/resource/New_Vision_(electoral_alliance)>
+Socialist Alternative	<http://dbpedia.org/resource/Socialist_Alternative_(United_States)>
+Croatian Democratic Alliance	<http://dbpedia.org/resource/Croatian_Democratic_Alliance_of_Slavonia_and_Baranja>
+Free National Movement	<http://dbpedia.org/resource/Free_National_Movement>
+Peoples Party	<http://dbpedia.org/resource/People's_Party_(Spain)>
+Partido Popular	<http://dbpedia.org/resource/People's_Party_(Spain)>
+Scottish National Party	<http://dbpedia.org/resource/Scottish_National_Party>
+Social Democratic Party	<http://dbpedia.org/resource/Social_Democratic_Party_of_Croatia>
+Socijaldemokratska partija Hrvatske	<http://dbpedia.org/resource/Social_Democratic_Party_of_Croatia>
+of Croatia	<http://dbpedia.org/resource/Social_Democratic_Party_of_Croatia>
+Die Linke	<http://dbpedia.org/resource/The_Left_(Germany)>
+Africa Muslim Party	<http://dbpedia.org/resource/Africa_Muslim_Party>
+Elisabeth Naucler	<http://dbpedia.org/resource/Elisabeth_Naucl%C3%A9r>
+Socialist Propaganda League	<http://dbpedia.org/resource/Socialist_Propaganda_League>
+匯點	<http://dbpedia.org/resource/Meeting_Point>
+Meeting Point	<http://dbpedia.org/resource/Meeting_Point>
+Bloque Nacionalista Galego	<http://dbpedia.org/resource/Galician_Nationalist_Bloc>
+Galician Nationalist Bloc	<http://dbpedia.org/resource/Galician_Nationalist_Bloc>
+National Democratic Congress	<http://dbpedia.org/resource/National_Democratic_Congress_(Ghana)>
+Plataforma per Catalunya	<http://dbpedia.org/resource/Platform_for_Catalonia>
+Social Democratic Party	<http://dbpedia.org/resource/Social_Democratic_Party_(Romania)>
+Partidul Social Democrat	<http://dbpedia.org/resource/Social_Democratic_Party_(Romania)>
+Valencian Union	<http://dbpedia.org/resource/Valencian_Union>
+Unió Valenciana	<http://dbpedia.org/resource/Valencian_Union>
+Movimiento Social Republicano	<http://dbpedia.org/resource/Republican_Social_Movement>
+Wesleyan Student Assembly	<http://dbpedia.org/resource/Wesleyan_Student_Assembly>
+Somos Perú	<http://dbpedia.org/resource/We_Are_Peru>
+We Are Peru	<http://dbpedia.org/resource/We_Are_Peru>
+Moderate Party	<http://dbpedia.org/resource/Moderate_Party>
+Moderata samlingspartiet	<http://dbpedia.org/resource/Moderate_Party>
+Kinima Eleftheron Politon	<http://dbpedia.org/resource/Movement_of_Free_Citizens>
+Partidul Naţional Ţărănesc	<http://dbpedia.org/resource/National_Peasants'_Party>
+Partido Pirata	<http://dbpedia.org/resource/Pirate_Party_(Spain)>
+Renewed Democratic Liberty	<http://dbpedia.org/resource/Renewed_Democratic_Liberty>
+Prohibition Party	<http://dbpedia.org/resource/Prohibition_Party>
+World in Common	<http://dbpedia.org/resource/World_In_Common>
+Democratic Justice Party	<http://dbpedia.org/resource/Democratic_Justice_Party>
+민주정의당	<http://dbpedia.org/resource/Democratic_Justice_Party>
+Minju Jeonuidang	<http://dbpedia.org/resource/Democratic_Justice_Party>
+Galician Peoples Front	<http://dbpedia.org/resource/Galician_People's_Front>
+Frente Popular Galega	<http://dbpedia.org/resource/Galician_People's_Front>
+Uniunea Social Liberală	<http://dbpedia.org/resource/Social_Liberal_Union>
+Social Liberal Union	<http://dbpedia.org/resource/Social_Liberal_Union>
+Alliance centriste	<http://dbpedia.org/resource/Centrist_Alliance>
+新黨, Xīn Dăng	<http://dbpedia.org/resource/New_Party_(Republic_of_China)>
+Conservative Party	<http://dbpedia.org/resource/Conservative_Party_(Bulgaria)>
+Konservativna Partiya	<http://dbpedia.org/resource/Conservative_Party_(Bulgaria)>
+PNP	<http://dbpedia.org/resource/Peruvian_Nationalist_Party>
+Partido Nacionalista Peruano	<http://dbpedia.org/resource/Peruvian_Nationalist_Party>
+Piratenpartei Deutschland	<http://dbpedia.org/resource/Pirate_Party_Germany>
+Canadian Union	<http://dbpedia.org/resource/Canadian_Union_of_Fascists>
+Hizb Al-khodr	<http://dbpedia.org/resource/Egyptian_Green_Party>
+Hizb el-Ghad	<http://dbpedia.org/resource/El-Ghad_Party>
+el-Ghad Party	<http://dbpedia.org/resource/El-Ghad_Party>
+Green Party	<http://dbpedia.org/resource/Green_Party_of_the_United_States>
+香港協進聯盟	<http://dbpedia.org/resource/Hong_Kong_Progressive_Alliance>
+Partei Rechtsstaatlicher Offensive	<http://dbpedia.org/resource/Law_and_Order_Offensive_Party>
+Hizb Al-Wafd Al-Jadid	<http://dbpedia.org/resource/New_Wafd_Party>
+Yekêtiy Nîştimaniy Kurdistan	<http://dbpedia.org/resource/Patriotic_Union_of_Kurdistan>
+Workers Internationalist League	<http://dbpedia.org/resource/Workers'_Internationalist_League>
+新香港同盟	<http://dbpedia.org/resource/New_Hong_Kong_Alliance>
+Conservative Republican Party	<http://dbpedia.org/resource/Conservative_Republican_Party>
+Partido Republicano Conservador	<http://dbpedia.org/resource/Conservative_Republican_Party>
+Mahajana Eksath Peramuna	<http://dbpedia.org/resource/Mahajana_Eksath_Peramuna_(1956)>
+Peoples United Front	<http://dbpedia.org/resource/Mahajana_Eksath_Peramuna_(1956)>
+Mexican Fascist Party	<http://dbpedia.org/resource/Mexican_Fascist_Party>
+Partido Fascista Mexicano	<http://dbpedia.org/resource/Mexican_Fascist_Party>
+香港革新會	<http://dbpedia.org/resource/Reform_Club_of_Hong_Kong>
+Azanian Peoples Organisation	<http://dbpedia.org/resource/Azanian_People's_Organisation>
+Congress of People	<http://dbpedia.org/resource/Congress_of_the_People_(South_African_political_party)>
+Whigs	<http://dbpedia.org/resource/Whigs_(British_political_party)>
+Pirate Party	<http://dbpedia.org/resource/Pirate_Party_(United_States)>
+Onafhankelijke Burger Partij	<http://dbpedia.org/resource/Independent_Citizens'_Party>
+Al-Fadyla	<http://dbpedia.org/resource/Virtue_Party_(Egypt)>
+Democratic Union Party	<http://dbpedia.org/resource/Democratic_Union_Party_(Syria)>
+Partiya Yekîtiya Demokrat	<http://dbpedia.org/resource/Democratic_Union_Party_(Syria)>
+National Peoples Party	<http://dbpedia.org/resource/National_People's_Party_(South_Africa,_1981)>
+Awami Tehreek	<http://dbpedia.org/resource/Awami_Tahreek>
+Partidul Poporului	<http://dbpedia.org/resource/People's_Party_(interwar_Romania)>
+MAA	<http://dbpedia.org/resource/Front_of_Solidarity_and_Overthrow>
+ΜΑΑ	<http://dbpedia.org/resource/Front_of_Solidarity_and_Overthrow>
+Freedomites	<http://dbpedia.org/resource/The_Freedomites>
+Al-Nahda Party	<http://dbpedia.org/resource/Renaissance_Party_(Egypt)>
+香港自由民主聯會	<http://dbpedia.org/resource/Liberal_Democratic_Federation_of_Hong_Kong>
+Jannat Pakistan Party	<http://dbpedia.org/resource/Jannat_Pakistan_Party>
+Narodna partija	<http://dbpedia.org/resource/People's_Party_(Serbia,_2008)>
+Hatnua	<http://dbpedia.org/resource/Hatnuah>
+(also known as	<http://dbpedia.org/resource/National_Salvation_Front_(Egypt)>
+National Front for	<http://dbpedia.org/resource/National_Salvation_Front_(Egypt)>
+National Rescue Front)	<http://dbpedia.org/resource/National_Salvation_Front_(Egypt)>
+Partidul Noua Republică	<http://dbpedia.org/resource/New_Republic_(Romania)>
+Likud Yisrael Beiteinu	<http://dbpedia.org/resource/Likud_Yisrael_Beiteinu>
+Sunrise Party	<http://dbpedia.org/resource/Sunrise_Party>
+British Democratic Party	<http://dbpedia.org/resource/British_Democratic_Party_(2013)>
+太平山學會	<http://dbpedia.org/resource/Hong_Kong_Affairs_Society>
+Hayazn Union	<http://dbpedia.org/resource/Hayazn>
+Democratic Patriots Movement	<http://dbpedia.org/resource/Democratic_Patriots'_Movement>
+Alternativa Popular Canaria	<http://dbpedia.org/resource/Alternativa_Popular_Canaria>
+穩定香港協會	<http://dbpedia.org/resource/Federation_for_the_Stability_of_Hong_Kong>
+Right Romania Alliance	<http://dbpedia.org/resource/Right_Romania_Alliance>
+Alianţa România Dreaptă	<http://dbpedia.org/resource/Right_Romania_Alliance>
+Agang South Africa	<http://dbpedia.org/resource/Agang_South_Africa>
+Akhani	<http://dbpedia.org/resource/Agang_South_Africa>
+Galician Left Alternative	<http://dbpedia.org/resource/Galician_Left_Alternative>
+Socijaldemokratska Unija	<http://dbpedia.org/resource/Social_Democratic_Union_of_Bosnia_and_Herzegovina>
+Al-Watan	<http://dbpedia.org/resource/Homeland_Party_(Egypt)>
+新界社團聯會	<http://dbpedia.org/resource/New_Territories_Association_of_Societies>
+Centre Right Alliance	<http://dbpedia.org/resource/Centre_Right_Alliance>
+Tunisian Workers Party	<http://dbpedia.org/resource/Tunisian_Workers'_Party>
+香港社會民主黨	<http://dbpedia.org/resource/Hong_Kong_Socialist_Democratic_Party>
+Anti PowerPoint Party	<http://dbpedia.org/resource/Anti-PowerPoint_Party>
+Democratisch Politiek Keerpunt	<http://dbpedia.org/resource/Democratic_Political_Turning_Point>
+Am Shalem	<http://dbpedia.org/resource/Am_Shalem>
+香港聯合國協會	<http://dbpedia.org/resource/United_Nations_Association_of_Hong_Kong>
