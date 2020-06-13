@@ -8,3 +8,6 @@ If you notice any errors or have suggestions for improvement, then git pull requ
 
 My website is https://markwatson.com
 
+## Donate on Patreon to support all of my projects
+
+Please visit [https://www.patreon.com/markwatson](https://www.patreon.com/markwatson) and sign up to donate $1/month
