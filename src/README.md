@@ -4,7 +4,7 @@
 
 https://xach.livejournal.com/278047.html
 
-Store root for my quicklisp libraries in:
+I set the root for my quicklisp libraries in the file:
 
         ~/.config/common-lisp/source-registry.conf.d/projects.conf
 
@@ -12,24 +12,13 @@ that currently contains:
 
 ````````
 (:tree
- (:home "GITHUB/common-lisp/")
+ (:home "GITHUB/loving-common-lisp/src/")
 )
 
 NOTE for Ubuntu Linux: this did not have to work. Instead I did a ln -s mapping to ~/.local/share/common-lisp/source/
 
 ````````
 
-Note, for easier debugging, but NOT for shipping product, in .sbclrc:
-
-;; slows code but makes debugging simpler:
-(declaim (optimize (debug 3)))
-
-(setf *print-case* :downcase)
-
-
-
-# Use for Common Lisp component of KGcreator
-
-some good references:  auto-build knowledge graphs
+With this setup I can Quicklisp most of the projects in this **src** directory.
 
 

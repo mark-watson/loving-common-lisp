@@ -21,7 +21,7 @@
 
 
 (defun dbpedia (query)
-  (print (list "\ndbpeia SPARQL:\n" query "\n"))
+  (print (list "dbpeia SPARQL:" query "\n"))
   (let ((response
 	 (uiop:run-program 
 	  (list
@@ -38,7 +38,6 @@
                     (mapcar #'(lambda (y)
                                 (list (car y) (cdr (assoc :value (cdr y))))) x))
                 (cdr (cadddr (cadr json-as-list))))))))
-
 
 (defun fuseki (query &key (host "http://127.0.0.1") (port 3030) (suffix "/news/sparql"))
     (let* ((uri (format nil "~a:~a~a?query=" host port suffix))
@@ -78,8 +77,8 @@
       (cl-csv:read-csv response)))
 
 
-(defun agraph (query &key (host "http://127.0.0.1") (port 10035) (suffix "/repositories/news"))
-    (let* ((uri (format nil "~a:~a~a?accept=application/json&query=" host port suffix))
+(defun agraph (query &key (host "mark:mark@127.0.0.1") (port 10035) (suffix "/repositories/news"))
+    (let* ((uri (format nil "~a:~a~a?accept=application/json&user=mark&passwd=mark&query=" host port suffix))
            (response
             (uiop:run-program 
              (list
@@ -89,7 +88,13 @@
 			(drakma:url-encode query :utf-8)
 			"&format=json"))
 	     :output :string)))
-      ;;(print response)
+      (print (list
+              "curl" 
+              (concatenate 'string
+                        uri
+			(drakma:url-encode query :utf-8)
+			"&format=json")))
+      (print response)
       (with-input-from-string
           (s response)
 	(let* ((json-as-list (json:decode-json s))
