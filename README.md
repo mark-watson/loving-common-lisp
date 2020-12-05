@@ -6,7 +6,7 @@ Open source examples for my book "Loving Common Lisp, or the Savvy Programmer's 
 
 The source code in this repository may be used either under the Apache 2 or the LGPG version 3 licenses. Use whichever license that works best for you.
 
-Starting December 5, 2020 I have moved most of my personal (non-work related) Common Lisp projects to this repo for my book examples. You may notice subdirectories in **src** that contain code that is not yet (or may never be) in my book
+Starting December 5, 2020 I have moved most of my personal (non-work related) Common Lisp projects to this repo for my book examples. You may notice subdirectories in **src** that contain code that is not yet (or may never be) in my book. These directories contain the file **NOT_YET_IN_BOOK.md**.
 
 If you notice any errors or have suggestions for improvement, then git pull requests will be appreciated!
 
