@@ -11,7 +11,3 @@ Starting December 5, 2020 I have moved most of my personal (non-work related) Co
 If you notice any errors or have suggestions for improvement, then git pull requests will be appreciated!
 
 My website is https://markwatson.com
-
-## Donate on Patreon to support all of my projects
-
-Please visit [https://www.patreon.com/markwatson](https://www.patreon.com/markwatson) and sign up to donate $1/month
