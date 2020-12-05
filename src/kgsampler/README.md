@@ -22,6 +22,8 @@ The sample program uses the following DBPedia entity URIs (change this to what y
    "sample-KG.nt")
 ```
 
+![GraphDB Visual graph of generated RDF triples](GraphDB.jpg)
+
 Also, this example is set up for people and companies. I may expand it in the future to other types of entities as I need them.
 
 I wrote this to pull small "mini Knowledge Graphs" from DBPedia. It runs O(N^2) where N is the number of input URIs so be carefull if seeding **create-sample-KG** with a large number of entity URIs.
