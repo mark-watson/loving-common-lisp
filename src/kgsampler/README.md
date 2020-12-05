@@ -22,6 +22,8 @@ The sample program uses the following DBPedia entity URIs (change this to what y
    "sample-KG.nt")
 ```
 
+Here I am using GraphDB to show a small part of the generated RDF triples:
+
 ![GraphDB Visual graph of generated RDF triples](GraphDB.jpg)
 
 Also, this example is set up for people and companies. I may expand it in the future to other types of entities as I need them.
