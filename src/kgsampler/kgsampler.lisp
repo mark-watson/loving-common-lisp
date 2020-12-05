@@ -41,13 +41,6 @@
      (dbpedia-as-nt
       (format
        nil
-       "CONSTRUCT { ~A <http://dbpedia.org/ontology/occupation> ?o } where { ~A <http://dbpedia.org/ontology/occupation> ?o  }" 
-       entity-uri entity-uri)))
-    (format
-     output-stream
-     (dbpedia-as-nt
-      (format
-       nil
        "CONSTRUCT { ~A <http://dbpedia.org/ontology/industry> ?o } where { ~A <http://dbpedia.org/ontology/industry> ?o  }" 
        entity-uri entity-uri)))
     (format
