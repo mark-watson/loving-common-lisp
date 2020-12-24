@@ -6,6 +6,8 @@ https://xach.livejournal.com/278047.html
 
 ## Making libraries (as defined in sub-directories of this directory) libraries that can be installed using Quicklisp
 
+For sub-directories that contains a project.lisp file and a *.asd file, then they can be quickloaded with Quicklisp if you modify a configuration file:
+
 I set the root for my quicklisp libraries in the file:
 
         ~/.config/common-lisp/source-registry.conf.d/projects.conf
