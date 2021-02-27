@@ -102,6 +102,36 @@
 	       (values (cdadr json-as-list)))
 	  (mapcar #'(lambda (x) (mapcar #'list var-names x)) values)))))
 
+(defun stardog (query &key (host "http://127.0.0.1") (port 5820) (suffix "/testdb/query"))
+    (let* ((response
+            (uiop:run-program 
+             (concatenate 'string
+              "curl  -u admin:admin -H \"Accept: application/sparql-results+json\" " 
+              host ":" (write-to-string port) suffix
+              " --data-urlencode query='"
+              query
+              "'")
+	            :output :string)))
+      (with-input-from-string
+          (s response)
+	(let* ((json-as-list (json:decode-json s))
+               (var-names (cdadar json-as-list))
+               (values 
+                (mapcar #'(lambda (x)
+                            (mapcar #'(lambda (y)
+                                        (list (car y) (cdr (assoc :value (cdr y))))) x))
+                        (cdr (cadadr json-as-list)))))
+          (cons
+           var-names
+           (mapcar #'(lambda (l1)
+                       (mapcar #'(lambda (l2) (second l2))
+                               l1))
+                   (mapcar  #'(lambda (x) (mapcar #'(lambda (vn)
+                                                      (assoc (make-symbol (string-upcase vn)) x ;; simplify this?
+                                                             :test #'(lambda (a b)
+                                                                       (equal (subseq (write-to-string a) 1)
+                                                                              (write-to-string b)))))
+                                                  var-names)) values)))))))
 
 #|
 (setf dd (sparql:wikidata "select ?s ?p { ?s ?p \"Bill Gates\"@en }"))
@@ -109,7 +139,9 @@
 (setf rr (sparql:dbpedia "select ?s ?p { ?s ?p \"Bill Gates\"@en }"))
 (pprint rr)
 
- (sparql::fuseki "select ?s ?p ?o { ?s ?p ?o }")
+(sparql::fuseki "select ?s ?p ?o { ?s ?p ?o }")
+
+(sparql::stardog "select ?s ?p ?o { ?s ?p ?o } limit 20")
 
  (sparql::graphdb "KBS" "select ?s ?p ?o { ?s ?p ?o } limit 20")
 

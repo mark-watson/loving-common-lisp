@@ -1,4 +1,4 @@
-This is the stub README.txt for the "webscrape" project.
+This is the stub README.txt for the "dbpedia" project.
 
 try:
 

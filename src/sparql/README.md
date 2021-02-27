@@ -43,3 +43,8 @@ To stop server on VPS:
 Remote CURL:
 
 curl "http://127.0.0.1:10035/repositories/news/statements"
+
+# Notes on Stardog client
+
+The default value for the key argument `suffix "/testdb/query"` specifies the use of database `testdb` that you can replace,
+being sure to add `/query` to whatever database name you specify. (I will fix this sometime).
