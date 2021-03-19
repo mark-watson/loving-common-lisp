@@ -2,5 +2,4 @@
 
 (defpackage #:sparql
   (:use #:cl #:uiop #:cl-csv)
-  (:export #:dbpedia #:wikidata #:fuseki #:agraph))
-
+  (:export #:dbpedia #:wikidata #:fuseki #:agraph #:stardog))

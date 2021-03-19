@@ -102,6 +102,7 @@
 	       (values (cdadr json-as-list)))
 	  (mapcar #'(lambda (x) (mapcar #'list var-names x)) values)))))
 
+
 (defun stardog (query &key (host "http://127.0.0.1") (port 5820) (suffix "/testdb/query"))
     (let* ((response
             (uiop:run-program 
@@ -133,19 +134,22 @@
                                                                               (write-to-string b)))))
                                                   var-names)) values)))))))
 
+
+
 #|
 (setf dd (sparql:wikidata "select ?s ?p { ?s ?p \"Bill Gates\"@en }"))
 (pprint dd)
 (setf rr (sparql:dbpedia "select ?s ?p { ?s ?p \"Bill Gates\"@en }"))
 (pprint rr)
 
-(sparql::fuseki "select ?s ?p ?o { ?s ?p ?o }")
-
-(sparql::stardog "select ?s ?p ?o { ?s ?p ?o } limit 20")
+ (sparql::fuseki "select ?s ?p ?o { ?s ?p ?o }")
 
  (sparql::graphdb "KBS" "select ?s ?p ?o { ?s ?p ?o } limit 20")
 
  (sparql::agraph "select ?s ?p ?o { ?s ?p ?o }")
+
+ (sparql::stardog "select ?s ?p ?o { ?s ?p ?o } limit 7")
+
 |#
 
 ;; curl "http://127.0.0.1:3030/news/?query=select+%3Fs+%3Fp+%3Fo+%7B+%3Fs+%3Fp+%3Fo+%7D"
