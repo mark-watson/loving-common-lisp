@@ -1,10 +1,12 @@
 (in-package #:wolfram)
 
 (defun wolfram (statement)
-  (uiop:run-program (concatenate 'string "wolframscript -code 'Export[\"test44.txt\"," statement ",\"ExpressionJSON\"]'"))
+  (uiop:run-program (concatenate 'string "wolframscript -code 'Export[\"test44.txt\","
+				 statement ",\"ExpressionJSON\"]'"))
   (let* ((ret (uiop:read-file-string "test44.txt")))
     (delete-file "test44.txt")
-    (with-input-from-string (s (myutils:replace-all (myutils:replace-all ret "\"'" "\"") "'\"" "\""))
+    (with-input-from-string (s (myutils:replace-all
+				(myutils:replace-all ret "\"'" "\"") "'\"" "\""))
       (json:decode-json s))))
 
 (defun cleanup-lists (r)
