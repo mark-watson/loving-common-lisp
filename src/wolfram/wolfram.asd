@@ -1,5 +1,3 @@
-;;;; knowledgegraphnavigator.asd
-
 (asdf:defsystem #:wolfram
   :description "Wolfram Language interface experiments"
   :author "Mark Watson <markw@markwatson.com>"

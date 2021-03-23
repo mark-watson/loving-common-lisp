@@ -1,6 +1,5 @@
 (in-package #:wolfram)
 
-
 (defun wolfram (statement)
   (uiop:run-program (concatenate 'string "wolframscript -code 'Export[\"test44.txt\"," statement ",\"ExpressionJSON\"]'"))
   (let* ((ret (uiop:read-file-string "test44.txt")))
@@ -17,15 +16,14 @@
       (mapcar (lambda (nested-list) (recursive-remove item nested-list))
               (remove item tree :test #'equal))))
 
-
 #|
 
-(setf example "TextCases['NYC, Los Angeles, and Chicago are the largest cities in the USA in 2018 according to Pete Wilson.', {'City', 'Country', 'Date', 'Person'} -> {'String', 'Interpretation', 'Probability'}]")
-(setf example-str (myutils:replace-all  example "'" "\""))
-(setf results (wolfram:wolfram example-str))
+(defvar example "TextCases['NYC, Los Angeles, and Chicago are the largest cities in the USA in 2018 according to Pete Wilson.', {'City', 'Country', 'Date', 'Person'} -> {'String', 'Interpretation', 'Probability'}]")
+(defvar example-str (myutils:replace-all  example "'" "\""))
+(defvar results (wolfram:wolfram example-str))
 (pprint results)
 
-(setf results-cleaned (wolfram:cleanup-lists results))
+(defvar results-cleaned (wolfram:cleanup-lists results))
 (pprint results-cleaned)
 
 |#
