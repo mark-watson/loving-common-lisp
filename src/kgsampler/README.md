@@ -6,8 +6,7 @@ Run sample program:
 
       (kgsampler::create-sample-KG)
 
-Note: I used the free edition of GraphDB to load the N-Triple file and export to the Turtle
-file `sample-KG.ttl` that I find easier to read.
+Note: I used the free edition of GraphDB to load the N-Triple file and export to the Turtle file `sample-KG.ttl` that I find easier to read.
 
 The sample program uses the following DBPedia entity URIs (change this to what you want):
 
