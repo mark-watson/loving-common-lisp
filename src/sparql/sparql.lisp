@@ -21,7 +21,7 @@
 
 
 (defun dbpedia (query)
-  (print (list "dbpeia SPARQL:" query "\n"))
+  (print (list "dbpedia SPARQL:" query))
   (let ((response
 	 (uiop:run-program 
 	  (list
