@@ -2,4 +2,4 @@
 
 (defpackage #:openai
   (:use #:cl #:uiop #:cl-json)
-  (:export #:openai))
+  (:export #:completions))
