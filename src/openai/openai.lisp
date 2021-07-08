@@ -11,7 +11,7 @@
            " -H \"Content-Type: application/json\""
            " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" " 
            " -d '{\"prompt\": \"" starter-text "\", \"max_tokens\": "
-           (write-to-string max-tokens)  "}'"))
+           (write-to-string max-tokens)  ", }'"))
          (response
           (uiop:run-program
            curl-command
