@@ -1,10 +1,10 @@
-;;;; knowledgegraphnavigator.asd
+;;;; openai.asd
 
 (asdf:defsystem #:openai
-  :description "Describe openai here"
+  :description "Library for using the beta OpenAPI APIs"
   :author "Mark Watson"
   :license "Apache 2"
-  :depends-on (#:uiop #:drakma #:cl-json)
+  :depends-on (#:uiop #:cl-json)
   :components ((:file "package")
                (:file "openai")))
 
