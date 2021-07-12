@@ -1,7 +1,7 @@
 ;;;; openai.asd
 
 (asdf:defsystem #:openai
-  :description "Library for using the beta OpenAPI APIs"
+  :description "Library for using the beta OpenAI APIs"
   :author "Mark Watson"
   :license "Apache 2"
   :depends-on (#:uiop #:cl-json)
