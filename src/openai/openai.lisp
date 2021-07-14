@@ -2,7 +2,7 @@
 
 ;; define the environment variable "OPENAI_KEY" with the value of your OpenAI API key
 
-(defvar open-api-davinci-model-host "https://api.openai.com/v1/engines/davinci/completions")
+(defvar openai-davinci-model-host "https://api.openai.com/v1/engines/davinci/completions")
 
 (defun openai-helper (curl-command)
   (let ((response
@@ -20,7 +20,7 @@
   (let* ((curl-command
           (concatenate
            'string
-           "curl " open-api-davinci-model-host
+           "curl " openai-davinci-model-host
            " -H \"Content-Type: application/json\""
            " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" " 
            " -d '{\"prompt\": \"" starter-text "\", \"max_tokens\": "
@@ -31,7 +31,7 @@
   (let* ((curl-command
           (concatenate
            'string
-           "curl " open-api-davinci-model-host
+           "curl " openai-davinci-model-host
            " -H \"Content-Type: application/json\""
            " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" " 
            " -d '{\"prompt\": \"" some-text "\", \"max_tokens\": "
@@ -47,7 +47,7 @@
          (curl-command
           (concatenate
            'string
-           "curl " open-api-davinci-model-host
+           "curl " openai-davinci-model-host
            " -H \"Content-Type: application/json\""
            " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" " 
            " -d '{\"prompt\": \"" q-text "\", \"max_tokens\": "
