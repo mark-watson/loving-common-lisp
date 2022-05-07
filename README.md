@@ -18,6 +18,8 @@ If you notice any errors or have suggestions for improvement, then git pull requ
 
 - conceptnet [https://github.com/mark-watson/conceptnet](https://github.com/mark-watson/conceptnet)
 - kgn-common Knowledge Graph Navigator common library https://github.com/mark-watson/kgn-common
+- kgn-text-ui Knowledge Graph Navigator text UI https://github.com/mark-watson/kgn-text-ui
+- kgn-capi-ui Knowledge Graph Navigator LispWorks CAPI UI https://github.com/mark-watson/kgn-capi-ui
 
 ## Changes for the new edition I am working on
 
