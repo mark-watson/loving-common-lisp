@@ -14,6 +14,10 @@ Starting December 5, 2020 I have moved most of my personal (non-work related) Co
 
 If you notice any errors or have suggestions for improvement, then git pull requests will be appreciated!
 
+## Separate GitHub repositories for this book
+
+- conceptnet [https://github.com/mark-watson/conceptnet](https://github.com/mark-watson/conceptnet)
+
 ## Changes for the new edition I am working on
 
 May 2022: I am writing a new edition of my book, yay! I am going to move most (maybe all) of the examples in this book to individual GitHub repositories and as this happens I will put links to the new repositories right here! Yay, again.
