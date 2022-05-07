@@ -17,6 +17,7 @@ If you notice any errors or have suggestions for improvement, then git pull requ
 ## Separate GitHub repositories for this book
 
 - conceptnet [https://github.com/mark-watson/conceptnet](https://github.com/mark-watson/conceptnet)
+- kgn-common Knowledge Graph Navigator common library https://github.com/mark-watson/kgn-common
 
 ## Changes for the new edition I am working on
 
