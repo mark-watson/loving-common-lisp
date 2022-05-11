@@ -21,6 +21,10 @@ If you notice any errors or have suggestions for improvement, then git pull requ
 - kgn-text-ui Knowledge Graph Navigator text UI https://github.com/mark-watson/kgn-text-ui
 - kgn-capi-ui Knowledge Graph Navigator LispWorks CAPI UI https://github.com/mark-watson/kgn-capi-ui
 
+etc.
+
+The **Makefile** can be copiesd to your local ~/quicklisp/local-projects, then **make fetch**.
+
 ## Changes for the new edition I am working on
 
 May 2022: I am writing a new edition of my book, yay! I am going to move most (maybe all) of the examples in this book to individual GitHub repositories and as this happens I will put links to the new repositories right here! Yay, again.
