@@ -13,3 +13,6 @@ fetch:
 	git -C entity-uris pull || git clone git@github.com:mark-watson/entity-uris.git
 	git -C sparql pull || git clone git@github.com:mark-watson/sparql.git
 	git -C sparql-cache pull || git clone git@github.com:mark-watson/sparql-cache.git
+	git -C fasttag pull || git clone git@github.com:mark-watson/fasttag.git
+	git -C kbnlp pull || git clone git@github.com:mark-watson/kbnlpe.git
+	git -C myutils pull || git clone git@github.com:mark-watson/myutils.git
