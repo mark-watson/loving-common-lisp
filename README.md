@@ -4,7 +4,8 @@
 
 Also consider following me on [Mastodon.social](https://mastodon.social/@mark_watson) if you prefer more open and decentralized social media platforms.
 
-This repo is for the 6th edition of my book that was released May 30, 2020
+This repo is for the 8th edition of my book that will be released August 2022. In the new edition of the book the examples are (mostly) moved to individual github projects. The **Makefile** in this repository is meant to be copied to your local
+directory **~/quicklisp/local-projects** ad run the target **make fetch** to first get the self contained examples and later you can run the same make target to pull any available updates.
 
 Open source examples for my book "Loving Common Lisp, or the Savvy Programmer's Secret Weapon" that is available at https://leanpub.com/lovinglisp My book is available to read free online and the PDF for the book is licensed with Creative Common share with no modifications or commercial reuse: this means that you are encouraged to share copies (up to date copies only, please) of the PDF with friends and co-workers. New editions of the book are free if you have purchased the book before. Many thanks to the people who support my writing by purchasing the book!
 
@@ -23,7 +24,7 @@ If you notice any errors or have suggestions for improvement, then git pull requ
 
 etc.
 
-The **Makefile** can be copiesd to your local ~/quicklisp/local-projects, then **make fetch**.
+The **Makefile** can be copied to your local ~/quicklisp/local-projects, then **make fetch**.
 
 ## Changes for the new edition I am working on
 

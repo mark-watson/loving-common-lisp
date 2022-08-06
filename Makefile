@@ -17,3 +17,5 @@ fetch:
 	git -C kbnlp pull || git clone git@github.com:mark-watson/kbnlpe.git
 	git -C myutils pull || git clone git@github.com:mark-watson/myutils.git
 	git -C spacy-py4cl pull || git clone git@github.com:mark-watson/spacy-py4cl.git
+	git -C entities pull || git clone git@github.com:mark-watson/entitiesl.git
+	
