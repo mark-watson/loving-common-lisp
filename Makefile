@@ -18,4 +18,6 @@ fetch:
 	git -C myutils pull || git clone git@github.com:mark-watson/myutils.git
 	git -C spacy-py4cl pull || git clone git@github.com:mark-watson/spacy-py4cl.git
 	git -C entities pull || git clone git@github.com:mark-watson/entitiesl.git
-	
+	git -C openai pull || git clone git@github.com:mark-watson/openai.git
+	git -C kgsampler pull || git clone git@github.com:mark-watson/kgsampler.git
+	git -C entities_dbpedia pull || git clone git@github.com:mark-watson/entities_dbpedia.git
