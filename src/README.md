@@ -1,36 +1,33 @@
 # My Common Lisp Playground
 
-## notes for new projects from Xach:
+## Most book examples are now in separate GitHub reositories.
 
-https://xach.livejournal.com/278047.html
+The few that are not in separate repos are located here.
 
-## Making libraries (as defined in sub-directories of this directory) libraries that can be installed using Quicklisp
+Please see the README.md file at the top directory of this repo for a description of the **Makefile** that can be used to fetch all book library examples to your local **~/quicklisp/local-projects/** directory.
 
-For sub-directories that contains a project.lisp file and a *.asd file, then they can be quickloaded with Quicklisp if you modify a configuration file:
+Once copied to your local **~/quicklisp/local-projects/** directory then you can load any library using Quicklisp. For example:
 
-I set the root for my quicklisp libraries in the file:
+    (ql:quickload :sparql-cache)
+    (ql:quickload :openai)
+    (ql:quickload :wordnet)
+    (ql:quickload :fasttag)
+    (ql:quickload :kbnlp)
+    (ql:quickload :entities_dbpedia)
+    (ql:quickload :bing)
+    (ql:quickload :kgn-text-ui)
+    (ql:quickload :kgsampler)
+    (ql:quickload :spacy-py4cl) ; requires loading a Python library before use - see README.md file
 
-        ~/.config/common-lisp/source-registry.conf.d/projects.conf
+etc.
 
-that currently contains:
+As you read through my book, it should hopefully easy to load up and run the examples.
 
-````````
-(:tree
- (:home "GITHUB/loving-common-lisp/src/")
-)
+Some short examples are not in separate GitHub repositores - these examples are located here.
 
-NOTE for Ubuntu Linux: this did not have to work. Instead I did a ln -s mapping to ~/.local/share/common-lisp/source/
-
-````````
-
-With this setup I can Quicklisp quickload most of the projects in this **src** directory using (for example for directory **sparql**):
-
-    (ql:quickload "sparql")
-
-in any directory on my laptop.
 
 ## Code experiments in this repository that are not (yet) in my Common Lisp book
 
-If you see directories containing a file named NOT_YET_IN_BOOK.md then, as you might guess, that the directory contains something that I am working on.
+If you see directories containing a file named NOT_YET_IN_BOOK.md then, as you might guess, that the directory contains something that I am still working on.
 
 
