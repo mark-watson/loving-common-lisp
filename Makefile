@@ -22,3 +22,4 @@ fetch:
 	git -C kgsampler pull || git clone git@github.com:mark-watson/kgsampler.git
 	git -C entities_dbpedia pull || git clone git@github.com:mark-watson/entities_dbpedia.git
 	git -C huggingface pull || git clone git@github.com:mark-watson/huggingface.git
+	git -C docs-qa pull || git clone git@github.com:mark-watson/docs-qa.git
