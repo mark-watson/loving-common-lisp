@@ -20,6 +20,7 @@ fetch:
 	git -C entities pull || git clone git@github.com:mark-watson/entitiesl.git
 	git -C openai pull || git clone git@github.com:mark-watson/openai.git
 	git -C anthropic pull || git clone git@github.com:mark-watson/anthropic.git
+	git -C mistral pull || git clone git@github.com:mark-watson/mistral.git
 	git -C kgsampler pull || git clone git@github.com:mark-watson/kgsampler.git
 	git -C entities_dbpedia pull || git clone git@github.com:mark-watson/entities_dbpedia.git
 	git -C huggingface pull || git clone git@github.com:mark-watson/huggingface.git
