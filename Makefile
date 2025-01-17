@@ -25,3 +25,7 @@ fetch:
 	git -C entities_dbpedia pull || git clone git@github.com:mark-watson/entities_dbpedia.git
 	git -C huggingface pull || git clone git@github.com:mark-watson/huggingface.git
 	git -C docs-qa pull || git clone git@github.com:mark-watson/docs-qa.git
+	git -C Agent_Racket pull || git clone git@github.com:mark-watson/Agent_Racket.git
+	git -C Agent_CL pull || git clone git@github.com:mark-watson/Agent_CL.git
+	git -C Agents_book_Common_Lisp pull || git clone git@github.com:mark-watson/Agents_book_Common_Lisp.git
+	git -C Agents_book_common pull || git clone git@github.com:mark-watson/Agents_book_common.git
