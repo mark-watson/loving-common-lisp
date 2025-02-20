@@ -25,3 +25,4 @@ fetch:
 	git -C huggingface pull || git clone git@github.com:mark-watson/huggingface.git
 	git -C docs-qa pull || git clone git@github.com:mark-watson/docs-qa.git
 	git -C Agent_CL pull || git clone git@github.com:mark-watson/Agent_CL.git
+	git -C perplexity pull || git clone git@github.com:mark-watson/perplexity.git
