@@ -17,21 +17,4 @@ Starting December 5, 2020 I have moved most of my personal (non-work related) Co
 
 If you notice any errors or have suggestions for improvement, then git pull requests will be appreciated!
 
-## Separate GitHub repositories for this book
-
-- conceptnet [https://github.com/mark-watson/conceptnet](https://github.com/mark-watson/conceptnet)
-- kgn-common Knowledge Graph Navigator common library https://github.com/mark-watson/kgn-common
-- kgn-text-ui Knowledge Graph Navigator text UI https://github.com/mark-watson/kgn-text-ui
-- kgn-capi-ui Knowledge Graph Navigator LispWorks CAPI UI https://github.com/mark-watson/kgn-capi-ui
-
-etc.
-
-The **Makefile** can be copied to your local ~/quicklisp/local-projects, then **make fetch**.
-
-## Changes for the new edition I am working on
-
-May 2022: I am writing a new edition of my book, yay! I am going to move most (maybe all) of the examples in this book to individual GitHub repositories and as this happens I will put links to the new repositories right here! Yay, again.
-
-In the current book I discuss setting the Quicklisp repository root directory to this Git repo. In the future, you will instead **git clone** operations in **~/quicklisp/local-projects** so, for example **(ql:quickload :sparql)** will work correctly. I hope that my readers find this convenient. In the future I want to write larger open source projects for new book material so it makes sense to use different GitHub repositories.
-
 My website is https://markwatson.com
