@@ -15,7 +15,7 @@ If you notice any errors or have suggestions for improvement, then git pull requ
 
 ## Configure Quicklisp to find my book examples
 
-Let's start with configuriong SBCL and Quicklisp:
+Let's start with configuring SBCL and Quicklisp:
 
 Edit your file **~/.sbclrc** to add the following line of code:
 
@@ -28,6 +28,23 @@ Edit your file **~/.sbclrc** to add the following line of code:
 **NOTE:** Please change the path #p"/Users/mark/GITHUB/loving-common-lisp/" to the path where you cloned this repository using:
 
     git clone https://github.com/mark-watson/loving-common-lisp.git
+
+You have now configured SBCL to work with my book examples. For other Common Lisp implementations, please edit the relevant configuration files:
+
+```test
+Common Lisp implementation startup files include:
+
+SBCL: ~/.sbclrc
+
+CCL: ~/.ccl-init.lisp
+
+ECL: ~/.eclrc
+
+CLISP: ~/.clinit.cl
+
+Allegro CL: ~/.clinit.cl or ~/clinit.cl
+```
+
 
 
 ## Please visit my web site
