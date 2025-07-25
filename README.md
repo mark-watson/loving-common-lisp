@@ -45,6 +45,9 @@ CLISP: ~/.clinit.cl
 Allegro CL: ~/.clinit.cl or ~/clinit.cl
 ```
 
+## Book manuscript
+
+My book is released under a Creative Commons license. The book manuscript is in the directory **manuscript**.
 
 
 ## Please visit my web site
