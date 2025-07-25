@@ -19,9 +19,11 @@ Let's start with configuriong SBCL and Quicklisp:
 
 Edit your file **~/.sbclrc** to add the following line of code:
 
+```lisp
 (pushnew #p"/Users/mark/GITHUB/loving-common-lisp/"
          ql:*local-project-directories*
          :test #'equal)
+```
 
 **NOTE:** Please change the path #p"/Users/mark/GITHUB/loving-common-lisp/" to the path where you cloned this repository using:
 
