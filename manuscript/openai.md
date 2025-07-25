@@ -70,22 +70,93 @@ curl \
 
 Here the API token "sa-hdffds7&dhdhsdgffd" on line 4 is made up - that is not my API token. All of the OpenAI APIs expect JSON data with query parameters. To use the completion API, we set values for **prompt** and **max_tokens**. The value of **max_tokens** is the requested number of returns words or tokens. We will look at several examples later.
 
-In the file **openai.lisp** we start with a helper function **openai-helper** that takes a string with the OpenAI API call arguments encoded as a **curl** command, calls the service, and then extracts the results from the returned JSON data:
+Function call support was added to this library in April 2025. The following functions handle registering and using functions:
+
+```lisp
+;; Hash table to store available functions for tool calling
+(defvar *available-functions* (make-hash-table :test 'equal))
+
+(defstruct openai-function
+  name
+  description
+  parameters
+  func)
+
+(defun register-function (name description parameters fn)
+  (format t "Registering ~A ~A~%" name fn)
+  (setf (gethash name *available-functions*)
+        (make-openai-function
+         :name name
+         :description description
+         :parameters parameters
+	 :func fn)))
+ 
+(defun lisp-to-json-string (data)
+  (with-output-to-string (s)
+    (json:encode-json data s)))
+
+(defun substitute-subseq (string old new &key (test #'eql))
+  (let ((pos (search old string :test test)))
+    (if pos
+        (concatenate 'string
+                     (subseq string 0 pos)
+                     new
+                     (subseq string (+ pos (length old))))
+        string)))
+
+(defun escape-json (str)
+  (with-output-to-string (out)
+    (loop for ch across str do
+         (if (char= ch #\")
+             (write-string "\\\"" out)
+             (write-char ch out)))))
+
+
+(defun handle-function-call (function-call)
+  ;; function-call looks like: ((:name . "get_weather") (:arguments . "{\"location\":\"New York\"}"))
+  (format t "~% ** handle-function-call (DUMMY) fucntion-call: ~A~%" function-call)
+  (let* ((name (cdr (assoc :name function-call)))
+         (args-string (cdr (assoc :arguments function-call)))
+         (args (and args-string (cl-json:decode-json-from-string args-string)))
+         (func (openai-function-func (gethash name *available-functions*))))
+    (format t "~% handle-function-call name: ~A" name)
+    (format t "~% handle-function-call args-string: ~A" args-string)
+    (format t "~% handle-function-call args: ~A" args)
+    (format t "~% handle-function-call func: ~A" func)
+    (if (not (null func))
+	(let ()
+          (format t "~%Calling function ~a called with args: ~a~%" name args)
+	  (let ((f-val (apply func (mapcar #'cdr args))))
+	    (format t "~%Return value from func ~A is ~A~%" name f-val)
+	    f-val))
+        (error "Unknown function: ~a" name))))
+```
+
+
+In the file **openai.lisp** we define a helper function **openai-helper** that takes a string with the OpenAI API call arguments encoded as a **curl** command, calls the service, and then extracts the results from the returned JSON data:
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
 (defun openai-helper (curl-command)
-  (let ((response
-          (uiop:run-program
-           curl-command
-           :output :string)))
-    (with-input-from-string
-        (s response)
-      (let* ((json-as-list (json:decode-json s)))
-        ;; extract text (this might change if OpenAI changes JSON return format):
-        (cdr (assoc :content
-               (cdr (assoc :message
-                      (cadr (assoc :choices json-as-list))))))))))
+  (terpri)
+  (princ curl-command)
+  (terpri)
+  (let ((response (uiop:run-program curl-command
+                                    :output :string
+                                    :error-output :string)))
+    (terpri)
+    (princ response)
+    (terpri)
+    (with-input-from-string (s response)
+      (let* ((json-as-list (json:decode-json s))
+             (choices (cdr (assoc :choices json-as-list)))
+             (first-choice (car choices))
+             (message (cdr (assoc :message first-choice)))
+             (function-call (cdr (assoc :function--call message)))
+             (content (cdr (assoc :content message))))
+        (if function-call
+            (handle-function-call function-call)
+            (or content "No response content"))))))
 ~~~~~~~~
 
 I convert JSON data to a Lisp list in line 8 and in line 10 I reach into the nested results list for the generated text string. You might want to add a debug printout statement to see the value of **json-as-list**.
@@ -94,20 +165,32 @@ The three example functions all use this **openai-helper** function. The first e
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
-(defun completions (starter-text max-tokens)
-  (let* ((input-text (write-to-string starter-text))
-         (d
-          (cl-json:encode-json-to-string
-           `((:messages . (((:role . "user") (:content . ,input-text))))
-             (:model . "gpt-4")
-             (:max_tokens . ,max-tokens))))
+(defun completions (starter-text max-tokens &optional functions)
+  (unless (numberp max-tokens)
+    (error "max-tokens must be a number, got: ~a" max-tokens))
+  (let* ((function-defs (when functions
+                          (mapcar (lambda (f)
+                                    (let ((func (gethash f *available-functions*)))
+                                      (list (cons :name (openai-function-name func))
+                                            (cons :description (openai-function-description func))
+                                            (cons :parameters (openai-function-parameters func)))))
+                                  functions)))
+         (message (list (cons :role "user")
+                        (cons :content starter-text)))
+         (base-data `((model . ,*model*)
+                      (messages . ,(list message))
+                      (max_tokens . ,max-tokens)))
+         (data (if function-defs
+                   (append base-data (list (cons :functions function-defs)))
+                   base-data))
+         (request-body (cl-json:encode-json-to-string data))
+         (fixed-json-data (substitute-subseq request-body ":null" ":false" :test #'string=))
+         (escaped-json (escape-json fixed-json-data))
          (curl-command
-          (concatenate
-           'string
-           "curl " model-host
-           " -H \"Content-Type: application/json\""
-           " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" " 
-           " -d '" d "'")))
+          (format nil "curl ~A -H \"Content-Type: application/json\" -H \"Authorization: Bearer ~A\" -d \"~A\""
+                  *model-host*
+                  (uiop:getenv "OPENAI_KEY")
+                  escaped-json)))
     (openai-helper curl-command)))
 ~~~~~~~~
 
