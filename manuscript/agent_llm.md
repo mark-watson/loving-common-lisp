@@ -60,7 +60,7 @@ This package.lisp file defines the structure and organization of this example pr
 (defsystem "cl-llm-agent"
   :name "cl-llm-agent"
   :version "0.1.0"
-  :author "Your Name <you@example.com>"
+  :author "Mark Watson <markw@markwatson.com>"
   :license "MIT"
   :description "A generic LLM-based agent framework for Common Lisp."
   :depends-on ("cl-json" "gemini" "tavily" "uiop" "fiveam")
