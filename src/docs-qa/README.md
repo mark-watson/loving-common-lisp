@@ -1,7 +1,7 @@
 # Common Lisp library for Documents Question Answering Using OpenAI GPT3 APIs and a Local Embeddings Vector Database
 
 This project is inspired by the Python LangChain and LlamaIndex projects, with the parts I need written from scratch in Common Lisp. I wrote a Python book "LangChain and LlamaIndex Projects Lab Book: Hooking Large Language Models Up to the Real World
-Using GPT-3, ChatGPT, and Hugging Face Models in Applications" in March 2023: [https://leanpub.com/langchain](https://leanpub.com/langchain) that you might also be interested in.
+Using GPT-4, ChatGPT, and Hugging Face Models in Applications" in: [https://leanpub.com/langchain](https://leanpub.com/langchain) that you might also be interested in.
 
 From my book URI: https://leanpub.com/lovinglisp
 
