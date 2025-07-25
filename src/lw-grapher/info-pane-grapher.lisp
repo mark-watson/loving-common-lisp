@@ -1,4 +1,6 @@
 (in-package :lw-grapher)
+;; Compyright 2021-2022 Mark Watson All Rights Reserved.
+;; License: Apache 2
 
 ;; A Grapher (using the layout algorithm from the ISI-Grapher user guide) with an info panel
 

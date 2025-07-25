@@ -1,4 +1,6 @@
 (in-package :lw-grapher)
+;; Compyright 2021-2022 Mark Watson All Rights Reserved.
+;; License: Apache 2
 
 ;; A text node class for use with simple Grapher and info panel Grapher
 

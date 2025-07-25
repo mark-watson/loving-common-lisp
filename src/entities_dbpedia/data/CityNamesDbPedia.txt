@@ -1,0 +1,2658 @@
+Šiauliai	<http://dbpedia.org/resource/%C5%A0iauliai>
+Aba	<http://dbpedia.org/resource/Aba,_Abia>
+Abbotsford	<http://dbpedia.org/resource/Abbotsford,_British_Columbia>
+Abbotsford	<http://dbpedia.org/resource/Abbotsford,_British_Columbia>
+Abilene	<http://dbpedia.org/resource/Abilene,_Texas>
+Al Qadarif	<http://dbpedia.org/resource/Al_Qadarif>
+Balikpapan	<http://dbpedia.org/resource/Balikpapan>
+Battambang	<http://dbpedia.org/resource/Battambang>
+Bengkulu City	<http://dbpedia.org/resource/Bengkulu_(city)>
+Kota Bengkulu	<http://dbpedia.org/resource/Bengkulu_(city)>
+Benin City	<http://dbpedia.org/resource/Benin_City>
+Chandigarh	<http://dbpedia.org/resource/Chandigarh>
+Chernivtsi	<http://dbpedia.org/resource/Chernivtsi>
+Chiang Mai	<http://dbpedia.org/resource/Chiang_Mai>
+เชียงใหม่	<http://dbpedia.org/resource/Chiang_Mai>
+Chuncheon	<http://dbpedia.org/resource/Chuncheon>
+Sunderland	<http://dbpedia.org/resource/City_of_Sunderland>
+Sunderland	<http://dbpedia.org/resource/City_of_Sunderland>
+Ciudad del Carmen	<http://dbpedia.org/resource/Ciudad_del_Carmen>
+Concord	<http://dbpedia.org/resource/Concord,_California>
+Corrientes	<http://dbpedia.org/resource/Corrientes>
+Dali City	<http://dbpedia.org/resource/Dali_City>
+Daly City	<http://dbpedia.org/resource/Daly_City,_California>
+Davao City	<http://dbpedia.org/resource/Davao_City>
+Dakbayan sa Dabaw	<http://dbpedia.org/resource/Davao_City>
+Davao	<http://dbpedia.org/resource/Davao_City>
+Dumaguete	<http://dbpedia.org/resource/Dumaguete>
+Dakbayan sa Dumaguete	<http://dbpedia.org/resource/Dumaguete>
+El Monte	<http://dbpedia.org/resource/El_Monte,_California>
+Elk Grove	<http://dbpedia.org/resource/Elk_Grove,_California>
+Fairfield	<http://dbpedia.org/resource/Fairfield,_California>
+Fangchenggang	<http://dbpedia.org/resource/Fangchenggang>
+Fangzcwngzgangj	<http://dbpedia.org/resource/Fangchenggang>
+Fargo	<http://dbpedia.org/resource/Fargo,_North_Dakota>
+Faridabad	<http://dbpedia.org/resource/Faridabad>
+Gainesville	<http://dbpedia.org/resource/Gainesville,_Florida>
+Gangneung	<http://dbpedia.org/resource/Gangneung>
+George Town	<http://dbpedia.org/resource/George_Town,_Penang>
+Greater Sudbury	<http://dbpedia.org/resource/Greater_Sudbury>
+Greater Sudbury	<http://dbpedia.org/resource/Greater_Sudbury>
+Guangyuan	<http://dbpedia.org/resource/Guangyuan>
+广元	<http://dbpedia.org/resource/Guangyuan>
+Gwangyang	<http://dbpedia.org/resource/Gwangyang>
+광양	<http://dbpedia.org/resource/Gwangyang>
+Hamamatsu	<http://dbpedia.org/resource/Hamamatsu>
+浜松	<http://dbpedia.org/resource/Hamamatsu>
+Hirosaki	<http://dbpedia.org/resource/Hirosaki,_Aomori>
+Hongjiang	<http://dbpedia.org/resource/Hongjiang>
+Huanggang	<http://dbpedia.org/resource/Huanggang>
+Huangshan	<http://dbpedia.org/resource/Huangshan_City>
+Ijebu Ode	<http://dbpedia.org/resource/Ijebu_Ode>
+Ilam	<http://dbpedia.org/resource/Ilam,_Iran>
+Ilorin	<http://dbpedia.org/resource/Ilorin,_Nigeria>
+Jamshedpur	<http://dbpedia.org/resource/Jamshedpur>
+Kagoshima	<http://dbpedia.org/resource/Kagoshima>
+鹿児島	<http://dbpedia.org/resource/Kagoshima>
+Kermanshah	<http://dbpedia.org/resource/Kermanshah>
+Kokshetau	<http://dbpedia.org/resource/Kokshetau>
+Көкшетау	<http://dbpedia.org/resource/Kokshetau>
+Kremenchuk	<http://dbpedia.org/resource/Kremenchuk>
+Krivoy Rog	<http://dbpedia.org/resource/Kryvyi_Rih>
+Kryvyi Rih	<http://dbpedia.org/resource/Kryvyi_Rih>
+Dakbayan sa Lapu-Lapu	<http://dbpedia.org/resource/Lapu-Lapu,_Philippines>
+Lapu-Lapu	<http://dbpedia.org/resource/Lapu-Lapu,_Philippines>
+Liaocheng	<http://dbpedia.org/resource/Liaocheng>
+Liupanshui	<http://dbpedia.org/resource/Liupanshui>
+六盘水	<http://dbpedia.org/resource/Liupanshui>
+Mönchengladbach	<http://dbpedia.org/resource/M%C3%B6nchengladbach>
+Maanshan	<http://dbpedia.org/resource/Ma'anshan>
+马鞍山	<http://dbpedia.org/resource/Ma'anshan>
+Macon	<http://dbpedia.org/resource/Macon,_Georgia>
+Malacca City	<http://dbpedia.org/resource/Malacca_City>
+Bandaraya Melaka	<http://dbpedia.org/resource/Malacca_City>
+Manzhouli	<http://dbpedia.org/resource/Manzhouli>
+Mesquite	<http://dbpedia.org/resource/Mesquite,_Texas>
+Metropolitan Manila	<http://dbpedia.org/resource/Metro_Manila>
+Muntinlupa	<http://dbpedia.org/resource/Muntinlupa>
+Lungsod ng Muntinlupa	<http://dbpedia.org/resource/Muntinlupa>
+Muntinlupa City	<http://dbpedia.org/resource/Muntinlupa>
+Murfreesboro	<http://dbpedia.org/resource/Murfreesboro,_Tennessee>
+Oberhausen	<http://dbpedia.org/resource/Oberhausen>
+Offenbach	<http://dbpedia.org/resource/Offenbach_am_Main>
+Ontario	<http://dbpedia.org/resource/Ontario,_California>
+Panzhihua	<http://dbpedia.org/resource/Panzhihua>
+攀枝花	<http://dbpedia.org/resource/Panzhihua>
+Parañaque	<http://dbpedia.org/resource/Para%C3%B1aque>
+Lungsod ng Parañaque	<http://dbpedia.org/resource/Para%C3%B1aque>
+Parañaque City	<http://dbpedia.org/resource/Para%C3%B1aque>
+Petaling Jaya	<http://dbpedia.org/resource/Petaling_Jaya>
+Pingxiang	<http://dbpedia.org/resource/Pingxiang>
+萍乡	<http://dbpedia.org/resource/Pingxiang>
+Piranshahr	<http://dbpedia.org/resource/Piranshahr>
+Quevedo	<http://dbpedia.org/resource/Quevedo,_Ecuador>
+Rafsanjan	<http://dbpedia.org/resource/Rafsanjan>
+Remscheid	<http://dbpedia.org/resource/Remscheid>
+Sagamihara	<http://dbpedia.org/resource/Sagamihara>
+相模原	<http://dbpedia.org/resource/Sagamihara>
+San Carlos	<http://dbpedia.org/resource/San_Carlos,_Pangasinan>
+San Martín	<http://dbpedia.org/resource/San_Mart%C3%ADn,_Mendoza>
+Sanmenxia	<http://dbpedia.org/resource/Sanmenxia>
+三门峡	<http://dbpedia.org/resource/Sanmenxia>
+Santa Maria	<http://dbpedia.org/resource/Santa_Maria,_California>
+Shahrekord	<http://dbpedia.org/resource/Shahrekord>
+Shashamane	<http://dbpedia.org/resource/Shashamane>
+ሻሸመኔ	<http://dbpedia.org/resource/Shashamane>
+Sheberghan	<http://dbpedia.org/resource/Sheberghan>
+Sherbrooke	<http://dbpedia.org/resource/Sherbrooke>
+石嘴山	<http://dbpedia.org/resource/Shizuishan>
+Shizuishan	<http://dbpedia.org/resource/Shizuishan>
+Siem Reap	<http://dbpedia.org/resource/Siem_Reap>
+St Catharines	<http://dbpedia.org/resource/St._Catharines>
+Surat Thani	<http://dbpedia.org/resource/Surat_Thani>
+Surrey	<http://dbpedia.org/resource/Surrey,_British_Columbia>
+Surrey	<http://dbpedia.org/resource/Surrey,_British_Columbia>
+Tiruchirappalli	<http://dbpedia.org/resource/Tiruchirappalli>
+Tizi Ouzou	<http://dbpedia.org/resource/Tizi_Ouzou>
+Tongchuan	<http://dbpedia.org/resource/Tongchuan>
+Townsville	<http://dbpedia.org/resource/Townsville>
+Elphinstone	<http://dbpedia.org/resource/Townsville>
+Trois-Rivières	<http://dbpedia.org/resource/Trois-Rivi%C3%A8res>
+Vijayawada	<http://dbpedia.org/resource/Vijayawada>
+Waco	<http://dbpedia.org/resource/Waco,_Texas>
+Wollongong	<http://dbpedia.org/resource/Wollongong>
+Xuancheng	<http://dbpedia.org/resource/Xuancheng>
+Zaporizhia	<http://dbpedia.org/resource/Zaporizhia>
+Zaporozhye	<http://dbpedia.org/resource/Zaporizhia>
+Zhangzhou	<http://dbpedia.org/resource/Zhangzhou>
+漳州	<http://dbpedia.org/resource/Zhangzhou>
+Zhenjiang	<http://dbpedia.org/resource/Zhenjiang>
+镇江	<http://dbpedia.org/resource/Zhenjiang>
+Abbottabad	<http://dbpedia.org/resource/Abbottabad>
+Abu Dhabi	<http://dbpedia.org/resource/Abu_Dhabi>
+Ahmedabad	<http://dbpedia.org/resource/Ahmedabad>
+Aksu	<http://dbpedia.org/resource/Aksu,_Xinjiang>
+阿克苏	<http://dbpedia.org/resource/Aksu,_Xinjiang>
+Albuquerque	<http://dbpedia.org/resource/Albuquerque,_New_Mexico>
+Aligarh	<http://dbpedia.org/resource/Aligarh,_Uttar_Pradesh>
+Amsterdam	<http://dbpedia.org/resource/Amsterdam>
+Anjō	<http://dbpedia.org/resource/Anj%C5%8D,_Aichi>
+Aomori	<http://dbpedia.org/resource/Aomori,_Aomori>
+青森	<http://dbpedia.org/resource/Aomori,_Aomori>
+Bacău	<http://dbpedia.org/resource/Bac%C4%83u>
+Baharampur	<http://dbpedia.org/resource/Baharampur>
+বহরমপুর	<http://dbpedia.org/resource/Baharampur>
+Bakersfield	<http://dbpedia.org/resource/Bakersfield,_California>
+Baltimore	<http://dbpedia.org/resource/Baltimore>
+Baltimore	<http://dbpedia.org/resource/Baltimore>
+Balurghat	<http://dbpedia.org/resource/Balurghat>
+Banda Aceh	<http://dbpedia.org/resource/Banda_Aceh>
+Bangalore	<http://dbpedia.org/resource/Bangalore>
+Banja Luka	<http://dbpedia.org/resource/Banja_Luka>
+Barakaldo	<http://dbpedia.org/resource/Barakaldo>
+Baranagar	<http://dbpedia.org/resource/Baranagar>
+Begusarai	<http://dbpedia.org/resource/Begusarai>
+Berhampur	<http://dbpedia.org/resource/Berhampur>
+Berkeley	<http://dbpedia.org/resource/Berkeley,_California>
+Bhavnagar	<http://dbpedia.org/resource/Bhavnagar>
+Bielefeld	<http://dbpedia.org/resource/Bielefeld>
+Boundiali	<http://dbpedia.org/resource/Boundiali>
+Bucharest	<http://dbpedia.org/resource/Bucharest>
+Bucuresti	<http://dbpedia.org/resource/Bucharest>
+Burhanpur	<http://dbpedia.org/resource/Burhanpur>
+Casablanca	<http://dbpedia.org/resource/Casablanca>
+Cebu City	<http://dbpedia.org/resource/Cebu_City>
+Cebu	<http://dbpedia.org/resource/Cebu_City>
+Dakbayan sa Sugbo	<http://dbpedia.org/resource/Cebu_City>
+Changzhou	<http://dbpedia.org/resource/Changzhou>
+常州	<http://dbpedia.org/resource/Changzhou>
+Chesapeake	<http://dbpedia.org/resource/Chesapeake,_Virginia>
+Chhindwara	<http://dbpedia.org/resource/Chhindwara>
+Chitradurga	<http://dbpedia.org/resource/Chitradurga>
+Chittagong	<http://dbpedia.org/resource/Chittagong>
+Cholula	<http://dbpedia.org/resource/Cholula,_Puebla>
+Cincinnati	<http://dbpedia.org/resource/Cincinnati>
+Cincinnati	<http://dbpedia.org/resource/Cincinnati>
+(Municipality) Nezahualcóyotl	<http://dbpedia.org/resource/Ciudad_Nezahualc%C3%B3yotl>
+Cleveland	<http://dbpedia.org/resource/Cleveland>
+Cleveland	<http://dbpedia.org/resource/Cleveland>
+Cluj-Napoca	<http://dbpedia.org/resource/Cluj-Napoca>
+Colorado Springs	<http://dbpedia.org/resource/Colorado_Springs,_Colorado>
+Cooch Behar	<http://dbpedia.org/resource/Cooch_Behar>
+Corpus Christi	<http://dbpedia.org/resource/Corpus_Christi,_Texas>
+Cuddalore	<http://dbpedia.org/resource/Cuddalore>
+Cuernavaca	<http://dbpedia.org/resource/Cuernavaca>
+Darbhanga	<http://dbpedia.org/resource/Darbhanga>
+Darwin	<http://dbpedia.org/resource/Darwin,_Northern_Territory>
+Palmerston County	<http://dbpedia.org/resource/Darwin,_Northern_Territory>
+Daugavpils	<http://dbpedia.org/resource/Daugavpils>
+Dibrugarh	<http://dbpedia.org/resource/Dibrugarh>
+Dungarpur	<http://dbpedia.org/resource/Dungarpur>
+Edinburgh	<http://dbpedia.org/resource/Edinburgh>
+Scots: Edinburgh	<http://dbpedia.org/resource/Edinburgh>
+Eindhoven	<http://dbpedia.org/resource/Eindhoven>
+El Paso	<http://dbpedia.org/resource/El_Paso,_Texas>
+Faisalabad	<http://dbpedia.org/resource/Faisalabad>
+Fatehpur	<http://dbpedia.org/resource/Fatehpur,_Uttar_Pradesh>
+Firozabad	<http://dbpedia.org/resource/Firozabad>
+Frankfurt am Main	<http://dbpedia.org/resource/Frankfurt>
+Gaya	<http://dbpedia.org/resource/Gaya,_India>
+Gaziantep	<http://dbpedia.org/resource/Gaziantep>
+Gorakhpur	<http://dbpedia.org/resource/Gorakhpur>
+Greensboro	<http://dbpedia.org/resource/Greensboro,_North_Carolina>
+Groningen	<http://dbpedia.org/resource/Groningen>
+Gujranwala	<http://dbpedia.org/resource/Gujranwala>
+Guna	<http://dbpedia.org/resource/Guna,_India>
+Hazaribagh	<http://dbpedia.org/resource/Hazaribagh>
+Henderson	<http://dbpedia.org/resource/Henderson,_Nevada>
+Hermosillo	<http://dbpedia.org/resource/Hermosillo>
+Hermosillo	<http://dbpedia.org/resource/Hermosillo>
+Ciudad de Hermosillo	<http://dbpedia.org/resource/Hermosillo>
+Hooghly-Chuchura	<http://dbpedia.org/resource/Hugli-Chuchura>
+Hulunbuir	<http://dbpedia.org/resource/Hulunbuir>
+25px	<http://dbpedia.org/resource/Hulunbuir>
+Iași	<http://dbpedia.org/resource/Ia%C8%99i>
+Irvine	<http://dbpedia.org/resource/Irvine,_California>
+Islamabad	<http://dbpedia.org/resource/Islamabad>
+Jagdalpur	<http://dbpedia.org/resource/Jagdalpur>
+Jalpaiguri	<http://dbpedia.org/resource/Jalpaiguri>
+Jerusalem	<http://dbpedia.org/resource/Jerusalem>
+(Yerushalayim)	<http://dbpedia.org/resource/Jerusalem>
+(al-Quds)	<http://dbpedia.org/resource/Jerusalem>
+Kanchipuram	<http://dbpedia.org/resource/Kanchipuram>
+Kapurthala	<http://dbpedia.org/resource/Kapurthala>
+Kathmandu	<http://dbpedia.org/resource/Kathmandu>
+Kawasaki	<http://dbpedia.org/resource/Kawasaki,_Kanagawa>
+Kishangarh	<http://dbpedia.org/resource/Kishangarh>
+Kozhikode	<http://dbpedia.org/resource/Kozhikode>
+Kragujevac	<http://dbpedia.org/resource/Kragujevac>
+Las Vegas	<http://dbpedia.org/resource/Las_Vegas>
+Las Vegas	<http://dbpedia.org/resource/Las_Vegas>
+Ljubljana	<http://dbpedia.org/resource/Ljubljana>
+Machilipatnam	<http://dbpedia.org/resource/Machilipatnam>
+Malappuram	<http://dbpedia.org/resource/Malappuram>
+മലപ്പുറം	<http://dbpedia.org/resource/Malappuram>
+Malerkotla	<http://dbpedia.org/resource/Malerkotla>
+Mangalore	<http://dbpedia.org/resource/Mangalore>
+Manhattan	<http://dbpedia.org/resource/Manhattan>
+New York County	<http://dbpedia.org/resource/Manhattan>
+Manokwari	<http://dbpedia.org/resource/Manokwari>
+Melbourne	<http://dbpedia.org/resource/Melbourne>
+Midnapore	<http://dbpedia.org/resource/Midnapore>
+Milwaukee	<http://dbpedia.org/resource/Milwaukee>
+Mobile	<http://dbpedia.org/resource/Mobile,_Alabama>
+Monterrey	<http://dbpedia.org/resource/Monterrey>
+Monterrey	<http://dbpedia.org/resource/Monterrey>
+Ciudad de Monterrey	<http://dbpedia.org/resource/Monterrey>
+Montevideo	<http://dbpedia.org/resource/Montevideo>
+Moradabad	<http://dbpedia.org/resource/Moradabad>
+Muzaffarabad	<http://dbpedia.org/resource/Muzaffarabad>
+Muzaffargarh	<http://dbpedia.org/resource/Muzaffargarh>
+Mymensingh	<http://dbpedia.org/resource/Mymensingh>
+Momenshahi	<http://dbpedia.org/resource/Mymensingh>
+Metropolitan Government of	<http://dbpedia.org/resource/Nashville,_Tennessee>
+Naypyidaw	<http://dbpedia.org/resource/Naypyidaw>
+Nay Pyi Taw	<http://dbpedia.org/resource/Naypyidaw>
+100px	<http://dbpedia.org/resource/Naypyidaw>
+Nizamabad	<http://dbpedia.org/resource/Nizamabad,_Andhra_Pradesh>
+North Barrackpur	<http://dbpedia.org/resource/North_Barrackpur>
+North Lakhimpur	<http://dbpedia.org/resource/North_Lakhimpur>
+Osmanabad	<http://dbpedia.org/resource/Osmanabad>
+Pandharpur	<http://dbpedia.org/resource/Pandharpur>
+Pathankot	<http://dbpedia.org/resource/Pathankot>
+Pittsburgh	<http://dbpedia.org/resource/Pittsburgh>
+Pittsburgh	<http://dbpedia.org/resource/Pittsburgh>
+Port Blair	<http://dbpedia.org/resource/Port_Blair>
+Port Louis	<http://dbpedia.org/resource/Port_Louis>
+Portland	<http://dbpedia.org/resource/Portland,_Oregon>
+Porto-Novo	<http://dbpedia.org/resource/Porto-Novo>
+Puebla	<http://dbpedia.org/resource/Puebla,_Puebla>
+Pyongyang	<http://dbpedia.org/resource/Pyongyang>
+평양	<http://dbpedia.org/resource/Pyongyang>
+Raebareli	<http://dbpedia.org/resource/Raebareli>
+Raebareli	<http://dbpedia.org/resource/Raebareli>
+Raver	<http://dbpedia.org/resource/Raver,_Maharashtra>
+Rochester	<http://dbpedia.org/resource/Rochester,_New_York>
+Rotterdam	<http://dbpedia.org/resource/Rotterdam>
+Salto	<http://dbpedia.org/resource/Salto,_Uruguay>
+Santa Ana	<http://dbpedia.org/resource/Santa_Ana,_California>
+Santa Clarita	<http://dbpedia.org/resource/Santa_Clarita,_California>
+Sarangarh	<http://dbpedia.org/resource/Sarangarh>
+Saskatoon	<http://dbpedia.org/resource/Saskatoon>
+Saskatoon	<http://dbpedia.org/resource/Saskatoon>
+Serampore	<http://dbpedia.org/resource/Serampore>
+Shaikhupura	<http://dbpedia.org/resource/Sheikhupura>
+Simferopol	<http://dbpedia.org/resource/Simferopol>
+Aqmescit	<http://dbpedia.org/resource/Simferopol>
+Simferopol	<http://dbpedia.org/resource/Simferopol>
+Southampton	<http://dbpedia.org/resource/Southampton>
+Split	<http://dbpedia.org/resource/Split,_Croatia>
+Split	<http://dbpedia.org/resource/Split,_Croatia>
+Grad Split	<http://dbpedia.org/resource/Split,_Croatia>
+Srikakulam	<http://dbpedia.org/resource/Srikakulam>
+chikkolu	<http://dbpedia.org/resource/Srikakulam>
+Surakarta	<http://dbpedia.org/resource/Surakarta>
+Suzuka	<http://dbpedia.org/resource/Suzuka,_Mie>
+Tarragona	<http://dbpedia.org/resource/Tarragona>
+Thanjavur	<http://dbpedia.org/resource/Thanjavur>
+Thayetmyo	<http://dbpedia.org/resource/Thayetmyo>
+Bronx	<http://dbpedia.org/resource/The_Bronx>
+Bronx County	<http://dbpedia.org/resource/The_Bronx>
+Hague	<http://dbpedia.org/resource/The_Hague>
+Tikamgarh	<http://dbpedia.org/resource/Tikamgarh>
+Tripoli	<http://dbpedia.org/resource/Tripoli,_Lebanon>
+Tulancingo	<http://dbpedia.org/resource/Tulancingo>
+Udon Thani	<http://dbpedia.org/resource/Udon_Thani>
+Uji	<http://dbpedia.org/resource/Uji,_Kyoto>
+Vancouver	<http://dbpedia.org/resource/Vancouver>
+Vancouver	<http://dbpedia.org/resource/Vancouver>
+Vice	<http://dbpedia.org/resource/Vice_City>
+Vice City	<http://dbpedia.org/resource/Vice_City>
+Villa de Álvarez	<http://dbpedia.org/resource/Villa_de_%C3%81lvarez,_Colima>
+Worcester	<http://dbpedia.org/resource/Worcester,_Massachusetts>
+Kota Yogyakarta	<http://dbpedia.org/resource/Yogyakarta>
+Yogyakarta City	<http://dbpedia.org/resource/Yogyakarta>
+Zumpango	<http://dbpedia.org/resource/Zumpango,_State_of_Mexico>
+Zumpango de Ocampo	<http://dbpedia.org/resource/Zumpango,_State_of_Mexico>
+Batam	<http://dbpedia.org/resource/Batam>
+Canoas	<http://dbpedia.org/resource/Canoas>
+Guadalajara	<http://dbpedia.org/resource/Guadalajara>
+Guadalajara	<http://dbpedia.org/resource/Guadalajara>
+Ciudad de Guadalajara	<http://dbpedia.org/resource/Guadalajara>
+Bacoor	<http://dbpedia.org/resource/Bacoor>
+Bacoor	<http://dbpedia.org/resource/Bacoor>
+Lungsod ng Bacoor	<http://dbpedia.org/resource/Bacoor>
+Chiayi	<http://dbpedia.org/resource/Chiayi_City>
+嘉義	<http://dbpedia.org/resource/Chiayi_City>
+Podil Raion	<http://dbpedia.org/resource/Podil_Raion>
+Agboville	<http://dbpedia.org/resource/Agboville>
+Aral	<http://dbpedia.org/resource/Aral,_Xinjiang>
+阿拉尔	<http://dbpedia.org/resource/Aral,_Xinjiang>
+Bandar-e Mahshahr	<http://dbpedia.org/resource/Bandar-e_Mahshahr>
+Biñan City	<http://dbpedia.org/resource/Bi%C3%B1an>
+Biñan	<http://dbpedia.org/resource/Bi%C3%B1an>
+Lungsod ng Biñan	<http://dbpedia.org/resource/Bi%C3%B1an>
+Cabanatuan City	<http://dbpedia.org/resource/Cabanatuan>
+Cabanatuan	<http://dbpedia.org/resource/Cabanatuan>
+Lungsod ng Kabanatuan	<http://dbpedia.org/resource/Cabanatuan>
+Cagayan de Oro	<http://dbpedia.org/resource/Cagayan_de_Oro>
+Cagayan de Oro	<http://dbpedia.org/resource/Cagayan_de_Oro>
+Cavite City	<http://dbpedia.org/resource/Cavite_City>
+Cavite	<http://dbpedia.org/resource/Cavite_City>
+Lungsod ng Cavite	<http://dbpedia.org/resource/Cavite_City>
+Ciudad de Cavite	<http://dbpedia.org/resource/Cavite_City>
+Chōfu	<http://dbpedia.org/resource/Ch%C5%8Dfu,_Tokyo>
+Chibi	<http://dbpedia.org/resource/Chibi_City>
+赤壁	<http://dbpedia.org/resource/Chibi_City>
+Chongzhou	<http://dbpedia.org/resource/Chongzhou>
+崇州	<http://dbpedia.org/resource/Chongzhou>
+Lancaster	<http://dbpedia.org/resource/City_of_Lancaster>
+Ciudad Acuña	<http://dbpedia.org/resource/Ciudad_Acu%C3%B1a>
+Ebina	<http://dbpedia.org/resource/Ebina,_Kanagawa>
+Gandhinagar	<http://dbpedia.org/resource/Gandhinagar>
+Gaobeidian	<http://dbpedia.org/resource/Gaobeidian>
+광명	<http://dbpedia.org/resource/Gwangmyeong>
+Gwangdongmyeong	<http://dbpedia.org/resource/Gwangmyeong>
+Gyeongsan	<http://dbpedia.org/resource/Gyeongsan>
+경산	<http://dbpedia.org/resource/Gyeongsan>
+Himamaylan	<http://dbpedia.org/resource/Himamaylan>
+Dakbanwa sg Himamaylan	<http://dbpedia.org/resource/Himamaylan>
+Huazhou	<http://dbpedia.org/resource/Huazhou,_Guangdong>
+化州	<http://dbpedia.org/resource/Huazhou,_Guangdong>
+Hwaseong	<http://dbpedia.org/resource/Hwaseong,_Gyeonggi>
+Isehara	<http://dbpedia.org/resource/Isehara,_Kanagawa>
+Kabankalan	<http://dbpedia.org/resource/Kabankalan>
+Dakbanwa sg Kabankalan	<http://dbpedia.org/resource/Kabankalan>
+Kakegawa	<http://dbpedia.org/resource/Kakegawa,_Shizuoka>
+Lichuan	<http://dbpedia.org/resource/Lichuan,_Hubei>
+Longueuil	<http://dbpedia.org/resource/Longueuil>
+Lucena	<http://dbpedia.org/resource/Lucena,_Philippines>
+Lungsod ng Lucena	<http://dbpedia.org/resource/Lucena,_Philippines>
+Mahajanga	<http://dbpedia.org/resource/Mahajanga>
+Mang City	<http://dbpedia.org/resource/Mang_City>
+Marvdasht	<http://dbpedia.org/resource/Marvdasht>
+Masvingo Province	<http://dbpedia.org/resource/Masvingo_Province>
+Mati	<http://dbpedia.org/resource/Mati,_Davao_Oriental>
+Dakbayan sa Mati	<http://dbpedia.org/resource/Mati,_Davao_Oriental>
+Metropolitan Cebu	<http://dbpedia.org/resource/Metro_Cebu>
+Kaulohang Sugbo	<http://dbpedia.org/resource/Metro_Cebu>
+Meycauayan	<http://dbpedia.org/resource/Meycauayan>
+Lungsod ng Meycauayan	<http://dbpedia.org/resource/Meycauayan>
+Naga City	<http://dbpedia.org/resource/Naga,_Camarines_Sur>
+Ciudad nin Naga	<http://dbpedia.org/resource/Naga,_Camarines_Sur>
+Naga	<http://dbpedia.org/resource/Naga,_Camarines_Sur>
+Naga	<http://dbpedia.org/resource/Naga,_Cebu>
+Dakbayan sa Naga	<http://dbpedia.org/resource/Naga,_Cebu>
+Namyangju	<http://dbpedia.org/resource/Namyangju>
+남양주	<http://dbpedia.org/resource/Namyangju>
+Nanan	<http://dbpedia.org/resource/Nan'an,_Fujian>
+南安	<http://dbpedia.org/resource/Nan'an,_Fujian>
+Ordos	<http://dbpedia.org/resource/Ordos_City>
+鄂尔多斯	<http://dbpedia.org/resource/Ordos_City>
+15px	<http://dbpedia.org/resource/Ordos_City>
+Parepare	<http://dbpedia.org/resource/Pare-Pare>
+Kota Parepare	<http://dbpedia.org/resource/Pare-Pare>
+Portoviejo	<http://dbpedia.org/resource/Portoviejo>
+Pulandian	<http://dbpedia.org/resource/Pulandian>
+Purwokerto	<http://dbpedia.org/resource/Purwokerto>
+Pyeongtaek	<http://dbpedia.org/resource/Pyeongtaek>
+평택	<http://dbpedia.org/resource/Pyeongtaek>
+San Carlos	<http://dbpedia.org/resource/San_Carlos,_Negros_Occidental>
+San Juan	<http://dbpedia.org/resource/San_Juan,_Metro_Manila>
+San Juan	<http://dbpedia.org/resource/San_Juan,_Metro_Manila>
+Shinan District	<http://dbpedia.org/resource/Shinan_District>
+Singkawang	<http://dbpedia.org/resource/Singkawang>
+Subang Jaya	<http://dbpedia.org/resource/Subang_Jaya>
+梳邦再也	<http://dbpedia.org/resource/Subang_Jaya>
+Katugian	<http://dbpedia.org/resource/Talavera,_Nueva_Ecija>
+Talavera City	<http://dbpedia.org/resource/Talavera,_Nueva_Ecija>
+Dakbayan sa Talisay	<http://dbpedia.org/resource/Talisay,_Cebu>
+Talisay	<http://dbpedia.org/resource/Talisay,_Cebu>
+Tongyeong	<http://dbpedia.org/resource/Tongyeong>
+통영	<http://dbpedia.org/resource/Tongyeong>
+Toowoomba	<http://dbpedia.org/resource/Toowoomba>
+Aubigny	<http://dbpedia.org/resource/Toowoomba>
+Ulhasnagar	<http://dbpedia.org/resource/Ulhasnagar>
+Wuchang	<http://dbpedia.org/resource/Wuchang,_Heilongjiang>
+Xingcheng	<http://dbpedia.org/resource/Xingcheng>
+Xingyi	<http://dbpedia.org/resource/Xingyi,_Guizhou>
+兴义	<http://dbpedia.org/resource/Xingyi,_Guizhou>
+Xinle	<http://dbpedia.org/resource/Xinle_City>
+新乐	<http://dbpedia.org/resource/Xinle_City>
+Yeongcheon	<http://dbpedia.org/resource/Yeongcheon>
+Yingcheng	<http://dbpedia.org/resource/Yingcheng>
+Zengcheng	<http://dbpedia.org/resource/Zengcheng>
+Zhangjiagang	<http://dbpedia.org/resource/Zhangjiagang>
+张家港	<http://dbpedia.org/resource/Zhangjiagang>
+Zhongxiang	<http://dbpedia.org/resource/Zhongxiang>
+钟祥	<http://dbpedia.org/resource/Zhongxiang>
+Nantou	<http://dbpedia.org/resource/Nantou_City>
+南投	<http://dbpedia.org/resource/Nantou_City>
+Bima	<http://dbpedia.org/resource/Bima>
+Mbojo	<http://dbpedia.org/resource/Bima>
+Durgapur	<http://dbpedia.org/resource/Durgapur>
+Aïn Beïda	<http://dbpedia.org/resource/A%C3%AFn_Be%C3%AFda,_Oum_El_Bouaghi>
+Abdul Hakeem	<http://dbpedia.org/resource/Abdul_Hakeem,_Pakistan>
+Abengourou	<http://dbpedia.org/resource/Abengourou>
+Abiko	<http://dbpedia.org/resource/Abiko,_Chiba>
+Abomey-Calavi	<http://dbpedia.org/resource/Abomey-Calavi>
+Afikpo	<http://dbpedia.org/resource/Afikpo>
+Ali Ehugbo Omaka-ejali	<http://dbpedia.org/resource/Afikpo>
+Akishima	<http://dbpedia.org/resource/Akishima,_Tokyo>
+Alexandria	<http://dbpedia.org/resource/Alexandria,_Virginia>
+Alwar	<http://dbpedia.org/resource/Alwar>
+अलवर	<http://dbpedia.org/resource/Alwar>
+Ambarnath	<http://dbpedia.org/resource/Ambarnath>
+Ambato	<http://dbpedia.org/resource/Ambato,_Ecuador>
+Andong	<http://dbpedia.org/resource/Andong>
+안동	<http://dbpedia.org/resource/Andong>
+Anseong	<http://dbpedia.org/resource/Anseong>
+Anshun	<http://dbpedia.org/resource/Anshun>
+安顺	<http://dbpedia.org/resource/Anshun>
+Antioch	<http://dbpedia.org/resource/Antioch,_California>
+Antipolo City	<http://dbpedia.org/resource/Antipolo>
+Lungsod ng Antipolo	<http://dbpedia.org/resource/Antipolo>
+Antipolo	<http://dbpedia.org/resource/Antipolo>
+Ar-Ramtha City	<http://dbpedia.org/resource/Ar_Ramtha>
+Arafat	<http://dbpedia.org/resource/Arafat,_Mauritania>
+Artux	<http://dbpedia.org/resource/Artux>
+阿图什	<http://dbpedia.org/resource/Artux>
+Asan	<http://dbpedia.org/resource/Asan>
+아산	<http://dbpedia.org/resource/Asan>
+Asansol	<http://dbpedia.org/resource/Asansol>
+Atsugi	<http://dbpedia.org/resource/Atsugi,_Kanagawa>
+Bacolod	<http://dbpedia.org/resource/Bacolod>
+Bacolod City	<http://dbpedia.org/resource/Bacolod>
+Dakbanwa sg Bacolod	<http://dbpedia.org/resource/Bacolod>
+Badajoz	<http://dbpedia.org/resource/Badajoz>
+Badlapur	<http://dbpedia.org/resource/Badlapur>
+Bago	<http://dbpedia.org/resource/Bago,_Negros_Occidental>
+Bago City	<http://dbpedia.org/resource/Bago,_Negros_Occidental>
+Dakbanwa sg Bago	<http://dbpedia.org/resource/Bago,_Negros_Occidental>
+Baguio City	<http://dbpedia.org/resource/Baguio>
+Baguio	<http://dbpedia.org/resource/Baguio>
+Lungsod ng Baguio	<http://dbpedia.org/resource/Baguio>
+Ciudad ti Baguio	<http://dbpedia.org/resource/Baguio>
+Baishan	<http://dbpedia.org/resource/Baishan>
+白山	<http://dbpedia.org/resource/Baishan>
+Baiyin	<http://dbpedia.org/resource/Baiyin>
+Banikoara	<http://dbpedia.org/resource/Banikoara>
+Baoding	<http://dbpedia.org/resource/Baoding>
+Baoji	<http://dbpedia.org/resource/Baoji>
+宝鸡	<http://dbpedia.org/resource/Baoji>
+Baoshan	<http://dbpedia.org/resource/Baoshan,_Yunnan>
+保山	<http://dbpedia.org/resource/Baoshan,_Yunnan>
+Bareilly	<http://dbpedia.org/resource/Bareilly>
+Barinas	<http://dbpedia.org/resource/Barinas,_Barinas>
+Barisal	<http://dbpedia.org/resource/Barisal>
+thumbnail	<http://dbpedia.org/resource/Barisal>
+Barisal City	<http://dbpedia.org/resource/Barisal>
+Batangas City	<http://dbpedia.org/resource/Batangas_City>
+Lungsod ng Batangas	<http://dbpedia.org/resource/Batangas_City>
+Bathinda	<http://dbpedia.org/resource/Bathinda>
+Batu Pahat	<http://dbpedia.org/resource/Batu_Pahat_(town)>
+巴彦淖尔	<http://dbpedia.org/resource/Bayannur>
+15px	<http://dbpedia.org/resource/Bayannur>
+Bayan Nur	<http://dbpedia.org/resource/Bayannur>
+Baybay	<http://dbpedia.org/resource/Baybay>
+Dakbayan sa Baybay	<http://dbpedia.org/resource/Baybay>
+Behbahan	<http://dbpedia.org/resource/Behbahan>
+Beian	<http://dbpedia.org/resource/Bei'an>
+北安	<http://dbpedia.org/resource/Bei'an>
+Beihai	<http://dbpedia.org/resource/Beihai>
+Baekhaij	<http://dbpedia.org/resource/Beihai>
+Belgaum	<http://dbpedia.org/resource/Belgaum>
+Bellevue	<http://dbpedia.org/resource/Bellevue,_Washington>
+Bellevue	<http://dbpedia.org/resource/Bellevue,_Washington>
+Bhayandar	<http://dbpedia.org/resource/Bhayandar>
+Bhiwandi	<http://dbpedia.org/resource/Bhiwandi>
+Bhuj	<http://dbpedia.org/resource/Bhuj>
+Bida	<http://dbpedia.org/resource/Bida>
+Bijapur	<http://dbpedia.org/resource/Bijapur,_Karnataka>
+ಬಿಜಾಪುರ	<http://dbpedia.org/resource/Bijapur,_Karnataka>
+Bikaner	<http://dbpedia.org/resource/Bikaner>
+Binzhou	<http://dbpedia.org/resource/Binzhou>
+滨州	<http://dbpedia.org/resource/Binzhou>
+Biskra	<http://dbpedia.org/resource/Biskra>
+Bislig	<http://dbpedia.org/resource/Bislig>
+Dakbayan sa Bislig	<http://dbpedia.org/resource/Bislig>
+Boca del Río	<http://dbpedia.org/resource/Boca_del_R%C3%ADo,_Veracruz>
+Bohicon	<http://dbpedia.org/resource/Bohicon>
+博乐	<http://dbpedia.org/resource/Bole,_Xinjiang>
+Bole	<http://dbpedia.org/resource/Bole,_Xinjiang>
+Bopal	<http://dbpedia.org/resource/Bopal>
+Boryeong	<http://dbpedia.org/resource/Boryeong>
+보령	<http://dbpedia.org/resource/Boryeong>
+Braga	<http://dbpedia.org/resource/Braga>
+Brighton and Hove	<http://dbpedia.org/resource/Brighton_and_Hove>
+Bucheon	<http://dbpedia.org/resource/Bucheon>
+Bulawayo	<http://dbpedia.org/resource/Bulawayo>
+koBulawayo	<http://dbpedia.org/resource/Bulawayo>
+Busan	<http://dbpedia.org/resource/Busan>
+Busan Metropolitan City	<http://dbpedia.org/resource/Busan>
+부산	<http://dbpedia.org/resource/Busan>
+Cadiz	<http://dbpedia.org/resource/Cadiz,_Negros_Occidental>
+Cairns	<http://dbpedia.org/resource/Cairns>
+Nares	<http://dbpedia.org/resource/Cairns>
+Kingdom of Calabar	<http://dbpedia.org/resource/Calabar>
+Cali	<http://dbpedia.org/resource/Cali>
+Santiago de Cali	<http://dbpedia.org/resource/Cali>
+Caloocan City	<http://dbpedia.org/resource/Caloocan>
+Caloocan	<http://dbpedia.org/resource/Caloocan>
+Lungsod ng Kalookan	<http://dbpedia.org/resource/Caloocan>
+Carcar	<http://dbpedia.org/resource/Carcar>
+Dakbayan sa Carcar	<http://dbpedia.org/resource/Carcar>
+Carlsbad	<http://dbpedia.org/resource/Carlsbad,_California>
+Cartago	<http://dbpedia.org/resource/Cartago,_Costa_Rica>
+Cartago	<http://dbpedia.org/resource/Cartago,_Valle_del_Cauca>
+Cauayan City	<http://dbpedia.org/resource/Cauayan,_Isabela>
+Cauayan	<http://dbpedia.org/resource/Cauayan,_Isabela>
+Lungsod ng Cauayan	<http://dbpedia.org/resource/Cauayan,_Isabela>
+Cedar Rapids	<http://dbpedia.org/resource/Cedar_Rapids,_Iowa>
+Central Jakarta	<http://dbpedia.org/resource/Central_Jakarta>
+岑溪	<http://dbpedia.org/resource/Cenxi>
+Cenxi	<http://dbpedia.org/resource/Cenxi>
+Changji	<http://dbpedia.org/resource/Changji>
+昌吉	<http://dbpedia.org/resource/Changji>
+Changshu	<http://dbpedia.org/resource/Changshu>
+长治	<http://dbpedia.org/resource/Changzhi>
+Changzhi	<http://dbpedia.org/resource/Changzhi>
+Chaozhou	<http://dbpedia.org/resource/Chaozhou>
+潮州	<http://dbpedia.org/resource/Chaozhou>
+Chemnitz	<http://dbpedia.org/resource/Chemnitz>
+Chengmai County	<http://dbpedia.org/resource/Chengmai_County>
+澄迈县	<http://dbpedia.org/resource/Chengmai_County>
+Chenzhou	<http://dbpedia.org/resource/Chenzhou>
+郴州	<http://dbpedia.org/resource/Chenzhou>
+Cheonan	<http://dbpedia.org/resource/Cheonan>
+Chigasaki	<http://dbpedia.org/resource/Chigasaki,_Kanagawa>
+茅ヶ崎	<http://dbpedia.org/resource/Chigasaki,_Kanagawa>
+Chihuahua	<http://dbpedia.org/resource/Chihuahua,_Chihuahua>
+Chiniot	<http://dbpedia.org/resource/Chiniot>
+Chishtian Mandi	<http://dbpedia.org/resource/Chishtian>
+Chishtian Shareef	<http://dbpedia.org/resource/Chishtian>
+Chizhou	<http://dbpedia.org/resource/Chizhou>
+池州	<http://dbpedia.org/resource/Chizhou>
+Chongjin	<http://dbpedia.org/resource/Chongjin>
+청진	<http://dbpedia.org/resource/Chongjin>
+Chongzuo	<http://dbpedia.org/resource/Chongzuo>
+崇左	<http://dbpedia.org/resource/Chongzuo>
+Cungzcoj	<http://dbpedia.org/resource/Chongzuo>
+Chula Vista	<http://dbpedia.org/resource/Chula_Vista,_California>
+Chungju	<http://dbpedia.org/resource/Chungju>
+충주	<http://dbpedia.org/resource/Chungju>
+Chunian	<http://dbpedia.org/resource/Chunian>
+Chuzhou	<http://dbpedia.org/resource/Chuzhou>
+滁州	<http://dbpedia.org/resource/Chuzhou>
+Ljubljana	<http://dbpedia.org/resource/City_Municipality_of_Ljubljana>
+Ciudad Hidalgo	<http://dbpedia.org/resource/Ciudad_Hidalgo,_Michoac%C3%A1n>
+Ciudad Obregon	<http://dbpedia.org/resource/Ciudad_Obreg%C3%B3n>
+Clearwater	<http://dbpedia.org/resource/Clearwater,_Florida>
+Clearwater	<http://dbpedia.org/resource/Clearwater,_Florida>
+Coimbra	<http://dbpedia.org/resource/Coimbra>
+从化	<http://dbpedia.org/resource/Conghua>
+Conghua	<http://dbpedia.org/resource/Conghua>
+Constantine	<http://dbpedia.org/resource/Constantine,_Algeria>
+Coral Springs	<http://dbpedia.org/resource/Coral_Springs,_Florida>
+Corona	<http://dbpedia.org/resource/Corona,_California>
+Cuenca	<http://dbpedia.org/resource/Cuenca,_Ecuador>
+Dabakala	<http://dbpedia.org/resource/Dabakala>
+Daegu Metropolitan City	<http://dbpedia.org/resource/Daegu>
+Lungsod ng Dagupan	<http://dbpedia.org/resource/Dagupan>
+Ciudad na Dagupan	<http://dbpedia.org/resource/Dagupan>
+Dagupan	<http://dbpedia.org/resource/Dagupan>
+Ciudad ti Dagupan	<http://dbpedia.org/resource/Dagupan>
+Danao City	<http://dbpedia.org/resource/Danao,_Cebu>
+Danao	<http://dbpedia.org/resource/Danao,_Cebu>
+Dakbayan sa Danao	<http://dbpedia.org/resource/Danao,_Cebu>
+Dangjin	<http://dbpedia.org/resource/Dangjin>
+당진	<http://dbpedia.org/resource/Dangjin>
+Danzhou	<http://dbpedia.org/resource/Danzhou>
+儋州	<http://dbpedia.org/resource/Danzhou>
+Lungsod ng Dasmariñas	<http://dbpedia.org/resource/Dasmari%C3%B1as>
+Dasmariñas City	<http://dbpedia.org/resource/Dasmari%C3%B1as>
+Dasmariñas	<http://dbpedia.org/resource/Dasmari%C3%B1as>
+Daye	<http://dbpedia.org/resource/Daye,_Hubei>
+Debiganj	<http://dbpedia.org/resource/Debiganj>
+Staten Island	<http://dbpedia.org/resource/Demographics_of_Staten_Island>
+Richmond County	<http://dbpedia.org/resource/Demographics_of_Staten_Island>
+Dengfeng	<http://dbpedia.org/resource/Dengfeng>
+登封	<http://dbpedia.org/resource/Dengfeng>
+Dengzhou	<http://dbpedia.org/resource/Dengzhou>
+邓州	<http://dbpedia.org/resource/Dengzhou>
+Denton	<http://dbpedia.org/resource/Denton,_Texas>
+Deyang	<http://dbpedia.org/resource/Deyang>
+德阳	<http://dbpedia.org/resource/Deyang>
+Dezful	<http://dbpedia.org/resource/Dezful>
+Dezhou	<http://dbpedia.org/resource/Dezhou>
+德州	<http://dbpedia.org/resource/Dezhou>
+Dhule	<http://dbpedia.org/resource/Dhule>
+धुळे	<http://dbpedia.org/resource/Dhule>
+Digos City	<http://dbpedia.org/resource/Digos>
+Ding&#39;an County	<http://dbpedia.org/resource/Ding'an_County>
+定安县	<http://dbpedia.org/resource/Ding'an_County>
+Dingxi	<http://dbpedia.org/resource/Dingxi>
+定西	<http://dbpedia.org/resource/Dingxi>
+Dingzhou	<http://dbpedia.org/resource/Dingzhou>
+Djelfa	<http://dbpedia.org/resource/Djelfa>
+Djougou	<http://dbpedia.org/resource/Djougou>
+Donghae	<http://dbpedia.org/resource/Donghae_City>
+동해	<http://dbpedia.org/resource/Donghae_City>
+Dongxing	<http://dbpedia.org/resource/Dongxing,_Guangxi>
+东兴	<http://dbpedia.org/resource/Dongxing,_Guangxi>
+Dongyang	<http://dbpedia.org/resource/Dongyang>
+东阳	<http://dbpedia.org/resource/Dongyang>
+Dongying	<http://dbpedia.org/resource/Dongying>
+Dorud	<http://dbpedia.org/resource/Dorud>
+Douliu	<http://dbpedia.org/resource/Douliu>
+斗六	<http://dbpedia.org/resource/Douliu>
+Downey	<http://dbpedia.org/resource/Downey,_California>
+Dubai International City	<http://dbpedia.org/resource/Dubai_International_City>
+都江堰	<http://dbpedia.org/resource/Dujiangyan_City>
+Dujiangyan	<http://dbpedia.org/resource/Dujiangyan_City>
+Dunhua	<http://dbpedia.org/resource/Dunhua>
+敦化	<http://dbpedia.org/resource/Dunhua>
+Durango	<http://dbpedia.org/resource/Durango,_Durango>
+Victoria de Durango	<http://dbpedia.org/resource/Durango,_Durango>
+East Jakarta	<http://dbpedia.org/resource/East_Jakarta>
+Ecatepec	<http://dbpedia.org/resource/Ecatepec_de_Morelos>
+El Salto	<http://dbpedia.org/resource/El_Salto,_Jalisco>
+Elbasan	<http://dbpedia.org/resource/Elbasan>
+Elizabeth	<http://dbpedia.org/resource/Elizabeth,_New_Jersey>
+Enugu	<http://dbpedia.org/resource/Enugu>
+Erfurt	<http://dbpedia.org/resource/Erfurt>
+Erie	<http://dbpedia.org/resource/Erie,_Pennsylvania>
+Escondido	<http://dbpedia.org/resource/Escondido,_California>
+Eslamshahr	<http://dbpedia.org/resource/Eslamshahr>
+Everett	<http://dbpedia.org/resource/Everett,_Washington>
+Ezhou	<http://dbpedia.org/resource/Ezhou>
+鄂州	<http://dbpedia.org/resource/Ezhou>
+Fayetteville	<http://dbpedia.org/resource/Fayetteville,_North_Carolina>
+Fenghua	<http://dbpedia.org/resource/Fenghua>
+奉化	<http://dbpedia.org/resource/Fenghua>
+Flushing	<http://dbpedia.org/resource/Flushing,_Queens>
+Fontana	<http://dbpedia.org/resource/Fontana,_California>
+Fort Collins	<http://dbpedia.org/resource/Fort_Collins,_Colorado>
+Fort Lauderdale	<http://dbpedia.org/resource/Fort_Lauderdale,_Florida>
+Fort Wayne	<http://dbpedia.org/resource/Fort_Wayne,_Indiana>
+Fort Worth	<http://dbpedia.org/resource/Fort_Worth,_Texas>
+Fremont	<http://dbpedia.org/resource/Fremont,_California>
+Fuan	<http://dbpedia.org/resource/Fu'an>
+福安	<http://dbpedia.org/resource/Fu'an>
+Fuchū	<http://dbpedia.org/resource/Fuch%C5%AB,_Tokyo>
+Fuji	<http://dbpedia.org/resource/Fuji,_Shizuoka>
+Fujieda	<http://dbpedia.org/resource/Fujieda,_Shizuoka>
+Fujinomiya	<http://dbpedia.org/resource/Fujinomiya,_Shizuoka>
+Fujisawa	<http://dbpedia.org/resource/Fujisawa,_Kanagawa>
+Fukang	<http://dbpedia.org/resource/Fukang>
+阜康	<http://dbpedia.org/resource/Fukang>
+Fukushima	<http://dbpedia.org/resource/Fukushima,_Fukushima>
+Fullerton	<http://dbpedia.org/resource/Fullerton,_California>
+Funabashi	<http://dbpedia.org/resource/Funabashi,_Chiba>
+船橋	<http://dbpedia.org/resource/Funabashi,_Chiba>
+Fushun	<http://dbpedia.org/resource/Fushun>
+抚顺	<http://dbpedia.org/resource/Fushun>
+Fuxin	<http://dbpedia.org/resource/Fuxin>
+阜新	<http://dbpedia.org/resource/Fuxin>
+Fuyang	<http://dbpedia.org/resource/Fuyang>
+阜阳	<http://dbpedia.org/resource/Fuyang>
+Fuzhou	<http://dbpedia.org/resource/Fuzhou,_Jiangxi>
+抚州	<http://dbpedia.org/resource/Fuzhou,_Jiangxi>
+Gómez Palacio	<http://dbpedia.org/resource/G%C3%B3mez_Palacio,_Durango>
+Gaborone	<http://dbpedia.org/resource/Gaborone>
+Gaocheng	<http://dbpedia.org/resource/Gaocheng>
+Gaozhou	<http://dbpedia.org/resource/Gaozhou>
+高州	<http://dbpedia.org/resource/Gaozhou>
+Gapan	<http://dbpedia.org/resource/Gapan>
+Garland	<http://dbpedia.org/resource/Garland,_Texas>
+Geelong	<http://dbpedia.org/resource/Geelong>
+Grant	<http://dbpedia.org/resource/Geelong>
+Dadiangas	<http://dbpedia.org/resource/General_Santos>
+General Santos	<http://dbpedia.org/resource/General_Santos>
+Dakbayan sa Dadiangas	<http://dbpedia.org/resource/General_Santos>
+Genhe	<http://dbpedia.org/resource/Genhe>
+Geoje	<http://dbpedia.org/resource/Geoje>
+거제	<http://dbpedia.org/resource/Geoje>
+Ghazni	<http://dbpedia.org/resource/Ghazni>
+Gilgit	<http://dbpedia.org/resource/Gilgit>
+Gimcheon	<http://dbpedia.org/resource/Gimcheon>
+Gimhae	<http://dbpedia.org/resource/Gimhae>
+김해	<http://dbpedia.org/resource/Gimhae>
+Gimpo	<http://dbpedia.org/resource/Gimpo>
+Godoy Cruz	<http://dbpedia.org/resource/Godoy_Cruz,_Mendoza>
+Gold Coast	<http://dbpedia.org/resource/Gold_Coast,_Queensland>
+Golestan	<http://dbpedia.org/resource/Golestan,_Iran>
+Gongju	<http://dbpedia.org/resource/Gongju>
+공주	<http://dbpedia.org/resource/Gongju>
+Gongqingcheng	<http://dbpedia.org/resource/Gongqingcheng>
+Gongyi	<http://dbpedia.org/resource/Gongyi>
+Grand Prairie	<http://dbpedia.org/resource/Grand_Prairie,_Texas>
+Gualeguaychú	<http://dbpedia.org/resource/Gualeguaych%C3%BA,_Entre_R%C3%ADos>
+Guanajuato	<http://dbpedia.org/resource/Guanajuato,_Guanajuato>
+Guanghan	<http://dbpedia.org/resource/Guanghan>
+Guaymas	<http://dbpedia.org/resource/Guaymas>
+Guaymas de Zaragoza	<http://dbpedia.org/resource/Guaymas>
+Guigang	<http://dbpedia.org/resource/Guigang>
+贵港	<http://dbpedia.org/resource/Guigang>
+Gveigangj	<http://dbpedia.org/resource/Guigang>
+Gunpo	<http://dbpedia.org/resource/Gunpo>
+Gunsan	<http://dbpedia.org/resource/Gunsan>
+군산	<http://dbpedia.org/resource/Gunsan>
+Guri	<http://dbpedia.org/resource/Guri>
+구리	<http://dbpedia.org/resource/Guri>
+Guyuan	<http://dbpedia.org/resource/Guyuan>
+固原	<http://dbpedia.org/resource/Guyuan>
+Gwangju	<http://dbpedia.org/resource/Gwangju,_Gyeonggi>
+광주	<http://dbpedia.org/resource/Gwangju,_Gyeonggi>
+Gyeongju	<http://dbpedia.org/resource/Gyeongju>
+경주	<http://dbpedia.org/resource/Gyeongju>
+Haarlem	<http://dbpedia.org/resource/Haarlem>
+Hadano	<http://dbpedia.org/resource/Hadano,_Kanagawa>
+Haeju	<http://dbpedia.org/resource/Haeju>
+해주	<http://dbpedia.org/resource/Haeju>
+Haicheng	<http://dbpedia.org/resource/Haicheng,_Liaoning>
+Haimen	<http://dbpedia.org/resource/Haimen>
+海门	<http://dbpedia.org/resource/Haimen>
+Hamhung	<http://dbpedia.org/resource/Hamhung>
+함흥	<http://dbpedia.org/resource/Hamhung>
+Hanam	<http://dbpedia.org/resource/Hanam>
+하남	<http://dbpedia.org/resource/Hanam>
+Handan	<http://dbpedia.org/resource/Handan>
+Haridwar	<http://dbpedia.org/resource/Haridwar>
+Hartford	<http://dbpedia.org/resource/Hartford,_Connecticut>
+Hasilpur	<http://dbpedia.org/resource/Hasilpur>
+Hasilpur Mandi	<http://dbpedia.org/resource/Hasilpur>
+Hebi	<http://dbpedia.org/resource/Hebi>
+鹤壁	<http://dbpedia.org/resource/Hebi>
+Hegang	<http://dbpedia.org/resource/Hegang>
+Heihe	<http://dbpedia.org/resource/Heihe>
+Helong	<http://dbpedia.org/resource/Helong>
+和龙	<http://dbpedia.org/resource/Helong>
+Hengshui	<http://dbpedia.org/resource/Hengshui>
+衡水	<http://dbpedia.org/resource/Hengshui>
+Hengyang	<http://dbpedia.org/resource/Hengyang>
+衡阳	<http://dbpedia.org/resource/Hengyang>
+Herāt	<http://dbpedia.org/resource/Herat>
+Herne	<http://dbpedia.org/resource/Herne,_North_Rhine-Westphalia>
+Hezhou	<http://dbpedia.org/resource/Hezhou>
+贺州	<http://dbpedia.org/resource/Hezhou>
+Hohcouh	<http://dbpedia.org/resource/Hezhou>
+Higashikurume	<http://dbpedia.org/resource/Higashikurume,_Tokyo>
+Higashimurayama	<http://dbpedia.org/resource/Higashimurayama,_Tokyo>
+High Point	<http://dbpedia.org/resource/High_Point,_North_Carolina>
+High Point	<http://dbpedia.org/resource/High_Point,_North_Carolina>
+Hillah	<http://dbpedia.org/resource/Hillah>
+Hino	<http://dbpedia.org/resource/Hino,_Tokyo>
+Hiratsuka	<http://dbpedia.org/resource/Hiratsuka,_Kanagawa>
+Hisar	<http://dbpedia.org/resource/Hisar_(city)>
+Hoi An	<http://dbpedia.org/resource/Hoi_An>
+Hollywood	<http://dbpedia.org/resource/Hollywood,_Florida>
+Hsinchu	<http://dbpedia.org/resource/Hsinchu>
+新竹	<http://dbpedia.org/resource/Hsinchu>
+Huadian	<http://dbpedia.org/resource/Huadian,_Jilin>
+桦甸	<http://dbpedia.org/resource/Huadian,_Jilin>
+Huaian	<http://dbpedia.org/resource/Huai'an>
+淮安	<http://dbpedia.org/resource/Huai'an>
+Huaibei	<http://dbpedia.org/resource/Huaibei>
+淮北	<http://dbpedia.org/resource/Huaibei>
+怀化	<http://dbpedia.org/resource/Huaihua>
+Huaihua	<http://dbpedia.org/resource/Huaihua>
+Huainan	<http://dbpedia.org/resource/Huainan>
+淮南	<http://dbpedia.org/resource/Huainan>
+Hualien	<http://dbpedia.org/resource/Hualien_City>
+花蓮	<http://dbpedia.org/resource/Hualien_City>
+Huangshi	<http://dbpedia.org/resource/Huangshi>
+黄石	<http://dbpedia.org/resource/Huangshi>
+Huludao	<http://dbpedia.org/resource/Huludao>
+葫芦岛	<http://dbpedia.org/resource/Huludao>
+Hunchun	<http://dbpedia.org/resource/Hunchun>
+珲春	<http://dbpedia.org/resource/Hunchun>
+Huozhou	<http://dbpedia.org/resource/Huozhou>
+Huzhou	<http://dbpedia.org/resource/Huzhou>
+Hyesan	<http://dbpedia.org/resource/Hyesan>
+혜산	<http://dbpedia.org/resource/Hyesan>
+Ibadan	<http://dbpedia.org/resource/Ibadan>
+Ibarra	<http://dbpedia.org/resource/Ibarra,_Ecuador>
+Icheon	<http://dbpedia.org/resource/Icheon>
+Ichihara	<http://dbpedia.org/resource/Ichihara,_Chiba>
+Ichikawa	<http://dbpedia.org/resource/Ichikawa,_Chiba>
+Iguala	<http://dbpedia.org/resource/Iguala>
+Ikorodu	<http://dbpedia.org/resource/Ikorodu>
+Iksan	<http://dbpedia.org/resource/Iksan>
+익산	<http://dbpedia.org/resource/Iksan>
+Iligan	<http://dbpedia.org/resource/Iligan>
+Dakbayan sa Iligàn	<http://dbpedia.org/resource/Iligan>
+Lungsod ng Iligàn	<http://dbpedia.org/resource/Iligan>
+Iloilo	<http://dbpedia.org/resource/Iloilo_City>
+Dakbanwa sg Iloilo	<http://dbpedia.org/resource/Iloilo_City>
+Incheon	<http://dbpedia.org/resource/Incheon>
+Incheon Metropolitan City	<http://dbpedia.org/resource/Incheon>
+Inglewood	<http://dbpedia.org/resource/Inglewood,_California>
+Medellín	<http://dbpedia.org/resource/Integrated_urban_water_management_in_Medell%C3%ADn,_Colombia>
+Municipio de Medellín	<http://dbpedia.org/resource/Integrated_urban_water_management_in_Medell%C3%ADn,_Colombia>
+Irbid	<http://dbpedia.org/resource/Irbid>
+Iriga	<http://dbpedia.org/resource/Iriga>
+Ise	<http://dbpedia.org/resource/Ise,_Mie>
+Isfahan	<http://dbpedia.org/resource/Isfahan>
+Ivano-Frankivsk municipality	<http://dbpedia.org/resource/Ivano-Frankivsk_municipality>
+Iwata	<http://dbpedia.org/resource/Iwata,_Shizuoka>
+Iwo	<http://dbpedia.org/resource/Iwo,_Nigeria>
+Izeh	<http://dbpedia.org/resource/Izeh>
+Jackson	<http://dbpedia.org/resource/Jackson,_Mississippi>
+Jacksonville	<http://dbpedia.org/resource/Jacksonville,_Florida>
+Jacksonville	<http://dbpedia.org/resource/Jacksonville,_Florida>
+Jahrom	<http://dbpedia.org/resource/Jahrom>
+Jaipur	<http://dbpedia.org/resource/Jaipur>
+Jalgaon	<http://dbpedia.org/resource/Jalgaon>
+Jamaica	<http://dbpedia.org/resource/Jamaica,_Queens>
+Jammu	<http://dbpedia.org/resource/Jammu_(city)>
+Jambu	<http://dbpedia.org/resource/Jammu_(city)>
+Jammu	<http://dbpedia.org/resource/Jammu_(city)>
+Jambu	<http://dbpedia.org/resource/Jammu_(city)>
+Jayapura	<http://dbpedia.org/resource/Jayapura>
+Jecheon	<http://dbpedia.org/resource/Jecheon>
+Jeongeup	<http://dbpedia.org/resource/Jeongeup>
+정읍	<http://dbpedia.org/resource/Jeongeup>
+Jersey City	<http://dbpedia.org/resource/Jersey_City,_New_Jersey>
+Jhang	<http://dbpedia.org/resource/Jhang>
+Jhelum	<http://dbpedia.org/resource/Jhelum>
+Jiamusi	<http://dbpedia.org/resource/Jiamusi>
+Jiamusi •	<http://dbpedia.org/resource/Jiamusi>
+Jiangyin	<http://dbpedia.org/resource/Jiangyin>
+江阴	<http://dbpedia.org/resource/Jiangyin>
+Jiangyou	<http://dbpedia.org/resource/Jiangyou>
+Jianyang	<http://dbpedia.org/resource/Jianyang,_Sichuan>
+Jiaohe	<http://dbpedia.org/resource/Jiaohe,_Jilin>
+蛟河	<http://dbpedia.org/resource/Jiaohe,_Jilin>
+Jiaozuo	<http://dbpedia.org/resource/Jiaozuo>
+焦作	<http://dbpedia.org/resource/Jiaozuo>
+Jiaxing	<http://dbpedia.org/resource/Jiaxing>
+嘉兴	<http://dbpedia.org/resource/Jiaxing>
+Jiayuguan	<http://dbpedia.org/resource/Jiayuguan_City>
+Jieyang	<http://dbpedia.org/resource/Jieyang>
+揭阳	<http://dbpedia.org/resource/Jieyang>
+Jinchang	<http://dbpedia.org/resource/Jinchang>
+金昌	<http://dbpedia.org/resource/Jinchang>
+Jincheng	<http://dbpedia.org/resource/Jincheng>
+Jinggangshan	<http://dbpedia.org/resource/Jinggangshan_City>
+Jinghong	<http://dbpedia.org/resource/Jinghong>
+景洪	<http://dbpedia.org/resource/Jinghong>
+60px|ᦋᦵᧂᦣᦳᧂᧈ	<http://dbpedia.org/resource/Jinghong>
+Jingmen	<http://dbpedia.org/resource/Jingmen>
+Jingzhou	<http://dbpedia.org/resource/Jingzhou>
+荆州	<http://dbpedia.org/resource/Jingzhou>
+Jinhua	<http://dbpedia.org/resource/Jinhua>
+金华	<http://dbpedia.org/resource/Jinhua>
+Jining	<http://dbpedia.org/resource/Jining>
+济宁	<http://dbpedia.org/resource/Jining>
+Jinjiang	<http://dbpedia.org/resource/Jinjiang,_Fujian>
+晋江	<http://dbpedia.org/resource/Jinjiang,_Fujian>
+Jinju	<http://dbpedia.org/resource/Jinju>
+진주	<http://dbpedia.org/resource/Jinju>
+Jinzhong	<http://dbpedia.org/resource/Jinzhong>
+晋中	<http://dbpedia.org/resource/Jinzhong>
+Jishou	<http://dbpedia.org/resource/Jishou>
+Jiujiang	<http://dbpedia.org/resource/Jiujiang>
+九江	<http://dbpedia.org/resource/Jiujiang>
+Jiyuan	<http://dbpedia.org/resource/Jiyuan>
+济源	<http://dbpedia.org/resource/Jiyuan>
+Kaesong	<http://dbpedia.org/resource/Kaesong>
+開平	<http://dbpedia.org/resource/Kaiping>
+Kalalè	<http://dbpedia.org/resource/Kalal%C3%A8>
+Kalmunai	<http://dbpedia.org/resource/Kalmunai>
+Kamagaya	<http://dbpedia.org/resource/Kamagaya,_Chiba>
+Kamakura	<http://dbpedia.org/resource/Kamakura,_Kanagawa>
+Kampong Cham	<http://dbpedia.org/resource/Kampong_Cham_(city)>
+Kandi	<http://dbpedia.org/resource/Kandi,_Benin>
+Kandy	<http://dbpedia.org/resource/Kandy>
+Kanggye	<http://dbpedia.org/resource/Kanggye>
+Kano	<http://dbpedia.org/resource/Kano>
+Kariya	<http://dbpedia.org/resource/Kariya,_Aichi>
+Kashiwa	<http://dbpedia.org/resource/Kashiwa,_Chiba>
+Kayes	<http://dbpedia.org/resource/Kayes>
+Kazaure Emirate	<http://dbpedia.org/resource/Kazaure>
+Keelung	<http://dbpedia.org/resource/Keelung>
+基隆	<http://dbpedia.org/resource/Keelung>
+Kendari	<http://dbpedia.org/resource/Kendari>
+Khajuraho	<http://dbpedia.org/resource/Khajuraho_Group_of_Monuments__Khajuraho__1>
+Khammam	<http://dbpedia.org/resource/Khammam>
+Khandwa	<http://dbpedia.org/resource/Khandwa>
+Khomeyni Shahr	<http://dbpedia.org/resource/Khomeyni_Shahr>
+Khorramshahr	<http://dbpedia.org/resource/Khorramshahr>
+Khost	<http://dbpedia.org/resource/Khost>
+Khushab	<http://dbpedia.org/resource/Khushab>
+Kisarazu	<http://dbpedia.org/resource/Kisarazu,_Chiba>
+Knoxville	<http://dbpedia.org/resource/Knoxville,_Tennessee>
+Kobe	<http://dbpedia.org/resource/Kobe>
+神戸	<http://dbpedia.org/resource/Kobe>
+Korhogo	<http://dbpedia.org/resource/Korhogo>
+Kotli	<http://dbpedia.org/resource/Kotli>
+Kumasi	<http://dbpedia.org/resource/Kumasi>
+Kunshan	<http://dbpedia.org/resource/Kunshan>
+昆山	<http://dbpedia.org/resource/Kunshan>
+Kuytun	<http://dbpedia.org/resource/Kuytun>
+奎屯	<http://dbpedia.org/resource/Kuytun>
+吕梁	<http://dbpedia.org/resource/L%C3%BCliang>
+La Paz	<http://dbpedia.org/resource/La_Paz,_Baja_California_Sur>
+La Rioja	<http://dbpedia.org/resource/La_Rioja,_Argentina>
+Lagos de Moreno	<http://dbpedia.org/resource/Lagos_de_Moreno>
+Lahore	<http://dbpedia.org/resource/Lahore>
+Laibin	<http://dbpedia.org/resource/Laibin>
+来宾	<http://dbpedia.org/resource/Laibin>
+Leizbingz	<http://dbpedia.org/resource/Laibin>
+Laiwu	<http://dbpedia.org/resource/Laiwu>
+莱芜	<http://dbpedia.org/resource/Laiwu>
+Lakewood	<http://dbpedia.org/resource/Lakewood,_Colorado>
+Lancaster	<http://dbpedia.org/resource/Lancaster,_California>
+Langfang	<http://dbpedia.org/resource/Langfang>
+廊坊	<http://dbpedia.org/resource/Langfang>
+Langsa	<http://dbpedia.org/resource/Langsa>
+Lansing	<http://dbpedia.org/resource/Lansing,_Michigan>
+Larkana	<http://dbpedia.org/resource/Larkana>
+Las Heras	<http://dbpedia.org/resource/Las_Heras,_Mendoza>
+Lashkar Gah	<http://dbpedia.org/resource/Lashkar_Gah>
+Laval	<http://dbpedia.org/resource/Laval,_Quebec>
+Ville de Laval	<http://dbpedia.org/resource/Laval,_Quebec>
+Legazpi	<http://dbpedia.org/resource/Legazpi,_Albay>
+Legazpi	<http://dbpedia.org/resource/Legazpi,_Albay>
+Ciudad nin Legazpi	<http://dbpedia.org/resource/Legazpi,_Albay>
+Leiyang	<http://dbpedia.org/resource/Leiyang>
+Lexington-Fayette	<http://dbpedia.org/resource/Lexington,_Kentucky>
+Urban County	<http://dbpedia.org/resource/Lexington,_Kentucky>
+Lhokseumawe	<http://dbpedia.org/resource/Lhokseumawe>
+Lianyungang	<http://dbpedia.org/resource/Lianyungang>
+连云港	<http://dbpedia.org/resource/Lianyungang>
+Lianzhou	<http://dbpedia.org/resource/Lianzhou>
+连州	<http://dbpedia.org/resource/Lianzhou>
+Liaoyang	<http://dbpedia.org/resource/Liaoyang>
+辽阳	<http://dbpedia.org/resource/Liaoyang>
+Liaoyuan	<http://dbpedia.org/resource/Liaoyuan>
+辽源	<http://dbpedia.org/resource/Liaoyuan>
+Ligao	<http://dbpedia.org/resource/Ligao>
+Lincoln	<http://dbpedia.org/resource/Lincoln,_Nebraska>
+Lingao County	<http://dbpedia.org/resource/Lingao_County>
+临高县	<http://dbpedia.org/resource/Lingao_County>
+Linghai	<http://dbpedia.org/resource/Linghai>
+凌海	<http://dbpedia.org/resource/Linghai>
+Linxia City	<http://dbpedia.org/resource/Linxia_City>
+临夏	<http://dbpedia.org/resource/Linxia_City>
+Linyi	<http://dbpedia.org/resource/Linyi>
+临沂	<http://dbpedia.org/resource/Linyi>
+Lipa	<http://dbpedia.org/resource/Lipa,_Batangas>
+Lipa	<http://dbpedia.org/resource/Lipa,_Batangas>
+Lungsod ng Lipa	<http://dbpedia.org/resource/Lipa,_Batangas>
+Lishui	<http://dbpedia.org/resource/Lishui>
+丽水	<http://dbpedia.org/resource/Lishui>
+Liuyang	<http://dbpedia.org/resource/Liuyang>
+Liuzhou	<http://dbpedia.org/resource/Liuzhou>
+柳州	<http://dbpedia.org/resource/Liuzhou>
+Liujcouh	<http://dbpedia.org/resource/Liuzhou>
+Lokossa	<http://dbpedia.org/resource/Lokossa>
+Longjing	<http://dbpedia.org/resource/Longjing,_Jilin>
+()	<http://dbpedia.org/resource/Longjing,_Jilin>
+Longyan	<http://dbpedia.org/resource/Longyan>
+龙岩	<http://dbpedia.org/resource/Longyan>
+Loudi	<http://dbpedia.org/resource/Loudi>
+娄底	<http://dbpedia.org/resource/Loudi>
+Louisville	<http://dbpedia.org/resource/Louisville,_Kentucky>
+Louisville-Jefferson County	<http://dbpedia.org/resource/Louisville,_Kentucky>
+Metro Government	<http://dbpedia.org/resource/Louisville,_Kentucky>
+Louisville	<http://dbpedia.org/resource/Louisville,_Kentucky>
+Louisville-Jefferson County	<http://dbpedia.org/resource/Louisville,_Kentucky>
+Metro Government	<http://dbpedia.org/resource/Louisville,_Kentucky>
+Lowell	<http://dbpedia.org/resource/Lowell,_Massachusetts>
+Lubango	<http://dbpedia.org/resource/Lubango>
+Lubbock	<http://dbpedia.org/resource/Lubbock,_Texas>
+Luohe	<http://dbpedia.org/resource/Luohe>
+漯河	<http://dbpedia.org/resource/Luohe>
+Luoyang	<http://dbpedia.org/resource/Luoyang>
+洛阳	<http://dbpedia.org/resource/Luoyang>
+Lusaka	<http://dbpedia.org/resource/Lusaka>
+Luzhou	<http://dbpedia.org/resource/Luzhou>
+泸州	<http://dbpedia.org/resource/Luzhou>
+Madurai	<http://dbpedia.org/resource/Madurai>
+Mahabad	<http://dbpedia.org/resource/Mahabad>
+Mahbubnagar	<http://dbpedia.org/resource/Mahbubnagar>
+Mailsi	<http://dbpedia.org/resource/Mailsi>
+Lungsod ng Makati	<http://dbpedia.org/resource/Makati>
+Makati	<http://dbpedia.org/resource/Makati>
+Makati City	<http://dbpedia.org/resource/Makati>
+Malard	<http://dbpedia.org/resource/Malard>
+Malayer	<http://dbpedia.org/resource/Malayer>
+Lungsod ng Mandaluyong	<http://dbpedia.org/resource/Mandaluyong>
+Mandaluyong City	<http://dbpedia.org/resource/Mandaluyong>
+Mandaluyong	<http://dbpedia.org/resource/Mandaluyong>
+Mandaue	<http://dbpedia.org/resource/Mandaue>
+Dakbayan sa Mandaue	<http://dbpedia.org/resource/Mandaue>
+Mandya	<http://dbpedia.org/resource/Mandya>
+pandavapura	<http://dbpedia.org/resource/Mandya>
+Manta	<http://dbpedia.org/resource/Manta>
+Maoming	<http://dbpedia.org/resource/Maoming>
+茂名	<http://dbpedia.org/resource/Maoming>
+Marand	<http://dbpedia.org/resource/Marand>
+City of Marawi	<http://dbpedia.org/resource/Marawi>
+Marikina City	<http://dbpedia.org/resource/Marikina>
+Marikina	<http://dbpedia.org/resource/Marikina>
+Lungsod ng Marikina	<http://dbpedia.org/resource/Marikina>
+Marot	<http://dbpedia.org/resource/Marot>
+Masjed Soleyman	<http://dbpedia.org/resource/Masjed_Soleyman>
+Heroica Matamoros	<http://dbpedia.org/resource/Matamoros,_Tamaulipas>
+Matamoros	<http://dbpedia.org/resource/Matamoros,_Tamaulipas>
+Mathura	<http://dbpedia.org/resource/Mathura>
+Matsudo	<http://dbpedia.org/resource/Matsudo,_Chiba>
+Matsumoto	<http://dbpedia.org/resource/Matsumoto,_Nagano>
+松本	<http://dbpedia.org/resource/Matsumoto,_Nagano>
+Matsusaka	<http://dbpedia.org/resource/Matsusaka,_Mie>
+mau	<http://dbpedia.org/resource/Mau>
+Mazar-e Sharīf	<http://dbpedia.org/resource/Mazar-i-Sharif>
+McAllen	<http://dbpedia.org/resource/McAllen,_Texas>
+Meizhou	<http://dbpedia.org/resource/Meizhou>
+梅州	<http://dbpedia.org/resource/Meizhou>
+Mexicali	<http://dbpedia.org/resource/Mexicali>
+Mexicali	<http://dbpedia.org/resource/Mexicali>
+Ciudad de Mexicali	<http://dbpedia.org/resource/Mexicali>
+Miandoab	<http://dbpedia.org/resource/Miandoab>
+qoshachay	<http://dbpedia.org/resource/Miandoab>
+Mianyang	<http://dbpedia.org/resource/Mianyang>
+绵阳	<http://dbpedia.org/resource/Mianyang>
+绵竹	<http://dbpedia.org/resource/Mianzhu>
+Mianzhu	<http://dbpedia.org/resource/Mianzhu>
+Midland	<http://dbpedia.org/resource/Midland,_Texas>
+Miryang	<http://dbpedia.org/resource/Miryang>
+밀양	<http://dbpedia.org/resource/Miryang>
+Mishima	<http://dbpedia.org/resource/Mishima,_Shizuoka>
+Modesto	<http://dbpedia.org/resource/Modesto,_California>
+Mombasa	<http://dbpedia.org/resource/Mombasa>
+Morelia	<http://dbpedia.org/resource/Morelia>
+Moreno Valley	<http://dbpedia.org/resource/Moreno_Valley,_California>
+Muar	<http://dbpedia.org/resource/Muar_town>
+Muling	<http://dbpedia.org/resource/Muling>
+穆棱	<http://dbpedia.org/resource/Muling>
+Murrieta	<http://dbpedia.org/resource/Murrieta,_California>
+Mutare	<http://dbpedia.org/resource/Mutare>
+Mwanza	<http://dbpedia.org/resource/Mwanza>
+Mysore	<http://dbpedia.org/resource/Mysore>
+Maisooru	<http://dbpedia.org/resource/Mysore>
+Nadiad	<http://dbpedia.org/resource/Nadiad>
+Nagareyama	<http://dbpedia.org/resource/Nagareyama,_Chiba>
+Naha	<http://dbpedia.org/resource/Naha,_Okinawa>
+Naafa	<http://dbpedia.org/resource/Naha,_Okinawa>
+那覇	<http://dbpedia.org/resource/Naha,_Okinawa>
+Najafabad	<http://dbpedia.org/resource/Najafabad>
+Naju	<http://dbpedia.org/resource/Naju>
+나주	<http://dbpedia.org/resource/Naju>
+Nallasopara	<http://dbpedia.org/resource/Nala_Sopara>
+Nanded-Waghala	<http://dbpedia.org/resource/Nanded-Waghala>
+Nanyang	<http://dbpedia.org/resource/Nanyang,_Henan>
+南阳	<http://dbpedia.org/resource/Nanyang,_Henan>
+Naqadeh	<http://dbpedia.org/resource/Naqadeh>
+Narashino	<http://dbpedia.org/resource/Narashino,_Chiba>
+Nasim Shahr	<http://dbpedia.org/resource/Nasim_Shahr>
+Navojoa	<http://dbpedia.org/resource/Navojoa>
+Lungsod ng Navotas	<http://dbpedia.org/resource/Navotas>
+Navotas	<http://dbpedia.org/resource/Navotas>
+Navotas City	<http://dbpedia.org/resource/Navotas>
+Ndola	<http://dbpedia.org/resource/Ndola>
+Negombo	<http://dbpedia.org/resource/Negombo>
+මීගමුව	<http://dbpedia.org/resource/Negombo>
+Nehe	<http://dbpedia.org/resource/Nehe>
+讷河	<http://dbpedia.org/resource/Nehe>
+Neijiang	<http://dbpedia.org/resource/Neijiang>
+内江	<http://dbpedia.org/resource/Neijiang>
+Nui4jiang1	<http://dbpedia.org/resource/Neijiang>
+Neiva	<http://dbpedia.org/resource/Neiva,_Huila>
+Municipio de Neiva	<http://dbpedia.org/resource/Neiva,_Huila>
+Northumberland	<http://dbpedia.org/resource/Newcastle,_New_South_Wales>
+Newcastle	<http://dbpedia.org/resource/Newcastle,_New_South_Wales>
+Ningde	<http://dbpedia.org/resource/Ningde>
+宁德	<http://dbpedia.org/resource/Ningde>
+Nnewi	<http://dbpedia.org/resource/Nnewi>
+Noda	<http://dbpedia.org/resource/Noda,_Chiba>
+Nonsan	<http://dbpedia.org/resource/Nonsan>
+논산	<http://dbpedia.org/resource/Nonsan>
+Nonthaburi	<http://dbpedia.org/resource/Nonthaburi_(city)>
+North Charleston	<http://dbpedia.org/resource/North_Charleston,_South_Carolina>
+North Charleston	<http://dbpedia.org/resource/North_Charleston,_South_Carolina>
+North Jakarta	<http://dbpedia.org/resource/North_Jakarta>
+Norwalk	<http://dbpedia.org/resource/Norwalk,_California>
+Nowshahr	<http://dbpedia.org/resource/Nowshahr>
+Numazu	<http://dbpedia.org/resource/Numazu,_Shizuoka>
+Odawara	<http://dbpedia.org/resource/Odawara,_Kanagawa>
+Offa	<http://dbpedia.org/resource/Offa,_Nigeria>
+Okazaki	<http://dbpedia.org/resource/Okazaki,_Aichi>
+Okene	<http://dbpedia.org/resource/Okene>
+Olongapo City	<http://dbpedia.org/resource/Olongapo>
+Lungsod ng Olongapo	<http://dbpedia.org/resource/Olongapo>
+Syodad nin Olongapo	<http://dbpedia.org/resource/Olongapo>
+Ongole	<http://dbpedia.org/resource/Ongole>
+ఒంగోలు	<http://dbpedia.org/resource/Ongole>
+Orange	<http://dbpedia.org/resource/Orange,_California>
+Orlu	<http://dbpedia.org/resource/Orlu>
+Ọlu	<http://dbpedia.org/resource/Orlu>
+Ormoc	<http://dbpedia.org/resource/Ormoc>
+Dakbayan sa Ormoc	<http://dbpedia.org/resource/Ormoc>
+Osan	<http://dbpedia.org/resource/Osan>
+오산	<http://dbpedia.org/resource/Osan>
+Osijek	<http://dbpedia.org/resource/Osijek>
+Osijek	<http://dbpedia.org/resource/Osijek>
+Grad Osijek	<http://dbpedia.org/resource/Osijek>
+Osogbo	<http://dbpedia.org/resource/Osogbo>
+Oxnard	<http://dbpedia.org/resource/Oxnard,_California>
+Oxnard	<http://dbpedia.org/resource/Oxnard,_California>
+Oyi	<http://dbpedia.org/resource/Oyi>
+Dakbayan sa Ozamiz	<http://dbpedia.org/resource/Ozamiz>
+Ozamiz	<http://dbpedia.org/resource/Ozamiz>
+Pachuca de Soto	<http://dbpedia.org/resource/Pachuca>
+Paju	<http://dbpedia.org/resource/Paju>
+파주	<http://dbpedia.org/resource/Paju>
+Pak Kret	<http://dbpedia.org/resource/Pak_Kret>
+ปากเกร็ด	<http://dbpedia.org/resource/Pak_Kret>
+Pakdasht	<http://dbpedia.org/resource/Pakdasht>
+Palm Bay	<http://dbpedia.org/resource/Palm_Bay,_Florida>
+Palun paaloo	<http://dbpedia.org/resource/Palu>
+Panabo	<http://dbpedia.org/resource/Panabo>
+Panjin	<http://dbpedia.org/resource/Panjin>
+盘锦	<http://dbpedia.org/resource/Panjin>
+Parakou	<http://dbpedia.org/resource/Parakou>
+Parral	<http://dbpedia.org/resource/Parral,_Chihuahua>
+Pasadena	<http://dbpedia.org/resource/Pasadena,_California>
+Pasadena	<http://dbpedia.org/resource/Pasadena,_Texas>
+Lungsod ng Pasig	<http://dbpedia.org/resource/Pasig>
+Pasig City	<http://dbpedia.org/resource/Pasig>
+Pasig	<http://dbpedia.org/resource/Pasig>
+Paterson	<http://dbpedia.org/resource/Paterson,_New_Jersey>
+Pembroke Pines	<http://dbpedia.org/resource/Pembroke_Pines,_Florida>
+Pengzhou	<http://dbpedia.org/resource/Pengzhou>
+Pingdingshan	<http://dbpedia.org/resource/Pingdingshan>
+平顶山	<http://dbpedia.org/resource/Pingdingshan>
+Pingtung-Wandan	<http://dbpedia.org/resource/Pingtung_City>
+屏東-萬丹	<http://dbpedia.org/resource/Pingtung_City>
+Plano	<http://dbpedia.org/resource/Plano,_Texas>
+Plymouth	<http://dbpedia.org/resource/Plymouth>
+Plymouth	<http://dbpedia.org/resource/Plymouth>
+Pocheon	<http://dbpedia.org/resource/Pocheon>
+Pohang	<http://dbpedia.org/resource/Pohang>
+Pokharā	<http://dbpedia.org/resource/Pokhara>
+Pomona	<http://dbpedia.org/resource/Pomona,_California>
+Posadas	<http://dbpedia.org/resource/Posadas,_Misiones>
+Prabumulih	<http://dbpedia.org/resource/Prabumulih>
+Prizren	<http://dbpedia.org/resource/Prizren>
+Prizren	<http://dbpedia.org/resource/Prizren>
+Providence	<http://dbpedia.org/resource/Providence,_Rhode_Island>
+Putian	<http://dbpedia.org/resource/Putian>
+Puyang	<http://dbpedia.org/resource/Puyang>
+濮阳	<http://dbpedia.org/resource/Puyang>
+Qaem Shahr	<http://dbpedia.org/resource/Qa'em-Shahr>
+Qianjiang	<http://dbpedia.org/resource/Qianjiang,_Hubei>
+潜江	<http://dbpedia.org/resource/Qianjiang,_Hubei>
+Qingyang	<http://dbpedia.org/resource/Qingyang>
+庆阳	<http://dbpedia.org/resource/Qingyang>
+Qingyuan	<http://dbpedia.org/resource/Qingyuan>
+清远	<http://dbpedia.org/resource/Qingyuan>
+Qinyang	<http://dbpedia.org/resource/Qinyang>
+Qitaihe	<http://dbpedia.org/resource/Qitaihe>
+Qods	<http://dbpedia.org/resource/Qods,_Iran>
+Quanzhou	<http://dbpedia.org/resource/Quanzhou>
+泉州	<http://dbpedia.org/resource/Quanzhou>
+Quetta	<http://dbpedia.org/resource/Quetta>
+Quetzaltenango	<http://dbpedia.org/resource/Quetzaltenango>
+Xela	<http://dbpedia.org/resource/Quetzaltenango>
+Quezon City	<http://dbpedia.org/resource/Quezon_City>
+Lungsod Quezon	<http://dbpedia.org/resource/Quezon_City>
+Qujing	<http://dbpedia.org/resource/Qujing>
+Río Cuarto	<http://dbpedia.org/resource/R%C3%ADo_Cuarto,_C%C3%B3rdoba>
+Rafaela	<http://dbpedia.org/resource/Rafaela>
+Rampur	<http://dbpedia.org/resource/Rampur,_Uttar_Pradesh>
+Rason	<http://dbpedia.org/resource/Rason>
+라선	<http://dbpedia.org/resource/Rason>
+Reconquista	<http://dbpedia.org/resource/Reconquista,_Santa_Fe>
+Renqiu	<http://dbpedia.org/resource/Renqiu>
+任丘	<http://dbpedia.org/resource/Renqiu>
+Rewa	<http://dbpedia.org/resource/Rewa,_Madhya_Pradesh>
+Richmond	<http://dbpedia.org/resource/Richmond,_California>
+Riverside	<http://dbpedia.org/resource/Riverside,_California>
+Rizhao	<http://dbpedia.org/resource/Rizhao>
+日照	<http://dbpedia.org/resource/Rizhao>
+Rosario	<http://dbpedia.org/resource/Rosario,_Santa_Fe>
+Roseville	<http://dbpedia.org/resource/Roseville,_California>
+Roxas	<http://dbpedia.org/resource/Roxas,_Capiz>
+Dakbanwa sang Roxas	<http://dbpedia.org/resource/Roxas,_Capiz>
+Russeifa City	<http://dbpedia.org/resource/Russeifa>
+Sèmè-Kpodji	<http://dbpedia.org/resource/S%C3%A8m%C3%A8-Kpodji>
+Sabzevar	<http://dbpedia.org/resource/Sabzevar>
+Sacheon	<http://dbpedia.org/resource/Sacheon>
+Sagamu	<http://dbpedia.org/resource/Sagamu>
+Saguenay	<http://dbpedia.org/resource/Saguenay,_Quebec>
+Sahiwal	<http://dbpedia.org/resource/Sahiwal>
+Sakura	<http://dbpedia.org/resource/Sakura,_Chiba>
+Salinas	<http://dbpedia.org/resource/Salinas,_California>
+Salmiyah	<http://dbpedia.org/resource/Salmiya>
+Salta	<http://dbpedia.org/resource/Salta>
+Saltillo	<http://dbpedia.org/resource/Saltillo>
+Sāmarrā	<http://dbpedia.org/resource/Samarra>
+San Fernando	<http://dbpedia.org/resource/San_Fernando,_Pampanga>
+San Jose	<http://dbpedia.org/resource/San_Jose,_Nueva_Ecija>
+San Luis	<http://dbpedia.org/resource/San_Luis,_Argentina>
+San Luis Potosí	<http://dbpedia.org/resource/San_Luis_Potos%C3%AD,_San_Luis_Potos%C3%AD>
+San Miguel	<http://dbpedia.org/resource/San_Miguel,_El_Salvador>
+San Pablo	<http://dbpedia.org/resource/San_Pablo,_Laguna>
+San Pablo City	<http://dbpedia.org/resource/San_Pablo,_Laguna>
+Sangju	<http://dbpedia.org/resource/Sangju>
+상주	<http://dbpedia.org/resource/Sangju>
+Sangli	<http://dbpedia.org/resource/Sangli>
+Sanming	<http://dbpedia.org/resource/Sanming>
+三明	<http://dbpedia.org/resource/Sanming>
+Santa Fe	<http://dbpedia.org/resource/Santa_Fe,_Argentina>
+Santa Rosa	<http://dbpedia.org/resource/Santa_Rosa,_California>
+Santa Rosa	<http://dbpedia.org/resource/Santa_Rosa,_California>
+Santa Rosa	<http://dbpedia.org/resource/Santa_Rosa,_Laguna>
+Santa Rosa	<http://dbpedia.org/resource/Santa_Rosa,_Laguna>
+Santiago	<http://dbpedia.org/resource/Santiago_de_los_Caballeros>
+Santo Domingo	<http://dbpedia.org/resource/Santo_Domingo>
+Sanya	<http://dbpedia.org/resource/Sanya>
+三亚	<http://dbpedia.org/resource/Sanya>
+Saqqez	<http://dbpedia.org/resource/Saqqez>
+Sargodha	<http://dbpedia.org/resource/Sargodha>
+Satara	<http://dbpedia.org/resource/Satara_(city)>
+Saveh	<http://dbpedia.org/resource/Saveh>
+Semnan	<http://dbpedia.org/resource/Semnan,_Iran>
+Seogwipo	<http://dbpedia.org/resource/Seogwipo>
+Seosan	<http://dbpedia.org/resource/Seosan>
+서산	<http://dbpedia.org/resource/Seosan>
+Shahin Shahr	<http://dbpedia.org/resource/Shahin_Shahr>
+shahin shahr	<http://dbpedia.org/resource/Shahin_Shahr>
+Shahjahanpur	<http://dbpedia.org/resource/Shahjahanpur>
+Shahreza	<http://dbpedia.org/resource/Shahreza>
+Shahriar	<http://dbpedia.org/resource/Shahriar>
+Shahrud	<http://dbpedia.org/resource/Shahrud,_Iran>
+Shangqiu	<http://dbpedia.org/resource/Shangqiu>
+商丘	<http://dbpedia.org/resource/Shangqiu>
+Shangrao	<http://dbpedia.org/resource/Shangrao>
+Shaoxing	<http://dbpedia.org/resource/Shaoxing>
+绍兴	<http://dbpedia.org/resource/Shaoxing>
+邵阳	<http://dbpedia.org/resource/Shaoyang>
+Shaoyang	<http://dbpedia.org/resource/Shaoyang>
+Sharjah	<http://dbpedia.org/resource/Sharjah_(city)>
+Shifang City	<http://dbpedia.org/resource/Shifang>
+Shifang	<http://dbpedia.org/resource/Shifang>
+Shihezi	<http://dbpedia.org/resource/Shihezi>
+石河子	<http://dbpedia.org/resource/Shihezi>
+石狮	<http://dbpedia.org/resource/Shishi,_Fujian>
+Shishi	<http://dbpedia.org/resource/Shishi,_Fujian>
+Shiyan	<http://dbpedia.org/resource/Shiyan>
+十堰	<http://dbpedia.org/resource/Shiyan>
+Shuangyashan	<http://dbpedia.org/resource/Shuangyashan>
+Shuozhou	<http://dbpedia.org/resource/Shuozhou>
+朔州	<http://dbpedia.org/resource/Shuozhou>
+Shushtar	<http://dbpedia.org/resource/Shushtar>
+Sibiu	<http://dbpedia.org/resource/Sibiu>
+Siheung	<http://dbpedia.org/resource/Siheung>
+Sikasso	<http://dbpedia.org/resource/Sikasso>
+Silay City	<http://dbpedia.org/resource/Silay>
+Dakbanwa sg Silay	<http://dbpedia.org/resource/Silay>
+Simi Valley	<http://dbpedia.org/resource/Simi_Valley,_California>
+신의주	<http://dbpedia.org/resource/Sinuiju>
+Sinŭiju	<http://dbpedia.org/resource/Sinuiju>
+Sirjan	<http://dbpedia.org/resource/Sirjan>
+Sirjān	<http://dbpedia.org/resource/Sirjan>
+Sisophon	<http://dbpedia.org/resource/Sisophon>
+Skikda	<http://dbpedia.org/resource/Skikda>
+Solapur	<http://dbpedia.org/resource/Solapur>
+Sonnalagi	<http://dbpedia.org/resource/Solapur>
+松原	<http://dbpedia.org/resource/Songyuan>
+Songyuan	<http://dbpedia.org/resource/Songyuan>
+Sorong	<http://dbpedia.org/resource/Sorong_(city)>
+Nuwar	<http://dbpedia.org/resource/Sorong_(city)>
+Sorsogon	<http://dbpedia.org/resource/Sorsogon_City>
+South Jakarta	<http://dbpedia.org/resource/South_Jakarta>
+Spokane	<http://dbpedia.org/resource/Spokane,_Washington>
+Spokane	<http://dbpedia.org/resource/Spokane,_Washington>
+Springfield	<http://dbpedia.org/resource/Springfield,_Massachusetts>
+St Johns	<http://dbpedia.org/resource/St._John's,_Newfoundland_and_Labrador>
+St Johns	<http://dbpedia.org/resource/St._John's,_Newfoundland_and_Labrador>
+Sterling Heights	<http://dbpedia.org/resource/Sterling_Heights,_Michigan>
+Stoke-on-Trent	<http://dbpedia.org/resource/Stoke-on-Trent>
+Stoke-on-Trent	<http://dbpedia.org/resource/Stoke-on-Trent>
+Suihua	<http://dbpedia.org/resource/Suihua>
+Suining	<http://dbpedia.org/resource/Suining>
+遂宁	<http://dbpedia.org/resource/Suining>
+Suizhou	<http://dbpedia.org/resource/Suizhou>
+随州	<http://dbpedia.org/resource/Suizhou>
+Sumgait	<http://dbpedia.org/resource/Sumqayit>
+Sumqayıt	<http://dbpedia.org/resource/Sumqayit>
+Sunnyvale	<http://dbpedia.org/resource/Sunnyvale,_California>
+Suqian	<http://dbpedia.org/resource/Suqian>
+宿迁	<http://dbpedia.org/resource/Suqian>
+Surabaya	<http://dbpedia.org/resource/Surabaya>
+Surigao	<http://dbpedia.org/resource/Surigao>
+Siyudad nan Surigao	<http://dbpedia.org/resource/Surigao>
+Suwon	<http://dbpedia.org/resource/Suwon>
+수원	<http://dbpedia.org/resource/Suwon>
+Suzhou	<http://dbpedia.org/resource/Suzhou>
+苏州	<http://dbpedia.org/resource/Suzhou>
+Suzhou	<http://dbpedia.org/resource/Suzhou,_Anhui>
+宿州	<http://dbpedia.org/resource/Suzhou,_Anhui>
+Sylhet	<http://dbpedia.org/resource/Sylhet>
+Sylhet City Corporation	<http://dbpedia.org/resource/Sylhet>
+Ta Khmao	<http://dbpedia.org/resource/Ta_Khmao_(city)>
+Tabaco	<http://dbpedia.org/resource/Tabaco>
+Tabaco	<http://dbpedia.org/resource/Tabaco>
+Tacheng	<http://dbpedia.org/resource/Tacheng>
+Tacloban	<http://dbpedia.org/resource/Tacloban>
+Tafilah	<http://dbpedia.org/resource/Tafilah>
+Tagum	<http://dbpedia.org/resource/Tagum>
+Dakbayan sa Tagum	<http://dbpedia.org/resource/Tagum>
+泰安	<http://dbpedia.org/resource/Tai'an>
+Taian	<http://dbpedia.org/resource/Tai'an>
+Taitung	<http://dbpedia.org/resource/Taitung_City>
+臺東	<http://dbpedia.org/resource/Taitung_City>
+Taizhou	<http://dbpedia.org/resource/Taizhou,_Jiangsu>
+泰州	<http://dbpedia.org/resource/Taizhou,_Jiangsu>
+台州	<http://dbpedia.org/resource/Taizhou,_Zhejiang>
+Taizhou	<http://dbpedia.org/resource/Taizhou,_Zhejiang>
+Tāloqān	<http://dbpedia.org/resource/Taloqan>
+Tanauan City	<http://dbpedia.org/resource/Tanauan,_Batangas>
+Lungsod ng Tanauan	<http://dbpedia.org/resource/Tanauan,_Batangas>
+Tangshan	<http://dbpedia.org/resource/Tangshan>
+唐山	<http://dbpedia.org/resource/Tangshan>
+Taoyuan	<http://dbpedia.org/resource/Taoyuan_City>
+桃園	<http://dbpedia.org/resource/Taoyuan_City>
+Tarlac City	<http://dbpedia.org/resource/Tarlac_City>
+Ciudad Ning Tarlak	<http://dbpedia.org/resource/Tarlac_City>
+Ciudad Ti Tarlac	<http://dbpedia.org/resource/Tarlac_City>
+Lungsod Ng Tarlac	<http://dbpedia.org/resource/Tarlac_City>
+Tartu	<http://dbpedia.org/resource/Tartu>
+Telde	<http://dbpedia.org/resource/Telde>
+Temecula	<http://dbpedia.org/resource/Temecula,_California>
+Terrebonne	<http://dbpedia.org/resource/Terrebonne,_Quebec>
+Texarkana USA	<http://dbpedia.org/resource/Texarkana_metropolitan_area>
+Thanlyin	<http://dbpedia.org/resource/Thanlyin>
+Thanlyin	<http://dbpedia.org/resource/Thanlyin>
+Tianmen	<http://dbpedia.org/resource/Tianmen>
+天门	<http://dbpedia.org/resource/Tianmen>
+Tieling	<http://dbpedia.org/resource/Tieling>
+铁岭	<http://dbpedia.org/resource/Tieling>
+Tlajomulco de Zúñiga	<http://dbpedia.org/resource/Tlajomulco_de_Zu%C3%B1iga>
+Tlemcen	<http://dbpedia.org/resource/Tlemcen>
+Dakbayan sa Toledo	<http://dbpedia.org/resource/Toledo,_Cebu>
+Toledo City	<http://dbpedia.org/resource/Toledo,_Cebu>
+Toledo	<http://dbpedia.org/resource/Toledo,_Ohio>
+Tonghua	<http://dbpedia.org/resource/Tonghua>
+通化	<http://dbpedia.org/resource/Tonghua>
+Tongling	<http://dbpedia.org/resource/Tongling>
+铜陵	<http://dbpedia.org/resource/Tongling>
+Torbat-e Heydarieh	<http://dbpedia.org/resource/Torbat-e_Heydarieh>
+Torrance	<http://dbpedia.org/resource/Torrance,_California>
+Toyokawa	<http://dbpedia.org/resource/Toyokawa,_Aichi>
+Trece Martires City	<http://dbpedia.org/resource/Trece_Martires>
+Tsu	<http://dbpedia.org/resource/Tsu,_Mie>
+Tumen	<http://dbpedia.org/resource/Tumen,_Jilin>
+图们	<http://dbpedia.org/resource/Tumen,_Jilin>
+Tumxuk	<http://dbpedia.org/resource/Tumxuk>
+Tunchang County	<http://dbpedia.org/resource/Tunchang_County>
+屯昌县	<http://dbpedia.org/resource/Tunchang_County>
+Turpan	<http://dbpedia.org/resource/Turpan>
+Uiwang	<http://dbpedia.org/resource/Uiwang>
+의왕	<http://dbpedia.org/resource/Uiwang>
+Ujjain	<http://dbpedia.org/resource/Ujjain>
+उज्जैन	<http://dbpedia.org/resource/Ujjain>
+y of Ujjain	<http://dbpedia.org/resource/Ujjain>
+Ulanhot	<http://dbpedia.org/resource/Ulan_Hot>
+20px|ᠤᠯᠠᠭᠠᠨᠬᠣᠲᠠ	<http://dbpedia.org/resource/Ulan_Hot>
+乌兰浩特	<http://dbpedia.org/resource/Ulan_Hot>
+Ulanqab	<http://dbpedia.org/resource/Ulanqab>
+乌兰察布	<http://dbpedia.org/resource/Ulanqab>
+17px	<http://dbpedia.org/resource/Ulanqab>
+Ulsan	<http://dbpedia.org/resource/Ulsan>
+Ulsan Metropolitan City	<http://dbpedia.org/resource/Ulsan>
+울산	<http://dbpedia.org/resource/Ulsan>
+Uong Bi	<http://dbpedia.org/resource/Uong_Bi>
+Urayasu	<http://dbpedia.org/resource/Urayasu,_Chiba>
+Urdaneta	<http://dbpedia.org/resource/Urdaneta,_Pangasinan>
+Lungsod ng Urdaneta	<http://dbpedia.org/resource/Urdaneta,_Pangasinan>
+Ciudad ti Urdaneta	<http://dbpedia.org/resource/Urdaneta,_Pangasinan>
+Siudad ng Urdaneta	<http://dbpedia.org/resource/Urdaneta,_Pangasinan>
+Ferizaj	<http://dbpedia.org/resource/Uro%C5%A1evac>
+Valenzuela	<http://dbpedia.org/resource/Valenzuela,_Philippines>
+Lungsod ng Valenzuela	<http://dbpedia.org/resource/Valenzuela,_Philippines>
+Valenzuela City	<http://dbpedia.org/resource/Valenzuela,_Philippines>
+Vallejo	<http://dbpedia.org/resource/Vallejo,_California>
+Varamin	<http://dbpedia.org/resource/Varamin>
+Vehari	<http://dbpedia.org/resource/Vehari>
+Ventura	<http://dbpedia.org/resource/Ventura,_California>
+San Buenaventura	<http://dbpedia.org/resource/Ventura,_California>
+Veracruz	<http://dbpedia.org/resource/Veracruz,_Veracruz>
+Victorville	<http://dbpedia.org/resource/Victorville,_California>
+Vidisha	<http://dbpedia.org/resource/Vidisha>
+Vigo	<http://dbpedia.org/resource/Vigo>
+Villa Krause	<http://dbpedia.org/resource/Villa_Krause>
+Virar	<http://dbpedia.org/resource/Virar>
+Visalia	<http://dbpedia.org/resource/Visalia,_California>
+Warangal వరంగల్	<http://dbpedia.org/resource/Warangal>
+Warren	<http://dbpedia.org/resource/Warren,_Michigan>
+威海	<http://dbpedia.org/resource/Weihai>
+Weihai	<http://dbpedia.org/resource/Weihai>
+Weinan	<http://dbpedia.org/resource/Weinan>
+Wenling	<http://dbpedia.org/resource/Wenling>
+溫嶺	<http://dbpedia.org/resource/Wenling>
+West Covina	<http://dbpedia.org/resource/West_Covina,_California>
+West Jakarta	<http://dbpedia.org/resource/West_Jakarta>
+West Valley City	<http://dbpedia.org/resource/West_Valley_City,_Utah>
+West Valley City	<http://dbpedia.org/resource/West_Valley_City,_Utah>
+Wichita Falls	<http://dbpedia.org/resource/Wichita_Falls,_Texas>
+Winston-Salem	<http://dbpedia.org/resource/Winston-Salem,_North_Carolina>
+Wonju	<http://dbpedia.org/resource/Wonju>
+원주	<http://dbpedia.org/resource/Wonju>
+Wonsan	<http://dbpedia.org/resource/Wonsan>
+원산	<http://dbpedia.org/resource/Wonsan>
+Wuhai	<http://dbpedia.org/resource/Wuhai>
+乌海	<http://dbpedia.org/resource/Wuhai>
+15px	<http://dbpedia.org/resource/Wuhai>
+Wuhu	<http://dbpedia.org/resource/Wuhu>
+Usu	<http://dbpedia.org/resource/Wusu>
+乌苏	<http://dbpedia.org/resource/Wusu>
+Wuwei	<http://dbpedia.org/resource/Wuwei,_Gansu>
+武威	<http://dbpedia.org/resource/Wuwei,_Gansu>
+Wuxi	<http://dbpedia.org/resource/Wuxi>
+无锡	<http://dbpedia.org/resource/Wuxi>
+Xalapa	<http://dbpedia.org/resource/Xalapa>
+Xalapa-Enríquez	<http://dbpedia.org/resource/Xalapa>
+Xiangtan	<http://dbpedia.org/resource/Xiangtan>
+湘潭	<http://dbpedia.org/resource/Xiangtan>
+Xianning	<http://dbpedia.org/resource/Xianning>
+咸宁	<http://dbpedia.org/resource/Xianning>
+Xiantao	<http://dbpedia.org/resource/Xiantao>
+仙桃	<http://dbpedia.org/resource/Xiantao>
+Xianyang	<http://dbpedia.org/resource/Xianyang>
+咸阳	<http://dbpedia.org/resource/Xianyang>
+Xiaogan	<http://dbpedia.org/resource/Xiaogan>
+孝感	<http://dbpedia.org/resource/Xiaogan>
+Xingtai	<http://dbpedia.org/resource/Xingtai>
+邢台	<http://dbpedia.org/resource/Xingtai>
+Xingyang	<http://dbpedia.org/resource/Xingyang>
+Xinmi	<http://dbpedia.org/resource/Xinmi>
+Xinxiang	<http://dbpedia.org/resource/Xinxiang>
+新乡	<http://dbpedia.org/resource/Xinxiang>
+Xinyu	<http://dbpedia.org/resource/Xinyu>
+新余	<http://dbpedia.org/resource/Xinyu>
+Xinzheng	<http://dbpedia.org/resource/Xinzheng>
+新郑	<http://dbpedia.org/resource/Xinzheng>
+Xinzhou	<http://dbpedia.org/resource/Xinzhou>
+忻州	<http://dbpedia.org/resource/Xinzhou>
+Xuchang	<http://dbpedia.org/resource/Xuchang>
+许昌	<http://dbpedia.org/resource/Xuchang>
+Yaan	<http://dbpedia.org/resource/Ya'an>
+雅安	<http://dbpedia.org/resource/Ya'an>
+Yachiyo	<http://dbpedia.org/resource/Yachiyo,_Chiba>
+Yaizu	<http://dbpedia.org/resource/Yaizu,_Shizuoka>
+Yakeshi	<http://dbpedia.org/resource/Yakeshi>
+牙克石	<http://dbpedia.org/resource/Yakeshi>
+Yamato	<http://dbpedia.org/resource/Yamato,_Kanagawa>
+Yancheng	<http://dbpedia.org/resource/Yancheng>
+Yangju	<http://dbpedia.org/resource/Yangju>
+양주	<http://dbpedia.org/resource/Yangju>
+Yangmei	<http://dbpedia.org/resource/Yangmei,_Taiwan>
+楊梅	<http://dbpedia.org/resource/Yangmei,_Taiwan>
+Yangon	<http://dbpedia.org/resource/Yangon>
+Yangquan	<http://dbpedia.org/resource/Yangquan>
+阳泉	<http://dbpedia.org/resource/Yangquan>
+Yangsan	<http://dbpedia.org/resource/Yangsan>
+양산	<http://dbpedia.org/resource/Yangsan>
+Yangzhou	<http://dbpedia.org/resource/Yangzhou>
+扬州	<http://dbpedia.org/resource/Yangzhou>
+Yantai	<http://dbpedia.org/resource/Yantai>
+烟台	<http://dbpedia.org/resource/Yantai>
+Yeongju	<http://dbpedia.org/resource/Yeongju>
+영주	<http://dbpedia.org/resource/Yeongju>
+Yeosu	<http://dbpedia.org/resource/Yeosu>
+여수	<http://dbpedia.org/resource/Yeosu>
+Yichun	<http://dbpedia.org/resource/Yichun,_Heilongjiang>
+Yichun	<http://dbpedia.org/resource/Yichun,_Jiangxi>
+Yingtan	<http://dbpedia.org/resource/Yingtan>
+鹰潭	<http://dbpedia.org/resource/Yingtan>
+Yiwu	<http://dbpedia.org/resource/Yiwu>
+义乌	<http://dbpedia.org/resource/Yiwu>
+Yiyang	<http://dbpedia.org/resource/Yiyang>
+益阳	<http://dbpedia.org/resource/Yiyang>
+Yizhou	<http://dbpedia.org/resource/Yizhou>
+宜州	<http://dbpedia.org/resource/Yizhou>
+Yokosuka	<http://dbpedia.org/resource/Yokosuka,_Kanagawa>
+横須賀	<http://dbpedia.org/resource/Yokosuka,_Kanagawa>
+Yongkang	<http://dbpedia.org/resource/Yongkang,_Zhejiang>
+永康	<http://dbpedia.org/resource/Yongkang,_Zhejiang>
+Yongzhou	<http://dbpedia.org/resource/Yongzhou>
+永州	<http://dbpedia.org/resource/Yongzhou>
+Yueyang	<http://dbpedia.org/resource/Yueyang>
+岳阳	<http://dbpedia.org/resource/Yueyang>
+Yulin	<http://dbpedia.org/resource/Yulin,_Guangxi>
+玉林	<http://dbpedia.org/resource/Yulin,_Guangxi>
+Yoglinz	<http://dbpedia.org/resource/Yulin,_Guangxi>
+Yunfu	<http://dbpedia.org/resource/Yunfu>
+云浮	<http://dbpedia.org/resource/Yunfu>
+Yuxi	<http://dbpedia.org/resource/Yuxi>
+玉溪	<http://dbpedia.org/resource/Yuxi>
+Yuyao City	<http://dbpedia.org/resource/Yuyao>
+Zāhir Pīr	<http://dbpedia.org/resource/Z%C4%81hir_P%C4%ABr>
+Zacatecas	<http://dbpedia.org/resource/Zacatecas,_Zacatecas>
+Zahedan	<http://dbpedia.org/resource/Zahedan>
+Zama	<http://dbpedia.org/resource/Zama,_Kanagawa>
+Zamboanga	<http://dbpedia.org/resource/Zamboanga_City>
+Ciudad de Zamboanga	<http://dbpedia.org/resource/Zamboanga_City>
+Zaoyang	<http://dbpedia.org/resource/Zaoyang>
+枣阳	<http://dbpedia.org/resource/Zaoyang>
+Zapopan	<http://dbpedia.org/resource/Zapopan,_Jalisco>
+Zaria	<http://dbpedia.org/resource/Zaria>
+Zarqa City	<http://dbpedia.org/resource/Zarqa>
+Zhangjiajie	<http://dbpedia.org/resource/Zhangjiajie>
+张家界	<http://dbpedia.org/resource/Zhangjiajie>
+Zhangjiakou	<http://dbpedia.org/resource/Zhangjiakou>
+Zhangye	<http://dbpedia.org/resource/Zhangye>
+张掖	<http://dbpedia.org/resource/Zhangye>
+Zhaotong	<http://dbpedia.org/resource/Zhaotong>
+昭通	<http://dbpedia.org/resource/Zhaotong>
+中卫	<http://dbpedia.org/resource/Zhongwei>
+Zhongwei	<http://dbpedia.org/resource/Zhongwei>
+Zhoukou	<http://dbpedia.org/resource/Zhoukou>
+周口	<http://dbpedia.org/resource/Zhoukou>
+----	<http://dbpedia.org/resource/Zhoushan>
+Zhuanghe	<http://dbpedia.org/resource/Zhuanghe>
+Zhucheng	<http://dbpedia.org/resource/Zhucheng>
+Zhuozhou	<http://dbpedia.org/resource/Zhuozhou>
+涿州	<http://dbpedia.org/resource/Zhuozhou>
+Zhuzhou	<http://dbpedia.org/resource/Zhuzhou>
+Zibo	<http://dbpedia.org/resource/Zibo>
+淄博	<http://dbpedia.org/resource/Zibo>
+Zigong	<http://dbpedia.org/resource/Zigong>
+自贡	<http://dbpedia.org/resource/Zigong>
+Ziyang	<http://dbpedia.org/resource/Ziyang>
+资阳	<http://dbpedia.org/resource/Ziyang>
+Zuwara	<http://dbpedia.org/resource/Zuwara>
+Banjar	<http://dbpedia.org/resource/Banjar,_West_Java>
+Pilar	<http://dbpedia.org/resource/Pilar,_Buenos_Aires_Province>
+Tasikmalaya	<http://dbpedia.org/resource/Tasikmalaya>
+Taytay	<http://dbpedia.org/resource/Taytay,_Rizal>
+Bayan ng Taytay	<http://dbpedia.org/resource/Taytay,_Rizal>
+East Harlem	<http://dbpedia.org/resource/East_Harlem>
+Hamedan	<http://dbpedia.org/resource/Hamedan>
+Haidong	<http://dbpedia.org/resource/Haidong>
+Akita	<http://dbpedia.org/resource/Akita,_Akita>
+Ede	<http://dbpedia.org/resource/Ede,_Netherlands>
+Córdoba	<http://dbpedia.org/resource/C%C3%B3rdoba,_Argentina>
+Córdoba	<http://dbpedia.org/resource/C%C3%B3rdoba,_Argentina>
+Bosaso	<http://dbpedia.org/resource/Bosaso>
+Boosaaso	<http://dbpedia.org/resource/Bosaso>
+My Tho	<http://dbpedia.org/resource/M%E1%BB%B9_Tho>
+Valencia	<http://dbpedia.org/resource/Valencia,_Santa_Clarita,_California>
+Caracas	<http://dbpedia.org/resource/Caracas>
+Coimbatore	<http://dbpedia.org/resource/Coimbatore>
+Colombo	<http://dbpedia.org/resource/Colombo>
+Dhanbad	<http://dbpedia.org/resource/Dhanbad>
+Fukuoka	<http://dbpedia.org/resource/Fukuoka>
+· Fukuoka City	<http://dbpedia.org/resource/Fukuoka>
+Haldwani	<http://dbpedia.org/resource/Haldwani>
+Hamilton	<http://dbpedia.org/resource/Hamilton,_Ontario>
+Hamilton	<http://dbpedia.org/resource/Hamilton,_Ontario>
+Indianapolis	<http://dbpedia.org/resource/Indianapolis>
+Indianapolis	<http://dbpedia.org/resource/Indianapolis>
+Kandahar	<http://dbpedia.org/resource/Kandahar>
+Kanpur	<http://dbpedia.org/resource/Kanpur>
+Karachi	<http://dbpedia.org/resource/Karachi>
+Kasugai	<http://dbpedia.org/resource/Kasugai,_Aichi>
+Kolkata	<http://dbpedia.org/resource/Kolkata>
+Madison	<http://dbpedia.org/resource/Madison,_Wisconsin>
+Makassar	<http://dbpedia.org/resource/Makassar>
+Makassar	<http://dbpedia.org/resource/Makassar>
+Kota Makassar	<http://dbpedia.org/resource/Makassar>
+Maputo	<http://dbpedia.org/resource/Maputo>
+Markham	<http://dbpedia.org/resource/Markham,_Ontario>
+Markham	<http://dbpedia.org/resource/Markham,_Ontario>
+Mendoza	<http://dbpedia.org/resource/Mendoza,_Argentina>
+Nairobi	<http://dbpedia.org/resource/Nairobi>
+Palembang	<http://dbpedia.org/resource/Palembang>
+Pimpri-Chinchwad	<http://dbpedia.org/resource/Pimpri-Chinchwad>
+Richmond	<http://dbpedia.org/resource/Richmond,_British_Columbia>
+Richmond	<http://dbpedia.org/resource/Richmond,_British_Columbia>
+San Antonio	<http://dbpedia.org/resource/San_Antonio>
+San Antonio	<http://dbpedia.org/resource/San_Antonio>
+San Juan	<http://dbpedia.org/resource/San_Juan,_Argentina>
+San Rafael	<http://dbpedia.org/resource/San_Rafael,_Mendoza>
+Santiago del Estero	<http://dbpedia.org/resource/Santiago_del_Estero>
+Savannah	<http://dbpedia.org/resource/Savannah,_Georgia>
+Savannah	<http://dbpedia.org/resource/Savannah,_Georgia>
+Tacoma	<http://dbpedia.org/resource/Tacoma,_Washington>
+Tacoma	<http://dbpedia.org/resource/Tacoma,_Washington>
+Thane	<http://dbpedia.org/resource/Thane>
+Uijeongbu	<http://dbpedia.org/resource/Uijeongbu>
+의정부	<http://dbpedia.org/resource/Uijeongbu>
+Vientiane	<http://dbpedia.org/resource/Vientiane>
+ວຽງຈັນ	<http://dbpedia.org/resource/Vientiane>
+Windhoek	<http://dbpedia.org/resource/Windhoek>
+Windsor	<http://dbpedia.org/resource/Windsor,_Ontario>
+Windsor	<http://dbpedia.org/resource/Windsor,_Ontario>
+Acapulco	<http://dbpedia.org/resource/Acapulco>
+Ajmer	<http://dbpedia.org/resource/Ajmer>
+अजमेर	<http://dbpedia.org/resource/Ajmer>
+Ann Arbor	<http://dbpedia.org/resource/Ann_Arbor,_Michigan>
+Antalya	<http://dbpedia.org/resource/Antalya>
+Baton Rouge	<http://dbpedia.org/resource/Baton_Rouge,_Louisiana>
+Detroit	<http://dbpedia.org/resource/Detroit>
+Detroit	<http://dbpedia.org/resource/Detroit>
+Duisburg	<http://dbpedia.org/resource/Duisburg>
+Ensenada	<http://dbpedia.org/resource/Ensenada,_Baja_California>
+Ensenada	<http://dbpedia.org/resource/Ensenada,_Baja_California>
+Ciudad de Ensenada	<http://dbpedia.org/resource/Ensenada,_Baja_California>
+Eugene	<http://dbpedia.org/resource/Eugene,_Oregon>
+Flint	<http://dbpedia.org/resource/Flint,_Michigan>
+Abadan	<http://dbpedia.org/resource/Abadan,_Iran>
+Gelsenkirchen	<http://dbpedia.org/resource/Gelsenkirchen>
+Abidjan	<http://dbpedia.org/resource/Abidjan>
+District dAbidjan	<http://dbpedia.org/resource/Abidjan>
+Accra	<http://dbpedia.org/resource/Accra>
+Adelaide	<http://dbpedia.org/resource/Adelaide>
+Ahvaz	<http://dbpedia.org/resource/Ahvaz>
+Akron	<http://dbpedia.org/resource/Akron,_Ohio>
+Akron	<http://dbpedia.org/resource/Akron,_Ohio>
+Alicante	<http://dbpedia.org/resource/Alicante>
+Alicante	<http://dbpedia.org/resource/Alicante>
+Amol	<http://dbpedia.org/resource/Amol>
+Granada	<http://dbpedia.org/resource/Granada>
+Anaheim	<http://dbpedia.org/resource/Anaheim,_California>
+Andimeshk	<http://dbpedia.org/resource/Andimeshk>
+Annaba	<http://dbpedia.org/resource/Annaba>
+Anshan	<http://dbpedia.org/resource/Anshan>
+鞍山	<http://dbpedia.org/resource/Anshan>
+Aqaba	<http://dbpedia.org/resource/Aqaba>
+Hagen	<http://dbpedia.org/resource/Hagen>
+Babol	<http://dbpedia.org/resource/Babol>
+Helwan	<http://dbpedia.org/resource/Helwan>
+Bamako	<http://dbpedia.org/resource/Bamako>
+Bandung	<http://dbpedia.org/resource/Bandung>
+Kota Bandung	<http://dbpedia.org/resource/Bandung>
+Bangkok	<http://dbpedia.org/resource/Bangkok>
+Baotou	<http://dbpedia.org/resource/Baotou>
+包头	<http://dbpedia.org/resource/Baotou>
+16px	<http://dbpedia.org/resource/Baotou>
+Barranquilla	<http://dbpedia.org/resource/Barranquilla>
+Barrie	<http://dbpedia.org/resource/Barrie>
+Belgrade	<http://dbpedia.org/resource/Belgrade>
+Beograd	<http://dbpedia.org/resource/Belgrade>
+Bhopal	<http://dbpedia.org/resource/Bhopal>
+Bishkek	<http://dbpedia.org/resource/Bishkek>
+Bogor	<http://dbpedia.org/resource/Bogor>
+Kota Bogor	<http://dbpedia.org/resource/Bogor>
+Boise	<http://dbpedia.org/resource/Boise,_Idaho>
+Brașov	<http://dbpedia.org/resource/Bra%C8%99ov>
+Brampton	<http://dbpedia.org/resource/Brampton>
+Brampton	<http://dbpedia.org/resource/Brampton>
+Bridgeport	<http://dbpedia.org/resource/Bridgeport,_Connecticut>
+Brisbane	<http://dbpedia.org/resource/Brisbane>
+Brno	<http://dbpedia.org/resource/Brno>
+Brooklyn	<http://dbpedia.org/resource/Brooklyn>
+Kings County	<http://dbpedia.org/resource/Brooklyn>
+Budapest	<http://dbpedia.org/resource/Budapest>
+Buffalo	<http://dbpedia.org/resource/Buffalo,_New_York>
+Burlington	<http://dbpedia.org/resource/Burlington,_Ontario>
+Burnaby	<http://dbpedia.org/resource/Burnaby>
+Burnaby	<http://dbpedia.org/resource/Burnaby>
+Bushehr	<http://dbpedia.org/resource/Bushehr>
+Canberra	<http://dbpedia.org/resource/Canberra>
+Charleston	<http://dbpedia.org/resource/Charleston,_South_Carolina>
+Charleston	<http://dbpedia.org/resource/Charleston,_South_Carolina>
+Charlotte	<http://dbpedia.org/resource/Charlotte,_North_Carolina>
+Charlotte	<http://dbpedia.org/resource/Charlotte,_North_Carolina>
+Chennai	<http://dbpedia.org/resource/Chennai>
+சென்னை	<http://dbpedia.org/resource/Chennai>
+Chicago	<http://dbpedia.org/resource/Chicago>
+Columbus	<http://dbpedia.org/resource/Columbus,_Georgia>
+Columbus	<http://dbpedia.org/resource/Columbus,_Georgia>
+Columbus	<http://dbpedia.org/resource/Columbus,_Ohio>
+Dallas	<http://dbpedia.org/resource/Dallas>
+Dallas	<http://dbpedia.org/resource/Dallas>
+Daqing	<http://dbpedia.org/resource/Daqing>
+Dayton	<http://dbpedia.org/resource/Dayton,_Ohio>
+Denver	<http://dbpedia.org/resource/Denver>
+Derby	<http://dbpedia.org/resource/Derby>
+Des Moines	<http://dbpedia.org/resource/Des_Moines,_Iowa>
+Dhaka	<http://dbpedia.org/resource/Dhaka>
+Dresden	<http://dbpedia.org/resource/Dresden>
+Edmonton	<http://dbpedia.org/resource/Edmonton>
+Edmonton	<http://dbpedia.org/resource/Edmonton>
+Edo	<http://dbpedia.org/resource/Edo>
+江戸	<http://dbpedia.org/resource/Edo>
+Kayseri	<http://dbpedia.org/resource/Kayseri>
+Gatineau	<http://dbpedia.org/resource/Gatineau>
+Gonbad-e Kavus	<http://dbpedia.org/resource/Gonbad-e_Qabus>
+Krefeld	<http://dbpedia.org/resource/Krefeld>
+Guatemala	<http://dbpedia.org/resource/Guatemala_City>
+Guatemala City	<http://dbpedia.org/resource/Guatemala_City>
+Guelph	<http://dbpedia.org/resource/Guelph>
+Hachinohe	<http://dbpedia.org/resource/Hachinohe,_Aomori>
+Lafayette	<http://dbpedia.org/resource/Lafayette,_Louisiana>
+Ville de Lafayette	<http://dbpedia.org/resource/Lafayette,_Louisiana>
+Handa	<http://dbpedia.org/resource/Handa,_Aichi>
+Hanover	<http://dbpedia.org/resource/Hanover>
+Hannover	<http://dbpedia.org/resource/Hanover>
+Harare	<http://dbpedia.org/resource/Harare>
+(Salisbury)	<http://dbpedia.org/resource/Harare>
+Hargeisa	<http://dbpedia.org/resource/Hargeisa>
+Hargeysa	<http://dbpedia.org/resource/Hargeisa>
+Havana	<http://dbpedia.org/resource/Havana>
+La Habana	<http://dbpedia.org/resource/Havana>
+Hobart	<http://dbpedia.org/resource/Hobart>
+Houston	<http://dbpedia.org/resource/Houston>
+Houston	<http://dbpedia.org/resource/Houston>
+Huntsville	<http://dbpedia.org/resource/Huntsville,_Alabama>
+Inazawa	<http://dbpedia.org/resource/Inazawa,_Aichi>
+Jeddah	<http://dbpedia.org/resource/Jeddah>
+Johor Bahru	<http://dbpedia.org/resource/Johor_Bahru>
+新山	<http://dbpedia.org/resource/Johor_Bahru>
+Kerch	<http://dbpedia.org/resource/Kerch>
+Khoy	<http://dbpedia.org/resource/Khoy>
+Kingston	<http://dbpedia.org/resource/Kingston,_Jamaica>
+Kingston	<http://dbpedia.org/resource/Kingston,_Ontario>
+Kinshasa	<http://dbpedia.org/resource/Kinshasa>
+Ville de Kinshasa	<http://dbpedia.org/resource/Kinshasa>
+Kitchener	<http://dbpedia.org/resource/Kitchener,_Ontario>
+Kitchener	<http://dbpedia.org/resource/Kitchener,_Ontario>
+Klaipėda	<http://dbpedia.org/resource/Klaip%C4%97da>
+Komaki	<http://dbpedia.org/resource/Komaki,_Aichi>
+Kuching	<http://dbpedia.org/resource/Kuching>
+Kuching	<http://dbpedia.org/resource/Kuching>
+Kyoto	<http://dbpedia.org/resource/Kyoto>
+京都	<http://dbpedia.org/resource/Kyoto>
+· Kyoto City	<http://dbpedia.org/resource/Kyoto>
+London	<http://dbpedia.org/resource/London>
+London	<http://dbpedia.org/resource/London,_Ontario>
+London	<http://dbpedia.org/resource/London,_Ontario>
+Long Beach	<http://dbpedia.org/resource/Long_Beach,_California>
+Manila	<http://dbpedia.org/resource/Manila>
+Mexico City	<http://dbpedia.org/resource/Mexico_City>
+Mexico	<http://dbpedia.org/resource/Mexico_City>
+Miami	<http://dbpedia.org/resource/Miami>
+Miami	<http://dbpedia.org/resource/Miami>
+Minneapolis	<http://dbpedia.org/resource/Minneapolis>
+Minsk	<http://dbpedia.org/resource/Minsk>
+Mississauga	<http://dbpedia.org/resource/Mississauga>
+Mississauga	<http://dbpedia.org/resource/Mississauga>
+Montreal	<http://dbpedia.org/resource/Montreal>
+Nagasaki	<http://dbpedia.org/resource/Nagasaki>
+長崎	<http://dbpedia.org/resource/Nagasaki>
+Nagoya	<http://dbpedia.org/resource/Nagoya>
+名古屋	<http://dbpedia.org/resource/Nagoya>
+ity of Nagoya	<http://dbpedia.org/resource/Nagoya>
+New Haven	<http://dbpedia.org/resource/New_Haven,_Connecticut>
+Newark	<http://dbpedia.org/resource/Newark,_New_Jersey>
+Nicosia	<http://dbpedia.org/resource/Nicosia>
+Nishio	<http://dbpedia.org/resource/Nishio,_Aichi>
+Novi Sad	<http://dbpedia.org/resource/Novi_Sad>
+Oakland	<http://dbpedia.org/resource/Oakland,_California>
+Oaxaca	<http://dbpedia.org/resource/Oaxaca,_Oaxaca>
+Odessa	<http://dbpedia.org/resource/Odessa,_Texas>
+Oradea	<http://dbpedia.org/resource/Oradea>
+Orlando	<http://dbpedia.org/resource/Orlando,_Florida>
+Orlando	<http://dbpedia.org/resource/Orlando,_Florida>
+Osaka-	<http://dbpedia.org/resource/Osaka>
+Oshawa	<http://dbpedia.org/resource/Oshawa>
+Oshawa	<http://dbpedia.org/resource/Oshawa>
+Panama City	<http://dbpedia.org/resource/Panama_City>
+Philadelphia	<http://dbpedia.org/resource/Philadelphia>
+Philadelphia	<http://dbpedia.org/resource/Philadelphia>
+Poltava	<http://dbpedia.org/resource/Poltava>
+Port Moresby	<http://dbpedia.org/resource/Port_Moresby>
+Potsdam	<http://dbpedia.org/resource/Potsdam>
+Prague	<http://dbpedia.org/resource/Prague>
+Praha	<http://dbpedia.org/resource/Prague>
+Praia	<http://dbpedia.org/resource/Praia>
+Prishtina	<http://dbpedia.org/resource/Pristina>
+Prishtina	<http://dbpedia.org/resource/Pristina>
+Queens	<http://dbpedia.org/resource/Queens>
+Queens County	<http://dbpedia.org/resource/Queens>
+Quito	<http://dbpedia.org/resource/Quito>
+Regina	<http://dbpedia.org/resource/Regina,_Saskatchewan>
+Resistencia	<http://dbpedia.org/resource/Resistencia,_Chaco>
+Reykjavík	<http://dbpedia.org/resource/Reykjav%C3%ADk>
+Reykjavíkurborg	<http://dbpedia.org/resource/Reykjav%C3%ADk>
+Riga	<http://dbpedia.org/resource/Riga>
+Rīga	<http://dbpedia.org/resource/Riga>
+Rijeka	<http://dbpedia.org/resource/Rijeka>
+Rijeka	<http://dbpedia.org/resource/Rijeka>
+Grad Rijeka	<http://dbpedia.org/resource/Rijeka>
+Rivne	<http://dbpedia.org/resource/Rivne>
+Rovno	<http://dbpedia.org/resource/Rivne>
+Rochester	<http://dbpedia.org/resource/Rochester,_Minnesota>
+Saint Paul	<http://dbpedia.org/resource/Saint_Paul,_Minnesota>
+75px	<http://dbpedia.org/resource/Saint_Paul,_Minnesota>
+San Francisco	<http://dbpedia.org/resource/San_Francisco>
+San Jose	<http://dbpedia.org/resource/San_Jose,_California>
+Santiago de Cuba	<http://dbpedia.org/resource/Santiago_de_Cuba>
+Sarajevo	<http://dbpedia.org/resource/Sarajevo>
+Grad Sarajevo	<http://dbpedia.org/resource/Sarajevo>
+Sarajevo	<http://dbpedia.org/resource/Sarajevo>
+Seattle	<http://dbpedia.org/resource/Seattle>
+Seattle	<http://dbpedia.org/resource/Seattle>
+Seoul	<http://dbpedia.org/resource/Seoul>
+서울	<http://dbpedia.org/resource/Seoul>
+Seto	<http://dbpedia.org/resource/Seto,_Aichi>
+Skopje	<http://dbpedia.org/resource/Skopje>
+Skopje	<http://dbpedia.org/resource/Skopje>
+Sohag	<http://dbpedia.org/resource/Sohag>
+Staten Island	<http://dbpedia.org/resource/Staten_Island>
+Richmond County	<http://dbpedia.org/resource/Staten_Island>
+Subotica	<http://dbpedia.org/resource/Subotica>
+Sydney	<http://dbpedia.org/resource/Sydney>
+Cumberland	<http://dbpedia.org/resource/Sydney>
+Tîrgu Mureș	<http://dbpedia.org/resource/T%C3%A2rgu_Mure%C8%99>
+Tōkai	<http://dbpedia.org/resource/T%C5%8Dkai,_Aichi>
+Tampa	<http://dbpedia.org/resource/Tampa,_Florida>
+Tampa	<http://dbpedia.org/resource/Tampa,_Florida>
+Tegucigalpa	<http://dbpedia.org/resource/Tegucigalpa>
+Ternopil	<http://dbpedia.org/resource/Ternopil>
+Tijuana	<http://dbpedia.org/resource/Tijuana>
+Tijuana	<http://dbpedia.org/resource/Tijuana>
+Ciudad de Tijuana	<http://dbpedia.org/resource/Tijuana>
+Tikrit	<http://dbpedia.org/resource/Tikrit>
+Tokyo	<http://dbpedia.org/resource/Tokyo>
+東京	<http://dbpedia.org/resource/Tokyo>
+Toronto	<http://dbpedia.org/resource/Toronto>
+Toronto	<http://dbpedia.org/resource/Toronto>
+Shreveport	<http://dbpedia.org/resource/Shreveport,_Louisiana>
+Shreveport	<http://dbpedia.org/resource/Shreveport,_Louisiana>
+Tunis	<http://dbpedia.org/resource/Tunis>
+Utrecht	<http://dbpedia.org/resource/Utrecht>
+Vaughan	<http://dbpedia.org/resource/Vaughan>
+Vaughan	<http://dbpedia.org/resource/Vaughan>
+Villavicencio	<http://dbpedia.org/resource/Villavicencio>
+Vilnius	<http://dbpedia.org/resource/Vilnius>
+Yalta municipality	<http://dbpedia.org/resource/Yalta_municipality>
+Yokohama	<http://dbpedia.org/resource/Yokohama>
+横浜	<http://dbpedia.org/resource/Yokohama>
+ty of Yokohama	<http://dbpedia.org/resource/Yokohama>
+Zagreb	<http://dbpedia.org/resource/Zagreb>
+Zagreb	<http://dbpedia.org/resource/Zagreb>
+Grad Zagreb	<http://dbpedia.org/resource/Zagreb>
+Vancouver	<http://dbpedia.org/resource/Vancouver,_Washington>
+Kotamobagu	<http://dbpedia.org/resource/Kotamobagu>
+Mehrabpur	<http://dbpedia.org/resource/Mehrabpur>
+Bayawan	<http://dbpedia.org/resource/Bayawan>
+Dakbayan sa Bayawan	<http://dbpedia.org/resource/Bayawan>
+Dipolog	<http://dbpedia.org/resource/Dipolog>
+Dakbayan Sa Dipolog	<http://dbpedia.org/resource/Dipolog>
+Hat Yai	<http://dbpedia.org/resource/Hat_Yai>
+หาดใหญ่	<http://dbpedia.org/resource/Hat_Yai>
+Mekele	<http://dbpedia.org/resource/Mek'ele>
+መቐለ	<http://dbpedia.org/resource/Mek'ele>
+Okpogho	<http://dbpedia.org/resource/Okpogho>
+Pattoki	<http://dbpedia.org/resource/Pattoki>
+Abeokuta	<http://dbpedia.org/resource/Abeokuta>
+Al Ain	<http://dbpedia.org/resource/Al_Ain>
+Alappuzha	<http://dbpedia.org/resource/Alappuzha>
+ആലപ്പുഴ	<http://dbpedia.org/resource/Alappuzha>
+Angeles	<http://dbpedia.org/resource/Angeles,_Philippines>
+Angeles City	<http://dbpedia.org/resource/Angeles,_Philippines>
+Lungsod ng Angeles	<http://dbpedia.org/resource/Angeles,_Philippines>
+Lakanbalen ning Angeles	<http://dbpedia.org/resource/Angeles,_Philippines>
+Ankara	<http://dbpedia.org/resource/Ankara>
+Ansan	<http://dbpedia.org/resource/Ansan>
+안산	<http://dbpedia.org/resource/Ansan>
+Arak	<http://dbpedia.org/resource/Arak,_Iran>
+Arusha	<http://dbpedia.org/resource/Arusha>
+Bahawalpur	<http://dbpedia.org/resource/Bahawalpur>
+Barbara	<http://dbpedia.org/resource/Berbera>
+Berbera	<http://dbpedia.org/resource/Berbera>
+Bhagalpur	<http://dbpedia.org/resource/Bhagalpur>
+Bhatpara	<http://dbpedia.org/resource/Bhatpara>
+Bilaspur	<http://dbpedia.org/resource/Bilaspur,_Chhattisgarh>
+Butuan	<http://dbpedia.org/resource/Butuan>
+Dakbayan hong Butuan	<http://dbpedia.org/resource/Butuan>
+Dakbayan sa Butuan	<http://dbpedia.org/resource/Butuan>
+Calamba	<http://dbpedia.org/resource/Calamba,_Laguna>
+Calamba	<http://dbpedia.org/resource/Calamba,_Laguna>
+Lungsod ng Kalamba	<http://dbpedia.org/resource/Calamba,_Laguna>
+Calgary	<http://dbpedia.org/resource/Calgary>
+Calgary	<http://dbpedia.org/resource/Calgary>
+Chandannagar	<http://dbpedia.org/resource/Chandannagar>
+Cologne	<http://dbpedia.org/resource/Cologne>
+Köln	<http://dbpedia.org/resource/Cologne>
+Cotabato	<http://dbpedia.org/resource/Cotabato_City>
+Cotabato	<http://dbpedia.org/resource/Cotabato_City>
+Lungsod ng Kutabato	<http://dbpedia.org/resource/Cotabato_City>
+Daejeon Metropolitan City	<http://dbpedia.org/resource/Daejeon>
+Daloa	<http://dbpedia.org/resource/Daloa>
+Dammam	<http://dbpedia.org/resource/Dammam>
+Dniprodzerzhynsk	<http://dbpedia.org/resource/Dniprodzerzhynsk>
+Durrës	<http://dbpedia.org/resource/Durr%C3%ABs>
+Galkayo	<http://dbpedia.org/resource/Galkayo>
+Gaalkacyo	<http://dbpedia.org/resource/Galkayo>
+Gorontalo City	<http://dbpedia.org/resource/Gorontalo_(city)>
+Kota Gorontalo	<http://dbpedia.org/resource/Gorontalo_(city)>
+Grand Rapids	<http://dbpedia.org/resource/Grand_Rapids,_Michigan>
+Gwangju Metropolitan City	<http://dbpedia.org/resource/Gwangju>
+Hamm	<http://dbpedia.org/resource/Hamm>
+Harlem	<http://dbpedia.org/resource/Harlem>
+Hialeah	<http://dbpedia.org/resource/Hialeah,_Florida>
+Hiroshima	<http://dbpedia.org/resource/Hiroshima>
+広島	<http://dbpedia.org/resource/Hiroshima>
+Howrah	<http://dbpedia.org/resource/Howrah>
+Irving	<http://dbpedia.org/resource/Irving,_Texas>
+Jalander	<http://dbpedia.org/resource/Jalandhar>
+Jambi City	<http://dbpedia.org/resource/Jambi_City>
+Kota Jambi	<http://dbpedia.org/resource/Jambi_City>
+Karaj	<http://dbpedia.org/resource/Karaj>
+Kelowna	<http://dbpedia.org/resource/Kelowna>
+Kelowna	<http://dbpedia.org/resource/Kelowna>
+Khon Kaen	<http://dbpedia.org/resource/Khon_Kaen>
+Kidapawan City	<http://dbpedia.org/resource/Kidapawan>
+Kidapawan	<http://dbpedia.org/resource/Kidapawan>
+Dakbayan sa Kidapawan	<http://dbpedia.org/resource/Kidapawan>
+Lungsod ng Kidapawan	<http://dbpedia.org/resource/Kidapawan>
+Kitwe	<http://dbpedia.org/resource/Kitwe>
+Laoag	<http://dbpedia.org/resource/Laoag>
+Ciudad ti Laoag	<http://dbpedia.org/resource/Laoag>
+Lungsod ng Laoag	<http://dbpedia.org/resource/Laoag>
+Las Piñas City	<http://dbpedia.org/resource/Las_Pi%C3%B1as>
+Las Piñas	<http://dbpedia.org/resource/Las_Pi%C3%B1as>
+Launceston	<http://dbpedia.org/resource/Launceston,_Tasmania>
+León	<http://dbpedia.org/resource/Le%C3%B3n,_Guanajuato>
+León	<http://dbpedia.org/resource/Le%C3%B3n,_Guanajuato>
+Los Angeles	<http://dbpedia.org/resource/Los_Angeles>
+Los Angeles	<http://dbpedia.org/resource/Los_Angeles>
+Lutsk	<http://dbpedia.org/resource/Lutsk>
+Луцьк	<http://dbpedia.org/resource/Lutsk>
+Madiun	<http://dbpedia.org/resource/Madiun>
+Lungsod ng Malabon	<http://dbpedia.org/resource/Malabon>
+Malabon City	<http://dbpedia.org/resource/Malabon>
+Malabon	<http://dbpedia.org/resource/Malabon>
+Malaybalay	<http://dbpedia.org/resource/Malaybalay>
+Dakbayan sa Malaybalay	<http://dbpedia.org/resource/Malaybalay>
+Malolos	<http://dbpedia.org/resource/Malolos>
+Lungsod ng Malolos	<http://dbpedia.org/resource/Malolos>
+Mascara	<http://dbpedia.org/resource/Mascara,_Algeria>
+Marka	<http://dbpedia.org/resource/Merca>
+Merca	<http://dbpedia.org/resource/Merca>
+Mokpo	<http://dbpedia.org/resource/Mokpo>
+Nakuru	<http://dbpedia.org/resource/Nakuru>
+Nanded	<http://dbpedia.org/resource/Nanded>
+New Orleans	<http://dbpedia.org/resource/New_Orleans>
+New Orleans	<http://dbpedia.org/resource/New_Orleans>
+Onitsha	<http://dbpedia.org/resource/Onitsha>
+Ọ̀nị̀chà Mmílí	<http://dbpedia.org/resource/Onitsha>
+Ottawa	<http://dbpedia.org/resource/Ottawa>
+Ottawa	<http://dbpedia.org/resource/Ottawa>
+Ville dOttawa	<http://dbpedia.org/resource/Ottawa>
+Ouargla	<http://dbpedia.org/resource/Ouargla>
+Dakbayan sa Pagadian	<http://dbpedia.org/resource/Pagadian>
+Pagadian	<http://dbpedia.org/resource/Pagadian>
+Lungsod ng Pasay	<http://dbpedia.org/resource/Pasay>
+Pasay City	<http://dbpedia.org/resource/Pasay>
+Patiala	<http://dbpedia.org/resource/Patiala>
+Peshawar	<http://dbpedia.org/resource/Peshawar>
+Pingzhen	<http://dbpedia.org/resource/Pingzhen>
+平鎮	<http://dbpedia.org/resource/Pingzhen>
+Porbandar	<http://dbpedia.org/resource/Porbandar>
+Puerto Princesa City	<http://dbpedia.org/resource/Puerto_Princesa>
+Puerto Princesa	<http://dbpedia.org/resource/Puerto_Princesa>
+Pyay	<http://dbpedia.org/resource/Pyay>
+Rasht	<http://dbpedia.org/resource/Rasht>
+Rèsht	<http://dbpedia.org/resource/Rasht>
+Saharanpur	<http://dbpedia.org/resource/Saharanpur>
+Salem	<http://dbpedia.org/resource/Salem,_Tamil_Nadu>
+சேலம்	<http://dbpedia.org/resource/Salem,_Tamil_Nadu>
+San Diego	<http://dbpedia.org/resource/San_Diego>
+San Fernando	<http://dbpedia.org/resource/San_Fernando,_La_Union>
+San Fernando City	<http://dbpedia.org/resource/San_Fernando,_La_Union>
+San Fernando del	<http://dbpedia.org/resource/San_Fernando_del_Valle_de_Catamarca>
+Valle de Catamarca	<http://dbpedia.org/resource/San_Fernando_del_Valle_de_Catamarca>
+Sanandaj	<http://dbpedia.org/resource/Sanandaj>
+Santa Clara	<http://dbpedia.org/resource/Santa_Clara,_California>
+Sari	<http://dbpedia.org/resource/Sari,_Iran>
+Semarang	<http://dbpedia.org/resource/Semarang>
+Kota Semarang	<http://dbpedia.org/resource/Semarang>
+Settat	<http://dbpedia.org/resource/Settat>
+Shinyanga	<http://dbpedia.org/resource/Shinyanga>
+Taguig City	<http://dbpedia.org/resource/Taguig>
+Taguig	<http://dbpedia.org/resource/Taguig>
+Lungsod ng Taguig	<http://dbpedia.org/resource/Taguig>
+Tanga	<http://dbpedia.org/resource/Tanga,_Tanzania>
+Tchaourou	<http://dbpedia.org/resource/Tchaourou>
+Thousand Oaks	<http://dbpedia.org/resource/Thousand_Oaks,_California>
+Thunder Bay	<http://dbpedia.org/resource/Thunder_Bay>
+Tirunelveli	<http://dbpedia.org/resource/Tirunelveli>
+Urmia	<http://dbpedia.org/resource/Urmia>
+Visakhapatnam	<http://dbpedia.org/resource/Visakhapatnam>
+Vizag	<http://dbpedia.org/resource/Visakhapatnam>
+Winnipeg	<http://dbpedia.org/resource/Winnipeg>
+Winnipeg	<http://dbpedia.org/resource/Winnipeg>
+中壢	<http://dbpedia.org/resource/Zhongli>
+Jungli	<http://dbpedia.org/resource/Zhongli>
+Anguo	<http://dbpedia.org/resource/Anguo>
+Borama	<http://dbpedia.org/resource/Borama>
+Boorama	<http://dbpedia.org/resource/Borama>
+Can Tho	<http://dbpedia.org/resource/C%E1%BA%A7n_Th%C6%A1>
+Changhua	<http://dbpedia.org/resource/Changhua_City>
+彰化	<http://dbpedia.org/resource/Changhua_City>
+Fengshan District	<http://dbpedia.org/resource/Fengshan_District>
+鳳山區	<http://dbpedia.org/resource/Fengshan_District>
+河津	<http://dbpedia.org/resource/Hejin>
+Hejin	<http://dbpedia.org/resource/Hejin>
+Qom	<http://dbpedia.org/resource/Qom>
+Cirebon	<http://dbpedia.org/resource/Cirebon>
+Comilla	<http://dbpedia.org/resource/Comilla>
+Debrecen	<http://dbpedia.org/resource/Debrecen>
+Denpasar	<http://dbpedia.org/resource/Denpasar>
+Iquitos	<http://dbpedia.org/resource/Iquitos>
+Ciudad de Iquitos	<http://dbpedia.org/resource/Iquitos>
+Kismayo	<http://dbpedia.org/resource/Kismayo>
+Kismaayo	<http://dbpedia.org/resource/Kismayo>
+Mianwali	<http://dbpedia.org/resource/Mianwali>
+Vellore	<http://dbpedia.org/resource/Vellore>
+Antanifotsy	<http://dbpedia.org/resource/Antanifotsy>
+Cilegon	<http://dbpedia.org/resource/Cilegon>
+Cilegon	<http://dbpedia.org/resource/Cilegon>
+Jamshoro	<http://dbpedia.org/resource/Jamshoro>
+Jugsalai	<http://dbpedia.org/resource/Jugsalai>
+Pasuruan	<http://dbpedia.org/resource/Pasuruan>
+Kota Pasuruan	<http://dbpedia.org/resource/Pasuruan>
+Pasuruan city	<http://dbpedia.org/resource/Pasuruan>
+Burewala	<http://dbpedia.org/resource/Burewala>
+Narowal	<http://dbpedia.org/resource/Narowal>
+Tebing Tinggi	<http://dbpedia.org/resource/Tebing_Tinggi>
+Zafarwal	<http://dbpedia.org/resource/Zafarwal>
+Liaqatpur	<http://dbpedia.org/resource/Liaqauatpur>
+Rohri	<http://dbpedia.org/resource/Rohri>
+Distrito sang Jaro	<http://dbpedia.org/resource/Jaro,_Iloilo_City>
+District of Jaro	<http://dbpedia.org/resource/Jaro,_Iloilo_City>
+Thatta	<http://dbpedia.org/resource/Thatta>
+Haveli Lakha	<http://dbpedia.org/resource/Haveli_Lakha>
+Jampur	<http://dbpedia.org/resource/Jampur>
+Viet Tri	<http://dbpedia.org/resource/Vi%E1%BB%87t_Tr%C3%AC>
+Kharagpur	<http://dbpedia.org/resource/Kharagpur>
+Bandar-e Anzali	<http://dbpedia.org/resource/Bandar-e_Anzali>
+Burbank	<http://dbpedia.org/resource/Burbank,_California>
+Calapan City	<http://dbpedia.org/resource/Calapan>
+Calapan	<http://dbpedia.org/resource/Calapan>
+Lungsod ng Calapan	<http://dbpedia.org/resource/Calapan>
+Garden Grove	<http://dbpedia.org/resource/Garden_Grove,_California>
+Huntington Beach	<http://dbpedia.org/resource/Huntington_Beach,_California>
+Jabalpur	<http://dbpedia.org/resource/Jabalpur>
+Lobito	<http://dbpedia.org/resource/Lobito>
+Maragheh	<http://dbpedia.org/resource/Maragheh>
+Palmdale	<http://dbpedia.org/resource/Palmdale,_California>
+Rancho Cucamonga	<http://dbpedia.org/resource/Rancho_Cucamonga,_California>
+Sialkot	<http://dbpedia.org/resource/Sialkot>
+Tuguegarao City	<http://dbpedia.org/resource/Tuguegarao>
+Siudad nat Tuguegarao	<http://dbpedia.org/resource/Tuguegarao>
+Ciudad ti Tuguegarao	<http://dbpedia.org/resource/Tuguegarao>
+Syudadh yoh Tuguegarao	<http://dbpedia.org/resource/Tuguegarao>
+Beaumont	<http://dbpedia.org/resource/Beaumont,_Texas>
+Burgos	<http://dbpedia.org/resource/Burgos>
+Formosa	<http://dbpedia.org/resource/Formosa,_Argentina>
+Oceanside	<http://dbpedia.org/resource/Oceanside,_California>
+Vinh	<http://dbpedia.org/resource/Vinh>
+Thành phố Vinh	<http://dbpedia.org/resource/Vinh>
+Zabol	<http://dbpedia.org/resource/Zabol>
+Bukan	<http://dbpedia.org/resource/Bukan>
+Envigado	<http://dbpedia.org/resource/Envigado>
+龙泉	<http://dbpedia.org/resource/Longquan>
+Longquan	<http://dbpedia.org/resource/Longquan>
+Pakpattan	<http://dbpedia.org/resource/Pakpattan>
+Shikohabad	<http://dbpedia.org/resource/Shikohabad>
+Santiago City	<http://dbpedia.org/resource/Santiago,_Isabela>
+Santiago	<http://dbpedia.org/resource/Santiago,_Isabela>
+Lungsod ng Santiago	<http://dbpedia.org/resource/Santiago,_Isabela>
+Cam Pha	<http://dbpedia.org/resource/C%E1%BA%A9m_Ph%E1%BA%A3>
+Hakodate	<http://dbpedia.org/resource/Hakodate,_Hokkaido>
+函館	<http://dbpedia.org/resource/Hakodate,_Hokkaido>
+Nampo	<http://dbpedia.org/resource/Nampo>
+Bhubaneswar	<http://dbpedia.org/resource/Bhubaneswar>
+Kupang	<http://dbpedia.org/resource/Kupang>
+Mar del Plata	<http://dbpedia.org/resource/Mar_del_Plata>
+Bade	<http://dbpedia.org/resource/Bade_City>
+八德	<http://dbpedia.org/resource/Bade_City>
+Barawa	<http://dbpedia.org/resource/Barawa>
+Baraawe	<http://dbpedia.org/resource/Barawa>
+高密	<http://dbpedia.org/resource/Gaomi>
+Gaomi	<http://dbpedia.org/resource/Gaomi>
+Hejian	<http://dbpedia.org/resource/Hejian>
+河间	<http://dbpedia.org/resource/Hejian>
+Jinzhou	<http://dbpedia.org/resource/Jinzhou,_Hebei>
+晋州	<http://dbpedia.org/resource/Jinzhou,_Hebei>
+Khurjaindiacom	<http://dbpedia.org/resource/Khurja>
+Sanhe	<http://dbpedia.org/resource/Sanhe>
+三河	<http://dbpedia.org/resource/Sanhe>
+Okara	<http://dbpedia.org/resource/Okara,_Pakistan>
+荣成	<http://dbpedia.org/resource/Rongcheng,_Shandong>
+Rongcheng	<http://dbpedia.org/resource/Rongcheng,_Shandong>
+Raipur	<http://dbpedia.org/resource/Raipur>
+Birgunj	<http://dbpedia.org/resource/Birgunj>
+Aarani	<http://dbpedia.org/resource/Aarani,_Tamil_Nadu>
+Abohar	<http://dbpedia.org/resource/Abohar>
+ਅਬੋਹਰ	<http://dbpedia.org/resource/Abohar>
+Achalpur	<http://dbpedia.org/resource/Achalpur>
+Adilabad	<http://dbpedia.org/resource/Adilabad>
+Adityapur	<http://dbpedia.org/resource/Adityapur>
+Adoni	<http://dbpedia.org/resource/Adoni>
+Agra	<http://dbpedia.org/resource/Agra>
+Akbarpur	<http://dbpedia.org/resource/Akbarpur,_Ambedkar_Nagar>
+Akola	<http://dbpedia.org/resource/Akola>
+Alipurduar	<http://dbpedia.org/resource/Alipurduar>
+Ambala	<http://dbpedia.org/resource/Ambala>
+Ambala Cantonment	<http://dbpedia.org/resource/Ambala_Cantonment>
+Ambala Sadar	<http://dbpedia.org/resource/Ambala_Sadar>
+Ambasamudram	<http://dbpedia.org/resource/Ambasamudram>
+Ambikapur	<http://dbpedia.org/resource/Ambikapur,_India>
+Amravati	<http://dbpedia.org/resource/Amravati>
+Amreli	<http://dbpedia.org/resource/Amreli>
+Amritsar	<http://dbpedia.org/resource/Amritsar>
+Anand	<http://dbpedia.org/resource/Anand,_Gujarat>
+Ananthapuram	<http://dbpedia.org/resource/Anantapur,_Andhra_Pradesh>
+అనంతపురం	<http://dbpedia.org/resource/Anantapur,_Andhra_Pradesh>
+Anantnag	<http://dbpedia.org/resource/Anantnag>
+Arrah	<http://dbpedia.org/resource/Arrah>
+Ashoknagar Kalyangarh	<http://dbpedia.org/resource/Ashoknagar_Kalyangarh>
+Ashta	<http://dbpedia.org/resource/Ashta,_Maharashtra>
+Ausa	<http://dbpedia.org/resource/Ausa>
+Azamgarh	<http://dbpedia.org/resource/Azamgarh>
+Bagbera	<http://dbpedia.org/resource/Bagbera>
+Bahadurgarh	<http://dbpedia.org/resource/Bahadurgarh>
+Bahraich	<http://dbpedia.org/resource/Bahraich>
+Baidyabati	<http://dbpedia.org/resource/Baidyabati>
+Balasore	<http://dbpedia.org/resource/Balasore>
+Ballia	<http://dbpedia.org/resource/Ballia>
+Bally	<http://dbpedia.org/resource/Bally,_Howrah>
+Bamroli	<http://dbpedia.org/resource/Bamroli>
+Bangaon	<http://dbpedia.org/resource/Bangaon>
+Banka	<http://dbpedia.org/resource/Banka,_Bihar>
+Bankura	<http://dbpedia.org/resource/Bankura>
+Banswara	<http://dbpedia.org/resource/Banswara>
+Barabanki	<http://dbpedia.org/resource/Barabanki_city>
+Baran	<http://dbpedia.org/resource/Baran,_Rajasthan>
+Baraut	<http://dbpedia.org/resource/Baraut>
+Bardhaman	<http://dbpedia.org/resource/Bardhaman>
+Bardoli	<http://dbpedia.org/resource/Bardoli>
+Baripada	<http://dbpedia.org/resource/Baripada>
+Barnala	<http://dbpedia.org/resource/Barnala>
+Basavakalyan	<http://dbpedia.org/resource/Basavakalyan>
+ಬಸವ ಕಲ್ಯಾಣ	<http://dbpedia.org/resource/Basavakalyan>
+Basirhat	<http://dbpedia.org/resource/Basirhat>
+Batala	<http://dbpedia.org/resource/Batala>
+ਬਟਾਲਾ	<http://dbpedia.org/resource/Batala>
+Beawar	<http://dbpedia.org/resource/Beawar>
+Beed	<http://dbpedia.org/resource/Beed>
+Bellary	<http://dbpedia.org/resource/Bellary>
+Bettiah	<http://dbpedia.org/resource/Bettiah>
+Bhadravathi	<http://dbpedia.org/resource/Bhadravathi,_Karnataka>
+Bhalswa Jahangir Pur	<http://dbpedia.org/resource/Bhalswa_Jahangir_Pur>
+Bharatpur	<http://dbpedia.org/resource/Bharatpur,_Rajasthan>
+Bharuch	<http://dbpedia.org/resource/Bharuch>
+Bhatkal	<http://dbpedia.org/resource/Bhatkal>
+Bhatkala	<http://dbpedia.org/resource/Bhatkal>
+Bhawani Mandi	<http://dbpedia.org/resource/Bhawani_Mandi>
+BHILWARA	<http://dbpedia.org/resource/Bhilwara>
+Bhilada	<http://dbpedia.org/resource/Bhilwara>
+Bhiwadi	<http://dbpedia.org/resource/Bhiwadi>
+Bhiwani	<http://dbpedia.org/resource/Bhiwani>
+Bhusawal	<http://dbpedia.org/resource/Bhusawal>
+Bidar	<http://dbpedia.org/resource/Bidar>
+ಬೀದರ್	<http://dbpedia.org/resource/Bidar>
+Bihar	<http://dbpedia.org/resource/Bihar_Sharif>
+Bijnor	<http://dbpedia.org/resource/Bijnor>
+Bilimora	<http://dbpedia.org/resource/Bilimora>
+Bina Etawa	<http://dbpedia.org/resource/Bina_Etawa>
+Bodinayakkanur	<http://dbpedia.org/resource/Bodinayakkanur>
+Bokaro Steel City	<http://dbpedia.org/resource/Bokaro_Steel_City>
+Bongaigaon	<http://dbpedia.org/resource/Bongaigaon>
+Botad	<http://dbpedia.org/resource/Botad>
+Bulandshahr	<http://dbpedia.org/resource/Bulandshahr>
+Canning	<http://dbpedia.org/resource/Canning,_South_24_Parganas>
+Chakdaha	<http://dbpedia.org/resource/Chakdaha>
+Chandausi	<http://dbpedia.org/resource/Chandausi>
+Chas	<http://dbpedia.org/resource/Chas>
+Chhapra	<http://dbpedia.org/resource/Chhapra>
+Chikkamagaluru	<http://dbpedia.org/resource/Chikmagalur>
+Chikmagalur	<http://dbpedia.org/resource/Chikmagalur>
+Chittorgarh	<http://dbpedia.org/resource/Chittorgarh>
+Chopda	<http://dbpedia.org/resource/Chopda>
+Cuttack	<http://dbpedia.org/resource/Cuttack>
+କଟକ	<http://dbpedia.org/resource/Cuttack>
+Dallo Pura	<http://dbpedia.org/resource/Dallo_Pura>
+Daman	<http://dbpedia.org/resource/Daman_district,_India>
+Damoh	<http://dbpedia.org/resource/Damoh>
+Davangere	<http://dbpedia.org/resource/Davangere>
+Deesa	<http://dbpedia.org/resource/Deesa>
+Dehradun	<http://dbpedia.org/resource/Dehradun>
+Dehri	<http://dbpedia.org/resource/Dehri>
+Deoghar	<http://dbpedia.org/resource/Deoghar>
+Deoli	<http://dbpedia.org/resource/Deoli,_Delhi>
+Deoria	<http://dbpedia.org/resource/Deoria,_Uttar_Pradesh>
+Dharmavaram	<http://dbpedia.org/resource/Dharmavaram,_Anantapur>
+Dholpur	<http://dbpedia.org/resource/Dholpur>
+Dhulian	<http://dbpedia.org/resource/Dhulian>
+Dimapur	<http://dbpedia.org/resource/Dimapur>
+Dinapur Nizamat	<http://dbpedia.org/resource/Dinapur_Nizamat>
+Dindigul	<http://dbpedia.org/resource/Dindigul>
+Dudhrej	<http://dbpedia.org/resource/Dudhrej>
+Dum Dum	<http://dbpedia.org/resource/Dum_Dum>
+Dumka	<http://dbpedia.org/resource/Dumka>
+Dwarka	<http://dbpedia.org/resource/Dwarka_Sub_City>
+Dwarka Sub City	<http://dbpedia.org/resource/Dwarka_Sub_City>
+Eluru	<http://dbpedia.org/resource/Eluru>
+ఏలూరు	<http://dbpedia.org/resource/Eluru>
+English Bazar	<http://dbpedia.org/resource/English_Bazar>
+Erode	<http://dbpedia.org/resource/Erode>
+Etah	<http://dbpedia.org/resource/Etah>
+Etawah	<http://dbpedia.org/resource/Etawah>
+faizabad	<http://dbpedia.org/resource/Faizabad>
+Faridkot	<http://dbpedia.org/resource/Faridkot,_Punjab>
+Farrukhabad	<http://dbpedia.org/resource/Farrukhabad>
+Gadag-Betageri	<http://dbpedia.org/resource/Gadag-Betageri>
+ಗದಗ-ಬೆಟಗೇರಿ	<http://dbpedia.org/resource/Gadag-Betageri>
+Gandhidham	<http://dbpedia.org/resource/Gandhidham>
+Sardar Ganj	<http://dbpedia.org/resource/Gandhidham>
+Gangaghat	<http://dbpedia.org/resource/Gangaghat>
+Gangapur	<http://dbpedia.org/resource/Gangapur,_Sawai_Madhopur>
+Garoth	<http://dbpedia.org/resource/Garoth>
+Garoth City	<http://dbpedia.org/resource/Garoth>
+Ghatlodiya	<http://dbpedia.org/resource/Ghatlodiya>
+Ghazipur	<http://dbpedia.org/resource/Ghazipur>
+Gonda	<http://dbpedia.org/resource/Gonda,_Uttar_Pradesh>
+Gondia	<http://dbpedia.org/resource/Gondia>
+Gumla	<http://dbpedia.org/resource/Gumla>
+Guntakal	<http://dbpedia.org/resource/Guntakal>
+GURGAON	<http://dbpedia.org/resource/Gurgaon>
+Guwahati	<http://dbpedia.org/resource/Guwahati>
+Habra	<http://dbpedia.org/resource/Habra>
+Hailakandi	<http://dbpedia.org/resource/Hailakandi>
+Hajipur	<http://dbpedia.org/resource/Hajipur>
+Haldia	<http://dbpedia.org/resource/Haldia>
+Halisahar	<http://dbpedia.org/resource/Halisahar>
+Hanumangarh	<http://dbpedia.org/resource/Hanumangarh>
+Hardoi	<http://dbpedia.org/resource/Hardoi>
+Harihar	<http://dbpedia.org/resource/Harihar>
+ಹರಿಹರ	<http://dbpedia.org/resource/Harihar>
+Hassan	<http://dbpedia.org/resource/Hassan,_Karnataka>
+Hathras	<http://dbpedia.org/resource/Hathras>
+Hindaun City	<http://dbpedia.org/resource/Hindaun>
+Hinganghat	<http://dbpedia.org/resource/Hinganghat>
+Hingoli	<http://dbpedia.org/resource/Hingoli>
+Hoeryong	<http://dbpedia.org/resource/Hoeryong>
+회령	<http://dbpedia.org/resource/Hoeryong>
+Hoshangabad	<http://dbpedia.org/resource/Hoshangabad>
+Hospet	<http://dbpedia.org/resource/Hospet>
+Huichon	<http://dbpedia.org/resource/Huichon>
+Hyderabad	<http://dbpedia.org/resource/Hyderabad,_India>
+Ichalkaranji	<http://dbpedia.org/resource/Ichalkaranji>
+इचलकरंजी	<http://dbpedia.org/resource/Ichalkaranji>
+Indore	<http://dbpedia.org/resource/Indore>
+Jagadhri	<http://dbpedia.org/resource/Jagadhri>
+Jahangirpur	<http://dbpedia.org/resource/Jahangirpur,_West_Bengal>
+Jaithari	<http://dbpedia.org/resource/Jaithari>
+Jajmau	<http://dbpedia.org/resource/Jajmau>
+Jalna	<http://dbpedia.org/resource/Jalna,_Maharashtra>
+Jamalpur	<http://dbpedia.org/resource/Jamalpur,_Munger>
+Jamnagar	<http://dbpedia.org/resource/Jamnagar>
+Nawanagar	<http://dbpedia.org/resource/Jamnagar>
+Jaunpur	<http://dbpedia.org/resource/Jaunpur,_Uttar_Pradesh>
+Jetpur	<http://dbpedia.org/resource/Jetpur,_Navagadh>
+Jhunjhunu	<http://dbpedia.org/resource/Jhunjhunu>
+झुन्झुनू	<http://dbpedia.org/resource/Jhunjhunu>
+Jind	<http://dbpedia.org/resource/Jind>
+Jodhpur	<http://dbpedia.org/resource/Jodhpur>
+Jorhat	<http://dbpedia.org/resource/Jorhat>
+Junagadh	<http://dbpedia.org/resource/Junagadh>
+જૂનાગઢ	<http://dbpedia.org/resource/Junagadh>
+Junnar	<http://dbpedia.org/resource/Junnar>
+जुन्नर	<http://dbpedia.org/resource/Junnar>
+Kadapa	<http://dbpedia.org/resource/Kadapa>
+Kadiri	<http://dbpedia.org/resource/Kadiri>
+Kadur	<http://dbpedia.org/resource/Kadur>
+Kaechon	<http://dbpedia.org/resource/Kaechon>
+Kaithal	<http://dbpedia.org/resource/Kaithal>
+Cocanada	<http://dbpedia.org/resource/Kakinada>
+Kakinada	<http://dbpedia.org/resource/Kakinada>
+Kakrala	<http://dbpedia.org/resource/Kakrala>
+Kalol INA	<http://dbpedia.org/resource/Kalol_INA>
+Kalyan-Dombivali	<http://dbpedia.org/resource/Kalyan-Dombivali>
+Kalyani	<http://dbpedia.org/resource/Kalyani,_West_Bengal>
+Kalyanpur	<http://dbpedia.org/resource/Kalyanpur,_Uttar_Pradesh>
+Kamarhati	<http://dbpedia.org/resource/Kamarhati>
+Kanchrapara	<http://dbpedia.org/resource/Kanchrapara>
+Kanpur Cantonment	<http://dbpedia.org/resource/Kanpur_Cantonment>
+Karera	<http://dbpedia.org/resource/Karera>
+Karimnagar	<http://dbpedia.org/resource/Karimnagar>
+Karjan	<http://dbpedia.org/resource/Karjan>
+Karjat	<http://dbpedia.org/resource/Karjat>
+Karnal	<http://dbpedia.org/resource/Karnal>
+Kashipur	<http://dbpedia.org/resource/Kashipur,_Uttarakhand>
+Kathua	<http://dbpedia.org/resource/Kathua>
+Kathue	<http://dbpedia.org/resource/Kathua>
+Katni	<http://dbpedia.org/resource/Katni>
+Khardaha	<http://dbpedia.org/resource/Khardaha>
+Khatima	<http://dbpedia.org/resource/Khatima>
+Kirari	<http://dbpedia.org/resource/Kirari_Suleman_Nagar>
+Kirari Suleman Nagar	<http://dbpedia.org/resource/Kirari_Suleman_Nagar>
+Kochi	<http://dbpedia.org/resource/Kochi>
+Kolar	<http://dbpedia.org/resource/Kolar>
+ಕೋಲಾರ	<http://dbpedia.org/resource/Kolar>
+Venad	<http://dbpedia.org/resource/Kollam>
+Kollam	<http://dbpedia.org/resource/Kollam>
+Korba	<http://dbpedia.org/resource/Korba,_Chhattisgarh>
+Kosambi	<http://dbpedia.org/resource/Kosambi>
+Kosi Kalan	<http://dbpedia.org/resource/Kosi_Kalan>
+Kotma	<http://dbpedia.org/resource/Kotma>
+Kotputli	<http://dbpedia.org/resource/Kotputli>
+Kottayam	<http://dbpedia.org/resource/Kottayam>
+Kurnool	<http://dbpedia.org/resource/Kurnool>
+KANDANAVOLU	<http://dbpedia.org/resource/Kurnool>
+Lakhimpur	<http://dbpedia.org/resource/Lakhimpur,_Uttar_Pradesh>
+Lalitpur	<http://dbpedia.org/resource/Lalitpur,_India>
+Lalsot	<http://dbpedia.org/resource/Lalsot>
+Latur	<http://dbpedia.org/resource/Latur>
+Loni	<http://dbpedia.org/resource/Loni,_India>
+Ludhiana	<http://dbpedia.org/resource/Ludhiana>
+ਲੁਧਿਆਣਾ	<http://dbpedia.org/resource/Ludhiana>
+Madhupur	<http://dbpedia.org/resource/Madhupur,_Deoghar>
+Madhyamgram	<http://dbpedia.org/resource/Madhyamgram>
+Mahadevapura	<http://dbpedia.org/resource/Mahadevapura>
+Maheshtala	<http://dbpedia.org/resource/Maheshtala>
+Mahona	<http://dbpedia.org/resource/Mahona>
+Malegaon	<http://dbpedia.org/resource/Malegaon>
+Mandi	<http://dbpedia.org/resource/Mandi,_Himachal_Pradesh>
+मंडी	<http://dbpedia.org/resource/Mandi,_Himachal_Pradesh>
+Mango	<http://dbpedia.org/resource/Mango_(Jamshedpur)>
+Mehdawal	<http://dbpedia.org/resource/Mehdawal>
+Mehsana	<http://dbpedia.org/resource/Mehsana>
+Miryalaguda	<http://dbpedia.org/resource/Miryalaguda>
+Mirzapur	<http://dbpedia.org/resource/Mirzapur>
+Mirzapur-cum-Vindhyachal	<http://dbpedia.org/resource/Mirzapur-cum-Vindhyachal>
+Moga	<http://dbpedia.org/resource/Moga,_Punjab>
+ਮੋਗਾ	<http://dbpedia.org/resource/Moga,_Punjab>
+Morena	<http://dbpedia.org/resource/Morena>
+Motihari	<http://dbpedia.org/resource/Motihari>
+Bapudham Motihari	<http://dbpedia.org/resource/Motihari>
+Mubarakpur	<http://dbpedia.org/resource/Mubarakpur>
+Mughalsarai	<http://dbpedia.org/resource/Mughalsarai>
+Mumbai	<http://dbpedia.org/resource/Mumbai>
+Munger	<http://dbpedia.org/resource/Munger>
+Angdesh	<http://dbpedia.org/resource/Munger>
+Muradnagar	<http://dbpedia.org/resource/Muradnagar>
+Muzaffarnagar	<http://dbpedia.org/resource/Muzaffarnagar>
+Muzaffarpur	<http://dbpedia.org/resource/Muzaffarpur>
+bhojpuri films city	<http://dbpedia.org/resource/Muzaffarpur>
+Nabadwip	<http://dbpedia.org/resource/Nabadwip>
+Nabarangpur	<http://dbpedia.org/resource/Nabarangpur>
+Nagaur	<http://dbpedia.org/resource/Nagaur>
+Nagda	<http://dbpedia.org/resource/Nagda>
+Naihati	<http://dbpedia.org/resource/Naihati>
+Nalbari	<http://dbpedia.org/resource/Nalbari>
+Nalgonda	<http://dbpedia.org/resource/Nalgonda>
+నల్గొండ	<http://dbpedia.org/resource/Nalgonda>
+Nana Machiyala	<http://dbpedia.org/resource/Nana_Machiyala>
+Nandyal	<http://dbpedia.org/resource/Nandyal>
+Nashik	<http://dbpedia.org/resource/Nashik>
+Navghar-Manikpur	<http://dbpedia.org/resource/Navghar-Manikpur>
+Navsari	<http://dbpedia.org/resource/Navsari>
+Nawabganj	<http://dbpedia.org/resource/Nawabganj,_Barabanki>
+Nellore	<http://dbpedia.org/resource/Nellore>
+నెల్లూరు	<http://dbpedia.org/resource/Nellore>
+Nirsa	<http://dbpedia.org/resource/Nirsa>
+Noamundi	<http://dbpedia.org/resource/Noamundi>
+Noida	<http://dbpedia.org/resource/Noida>
+North Dumdum	<http://dbpedia.org/resource/North_Dumdum>
+North Kanpur	<http://dbpedia.org/resource/North_Kanpur>
+Orai	<http://dbpedia.org/resource/Orai>
+उरई	<http://dbpedia.org/resource/Orai>
+Ozhukarai	<http://dbpedia.org/resource/Ozhukarai>
+Palanpur	<http://dbpedia.org/resource/Palanpur>
+Palitana	<http://dbpedia.org/resource/Palitana>
+Palwal	<http://dbpedia.org/resource/Palwal>
+Panchkula	<http://dbpedia.org/resource/Panchkula>
+Panihati	<http://dbpedia.org/resource/Panihati>
+Panipat	<http://dbpedia.org/resource/Panipat>
+panduprastha	<http://dbpedia.org/resource/Panipat>
+Paradip	<http://dbpedia.org/resource/Paradip>
+Parbhani	<http://dbpedia.org/resource/Parbhani>
+Patan	<http://dbpedia.org/resource/Patan,_Gujarat>
+Peddapuram Mandal	<http://dbpedia.org/resource/Peddapuram_Mandal>
+Phalodi	<http://dbpedia.org/resource/Phalodi>
+Pithampur	<http://dbpedia.org/resource/Pithampur>
+Proddatur	<http://dbpedia.org/resource/Proddatur>
+ప్రొద్దుటూరు	<http://dbpedia.org/resource/Proddatur>
+Puna	<http://dbpedia.org/resource/Puna,_Gujarat>
+Punalur	<http://dbpedia.org/resource/Punalur>
+Purnia	<http://dbpedia.org/resource/Purnia>
+Purulia	<http://dbpedia.org/resource/Purulia>
+Quthbullapur	<http://dbpedia.org/resource/Quthbullapur>
+Raiganj	<http://dbpedia.org/resource/Raiganj>
+Raigarh	<http://dbpedia.org/resource/Raigarh>
+Rajahmundry City	<http://dbpedia.org/resource/Rajahmundry>
+New Town	<http://dbpedia.org/resource/Rajarhat>
+Rajnandgaon	<http://dbpedia.org/resource/Rajnandgaon>
+Rajpur Sonarpur	<http://dbpedia.org/resource/Rajpur_Sonarpur>
+Ramgarh Cantonment	<http://dbpedia.org/resource/Ramgarh_Cantonment>
+Ranaghat	<http://dbpedia.org/resource/Ranaghat>
+Ranebennuru	<http://dbpedia.org/resource/Ranebennuru>
+ರಾಣೇಬೆನ್ನೂರು	<http://dbpedia.org/resource/Ranebennuru>
+Raniganj	<http://dbpedia.org/resource/Raniganj>
+Rasulabad	<http://dbpedia.org/resource/Rasulabad,_Kanpur_Dehat>
+Ratlam	<http://dbpedia.org/resource/Ratlam>
+Raurkela Industrial Township	<http://dbpedia.org/resource/Raurkela_Industrial_Township>
+Rayachoti	<http://dbpedia.org/resource/Rayachoti>
+Rewari	<http://dbpedia.org/resource/Rewari>
+Roorkee	<http://dbpedia.org/resource/Roorkee>
+रुड़की	<http://dbpedia.org/resource/Roorkee>
+Rourkela	<http://dbpedia.org/resource/Rourkela>
+ରାଉରକେଲା	<http://dbpedia.org/resource/Rourkela>
+Rudrapur	<http://dbpedia.org/resource/Rudrapur>
+Sagar	<http://dbpedia.org/resource/Sagar,_Madhya_Pradesh>
+Saharsa	<http://dbpedia.org/resource/Saharsa>
+Sahaswan	<http://dbpedia.org/resource/Sahaswan>
+Sahibganj	<http://dbpedia.org/resource/Sahebganj>
+sambhal	<http://dbpedia.org/resource/Sambhal>
+Sangareddy	<http://dbpedia.org/resource/Sangareddi>
+Sangareddi	<http://dbpedia.org/resource/Sangareddi>
+Sangli-Miraj-Kupwad	<http://dbpedia.org/resource/Sangli-Miraj_&_Kupwad>
+Sangrur	<http://dbpedia.org/resource/Sangrur>
+ਸੰਗਰੂਰ	<http://dbpedia.org/resource/Sangrur>
+Sarni	<http://dbpedia.org/resource/Sarni,_India>
+Saroornagar	<http://dbpedia.org/resource/Saroornagar>
+Satna	<http://dbpedia.org/resource/Satna>
+Madhopur	<http://dbpedia.org/resource/Sawai_Madhopur>
+Sawai Madhopur	<http://dbpedia.org/resource/Sawai_Madhopur>
+Seoni	<http://dbpedia.org/resource/Seoni,_Madhya_Pradesh>
+Shahapur	<http://dbpedia.org/resource/Shahapur>
+Shahdol	<http://dbpedia.org/resource/Shahdol>
+Shamli	<http://dbpedia.org/resource/Shamli>
+Shantipur	<http://dbpedia.org/resource/Shantipur>
+Sheikhpura	<http://dbpedia.org/resource/Sheikhpura>
+Sheohar	<http://dbpedia.org/resource/Sheohar>
+Sheopur	<http://dbpedia.org/resource/Sheopur>
+Sherkot	<http://dbpedia.org/resource/Sherkot>
+Shimoga	<http://dbpedia.org/resource/Shimoga>
+Shivamogga	<http://dbpedia.org/resource/Shimoga>
+Shivpuri	<http://dbpedia.org/resource/Shivpuri>
+Shrirampur	<http://dbpedia.org/resource/Shrirampur>
+Shuklaganj	<http://dbpedia.org/resource/Shuklaganj>
+Sikar	<http://dbpedia.org/resource/Sikar>
+सीकर	<http://dbpedia.org/resource/Sikar>
+Silchar	<http://dbpedia.org/resource/Silchar>
+Simdega	<http://dbpedia.org/resource/Simdega>
+Sinpo	<http://dbpedia.org/resource/Sinpo>
+Sirsa	<http://dbpedia.org/resource/Sirsa,_Haryana>
+Sitarganj	<http://dbpedia.org/resource/Sitarganj>
+Siwan	<http://dbpedia.org/resource/Siwan,_Bihar>
+South Dumdum	<http://dbpedia.org/resource/South_Dumdum>
+South Kanpur	<http://dbpedia.org/resource/South_Kanpur>
+Sri GangaNagar	<http://dbpedia.org/resource/Sri_Ganganagar>
+Shri Muktsar Sahib	<http://dbpedia.org/resource/Sri_Muktsar_Sahib>
+Sujangarh	<http://dbpedia.org/resource/Sujangarh>
+Sultan Pur Majra	<http://dbpedia.org/resource/Sultan_Pur_Majra>
+Sultanpur	<http://dbpedia.org/resource/Sultanpur,_Uttar_Pradesh>
+Surendranagar	<http://dbpedia.org/resource/Surendranagar_city>
+Suryapet	<http://dbpedia.org/resource/Suryapet>
+Tanchon	<http://dbpedia.org/resource/Tanchon>
+Tanuku	<http://dbpedia.org/resource/Tanuku>
+Tarakapura	<http://dbpedia.org/resource/Tanuku>
+Tarn Taran Sahib	<http://dbpedia.org/resource/Tarn_Taran_Sahib>
+Tekari	<http://dbpedia.org/resource/Tekari>
+Thanesar	<http://dbpedia.org/resource/Thanesar>
+Thiruvananthapuram	<http://dbpedia.org/resource/Thiruvananthapuram>
+Thoothukudi	<http://dbpedia.org/resource/Thoothukudi>
+Thrissur	<http://dbpedia.org/resource/Thrissur>
+Thrissur Metropolitan Area	<http://dbpedia.org/resource/Thrissur_Metropolitan_Area>
+Tinsukia	<http://dbpedia.org/resource/Tinsukia>
+Tirupati	<http://dbpedia.org/resource/Tirupati_(city)>
+Tirupur	<http://dbpedia.org/resource/Tirupur>
+Titagarh	<http://dbpedia.org/resource/Titagarh>
+Tokchon	<http://dbpedia.org/resource/Tokchon>
+Tonk	<http://dbpedia.org/resource/Tonk,_India>
+Tumkur	<http://dbpedia.org/resource/Tumkur>
+Udgir	<http://dbpedia.org/resource/Udgir>
+Udhampur	<http://dbpedia.org/resource/Udhampur>
+Udhana	<http://dbpedia.org/resource/Udhana>
+ઉધના	<http://dbpedia.org/resource/Udhana>
+Udupi	<http://dbpedia.org/resource/Udupi>
+ಉಡುಪಿ	<http://dbpedia.org/resource/Udupi>
+Ujhani	<http://dbpedia.org/resource/Ujhani>
+Uluberia	<http://dbpedia.org/resource/Uluberia>
+Umreth	<http://dbpedia.org/resource/Umreth>
+Unnao	<http://dbpedia.org/resource/Unnao>
+Wada	<http://dbpedia.org/resource/Vada,_Thane>
+Vadodara	<http://dbpedia.org/resource/Vadodara>
+Vaijapur	<http://dbpedia.org/resource/Vaijapur>
+Vapi	<http://dbpedia.org/resource/Vapi>
+Vasai-Virar	<http://dbpedia.org/resource/Vasai-Virar>
+Vejalpur	<http://dbpedia.org/resource/Vejalpur>
+Veraval	<http://dbpedia.org/resource/Veraval>
+Vijayanagara	<http://dbpedia.org/resource/Vijayanagara>
+Villianur	<http://dbpedia.org/resource/Villianur>
+Vizianagaram	<http://dbpedia.org/resource/Vizianagaram>
+nagpur	<http://dbpedia.org/resource/Wardha>
+West Kanpur	<http://dbpedia.org/resource/West_Kanpur>
+Abdulla Pur	<http://dbpedia.org/resource/Yamuna_Nagar>
+Yavatmal	<http://dbpedia.org/resource/Yavatmal>
+Parnaíba	<http://dbpedia.org/resource/Parna%C3%ADba>
+Ashoknagar	<http://dbpedia.org/resource/Ashoknagar>
+Puerto La Cruz	<http://dbpedia.org/resource/Puerto_la_Cruz>
+Sukabumi	<http://dbpedia.org/resource/Sukabumi>
+Nogales	<http://dbpedia.org/resource/Nogales,_Sonora>
+Heroica Nogales	<http://dbpedia.org/resource/Nogales,_Sonora>
+Aguachica	<http://dbpedia.org/resource/Aguachica>
+Banjarbaru	<http://dbpedia.org/resource/Banjarbaru>
+Hai Duong	<http://dbpedia.org/resource/Hai_Duong>
+Pano Aqil	<http://dbpedia.org/resource/Pano_Aqil>
+Shakargarh	<http://dbpedia.org/resource/Shakargarh>
+Dili	<http://dbpedia.org/resource/Dili>
+Manado	<http://dbpedia.org/resource/Manado>
+Medan	<http://dbpedia.org/resource/Medan>
+Kota Medan	<http://dbpedia.org/resource/Medan>
+Oklahoma City	<http://dbpedia.org/resource/Oklahoma_City>
+Oklahoma City	<http://dbpedia.org/resource/Oklahoma_City>
+Perth	<http://dbpedia.org/resource/Perth>
+San Justo	<http://dbpedia.org/resource/San_Justo,_Buenos_Aires>
+Rangpur	<http://dbpedia.org/resource/Rangpur,_Bangladesh>
+রংপুর	<http://dbpedia.org/resource/Rangpur,_Bangladesh>
+Tepic	<http://dbpedia.org/resource/Tepic>
+Ilagan	<http://dbpedia.org/resource/Ilagan>
+Ciudad Na Ilagan	<http://dbpedia.org/resource/Ilagan>
+Ilagan City	<http://dbpedia.org/resource/Ilagan>
+Lungsod ng Ilagan	<http://dbpedia.org/resource/Ilagan>
+Ciudad Ti Ilagan	<http://dbpedia.org/resource/Ilagan>
+Imus	<http://dbpedia.org/resource/Imus>
+Imus	<http://dbpedia.org/resource/Imus>
+Lungsod ng Imus	<http://dbpedia.org/resource/Imus>
+Chaohu	<http://dbpedia.org/resource/Chaohu>
+Bandar Abbas	<http://dbpedia.org/resource/Bandar_Abbas>
+Taif	<http://dbpedia.org/resource/Ta'if>
+Gwalior	<http://dbpedia.org/resource/Gwalior>
+Hapur	<http://dbpedia.org/resource/Hapur>
+Hala	<http://dbpedia.org/resource/Hala,_Sindh>
+Hala New	<http://dbpedia.org/resource/Hala,_Sindh>
+Gunung Sitoli	<http://dbpedia.org/resource/Gunungsitoli>
+Maicao	<http://dbpedia.org/resource/Maicao>
+Palopo	<http://dbpedia.org/resource/Palopo>
+Salamanca	<http://dbpedia.org/resource/Salamanca,_Guanajuato>
+Ebetsu	<http://dbpedia.org/resource/Ebetsu,_Hokkaido>
+江別	<http://dbpedia.org/resource/Ebetsu,_Hokkaido>
+Barcelona	<http://dbpedia.org/resource/Barcelona,_Anzo%C3%A1tegui>
+Suncheon	<http://dbpedia.org/resource/Suncheon>
+Sirajganj	<http://dbpedia.org/resource/Sirajganj>
+Marrakesh	<http://dbpedia.org/resource/Marrakesh>
+Murrākuš	<http://dbpedia.org/resource/Marrakesh>
+St Louis	<http://dbpedia.org/resource/St._Louis>
+St Louis	<http://dbpedia.org/resource/St._Louis>
+Mabalacat	<http://dbpedia.org/resource/Mabalacat>
+Lakanbalen ning Mabalacat	<http://dbpedia.org/resource/Mabalacat>
+Lungsod ng Mabalacat	<http://dbpedia.org/resource/Mabalacat>
+Mabalacat City	<http://dbpedia.org/resource/Mabalacat>
+Morbi	<http://dbpedia.org/resource/Morbi>
+Sunchon	<http://dbpedia.org/resource/Sunchon>
+Amboina	<http://dbpedia.org/resource/Ambon,_Maluku>
+Kota Ambon	<http://dbpedia.org/resource/Ambon,_Maluku>
+Binjai	<http://dbpedia.org/resource/Binjai>
+Jubail	<http://dbpedia.org/resource/Jubail>
+Newport News	<http://dbpedia.org/resource/Newport_News,_Virginia>
+Pontianak	<http://dbpedia.org/resource/Pontianak,_Indonesia>
+Carora	<http://dbpedia.org/resource/Carora>
+Kota Kediri	<http://dbpedia.org/resource/Kediri,_East_Java>
+Khairpur Tamewali	<http://dbpedia.org/resource/Khairpur_Tamiwali>
+Bao Loc	<http://dbpedia.org/resource/Bao_Loc>
+Fengcheng	<http://dbpedia.org/resource/Fengcheng,_Jiangxi>
+Gaoyou	<http://dbpedia.org/resource/Gaoyou>
+高邮	<http://dbpedia.org/resource/Gaoyou>
+Jiaonan	<http://dbpedia.org/resource/Jiaonan>
+胶南	<http://dbpedia.org/resource/Jiaonan>
+Laoshan District	<http://dbpedia.org/resource/Laoshan_District>
+崂山区	<http://dbpedia.org/resource/Laoshan_District>
+Nakhon Ratchasima	<http://dbpedia.org/resource/Nakhon_Ratchasima>
+Nahhon Ratchasima	<http://dbpedia.org/resource/Nakhon_Ratchasima>
+Bidhannagar	<http://dbpedia.org/resource/Bidhannagar,_Kolkata>
+Assab	<http://dbpedia.org/resource/Assab>
+Bekasi	<http://dbpedia.org/resource/Bekasi>
+Kota Bekasi	<http://dbpedia.org/resource/Bekasi>
+Blitar	<http://dbpedia.org/resource/Blitar>
+Depok	<http://dbpedia.org/resource/Depok>
+Kota Depok	<http://dbpedia.org/resource/Depok>
+Mataram	<http://dbpedia.org/resource/Mataram_(city)>
+Nakhon Pathom	<http://dbpedia.org/resource/Nakhon_Pathom>
+Palangkaraya	<http://dbpedia.org/resource/Palangkaraya>
+Ubon Ratchathani	<http://dbpedia.org/resource/Ubon_Ratchathani>
+Uruapan	<http://dbpedia.org/resource/Uruapan>
+Uruapan del Progreso	<http://dbpedia.org/resource/Uruapan>
+Valencia	<http://dbpedia.org/resource/Valencia,_Bukidnon>
+Dakbayan sa Valencia	<http://dbpedia.org/resource/Valencia,_Bukidnon>
+Burao	<http://dbpedia.org/resource/Burao>
+Burco	<http://dbpedia.org/resource/Burao>
+Jammu	<http://dbpedia.org/resource/Jammu>
+जम्मू	<http://dbpedia.org/resource/Jammu>
+Kasur	<http://dbpedia.org/resource/Kasur>
+Rockingham	<http://dbpedia.org/resource/Rockingham,_Western_Australia>
+Sagay	<http://dbpedia.org/resource/Sagay,_Negros_Occidental>
+Cabuyao	<http://dbpedia.org/resource/Cabuyao>
+Lungsod ng Kabuyaw	<http://dbpedia.org/resource/Cabuyao>
+Cabuyao City	<http://dbpedia.org/resource/Cabuyao>
+Otaru	<http://dbpedia.org/resource/Otaru,_Hokkaido>
+小樽	<http://dbpedia.org/resource/Otaru,_Hokkaido>
+Tanjung Balai	<http://dbpedia.org/resource/Kota_Tanjung_Balai>
+Padang Sidempuan	<http://dbpedia.org/resource/Padang_Sidempuan>
+Bihta	<http://dbpedia.org/resource/Bihta>
+Anju	<http://dbpedia.org/resource/Anju,_South_Pyongan>
+안주	<http://dbpedia.org/resource/Anju,_South_Pyongan>
+Pasto	<http://dbpedia.org/resource/Pasto,_Colombia>
+Khanna	<http://dbpedia.org/resource/Khanna,_Punjab>
+ਖੰਨਾ	<http://dbpedia.org/resource/Khanna,_Punjab>
+Tiemenguan	<http://dbpedia.org/resource/Tiemenguan_City>
+Banda	<http://dbpedia.org/resource/Banda,_Uttar_Pradesh>
+Gwalior	<http://dbpedia.org/resource/Gwalior_inscription_of_Mihirakula>
+Ajitgarh	<http://dbpedia.org/resource/Ajitgarh>
+Gaur	<http://dbpedia.org/resource/Gau%E1%B8%8Da_(city)>
+Tarakan	<http://dbpedia.org/resource/Tarakan,_North_Kalimantan>
+Khachmaz Rayon	<http://dbpedia.org/resource/Khachmaz_District>
+Sagara	<http://dbpedia.org/resource/Sagara,_Shimoga_district>
+Kulgachia	<http://dbpedia.org/resource/Kulgachia>
+Alderney	<http://dbpedia.org/resource/Liberty_City_(Grand_Theft_Auto_IV_Era)>
+State of Alderney	<http://dbpedia.org/resource/Liberty_City_(Grand_Theft_Auto_IV_Era)>
+Liberty	<http://dbpedia.org/resource/Liberty_City_(Grand_Theft_Auto_IV_Era)>
+Gumi	<http://dbpedia.org/resource/Gumi,_North_Gyeongsang>
+구미	<http://dbpedia.org/resource/Gumi,_North_Gyeongsang>
+Metropolitan Kalibo	<http://dbpedia.org/resource/Metropolitan_Kalibo>
+Punongbanwang Kalibo	<http://dbpedia.org/resource/Metropolitan_Kalibo>
