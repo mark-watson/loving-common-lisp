@@ -3,7 +3,7 @@
 ;; define the environment variable "OPENAI_KEY" with the value of your OpenAI API key
 
 (defvar *model-host* "https://api.openai.com/v1/chat/completions")
-;; use gpt-4o for very good results, or gpt-4o-mini to save abt 20x on costs, with similar results:
+;; use gpt-4o for very good results, or gpt-4o-mini to save about 20x on costs, with similar results:
 (defvar *model* "gpt-4o-mini")
 
 ;; Hash table to store available functions for tool calling
@@ -147,7 +147,7 @@
  #'openai::get_weather)
 
 
-(openai::completions "Use function calling for: What's the weather like in New York?" 1000 '("get_weather"))
+;(openai::completions "Use function calling for: What's the weather like in New York?" 1000 '("get_weather"))
 ;(terpri) (terpri) (terpri) (terpri) (terpri) 
 ;(completions "The President went to Congress" 20)
 
