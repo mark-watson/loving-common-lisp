@@ -2,20 +2,20 @@
 
 Dear reader, as I write this in late July 2025, Moonshot AI’s API for their new Kimi K2 model is my preferred API to use when I am not running local models using Ollama or LM Studio. Kimi K2 is very inexpensive to use and combines good reasoning and tool use capabilities.
 
-he URI for the Moonshot AI console for getting API keys is [https://platform.moonshot.cn/console/api-keys](https://platform.moonshot.cn/console/api-keys).
+The URI for the Moonshot AI console for getting API keys is [https://platform.moonshot.cn/console/api-keys](https://platform.moonshot.cn/console/api-keys).
 
 Moonshot AI, a rapidly emerging Chinese artificial intelligence startup, has quickly established itself as a significant player in the competitive AI landscape. Founded by Yang Zhilin, the company is dedicated to the development of "lossless long-context" capabilities and the pursuit of artificial general intelligence (AGI). Moonshot AI has received substantial attention for its innovative approach, published research papers, open weight models, and for its ability to process exceptionally long text inputs. The company's strategy focuses on creating consumer-facing applications and has demonstrated a commitment to advancing the field through both powerful proprietary models and strategic open-source releases. This dual approach aims to foster a global developer community while pushing the boundaries of what AI can achieve.
 
-The company's flagship model, Kimi K2, represents a significant leap forward in large language model technology. It is a massive one-trillion-parameter model built on a Mixture-of-Experts (MoE) architecture, which allows for highly efficient processing by activating only a fraction of its parameters (32 billion) for any given task. Kimi K2 has excellent "agentic" capabilities, meaning it can autonomously understand tasks, utilize tools, and execute multi-step processes to solve complex problems. The model has demonstrated state-of-the-art performance, outperforming established models like GPT-4.1 on various benchmarks, particularly in coding and mathematical reasoning. With a generous 128,000-token context window and an open-source release, Kimi K2 is positioned as a powerful and accessible tool for developers and researchers, driving innovation in areas requiring deep reasoning and autonomous task completion.
+The company's new flagship model, Kimi K2, represents a significant leap forward in large language model technology. It is a massive one-trillion-parameter model built on a Mixture-of-Experts (MoE) architecture, which allows for highly efficient processing by activating only a fraction of its parameters (32 billion) for any given task. Kimi K2 has excellent "agentic" capabilities, meaning it can autonomously understand tasks, utilize tools, and execute multi-step processes to solve complex problems. The model has demonstrated state-of-the-art performance, outperforming some proprietary “frontier” models on various benchmarks, particularly in coding and mathematical reasoning. With a generous 128,000-token context window and an open-source release, Kimi K2 is positioned as a powerful and accessible tool for developers and researchers, driving innovation in areas requiring deep reasoning and autonomous task completion.
 
 Here we will look at two Common Lisp implementations:
 
-- generate.lisp: simple implementation using Kimi K2 API’s REST interface.
-- tool_use.lisp: a more complex example using the OpenAI compatibility API and tool use. A simple test tool function is written in Common Lisp and “registered as a local tool.
+- generate.lisp: simple implementation using Kimi K2 API’s REST interface for text generation.
+- tool_use.lisp: a more complex example using the OpenAI compatibility API and tool use. A simple test tool function is written in Common Lisp and “registered” as a local tool.
 
 ## Simple Text Generation
 
-This Common Lisp script in file **generate.lisp** provides a function, **get-kimi-chat-completion**, that communicates with the Moonshot AI (Kimi) Chat Completions API. It constructs and sends an HTTP POST request containing a user's prompt, along with necessary authentication and model parameters. The script then parses the JSON response from the API to extract and return the AI-generated message. It relies on the Dexador library for handling the HTTP communication and the cl-json library for encoding and decoding the JSON data payloads.
+The Common Lisp script in file **generate.lisp** provides a function **get-kimi-chat-completion** that communicates with the Moonshot AI (Kimi) Chat Completions API. It constructs and sends an HTTP POST request containing a user's prompt, along with necessary authentication and model parameters. The script then parses the JSON response from the API to extract and return the AI-generated message. It relies on the Dexador library for handling the HTTP communication and the cl-json library for encoding and decoding the JSON data payloads.
 
 ```lisp
 ;;;; Moonshot AI API Example in Common Lisp
@@ -143,10 +143,11 @@ This is SBCL 2.5.3, an implementation of ANSI Common Lisp.
 
 ## A More Complicated Example With Tool Use
 
-This Common Lisp code provides a client for interacting with the Moonshot AI chat completions API. It's designed to send prompts to a specific AI model and process the responses. A key feature is its implementation of tool calling (also known as function calling), which allows the AI model to request the execution of local Lisp functions, such as **get_weather**, to obtain information and incorporate it into its response.
+The Common Lisp code in the file **tool_use.lisp** provides a client for interacting with the Moonshot AI chat completions API. It's designed to send prompts to a specific AI model and process the responses. A key feature is its implementation of tool calling (also known as function calling), which allows the AI model to request the execution of local Lisp functions, such as **get_weather**, to obtain information and incorporate it into its response.
 
 ```lisp
-;; define the environment variable "MOONSHOT_API_KEY" with the value of your MOONSHOT AI API key
+;; define the environment variable "MOONSHOT_API_KEY" with the value
+;; of your MOONSHOT AI API key
 
 (defvar *model-host* "https://api.moonshot.ai/v1/chat/completions")
 (defvar *model* "kimi-k2-0711-preview")
@@ -251,9 +252,11 @@ This Common Lisp code provides a client for interacting with the Moonshot AI cha
 	   (when functions
              (mapcar (lambda (f)
                        (let ((func (gethash f *available-functions*)))
-                         (list (cons :name (moonshot-function-name func))
-                               (cons :description (moonshot-function-description func))
-                               (cons :parameters (moonshot-function-parameters func)))))
+                         (list
+                          (cons :name (moonshot-function-name func))
+                          (cons :description (moonshot-function-description func))
+                          (cons :parameters
+                                (moonshot-function-parameters func)))))
                      functions)))
          (message (list (cons :role "user")
                         (cons :content starter-text)))
@@ -312,15 +315,15 @@ This Common Lisp code provides a client for interacting with the Moonshot AI cha
 
 **Code Breakdown: Setup and API Request**
 
-The code begins by defining global variables for the API endpoint (*model-host*) and the desired model (*model*). It uses a hash table, *available-functions*, to act as a registry for local functions that the AI can call. The register-function utility populates this hash table, storing not just the Lisp function object but also its metadata, including a description and parameter schema, which are essential for the AI to understand how and when to use the tool. The main entry point is the completion function, which orchestrates the API call. It takes a text prompt and an optional list of function names available for the specific call. It dynamically constructs a JSON payload by combining the user's message with the definitions of any specified functions, pulling their schemas from the *available-functions* registry. After converting the Lisp association list into a JSON string using cl-json, it performs minor string manipulation and escaping before embedding it into a curl command string. This command is then passed to a helper function to be executed.
+The code begins by defining global variables for the API endpoint (***model-host***) and the desired model (***model***). It uses a hash table, ***available-functions***, to act as a registry for local functions that the AI can call. The register-function utility populates this hash table, storing not just the Lisp function object but also its metadata, including a description and parameter schema, which are essential for the AI to understand how and when to use the tool. The main entry point is the completion function, which orchestrates the API call. It takes a text prompt and an optional list of function names available for the specific call. It dynamically constructs a JSON payload by combining the user's message with the definitions of any specified functions, pulling their schemas from the *available-functions* registry. After converting the Lisp association list into a JSON string using cl-json, it performs minor string manipulation and escaping before embedding it into a curl command string. This command is then passed to a helper function to be executed.
 
 **Code Breakdown: Response Handling and Function Execution**
 
-The moonshot-helper function is responsible for executing the API call and processing the result. It uses *uiop:run-program* to invoke the curl command, capturing the JSON response from the Moonshot API. This response is parsed back into a Lisp list structure. The code then navigates this structure to see if the AI's response contains a standard text content field or a function call object. If it's a standard text response, that content is returned directly. If the model instead returns a function call object, it signifies a request to execute a local tool. In this case, *handle-function-call* is invoked. This function extracts the requested function's name and arguments from the AI's response, looks up the actual Lisp function in the *available-functions* hash table, and decodes the JSON argument string. Finally, it uses apply to execute the corresponding local Lisp function with the provided arguments, returning the result of that function call as the final output.
+The moonshot-helper function is responsible for executing the API call and processing the result. It uses ***uiop:run-program*** to invoke the curl command, capturing the JSON response from the Moonshot API. This response is parsed back into a Lisp list structure. The code then navigates this structure to see if the AI's response contains a standard text content field or a function call object. If it's a standard text response, that content is returned directly. If the model instead returns a function call object, it signifies a request to execute a local tool. In this case, ***handle-function-call*** is invoked. This function extracts the requested function's name and arguments from the AI's response, looks up the actual Lisp function in the ***available-functions*** hash table, and decodes the JSON argument string. Finally, it uses apply to execute the corresponding local Lisp function with the provided arguments, returning the result of that function call as the final output.
 
 ### Example Output
 
-The example code contains detailed debug printouts.
+The example code contains detailed debug printouts:
 
 ```console
 $ sbcl
@@ -427,4 +430,4 @@ The weather in New York is currently 72°F with partly cloudy skies. The humidit
 
 ## Moonshot AI’s Kimi K2 Model Wrap Up
 
-I use several commercial vendors for LLM inference APIs. Currently in July 2025 Moonshot AI’s Kimi K2 provides excellent value. This is an open weight (“open source”) model and several commercial inference providers in the USA also provide inference services for Kimi K2.
+I use several commercial vendors for LLM inference APIs. Currently in July 2025, Moonshot AI’s Kimi K2 provides excellent value based on very low cost and features. This is an open weight (“open source”) model and several commercial inference providers in the USA also provide inference services for Kimi K2.

@@ -31,7 +31,7 @@ Edit your file **~/.sbclrc** to add the following line of code:
 
 You have now configured SBCL to work with my book examples. For other Common Lisp implementations, please edit the relevant configuration files:
 
-```test
+```text
 Common Lisp implementation startup files include:
 
 SBCL: ~/.sbclrc

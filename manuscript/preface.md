@@ -12,7 +12,7 @@ If you would like to support my work please consider purchasing my books on [Lea
 
 # Preface
 
-This book has been a continual work in progress since 2011. This current edition is released on January 28, 2025. I have used Common Lisp professionally since 1982 and I love the language!
+This book has been a continual work in progress since 2011. This current edition is released on Julie 29, 2025. I have used Common Lisp professionally since 1982 and I love the language!
 
 I hope you have fun with this book and that you find the content useful for your own projects.
 
@@ -56,28 +56,41 @@ I would like to thank Paul Graham for coining the phrase "The Secret Weapon" (in
 
 ## Setting Up Your Common Lisp Development System and Quicklisp
 
-These instructions assume the use of SBCL. See comments for LispWorks, Franz Common Lisp, and Closure Common List at the end of this section. I assume that you have installed SBCL and Quicklisp by following the instructions at [lisp-lang.org/learn/getting-started](https://lisp-lang.org/learn/getting-started/). These instructions also guide you through installing the Slime extensions for Emacs. I use both Emacs + Slime and VSCode with Common Lisp plugins for editing Common Lisp. If you like VSCode then I recommend Yasuhiro Matsumoto's Lisp plugin for syntax highlighting. For both Emacs and VSCode I usually run a separate REPL in a terminal window and don't run an editor-integrated REPL. I think that I am in the minority in using a separate REPL running in a shell.
+First, clone the GitHub repository that contains both the example programs and the manuscript files for this book: [https://github.com/mark-watson/loving-common-lisp.git](https://github.com/mark-watson/loving-common-lisp.git).
 
-I have been using Common Lisp since about 1982 and Quicklisp (developed and maintained by [Zach Beane](https://www.xach.com)) has been the most revolutionary change in my Common Lisp development (even more so than getting a hardware Lisp Machine and the availability of Coral Common Lisp on the Macintosh).
+These instructions assume the use of SBCL. I assume that you have installed SBCL and Quicklisp by following the instructions at [lisp-lang.org/learn/getting-started](https://lisp-lang.org/learn/getting-started/). These instructions also guide you through installing the Slime extensions for Emacs. I use both Emacs + Slime and VSCode with Common Lisp plugins for editing Common Lisp. If you like VSCode then I recommend Yasuhiro Matsumoto's Lisp plugin for syntax highlighting. For both Emacs and VSCode I usually run a separate REPL in a terminal window and don't run an editor-integrated REPL. I think that I am in the minority in using a separate REPL running in a shell.
 
-You can follow the directions on the main GitHub repository for this book: [https://github.com/mark-watson/loving-common-lisp](https://github.com/mark-watson/loving-common-lisp) to get the examples set up to run on your computer. Starting with the 8th edition, I have a new scheme for distributing the book examples on GitHub:
+Let's start with configuring SBCL and Quicklisp:
 
-- A few short example Common Lisp code snippets are still kept in the main repository for the book: [https://github.com/mark-watson/loving-common-lisp](https://github.com/mark-watson/loving-common-lisp).
-- The longer examples are now stored in separate GitHub repositories to facilitate using them as reusable Quicklisp libraries.
-- Clone the main GitHub repository and copy the [Makefile](https://raw.githubusercontent.com/mark-watson/loving-common-lisp/master/Makefile) to the directory **~/quicklisp/local-projects/** on your computer.
-- Change directory to **~/quicklisp/local-projects/** and run the **Makefile** target **make fetch** to copy all separate GitHub repositories to subdirectories of **~/quicklisp/local-projects/**.
-- You can now load any book example using Quicklisp, for example: **(ql:quickload :sparql)**.
+Edit your file **~/.sbclrc** to add the following line of code:
+
+```lisp
+(pushnew #p"/Users/mark/GITHUB/loving-common-lisp/"
+         ql:*local-project-directories*
+         :test #'equal)
+```
+
+**NOTE:** Please change the path #p"/Users/mark/GITHUB/loving-common-lisp/" to the path where you cloned this repository using:
+
+    git clone https://github.com/mark-watson/loving-common-lisp.git
+
+You have now configured SBCL to work with my book examples. For other Common Lisp implementations, please edit the relevant configuration files:
+
+```text
+Common Lisp implementation startup files include:
+
+SBCL: ~/.sbclrc
+
+CCL: ~/.ccl-init.lisp
+
+ECL: ~/.eclrc
+
+CLISP: ~/.clinit.cl
+
+Allegro CL: ~/.clinit.cl or ~/clinit.cl
+```
 
 
-For example, the subdirectory loving-common-lisp/src/spacy-py4cl contains a package named **spacy-py4cl** that can now be accessed from any directory on your system using:
+I have used the SBCL implementation of Common Lisp in this book. There are many fine Common Lisp implementations from Franz, LispWorks, Clozure Common Lisp, etc.
 
-~~~~~~~~
-$ sbcl
-(ql:quickload "spacy-py4cl")
-* (spacy-py4cl:nlp "My sister has a dog Henry. She loves him.")
-* (defvar x (spacy-py4cl:nlp "President Bill Clinton went to Congress. He gave a speech on taxes and Mexico."))
-~~~~~~~~
-
-This example uses the deep learning NLP models in spaCy which is a Python library - see the chapter on NLP for details on installing the Python dependencies. Note that only a few examples in this book require Python dependencies.
-
-I have used the SBCL implementation of Common Lisp in this book. There are many fine Common Lisp implementations from Franz, LispWorks, Clozure Common Lisp, etc. I usually use LispWorks for my professional development work. If you have any great difficulty adopting the examples to your choice of Common Lisp implementations and performing web search does not suggest a solution then you can reach me through my web site, [markwatson.com](https://markwatson.com).
+If you have any great difficulty adopting the examples to your choice of Common Lisp implementations and performing web search does not suggest a solution then you can reach me through my web site, [markwatson.com](https://markwatson.com).
