@@ -56,7 +56,7 @@ I would like to thank Paul Graham for coining the phrase "The Secret Weapon" (in
 
 ## Setting Up Your Common Lisp Development System and Quicklisp
 
-First, clone the GitHub repository that contains both the example programs and the manuscript files for this book: [https://github.com/mark-watson/loving-common-lisp.git](https://github.com/mark-watson/loving-common-lisp.git).
+First, clone the GitHub repository that contains both the example programs and the manuscript files for this book: [https://github.com/mark-watson/loving-common-lisp](https://github.com/mark-watson/loving-common-lisp).
 
 These instructions assume the use of SBCL. I assume that you have installed SBCL and Quicklisp by following the instructions at [lisp-lang.org/learn/getting-started](https://lisp-lang.org/learn/getting-started/). These instructions also guide you through installing the Slime extensions for Emacs. I use both Emacs + Slime and VSCode with Common Lisp plugins for editing Common Lisp. If you like VSCode then I recommend Yasuhiro Matsumoto's Lisp plugin for syntax highlighting. For both Emacs and VSCode I usually run a separate REPL in a terminal window and don't run an editor-integrated REPL. I think that I am in the minority in using a separate REPL running in a shell.
 
