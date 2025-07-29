@@ -54,7 +54,8 @@
 
 
 (defun handle-function-call (function-call)
-  ;; function-call looks like: ((:name . "get_weather") (:arguments . "{\"location\":\"New York\"}"))
+  ;; function-call looks like: \
+  ;;  ((:name . "get_weather") (:arguments . "{\"location\":\"New York\"}"))
   (format t "~% ** handle-function-call (DUMMY) fucntion-call: ~A~%" function-call)
   (let* ((name (cdr (assoc :name function-call)))
          (args-string (cdr (assoc :arguments function-call)))
@@ -98,28 +99,34 @@
 
 
 (defun completion (starter-text &optional functions)
-  (let* ((function-defs (when functions
-                          (mapcar (lambda (f)
-                                    (let ((func (gethash f *available-functions*)))
-                                      (list (cons :name (moonshot-function-name func))
-                                            (cons :description (moonshot-function-description func))
-                                            (cons :parameters (moonshot-function-parameters func)))))
-                                  functions)))
+  (let* ((function-defs
+	   (when functions
+             (mapcar (lambda (f)
+                       (let ((func (gethash f *available-functions*)))
+                         (list (cons :name (moonshot-function-name func))
+                               (cons :description (moonshot-function-description func))
+                               (cons :parameters (moonshot-function-parameters func)))))
+                     functions)))
          (message (list (cons :role "user")
                         (cons :content starter-text)))
          (base-data `((model . ,*model*)
                       (messages . ,(list message))))
          (data (if function-defs
-                   (append base-data (list (cons :functions function-defs)))
+                   (append
+		    base-data
+		    (list (cons :functions function-defs)))
                    base-data))
          (request-body (cl-json:encode-json-to-string data))
-         (fixed-json-data (substitute-subseq request-body ":null" ":false" :test #'string=))
+         (fixed-json-data
+	   (substitute-subseq request-body ":null" ":false" :test #'string=))
          (escaped-json (escape-json fixed-json-data))
          (curl-command
-          (format nil "curl ~A -H \"Content-Type: application/json\" -H \"Authorization: Bearer ~A\" -d \"~A\""
-                  *model-host*
-                  (uiop:getenv "MOONSHOT_API_KEY")
-                  escaped-json)))
+           (format
+	    nil
+	    "curl ~A -H \"Content-Type: application/json\" -H \"Authorization: Bearer ~A\" -d \"~A\""
+            *model-host*
+            (uiop:getenv "MOONSHOT_API_KEY")
+            escaped-json)))
     (moonshot-helper curl-command)))
 
 
@@ -134,8 +141,12 @@
  "get_weather"
  "Get current weather for a location"
  (list (cons :type "object")
-       (cons :properties (list (cons :location (list (cons :type "string")
-                                                     (cons :description "The city name")))))
+       (cons
+	:properties
+	(list
+	 (cons :location
+	       (list (cons :type "string")
+                     (cons :description "The city name")))))
        (cons :required '("location")))
  #'get_weather)
 

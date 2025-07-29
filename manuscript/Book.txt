@@ -31,7 +31,7 @@ kgn_capi_ui.md
 openai.md
 perplexity.md
 perplexity.md
-moonshot.mdd
+moonshot.md
 huggingface.md
 doc_qa.md
 prompts.md
