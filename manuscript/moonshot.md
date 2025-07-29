@@ -2,7 +2,7 @@
 
 Dear reader, as I write this in late July 2025, Moonshot AI’s API for their new Kimi K2 model is my preferred API to use when I am not running local models using Ollama or LM Studio. Kimi K2 is very inexpensive to use and combines good reasoning and tool use capabilities.
 
-The URI for the Moonshot AI console for getting API keys is [https://platform.moonshot.cn/console/api-keys](https://platform.moonshot.cn/console/api-keys).
+The URI for the Moonshot AI console for getting API keys is [https://platform.moonshot.ai/console](https://platform.moonshot.ai/console).
 
 Moonshot AI, a rapidly emerging Chinese artificial intelligence startup, has quickly established itself as a significant player in the competitive AI landscape. Founded by Yang Zhilin, the company is dedicated to the development of "lossless long-context" capabilities and the pursuit of artificial general intelligence (AGI). Moonshot AI has received substantial attention for its innovative approach, published research papers, open weight models, and for its ability to process exceptionally long text inputs. The company's strategy focuses on creating consumer-facing applications and has demonstrated a commitment to advancing the field through both powerful proprietary models and strategic open-source releases. This dual approach aims to foster a global developer community while pushing the boundaries of what AI can achieve.
 
