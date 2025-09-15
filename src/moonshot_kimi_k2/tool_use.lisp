@@ -152,12 +152,13 @@
 
 
 #|
-;; Example calls:
-
-(print (completion "The President went to Congress"))
-(print (completion "Where were the 1992 Olympics held?"))
-(print (completion "Where is the Valley of Kings?"))
-(print (completion "Mary is 30 years old and Bob is 25. Who is older?"))
+;; Example calls:			;
+					;
+(print (completion "The President went to Congress")) ;
+(print (completion "Where were the 1992 Olympics held?")) ;
+(print (completion "Where is the Valley of Kings?")) ;
+(print (completion "Mary is 30 years old and Bob is 25. Who is older?")) ;
 (print (completion "Use function calling for: What's the weather like in New York?" '("get_weather")))
+					;
 |#
 
