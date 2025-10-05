@@ -32,16 +32,16 @@ Load the library using Quicklisp or ASDF:
 
 To generate text from a prompt:
 ```common-lisp
-(gemini:generate "gemini-1.5-flash-latest" "In one sentence, explain how AI works to a child.")
+(gemini:generate "gemini-2.5-flash" "In one sentence, explain how AI works to a child.")
 ;; => "AI is like a super smart computer brain that learns from information to answer questions and do tasks."
 ```
-You can use other models like `"gemini-2.0-flash"` as the first argument.
+You can use other models like `"gemini-2.5-pro"` as the first argument.
 
 ### Counting Tokens
 
 To count the number of tokens a prompt will consume for a specific model:
 ```common-lisp
-(gemini:count-tokens "gemini-2.9-flash" "How many tokens is this sentence?")
+(gemini:count-tokens "gemini-2.5-flash" "How many tokens is this sentence?")
 ;; => 8 (example output, actual may vary)
 ```
 
