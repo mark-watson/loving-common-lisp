@@ -15,8 +15,6 @@
 
 (ql:quickload '(:drakma :yason :alexandria :uiop :cl+ssl))
 
-(use-package :alexandria)
-
 ;; Required libraries
 (require 'asdf)
 (require 'uiop)
@@ -185,4 +183,4 @@
 (trace get-tools)
 
 ;; (run-agent "what is 1 + 12?")
-;; (run-agent "Consultant Mark Watson has written books on AI, Lisp, and the semantic web. What musical instruments does Mark play?")
+;; (run-agent "Consultant Mark Watson has written books on AI, Lisp, and the semantic web.")

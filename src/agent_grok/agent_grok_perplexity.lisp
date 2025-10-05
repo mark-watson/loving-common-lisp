@@ -17,8 +17,6 @@
 
 (ql:quickload '(:drakma :yason :alexandria :uiop :cl+ssl))
 
-(use-package :alexandria)
-
 ;; Required libraries
 (require 'asdf)
 (require 'uiop)
@@ -57,12 +55,28 @@
           do (setf (gethash key ht) v))
     ht))
 
+(defun pp-hash (ht &optional (stream *standard-output*) (indent 0))
+  "Pretty-print hash table HT to STREAM, indenting by INDENT spaces."
+  (let ((keys (loop for k being the hash-keys of ht collect k)))
+    (format stream "~&~v@{~}" indent "")     ; indent
+    (format stream "#HASH{~%")
+    (let ((next-indent (+ indent 2)))
+      (dolist (k keys)
+        (let ((v (gethash k ht)))
+          (format stream "~v@{~}" next-indent "")
+          (format stream "~S => ~S~%" k v)))
+      (format stream "~v@{~}" indent "")
+      (format stream "}") )
+  ht))
+
 (defmacro def-tool (name description parameters lisp-function)
   "Define a custom tool."
   `(setf (gethash ,name *tools*)
          (list ,description ,parameters ,lisp-function)))
 
 ;; Example tools
+
+(defvar *x* nil) ;; DEBUG
 
 ;; Web search tool using Perplexity (optional)
 (def-tool "web_search"
@@ -99,26 +113,30 @@
                                raw)))
             ;; DEBUG
             (format t "~&[web_search] Perplexity status=~a~%" status)
-            (format t "[web_search] First 120 chars: ~a~%" (subseq body-str 0 (min 120 (length body-str))))
+            (format t "[web_search] First 8192 chars: ~a~%" (subseq body-str 0 (min 8192 (length body-str))))
             ;; Handle non‑200 errors
             (unless (= status 200)
               (return
                (format nil "Web search failed (HTTP ~a): ~a" status body-str)))
             ;; Parse JSON
+	    (setf *x* (yason:parse body-str)) ;; DEBUG ONLY
             (let* ((parsed (ignore-errors (yason:parse body-str)))
                    (choices (and (hash-table-p parsed) (gethash "choices" parsed))))
+	      (format t "~%[web_search] choices=~%~A~%" choices)
               (cond
                 ((and choices (plusp (length choices)))
                  (let* ((choice (first choices))
                         (msg (and (hash-table-p choice) (gethash "message" choice)))
                         (content (and (hash-table-p msg) (gethash "content" msg))))
-                   (if (and content (stringp content))
-                       content
-                       body-str)))
-                (t
-                 ;; Fallback: just return the whole response string
-                 body-str))))))
-        (error "Perplexity API key not set for web_search.")))
+		   (format t "~%[web_search] content=~%~A~%" content)
+		   content)))))))))
+        ;;            (if (and content (stringp content))
+        ;;                content
+        ;;                body-str)))
+        ;;         (t
+        ;;          ;; Fallback: just return the whole response string
+        ;;          body-str))))))
+        ;; (error "Perplexity API error.")))
 
 ;; Example custom tool: get current date
 (def-tool "get_current_date"
@@ -251,3 +269,4 @@
 (trace get-tools)
 
 ;; (run-agent "what is 1 + 12?")
+;; (run-agent "Consultant Mark Watson has written books on AI, Lisp, and the semantic web. What musical instruments does Mark play? Return only a list of musical instruments.")
