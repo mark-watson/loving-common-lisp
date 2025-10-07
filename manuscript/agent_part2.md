@@ -1,10 +1,43 @@
 # More Agents Using X’s Grok and Perplexity APIs
 
-TBD
+One of the joys of working in Common Lisp is how naturally it lends itself to building extensible agent systems. We can represent knowledge symbolically, apply reasoning rules, and integrate procedural code, all within one coherent runtime. Over the years, I’ve experimented with many ways of connecting Lisp-based reasoning systems to external AI services, from symbolic logic engines to modern large language models (LLMs). In this chapter, we’ll take that a step further by exploring two complementary APIs that allow our Lisp agents to both reason and learn from the world in real time: X’s Grok LLM and the Perplexity Web Search API.
+
+Why Grok?
+
+Grok, the LLM developed and maintained by X (formerly Twitter), provides a conversational and reasoning-capable API similar to other large language models but with a twist: it’s designed for real-time access to context and access to current data through X’s ecosystem. While Grok is still an evolving platform, it’s particularly interesting to Lisp developers because it can be treated as a remote reasoning component — an external “mind” that our Lisp agent can consult for pattern completion, text summarization, or general problem solving.
+
+In the first example of this chapter, we’ll look at the simplest possible integration: a Lisp program that sends a prompt to the Grok API and uses a single, very basic tool — a Lisp function called get_current_date. The tool simply returns the current date and time in a human-readable format. While this might seem trivial, it serves an important architectural purpose. It demonstrates how to:
+
+- Define a Lisp-side function as an external tool the model can call.
+- Serialize and pass structured information between Lisp and Grok.
+- Maintain conversational context between model invocations.
+
+This minimal setup provides a foundation for richer tool-using agents later on. Once the pattern is clear — model prompt, tool definition, and response interpretation — we can add more tools or swap in different LLM backends without changing the surrounding Lisp logic.
+
+From Reasoning to Knowledge: Adding Perplexity Search
+
+The second example expands the system into something more dynamic. Instead of relying solely on the Grok model’s internal knowledge, we connect to the Perplexity API, which acts as an intelligent web search layer. Perplexity’s model performs real-time retrieval from the web, returning concise, cited answers. Combined with Grok, this gives our Lisp agent two distinct reasoning modalities:
+
+- Generative reasoning through Grok — language understanding, summarization, creative or speculative reasoning.
+- Retrieval reasoning through Perplexity — grounded, factual responses based on live web content.
+
+This dual setup mirrors the way human researchers work: we think abstractly, but we also look things up. By orchestrating these two APIs from Lisp, we can build an agent that decides when to “ask” Grok for interpretation versus when to query Perplexity for up-to-date information. The Lisp runtime remains the central coordinator, maintaining context and deciding when and how to merge results.
+
+A Unified Lisp Interface for Multiple Cognitive Modes
+
+In both examples, the Common Lisp code will share a similar structure. We’ll define a small framework for:
+
+- Representing API requests and responses as Lisp objects.
+- Managing authentication and HTTP requests.
+- Logging and tracing agent conversations for debugging and reuse.
+
+The goal isn’t to build a full abstraction layer for all LLM APIs, but to provide a reusable pattern for experimentation. Lisp’s macro system, combined with its symbolic data structures, makes it easy to treat prompts and API calls as first-class objects — allowing us to script agent workflows that feel like extensions of the language itself.
 
 ## Agent Using X’s Grok API
 
-TBD
+The program's architecture is centered around a few key components that manage the agent's capabilities and state. Configuration is handled by the global variables **X_GROK_API_KEY**, while the agent's extensible skills are stored in the **tools** hash table. This hash table serves as a registry, mapping tool names to their description, parameter schema, and the actual Lisp function that implements the tool's logic. The **def-tool** macro provides a clean, declarative syntax for populating this registry, abstracting away the JSON schema details required by the API and making it simple for developers to add new capabilities. A small helper function, **hash**, is also included to simplify the creation of nested hash tables that are later serialized into the JSON format expected by the Grok service.
+
+The agent's operational logic resides in the **run-agent** function, which implements a conversational loop. It begins by constructing an initial list of messages, including the user's query and an optional system prompt. In each iteration of the loop, it calls **call-grok-chat**, which sends the current conversation history and the list of available tools to the Grok API. The agent then inspects the model's response. If the model's **finish_reason** indicates it wants to call a tool, the code extracts the tool name and arguments, invokes the corresponding Lisp function via **execute-tool**, and appends the tool's output to the message history. This new history is then sent back to the model in the next loop iteration. This cycle continues until the model generates a final textual answer, at which point the loop terminates and returns the result.
 
 File **agent.lisp**:
 
@@ -197,7 +230,7 @@ File **agent.lisp**:
 ;; (run-agent "Consultant Mark Watson has written books on AI, Lisp, and the semantic web. What musical instruments does Mark play?")
 ```
 
-TBD
+This program provides a functional and surprisingly concise foundation for building intelligent agents that can take action in the world. By combining the classic strengths of Common Lisp with the modern capabilities of the Grok API, it demonstrates a powerful pattern for creating tool-augmented AI systems. The **def-tool** macro, in particular, offers a clear path for extension, allowing a developer to easily equip the agent with a wide array of custom functions, from interacting with databases and other APIs to controlling local system processes. This example serves mostly as a demonstration, but if customized for your agent requirements it can also be a robust starting point for developing more sophisticated and specialized AI applications in Lisp.
 
 Let’s run the two examples at the bottom of the last listing:
 
@@ -242,7 +275,11 @@ Here we are using the innate knowledge in X’1 Grok model.
 
 ## Agent Using X’s Grok API and Perplexity’s Search API
 
-TBD
+Here we extend the example in the last section to use a web search tool implemented with Perplexity’s web search API.
+
+The architecture of this example tool using agent is centered around the **run-agent** function, which implements the core reasoning loop. It begins by sending the user's query and a list of available tools to the Grok API. The program then inspects the API response's **finish_reason**. If Grok determines a tool is needed, the reason will be in **tool_calls**, and the response will contain the name of the tool to execute and the arguments to use. The **execute-tool** function then dispatches to the appropriate local Lisp function. The tool's output is then packaged into a new message and sent back to Grok, continuing the loop. This cycle repeats until Grok has sufficient information and returns a **finish_reason** of stop, at which point it delivers its final synthesized answer to the user.
+
+The system's extensibility is handled by the **def-tool** macro that creates a simple domain-specific language for adding new tools with specified capabilities. To define a new tool, a developer provides its name, a natural language description for the LLM to understand its purpose, a JSON schema for its parameters, and the Lisp lambda function that performs the actual work. The **web_search** tool is an example, as it acts as a bridge to another AI service, Perplexity. Instead of performing a raw web search, it effectively asks the Perplexity Sonar model to answer the query, ensuring the result returned to Grok is a concise, relevant summary. This demonstrates a powerful pattern of chaining specialized AI models together within a single agentic framework. Communication with the external APIs is managed by the Drakma library for HTTP requests and the YASON library for handling the necessary JSON serialization and parsing.
 
 This agent example is a work in progress and currently running the agent results in hundreds of lines of debug printout.
 
@@ -523,9 +560,7 @@ File ** agent_grok_perplexity.lisp**:
 ;; (run-agent "Consultant Mark Watson has written books on AI, Lisp, and the semantic web. What musical instruments does Mark play? Return only a list of musical instruments.")
 ```
 
-TBD
-
-Let’s run another example that requires a web search since Grok’s innate knowledge can’t answer the query:
+Let’s run an example that requires a web search since Grok’s innate knowledge can’t answer the query:
 
 ```
 CL-USER 1 > (load "agent_grok_perplexity.lisp")
@@ -593,3 +628,5 @@ T
 
 CL-USER 4 > 
 ```
+
+This tool using agent is a work in progress so I left debug output in place.
