@@ -7,7 +7,7 @@
 ;;;; Usage:
 ;;;;   Set *grok-api-key* to your xAI Grok API key.
 ;;;;   Define custom tools using def-tool.
-;;;;   Run (run-agent "Your query here")
+;;;;   Run (run-agent "Your query here") 
 ;;;;
 ;;;; Note: This assumes Grok API is compatible with OpenAI-style chat completions.
 

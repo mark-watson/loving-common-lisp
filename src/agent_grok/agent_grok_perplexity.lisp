@@ -21,7 +21,7 @@
 (require 'asdf)
 (require 'uiop)
 
-;; Configure YASON to handle symbol keys & values
+;; Configure YASON to handle symbol keys & values 
 (setf yason:*symbol-encoder* #'yason:encode-symbol-as-string)
 
 (defvar *grok-api-key*

@@ -38,5 +38,6 @@ prompts.md
 gemini.md
 tavily.md
 agent_llm.md
+agent_part2.md
 wolfram.md
 book_wrapup.md
