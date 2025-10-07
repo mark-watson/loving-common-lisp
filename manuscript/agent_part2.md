@@ -228,7 +228,7 @@ File **agent.lisp**:
 ;; (run-agent "Consultant Mark Watson has written books on AI, Lisp, and the semantic web. What musical instruments does Mark play?")
 ```
 
-This program provides a functional and surprisingly concise foundation for building intelligent agents that can take action in the world. By combining the classic strengths of Common Lisp with the modern capabilities of the Grok API, it demonstrates a powerful pattern for creating tool-augmented AI systems. The **def-tool** macro, in particular, offers a clear path for extension, allowing a developer to easily equip the agent with a wide array of custom functions, from interacting with databases and other APIs to controlling local system processes. This example serves mostly as a demonstration, but if customized for your agent requirements it can also be a robust starting point for developing more sophisticated and specialized AI applications in Lisp.
+This program provides a functional and concise foundation for building intelligent agents that can take action in the world. By combining the classic strengths of Common Lisp with the modern capabilities of the Grok API, it demonstrates a powerful pattern for creating tool-augmented AI systems. The **def-tool** macro, in particular, offers a clear path for extension, allowing a developer to easily equip the agent with a wide array of custom functions, from interacting with databases and other APIs to controlling local system processes. This example serves mostly as a demonstration, but if customized for your agent requirements it can also be a robust starting point for developing more sophisticated and specialized AI applications in Lisp.
 
 Let’s run the two examples at the bottom of the last listing:
 
