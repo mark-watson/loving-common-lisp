@@ -32,11 +32,6 @@
 (defvar *tools* (make-hash-table :test 'equal)
   "Hash table of tools: name -> (description parameters lisp-function)")
 
-;; Configure cl+ssl to use updated CA certificates (adjust path as needed)
-;; Example for macOS with certifi: /path/to/certifi/cacert.pem
-;; (cl+ssl:ssl-load-global-verify-locations "/path/to/cacert.pem")
-(warn "Ensure your system's CA certificates are up-to-date for SSL verification. Contact xAI support if SSL issues persist.")
-
 (defun hash (&rest pairs)
   "Helper to create hash-table from pairs. Converts symbol or keyword keys to lowercase strings so YASON sees only string keys."
   (let ((ht (make-hash-table :test 'equal)))
@@ -156,7 +151,8 @@
                (finish-reason (gethash "finish_reason" choice)))
           (push message messages)  ;; Add assistant message to history
           (cond
-            ;; Tool invocation (either explicit finish_reason or implicit via presence of tool_calls)
+            ;; Tool invocation (either explicit finish_reason or implicit
+            ;; via presence of tool_calls)
             ((or (member finish-reason '("tool_calls" "tool_call") :test #'equal)
                  (gethash "tool_calls" message))
              (let ((tool-calls (gethash "tool_calls" message)))
@@ -170,7 +166,7 @@
 
             ;; Conversation finished
             ((or (equal finish-reason "stop")
-                 ;; finish_reason NIL/"" → stop only if no tool_calls present
+                 ;; finish_reason NIL/"" --> stop only if no tool_calls present
                  (and (or (null finish-reason) (equal finish-reason ""))
                       (not (gethash "tool_calls" message))))
              (return (gethash "content" message)))

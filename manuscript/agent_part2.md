@@ -2,28 +2,28 @@
 
 One of the joys of working in Common Lisp is how naturally it lends itself to building extensible agent systems. We can represent knowledge symbolically, apply reasoning rules, and integrate procedural code, all within one coherent runtime. Over the years, I’ve experimented with many ways of connecting Lisp-based reasoning systems to external AI services, from symbolic logic engines to modern large language models (LLMs). In this chapter, we’ll take that a step further by exploring two complementary APIs that allow our Lisp agents to both reason and learn from the world in real time: X’s Grok LLM and the Perplexity Web Search API.
 
-Why Grok?
+### Why Grok?
 
-Grok, the LLM developed and maintained by X (formerly Twitter), provides a conversational and reasoning-capable API similar to other large language models but with a twist: it’s designed for real-time access to context and access to current data through X’s ecosystem. While Grok is still an evolving platform, it’s particularly interesting to Lisp developers because it can be treated as a remote reasoning component — an external “mind” that our Lisp agent can consult for pattern completion, text summarization, or general problem solving.
+Grok, the LLM developed and maintained by X (formerly Twitter), provides a conversational and reasoning-capable API similar to other large language models but with a twist: it’s designed for real-time access to context and access to current data through X’s ecosystem. While Grok is still an evolving platform, it’s particularly interesting to Lisp developers because it can be treated as a remote reasoning component, an external “mind” that our Lisp agent can consult for pattern completion, text summarization, or general problem solving.
 
-In the first example of this chapter, we’ll look at the simplest possible integration: a Lisp program that sends a prompt to the Grok API and uses a single, very basic tool — a Lisp function called get_current_date. The tool simply returns the current date and time in a human-readable format. While this might seem trivial, it serves an important architectural purpose. It demonstrates how to:
+In the first example of this chapter, we’ll look at the simplest possible integration: a Lisp program that sends a prompt to the Grok API and uses a single, very basic tool: a Lisp function called **get_current_date**. The tool simply returns the current date and time in a human-readable format. While this might seem trivial, it serves an example to demonstrate how to:
 
 - Define a Lisp-side function as an external tool the model can call.
 - Serialize and pass structured information between Lisp and Grok.
 - Maintain conversational context between model invocations.
 
-This minimal setup provides a foundation for richer tool-using agents later on. Once the pattern is clear — model prompt, tool definition, and response interpretation — we can add more tools or swap in different LLM backends without changing the surrounding Lisp logic.
+This minimal setup provides a foundation for richer tool-using agents later on. Once the pattern is clear, a model prompt, tool definition, and response interpretation, then we can add more tools or swap in different LLM backends without changing the surrounding Lisp logic.
 
-From Reasoning to Knowledge: Adding Perplexity Search
+### From Reasoning to Knowledge: Adding Perplexity Search
 
 The second example expands the system into something more dynamic. Instead of relying solely on the Grok model’s internal knowledge, we connect to the Perplexity API, which acts as an intelligent web search layer. Perplexity’s model performs real-time retrieval from the web, returning concise, cited answers. Combined with Grok, this gives our Lisp agent two distinct reasoning modalities:
 
-- Generative reasoning through Grok — language understanding, summarization, creative or speculative reasoning.
-- Retrieval reasoning through Perplexity — grounded, factual responses based on live web content.
+- Generative reasoning through Grok: language understanding, summarization, creative or speculative reasoning.
+- Retrieval reasoning through Perplexity: grounded, factual responses based on live web content.
 
 This dual setup mirrors the way human researchers work: we think abstractly, but we also look things up. By orchestrating these two APIs from Lisp, we can build an agent that decides when to “ask” Grok for interpretation versus when to query Perplexity for up-to-date information. The Lisp runtime remains the central coordinator, maintaining context and deciding when and how to merge results.
 
-A Unified Lisp Interface for Multiple Cognitive Modes
+### A Unified Lisp Interface for Multiple Cognitive Modes
 
 In both examples, the Common Lisp code will share a similar structure. We’ll define a small framework for:
 
@@ -31,11 +31,11 @@ In both examples, the Common Lisp code will share a similar structure. We’ll d
 - Managing authentication and HTTP requests.
 - Logging and tracing agent conversations for debugging and reuse.
 
-The goal isn’t to build a full abstraction layer for all LLM APIs, but to provide a reusable pattern for experimentation. Lisp’s macro system, combined with its symbolic data structures, makes it easy to treat prompts and API calls as first-class objects — allowing us to script agent workflows that feel like extensions of the language itself.
+The goal isn’t to build a full tool calling agent abstraction layer for all LLM APIs, but to provide a reusable pattern for experimentation. Lisp’s macro system, combined with its symbolic data structures, makes it easy to treat prompts and API calls as first-class objects, allowing us to script agent workflows that feel like extensions of the language itself.
 
 ## Agent Using X’s Grok API
 
-The program's architecture is centered around a few key components that manage the agent's capabilities and state. Configuration is handled by the global variables **X_GROK_API_KEY**, while the agent's extensible skills are stored in the **tools** hash table. This hash table serves as a registry, mapping tool names to their description, parameter schema, and the actual Lisp function that implements the tool's logic. The **def-tool** macro provides a clean, declarative syntax for populating this registry, abstracting away the JSON schema details required by the API and making it simple for developers to add new capabilities. A small helper function, **hash**, is also included to simplify the creation of nested hash tables that are later serialized into the JSON format expected by the Grok service.
+The program's architecture is centered around a few key components that manage the agent's capabilities and state. Configuration for the Grok API is handled by the global variable **X_GROK_API_KEY**, while the agent's extensible skills are stored in the **tools** hash table. This hash table serves as a registry, mapping tool names to their description, parameter schema, and the actual Lisp function that implements the tool's logic. The **def-tool** macro provides a clean, declarative syntax for populating this registry, abstracting away the JSON schema details required by the API and making it simple for developers to add new capabilities. A small helper function, **hash**, is also included to simplify the creation of nested hash tables that are later serialized into the JSON format expected by the Grok service.
 
 The agent's operational logic resides in the **run-agent** function, which implements a conversational loop. It begins by constructing an initial list of messages, including the user's query and an optional system prompt. In each iteration of the loop, it calls **call-grok-chat**, which sends the current conversation history and the list of available tools to the Grok API. The agent then inspects the model's response. If the model's **finish_reason** indicates it wants to call a tool, the code extracts the tool name and arguments, invokes the corresponding Lisp function via **execute-tool**, and appends the tool's output to the message history. This new history is then sent back to the model in the next loop iteration. This cycle continues until the model generates a final textual answer, at which point the loop terminates and returns the result.
 
@@ -75,11 +75,6 @@ File **agent.lisp**:
 
 (defvar *tools* (make-hash-table :test 'equal)
   "Hash table of tools: name -> (description parameters lisp-function)")
-
-;; Configure cl+ssl to use updated CA certificates (adjust path as needed)
-;; Example for macOS with certifi: /path/to/certifi/cacert.pem
-;; (cl+ssl:ssl-load-global-verify-locations "/path/to/cacert.pem")
-(warn "Ensure your system's CA certificates are up-to-date for SSL verification. Contact xAI support if SSL issues persist.")
 
 (defun hash (&rest pairs)
   "Helper to create hash-table from pairs. Converts symbol or keyword keys to lowercase strings so YASON sees only string keys."
@@ -200,7 +195,8 @@ File **agent.lisp**:
                (finish-reason (gethash "finish_reason" choice)))
           (push message messages)  ;; Add assistant message to history
           (cond
-            ;; Tool invocation (either explicit finish_reason or implicit via presence of tool_calls)
+            ;; Tool invocation (either explicit finish_reason or implicit
+            ;; via presence of tool_calls)
             ((or (member finish-reason '("tool_calls" "tool_call") :test #'equal)
                  (gethash "tool_calls" message))
              (let ((tool-calls (gethash "tool_calls" message)))
@@ -208,13 +204,15 @@ File **agent.lisp**:
                  (let* ((result (execute-tool tool-call))
                         (tool-response (hash "role" "tool"
                                              "tool_call_id" (gethash "id" tool-call)
-                                             "name" (gethash "name" (gethash "function" tool-call))
+                                             "name" (gethash "name" (gethash
+                                                      "function" 
+                                                      tool-call))
                                              "content" result)))
                    (push tool-response messages)))))
 
             ;; Conversation finished
             ((or (equal finish-reason "stop")
-                 ;; finish_reason NIL/"" → stop only if no tool_calls present
+                 ;; finish_reason NIL/"" --> stop only if no tool_calls present
                  (and (or (null finish-reason) (equal finish-reason ""))
                       (not (gethash "tool_calls" message))))
              (return (gethash "content" message)))
@@ -271,7 +269,7 @@ T
 CL-USER 4 >
 ```
 
-Here we are using the innate knowledge in X’1 Grok model.
+Here we are using the innate knowledge in X’s Grok model.
 
 ## Agent Using X’s Grok API and Perplexity’s Search API
 
@@ -283,7 +281,7 @@ The system's extensibility is handled by the **def-tool** macro that creates a s
 
 This agent example is a work in progress and currently running the agent results in hundreds of lines of debug printout.
 
-File ** agent_grok_perplexity.lisp**:
+File **agent_grok_perplexity.lisp**:
 
 ```lisp
 ;;;; agent-system.lisp
@@ -327,11 +325,6 @@ File ** agent_grok_perplexity.lisp**:
 
 (defvar *tools* (make-hash-table :test 'equal)
   "Hash table of tools: name -> (description parameters lisp-function)")
-
-;; Configure cl+ssl to use updated CA certificates (adjust path as needed)
-;; Example for macOS with certifi: /path/to/certifi/cacert.pem
-;; (cl+ssl:ssl-load-global-verify-locations "/path/to/cacert.pem")
-(warn "Ensure your system's CA certificates are up-to-date for SSL verification. Contact xAI support if SSL issues persist.")
 
 (defun hash (&rest pairs)
   "Helper to create hash-table from pairs. Converts symbol or keyword keys to lowercase strings so YASON sees only string keys."
@@ -402,7 +395,7 @@ File ** agent_grok_perplexity.lisp**:
             ;; DEBUG
             (format t "~&[web_search] Perplexity status=~a~%" status)
             (format t "[web_search] First 8192 chars: ~a~%" (subseq body-str 0 (min 8192 (length body-str))))
-            ;; Handle non‑200 errors
+            ;; Handle non-200 errors
             (unless (= status 200)
               (return
                (format nil "Web search failed (HTTP ~a): ~a" status body-str)))
@@ -418,13 +411,6 @@ File ** agent_grok_perplexity.lisp**:
                         (content (and (hash-table-p msg) (gethash "content" msg))))
 		   (format t "~%[web_search] content=~%~A~%" content)
 		   content)))))))))
-        ;;            (if (and content (stringp content))
-        ;;                content
-        ;;                body-str)))
-        ;;         (t
-        ;;          ;; Fallback: just return the whole response string
-        ;;          body-str))))))
-        ;; (error "Perplexity API error.")))
 
 ;; Example custom tool: get current date
 (def-tool "get_current_date"
@@ -481,11 +467,12 @@ File ** agent_grok_perplexity.lisp**:
          ;; Force ARGS-JSON to a true simple-string
          (args-json
            (cond
-             ;; Character vector → simple-string
+             ;; Character vector --> simple-string
              ((and (vectorp args-raw) (every #'characterp args-raw))
               (coerce args-raw 'simple-string))
 
-             ;; Already a string → coerce to simple-string to drop any adjustable/ fill‑pointer baggage
+             ;; Already a string --> coerce to simple-string to drop any
+             ;; adjustable/fill-pointer baggage
              ((stringp args-raw)
               (coerce args-raw 'simple-string))
 
@@ -530,7 +517,8 @@ File ** agent_grok_perplexity.lisp**:
                (finish-reason (gethash "finish_reason" choice)))
           (push message messages)  ;; Add assistant message to history
           (cond
-            ;; Tool invocation (either explicit finish_reason or implicit via presence of tool_calls)
+            ;; Tool invocation (either explicit finish_reason or implicit
+            ;; via presence of tool_calls)
             ((or (member finish-reason '("tool_calls" "tool_call") :test #'equal)
                  (gethash "tool_calls" message))
              (let ((tool-calls (gethash "tool_calls" message)))
@@ -538,7 +526,9 @@ File ** agent_grok_perplexity.lisp**:
                  (let* ((result (execute-tool tool-call))
                         (tool-response (hash "role" "tool"
                                              "tool_call_id" (gethash "id" tool-call)
-                                             "name" (gethash "name" (gethash "function" tool-call))
+                                             "name" (gethash "name" (gethash
+                                                      "function" 
+                                                      tool-call))
                                              "content" result)))
                    (push tool-response messages)))))
 
