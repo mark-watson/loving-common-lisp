@@ -1,0 +1,9 @@
+[project]
+name = "autocontext"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "sentence-transformers>=5.1.1",
+]
