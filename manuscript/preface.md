@@ -65,7 +65,7 @@ Let's start with configuring SBCL and Quicklisp:
 Edit your file **~/.sbclrc** to add the following line of code:
 
 ```lisp
-(pushnew #p"/Users/mark/GITHUB/loving-common-lisp/"
+(pushnew #p"/Users/mark/GITHUB/loving-common-lisp/src"
          ql:*local-project-directories*
          :test #'equal)
 ```
