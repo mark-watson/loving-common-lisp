@@ -70,9 +70,10 @@
                          (sentence-group (subseq sentences i end)))
                     (string-trim '(#\Space #\Newline) (format nil "~{~a~^ ~}" sentence-group))))))
 
+
 (defun load-and-chunk-documents (directory-path)
   "Loads .txt files and splits them into chunks of a few sentences."
-  (format t "&load-and-chunk-documents: directory-path=~A~%" directory-path)
+  ;;(format t "&load-and-chunk-documents: directory-path=~A~%" directory-path)
   (let* ((chunks (remove-if (lambda (s) (string= s ""))
                             (loop for file in (list-txt-files-in-directory directory-path)
                                   nconcing (chunk-text (uiop:read-file-string file))))))
@@ -116,7 +117,7 @@
          (bm25-docs (bm25:get-top-n (bm25-index ac) query-tokens num-results))
          (bm25-results (mapcar (lambda (tokens) (format nil "~{~a~^ ~}" tokens)) bm25-docs)))
     (format t "~&BM25 found ~d keyword-based results." (length bm25-results))
-    (format t "~%~%bm25-results:~%~A~%~%" bm25-results)
+    ;;(format t "~%~%bm25-results:~%~A~%~%" bm25-results)
 
      ;; 2. Dense Search (Vector Similarity)
      (let* ((query-embedding-matrix (generate-embeddings (list query)))
@@ -130,7 +131,7 @@
             (top-indices (mapcar #'cdr (subseq sorted-sim 0 (min num-results (length sorted-sim)))))
             (vector-results (mapcar (lambda (i) (nth i (chunks ac))) top-indices)))
        (format t "~&Vector search found ~d semantic-based results." (length vector-results))
-       (format t "~%~%vector-results:~%~A~%~%" vector-results)
+       ;;(format t "~%~%vector-results:~%~A~%~%" vector-results)
 
        ;; 3. Combine and deduplicate
        (let* ((combined (append bm25-results vector-results))
@@ -138,8 +139,8 @@
          (format t "~&Combined and deduplicated, we have ~d context chunks." (length unique-results))
 
          ;; 4. Format the final prompt
-         (format nil "Based on the following context, please answer the question.~2%--- CONTEXT ---~%~{~a~%~%---~%~%~}--- END CONTEXT ---~2%Question: ~a~%Answer:"
-                 unique-results query)))))
+         (format nil "Based on the following context, please answer the question:~%~A~2%--- CONTEXT ---~%~{~a~^~%---~%~}--- END CONTEXT ---~2%Question: ~a~%Answer:"
+                 query unique-results query)))))
 
 ;;; Example Usage
 
