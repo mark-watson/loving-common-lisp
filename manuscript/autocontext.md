@@ -107,7 +107,7 @@ The core of the relevance calculation is found in the **score-doc** method, that
 We will take advantage of Python’s library support for deep learning and use a Python command line tool **generate_embeddings.py** to calculate vector embeddings for text input using a deep learning transformer model and returns the results in JSON format. Here is an example of calling this script manually:
 
 ```bash
-echo "some text" | python3 generate_embeddings.py
+echo "some text" | uv run generate_embeddings.py
 ```
 
 This script will be called from our Common Lisp code.
