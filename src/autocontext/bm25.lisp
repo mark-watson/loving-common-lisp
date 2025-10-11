@@ -56,7 +56,7 @@
   "Calculates the IDF for a given term."
   (let* ((doc-freq (gethash term (doc-freqs index) 0))
          (corpus-size (corpus-size index)))
-    (log (/ (- corpus-size doc-freq 0.5) (+ doc-freq 0.5)) 10)))
+    (log (/ (+ (- corpus-size doc-freq) 0.5) (+ doc-freq 0.5)) 10)))
 
 (defmethod score-doc ((index bm25-index) query-tokens doc-index)
   "Calculates the BM25 score for a single document."
@@ -70,5 +70,5 @@
       (let* ((term-freq (count term doc :test #'string=))
              (idf (inverse-document-frequency index term)))
         (incf score (* idf (/ (* term-freq (+ k1 1))
-                               (+ term-freq (* k1 (- 1 b (* b (/ doc-length avg-dl))))))))))
+                               (+ term-freq (* k1 (+ (- 1 b) (* b (/ doc-length avg-dl))))))))))
     score))
