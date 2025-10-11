@@ -37,6 +37,7 @@ doc_qa.md
 prompts.md
 gemini.md
 tavily.md
+autocontext.md
 agent_llm.md
 agent_part2.md
 wolfram.md
