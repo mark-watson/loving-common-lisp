@@ -1,6 +1,6 @@
 # Using the OpenAI and Mistral APIs
 
-I have been working as an artificial intelligence practitioner since 1982 and the capability of the beta OpenAI APIs is the most impressive thing that I have seen in my career so far. These APIs use the GPT-3 and GPT-4 models.
+I have been working as an artificial intelligence practitioner since 1982 and the capability of the beta OpenAI APIs is the most impressive thing that I have seen in my career so far. These APIs use the GPT-5 models (a October 2025 update).
 
 Note: in January 2024 I expanded this chapter to also include the hosted Mistral LLM APIs. I recently added material for locally hosted open weight LLM models like mistral-7b and lama2 to my [Racket Scheme AI](https://leanpub.com/racket-ai/read) (link to read online) book. I plan on adding that material to this book soon.
 
