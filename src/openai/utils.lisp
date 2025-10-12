@@ -1,18 +1,18 @@
 (in-package #:openai)
 
 
-(defun summarize (some-text max-tokens)
+(defun summarize (some-text)
   (let ((curl-command
          (concatenate 'string
                       "curl " *model-host*
                       " -H \"Content-Type: application/json\""
                       " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" "
                       " -d '{\"messages\": [{\"role\": \"user\", \"content\": \"Summarize: " some-text 
-                      "\"}], \"model\": \"gpt-4\", \"max_tokens\": " (write-to-string max-tokens) "}'")))
+                      "\"}], \"model\": \"gpt-4\"}'")))
     (openai-helper curl-command)))
 
-(defun answer-question (question-text max-tokens)
-  (completions question-text max-tokens))
+(defun answer-question (question)
+  (completions (concatenate 'string "Concisely answer the question: " question)))
 
 (defun embeddings (text)
   "Get embeddings using text-embedding-3-small model (1536 dimensions)"

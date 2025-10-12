@@ -1,6 +1,6 @@
 (in-package #:docs-qa)
 
-;; Copyright 2023 Mark Watson. All Rights Reserved. Apache 2 License
+;; Copyright 2023-2025 Mark Watson. All Rights Reserved. Apache 2 License
 
 (ql:quickload :sqlite)
 (use-package :sqlite)
@@ -24,7 +24,9 @@
         string))))
 
 (defun join-strings (separator list)
-  (reduce (lambda (a b) (concatenate 'string a separator b)) list))
+  (if list
+    (reduce (lambda (a b) (concatenate 'string a separator b)) list)
+    " "))
 
 (defun truncate-string (string length)
   (subseq string 0 (min length (length string))))
@@ -114,7 +116,7 @@
     (format t "~%semantic-search: ret=~A~%" ret)
     (let* ((context (join-strings " . " (reverse ret)))
            (query-with-context (join-strings " " (list context custom-context "Question:" query))))
-      (openai:answer-question query-with-context 40))))
+      (openai:answer-question query-with-context))))
 
 (defun QA (query &optional (quiet nil))
   (let ((answer (semantic-match query "")))

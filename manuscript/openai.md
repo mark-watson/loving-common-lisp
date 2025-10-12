@@ -138,14 +138,14 @@ In the file **openai.lisp** we define a helper function **openai-helper** that t
 {lang="lisp",linenos=on}
 ~~~~~~~~
 (defun openai-helper (curl-command)
-  (terpri)
-  (princ curl-command)
-  (terpri)
+  ;;(terpri)
+  ;;(princ curl-command)
+  ;;(terpri)
   (let ((response (uiop:run-program curl-command
                                     :output :string
                                     :error-output :string)))
     (terpri)
-    (princ response)
+    ;;(princ response)
     (terpri)
     (with-input-from-string (s response)
       (let* ((json-as-list (json:decode-json s))
@@ -154,20 +154,24 @@ In the file **openai.lisp** we define a helper function **openai-helper** that t
              (message (cdr (assoc :message first-choice)))
              (function-call (cdr (assoc :function--call message)))
              (content (cdr (assoc :content message))))
+	;;(format t "~% json-as-list: ~A~%" json-as-list)
+	;;(format t "~% choices: ~A~%" choices)
+	;;(format t "~% first-choice: ~A~%" first-choice)
+	;;(format t "~% message: ~A~%" message)
+	;;(format t "~% function-call: ~A~%" function-call)
+	;;(format t "~% content: ~A~%" content)
         (if function-call
             (handle-function-call function-call)
             (or content "No response content"))))))
 ~~~~~~~~
 
-I convert JSON data to a Lisp list in line 8 and in line 10 I reach into the nested results list for the generated text string. You might want to add a debug printout statement to see the value of **json-as-list**.
+I convert JSON data to a Lisp list in line 12 and in line 14 I reach into the nested results list for the generated text string. You might want to add a debug printout statement to see the value of **json-as-list**.
 
-The three example functions all use this **openai-helper** function. The first example function **completions** sets the parameters to complete a text fragment. You have probably seen examples of the OpenAI GPT-4 model writing stories, given a starting sentence. We are using the same model and functionality here:
+The three example functions all use this **openai-helper** function. The first example function **completions** sets the parameters to complete a text fragment. You have probably seen examples of the OpenAI GPT models writing stories, given a starting sentence. We are using the functionality here:
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
-(defun completions (starter-text max-tokens &optional functions)
-  (unless (numberp max-tokens)
-    (error "max-tokens must be a number, got: ~a" max-tokens))
+(defun completions (starter-text &optional functions)
   (let* ((function-defs (when functions
                           (mapcar (lambda (f)
                                     (let ((func (gethash f *available-functions*)))
@@ -178,8 +182,7 @@ The three example functions all use this **openai-helper** function. The first e
          (message (list (cons :role "user")
                         (cons :content starter-text)))
          (base-data `((model . ,*model*)
-                      (messages . ,(list message))
-                      (max_tokens . ,max-tokens)))
+                      (messages . ,(list message))))
          (data (if function-defs
                    (append base-data (list (cons :functions function-defs)))
                    base-data))
@@ -191,7 +194,7 @@ The three example functions all use this **openai-helper** function. The first e
                   *model-host*
                   (uiop:getenv "OPENAI_KEY")
                   escaped-json)))
-    (openai-helper curl-command)))
+    (openai-helper curl-command))
 ~~~~~~~~
 
 Note that the OpenAI API models are stochastic. When generating output words (or tokens), the model assigns probabilities to possible words to generate and samples a word using these probabilities. As a simple example, suppose given prompt text "it fell and", then the model could only generate three words, with probabilities for each word based on this prompt text:
@@ -204,13 +207,13 @@ The model would *emit* the word **the** 90% of the time, the word **that** 10% o
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
-cl-user> (openai:completions "The President went to Congress" 22)
+cl-user> (openai:completions "The President went to Congress")
 " yesterday and proposed a single tax rate for all corporate taxpayers, which he envisions will be lower than what our"
 
-cl-user> (openai:completions "The President went to Congress" 22)
+cl-user> (openai:completions "The President went to Congress")
 " last month, asking for authorization of a program, which had previously been approved by the Foreign Intelligence Surveillance court as"
 
-cl-user> (openai:completions "The President went to Congress" 100)
+cl-user> (openai:completions "The President went to Congress")
 " worried about what the massive unpopular bill would do to his low approvals. Democrats lost almost every situation to discuss any legislation about this controversial subject. Even more so, President Obama failed and had to watch himself be attacked by his own party for not leading.
 
 There were also two celebrated (in DC) pieces of student loan legislation, which aimed to make college cheaper. Harkin teamed up with Congressman Roddenbery on one, Student Loan Affordability Act, and Senator Jack Reed (D"
@@ -224,56 +227,29 @@ The function **summarize** is very similar to the function **completions** excep
 - top_p - also affects randomness. All examples I have seen use a value of 1.
 - frequency_penalty - penalize using the same words repeatedly (I usually set this to zero, but you should experiment with different values)
 
-When summarizing text, try varying the number of generated tokens to get shorter or longer summaries; in the following two examples we ask for 15 output tokens and 50 output tokens:
+An example:
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
  (defvar s "Jupiter is the fifth planet from the Sun and the largest in the Solar System. It is a gas giant with a mass one-thousandth that of the Sun, but two-and-a-half times that of all the other planets in the Solar System combined. Jupiter is one of the brightest objects visible to the naked eye in the night sky, and has been known to ancient civilizations since before recorded history. It is named after the Roman god Jupiter.[19] When viewed from Earth, Jupiter can be bright enough for its reflected light to cast visible shadows,[20] and is on average the third-brightest natural object in the night sky after the Moon and Venus.")
 
-cl-user> (openai:summarize s 15)
-"Jupiter is a gas giant because it is primarily composed of hydrogen"
-
-cl-user> (openai:summarize s 50)
+cl-user> (openai:summarize s)
 "Jupiter is a gas giant because it is predominantly composed of hydrogen and helium; it has a solid core that is composed of heavier elements. It is the largest of the four giant planets in the Solar System and the largest in the Solar System"
 ~~~~~~~~
-
-The function **answer-question** is very similar to the function **summarize** except the JSON data passed to the API has one additional parameter that let the API know that we want a question answered:
-
-- stop - The OpenAI API examples use the value: **[\n]**, which is what I use here.
-
-Additionally, the model returns a series of answers with the string "nQ:" acting as a delimiter between the answers. 
-
-{lang="lisp",linenos=on}
-~~~~~~~~
-     (let ((index (search "nQ:" answer)))
-       (if index
-         (string-trim " " (subseq answer 0 index))
-         (string-trim " " answer)))
-~~~~~~~~
-
-I strongly urge you to add a debug printout to the question answering code to print the full answer before we check for the delimiter string. For some questions, the OpenAI APIs generate a series of answers that increase in generality. In the example code we just take the most specific answer.
 
 Let's look at a few question answering examples and we will discuss possible problems and workarounds:
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
-cl-user> (openai:answer-question "Where is the Valley of Kings?" 60)
+cl-user> (openai:answer-question "Where is the Valley of Kings?")
 "It's in Egypt."
 ~~~~~~~~
 
-Let's explore some issues with the question answering model. In the last example there is one good answer and the model works well. The next example **"What rivers are in Arizona?"** shows some problems because there are many rivers in Arizona. Sometimes the model misses a few rivers and often river names are repeated in the output. You also don't necessarily get the same answer for the same input arguments. Here are three examples requesting 70, 90, and 160 output tokens:
+Let's explore some issues with the question answering model. In the last example there is one good answer and the model works well. The next example **"What rivers are in Arizona?"** shows some problems because there are many rivers in Arizona. Sometimes the model misses a few rivers and often river names are repeated in the output. You also don't necessarily get the same answer for the same input arguments. Here is an example:
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
-cl-user> (openai:answer-question "What rivers are in Arizona?" 70)
-"The Colorado River, the Gila River, the Little Colorado River, the Salt River, the Verde River, the San Pedro River, the Santa Cruz River, the San Juan River, the Agua Fria River, the Hassayampa River, the Bill Williams River, the Little Colorado River, the San Francisco River, the San Pedro River"
-
-cl-user> (openai:answer-question "What rivers are in Arizona?" 90)
-"The Colorado River, the Gila River, the Little Colorado River, the Salt River, the Verde River, the San Pedro River, the Santa Cruz River, the San Juan River, the Agua Fria River, the Hassayampa River, the Bill Williams River, the Little Colorado River, the San Francisco River, the San Pedro River, the Santa Cruz River, the San Juan River, the Agua Fria River, the Hass"
-cl-user> (openai:answer-question "What rivers are in Arizona?" 160)
-"Colorado, Gila, Salt, Verde, and the Little Colorado."
-
-cl-user> (openai:answer-question "What rivers are in Arizona?" 160)
+cl-user> (openai:answer-question "What rivers are in Arizona?")
 "The Colorado River, the Gila River, the Little Colorado River, the Salt River, the Verde River, the San Pedro River, the Santa Cruz River, the San Juan River, the Agua Fria River, the Hassayampa River, the Bill Williams River, the Little Colorado River, the San Francisco River, the San Pedro River, the Santa Cruz River, the San Juan River, the Agua Fria River, the Hassayampa River, the Bill Williams River, the Little Colorado River, the San Francisco River, the San Pedro River, the Santa Cruz River, the San Juan River, the Agua Fria River, the Hassayampa River, the Bill Williams River, the Little Colorado River, the San Francisco River, the San Pedro River, the Santa Cruz"
 ~~~~~~~~
 
@@ -282,38 +258,28 @@ My library does not handle embedded single quote characters in questions so the 
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
-cl-user> (openai:answer-question "Who is Bill Clintons wife?" 120)
+cl-user> (openai:answer-question "Who is Bill Clintons wife?")
 "Hillary Clinton."
 cl-user> 
 ~~~~~~~~
 
-The function **embeddings** is used to convert a chunk of text to an embedding. What are embeddings? Embeddings take complex content like natural language words and sentences or software code and converts text into a special sequence of numbers. This process lets machines model the underlying concepts and relationships within the content, just like understanding the main ideas in a book even if you don't know every word. Embeddings are often used in RAG (Retrieval Augmented Generation) applications to work around the problem of the limits of the amount of context text a LLM can process. For example, if an LLM can only accept 8192 tokens a RAG application might “chunk” input text into 2K segments. Using embeddings with a vector store database, we could find the 3 chunks of original text that most closely match a query. The text for these three matched chunks could be supplied to a LLM as context text for answering a question of query.
+The function **embeddings** (defined in **utils.lisp**) is used to convert a chunk of text to an embedding. What are embeddings? Embeddings take complex content like natural language words and sentences or software code and converts text into a special sequence of numbers. This process lets machines model the underlying concepts and relationships within the content, just like understanding the main ideas in a book even if you don't know every word. Embeddings are often used in RAG (Retrieval Augmented Generation) applications to work around the problem of the limits of the amount of context text a LLM can process. For example, if an LLM can only accept 8192 tokens a RAG application might “chunk” input text into 2K segments. Using embeddings with a vector store database, we could find the 3 chunks of original text that most closely match a query. The text for these three matched chunks could be supplied to a LLM as context text for answering a question of query.
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
-;; text-embedding-3-large embeddings are 3072 floats
-;; text-embedding-3-small embeddings are 1536 floats
-
 (defun embeddings (text)
+  "Get embeddings using text-embedding-3-small model (1536 dimensions)"
   (let* ((curl-command
-          (concatenate
-           'string
-           "curl  https://api.openai.com/v1/embeddings "
-           " -H \"Content-Type: application/json\""
-           " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" " 
-           " -d '{\"input\": \"" text "\", \"model\": \"text-embedding-3-small\"}'")))
-;;           " -d '{\"input\": \"" text "\", \"model\": \"text-embedding-3-large\"}'")))
-    (let ((response
-           (uiop:run-program
-            curl-command
-            :output :string)))
-      ;;(princ curl-command)
-      ;;(pprint response)
-      (with-input-from-string
-          (s response)
-        (let* ((json-as-list (json:decode-json s)))
-          ;;(pprint json-as-list)
-          (cdr (nth 2 (cadr (cadr json-as-list)))))))))
+          (concatenate 'string
+                       "curl https://api.openai.com/v1/embeddings "
+                       " -H \"Content-Type: application/json\""
+                       " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" "
+                       " -d '{\"input\": \"" text 
+                       "\", \"model\": \"text-embedding-3-small\"}'"))
+         (response (uiop:run-program curl-command :output :string)))
+    (with-input-from-string (s response)
+      (let ((json-as-list (json:decode-json s)))
+        (cdr (nth 2 (cadr (cadr json-as-list))))))))
 ~~~~~~~~
 
 The following output is edited for brevity:
@@ -326,7 +292,7 @@ CL-USER 6 > (length (openai::embeddings "John bought a new car"))
 1536
 ~~~~~~~~
 
-In addition to reading the beta OpenAI API documentation you might want to read general material on the use of OpenAI's GPT-3 model. Since the APIs we are using are beta they may change. I will update this chapter and the source code on GitHub if the APIs change.
+In addition to reading the beta OpenAI API documentation you might want to read general material on the use of OpenAI's GPT-5 models. Since the APIs we are using are beta they may change. I will update this chapter and the source code on GitHub if the APIs change.
 
 ## History of Mistral AI
 

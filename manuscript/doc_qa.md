@@ -1,4 +1,6 @@
-# Using a Local Document Embeddings Vector Database With OpenAI GPT3 APIs for Semantically Querying Your Own Data
+# Using a Local Document Embeddings Vector Database With OpenAI GPT-5 APIs for Semantically Querying Your Own Data
+
+*Note: Updated 10/11/2025 to use gpt-5-mini and new OpenAI library.*
 
 This project is inspired by the Python LangChain and LlamaIndex projects, with just the parts I need for my projects written from scratch in Common Lisp. I wrote a Python book "LangChain and LlamaIndex Projects Lab Book: Hooking Large Language Models Up to the Real World Using GPT-3, ChatGPT, and Hugging Face Models in Applications" in March 2023: [https://leanpub.com/langchain](https://leanpub.com/langchain) that you might also be interested in.
 
@@ -8,7 +10,7 @@ The GitHub repository for this example can be found here: [https://github.com/ma
 
 In this example we will use the SqLite database to store the text from documents as well as OpenAI embedding vectors for the text. Each embedding vector is 1536 floating point numbers. Two documents are semantically similar if the dot product of their embedding vectors is large.
 
-For long documents, we extract the text and create multiple chunks of text. Each chunk is stored as a row in a SqLite database table. This is an easy way to implement a vector datastore. There are many open source and commercial vector datastores if you reach performance limits with the simple techniques we use here.
+For long documents, we extract the text and create multiple chunks of text. Each chunk is stored as a row in a SqLite database table. This is an easy way to implement a vector datastore. There are many open source and commercial vector data stores if you reach performance limits with the simple techniques we use here.
 
 For each text chunk we call an OpenAI API to get an embedding vector. Later when we want to have a GPT enabled conversation or just semantically query our local documents, we take the user's query and call an OpenAI API to get an embedding vector for the query text. We then compute the vector dot product between the query embedding vector and each chunk embedding vector. We save the text of the chunks that are semantically similar to the query embedding vector and use this text as "context text" that we pass to an OpenAI Large Language Model (LLM) API along with the user's original query text.
 
@@ -135,7 +137,7 @@ The next listing showing of parts of **docs-qa.lisp** interfaces with the OpenAI
 
 ```lisp
 (defun qa (question)
-  (let ((answer (openai:answer-question question 60)))
+  (let ((answer (openai:answer-question question)))
     (format t "~&~a~%" answer)))
 
 (defun semantic-match (query custom-context &optional (cutoff 0.7))
@@ -154,7 +156,7 @@ The next listing showing of parts of **docs-qa.lisp** interfaces with the OpenAI
                " "
                (list context custom-context
                  "Question:" query))))
-      (openai:answer-question query-with-context 40))))
+      (openai:answer-question query-with-context))))
 
 (defun QA (query &optional (quiet nil))
   (let ((answer (semantic-match query "")))
@@ -273,9 +275,9 @@ Response: The boiling temperature of a liquid is the temperature at which the va
 Enter chat (STOP or empty line to stop) >> 
 ```
 
-## Wrap Up for Using Local Embeddings Vector Database to Enhance the Use of GPT3 APIs With Local Documents
+## Wrap Up for Using Local Embeddings Vector Database to Enhance the Use of GPT5 APIs With Local Documents
 
-As I write this in early April 2023, I have been working almost exclusively with OpenAI APIs for the last year and using the Python libraries for LangChain and LlamaIndex for the last three months.
+As I wrote the first version of this chapter in early April 2023, I have been working almost exclusively with OpenAI APIs for the last year and using the Python libraries for LangChain and LlamaIndex for the last three months.
 
 I prefer using Common Lisp over Python when I can, so I am implementing a tiny subset of the LangChain and LlamaIndex libraries in Common Lisp for my own use. By writing about my Common Lisp experiments here I hope that I get pull requests for [https://github.com/mark-watson/docs-qa](https://github.com/mark-watson/docs-qa) from readers who are interested in helping to extend the Common Lisp library.
 
