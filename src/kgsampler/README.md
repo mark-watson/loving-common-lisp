@@ -4,12 +4,8 @@ Given a list of entity URIs from DBPedia, generate N-Triple data like the sample
 
 From my book URI: https://leanpub.com/lovinglisp
 
-There is a **Makefile** in the repo https://github.com/mark-watson/loving-common-lisp that can be copied
-to your **~/quicklisp/local-projects** directory. Then in **~/quicklisp/local-projects** run:
+Repo https://github.com/mark-watson/loving-common-lisp
 
-    make fetch
-
-to get all of the library examples from my book.
 
 
 Run sample program:
