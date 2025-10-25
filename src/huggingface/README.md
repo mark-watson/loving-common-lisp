@@ -2,12 +2,15 @@
 
 From my book URI: https://leanpub.com/lovinglisp
 
-There is a **Makefile** in the repo https://github.com/mark-watson/loving-common-lisp that can be copied
-to your **~/quicklisp/local-projects** directory. Then in **~/quicklisp/local-projects** run:
+Edit your file ~/.sbclrc to add the following line of code:
 
-    make fetch
+(pushnew #p"/Users/mark/GITHUB/loving-common-lisp/"
+         ql:*local-project-directories*
+         :test #'equal)
 
-to get all of the library examples from my book.
+NOTE: Please change the path #p"/Users/mark/GITHUB/loving-common-lisp/" to the path where you cloned this repository using:
+
+    git clone https://github.com/mark-watson/loving-common-lisp.git
 
 
 ## setting your Hugging Face API key
@@ -26,3 +29,9 @@ cl-user> (huggingface:answer-question "Where were the 1992 Olympics held?" "The 
 ```
 
 See my book for examples and example output.
+
+## API documentation
+
+- `huggingface:summarize` takes an input string and a maximum token count, calls Hugging Face's `facebook/bart-large-cnn` model, and returns the summary text extracted from the JSON response. The function requires the `HF_API_TOKEN` environment variable to be set so the generated `curl` request can authenticate.
+- `huggingface:answer-question` accepts a question and supporting context, invokes the `deepset/roberta-base-squad2` question-answering model, and returns the highest-confidence answer string from the API response.
+- `huggingface::huggingface-helper` is an internal utility that executes an arbitrary `curl` command via `uiop:run-program` and decodes the JSON response into a Common Lisp data structure; both public entry points rely on this helper.
