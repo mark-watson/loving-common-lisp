@@ -3,6 +3,7 @@
 (in-package #:kgsampler)
 
 (defun dbpedia-as-nt (query)
+  "Query DBpedia and return results in N-Triples format."
   (print query)
   (uiop:run-program 
    (list
@@ -13,6 +14,7 @@
    :output :string))
 
 (defun construct-from-dbpedia (entity-uri-list &key (output-stream t))
+  "For a list of DBpedia entity URIs, fetch all triples for each and write to a stream."
   (dolist (entity-uri entity-uri-list)
     (format output-stream "~%~%# ENTITY NAME: ~A~%~%" entity-uri)
     (format
@@ -79,6 +81,7 @@
       (concatenate 'string "<" s ">")))
 
 (defun find-relations (entity-uri-list &key (output-stream t))
+  "Discover relationships between pairs of entities in a list of URIs and write them to a stream."
   (format output-stream "~%~%# DISCOVERED RELATIONSHIPS~%~%")
   (dolist (entity-uri1 entity-uri-list)
     (dolist (entity-uri2 entity-uri-list)
@@ -98,11 +101,13 @@
 		      entity-uri2)))))))
 
 (defun sample (entity-uri-list output-filepath)
+  "Generate a sample knowledge graph from a list of DBpedia entities and save to a file."
   (with-open-file (ostream  (pathname output-filepath) :direction :output :if-exists :supersede)
     (construct-from-dbpedia entity-uri-list :output-stream ostream)
     (find-relations entity-uri-list :output-stream ostream)))
 
 (defun create-sample-KG ()
+  "Create a sample knowledge graph with a predefined set of entities."
   (kgsampler:sample
    '("<http://dbpedia.org/resource/Bill_Gates>" "<http://dbpedia.org/resource/Steve_Jobs>"
      "<http://dbpedia.org/resource/Microsoft>" "<http://dbpedia.org/resource/Melinda_Gates>"
