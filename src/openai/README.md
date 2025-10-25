@@ -2,14 +2,20 @@
 
 From my book URI: https://leanpub.com/lovinglisp
 
-There is a **Makefile** in the repo https://github.com/mark-watson/loving-common-lisp that can be copied
-to your **~/quicklisp/local-projects** directory. Then in **~/quicklisp/local-projects** run:
+Edit your file ~/.sbclrc to add the following line of code:
 
-    make fetch
+(pushnew #p"/Users/mark/GITHUB/loving-common-lisp/"
+         ql:*local-project-directories*
+         :test #'equal)
+
+NOTE: Please change the path #p"/Users/mark/GITHUB/loving-common-lisp/" to the path where you cloned this repository using:
+
+    git clone https://github.com/mark-watson/loving-common-lisp.git
+
 
 to get all of the library examples from my book.
 
-2024/01/09: updated to latest OpenAI APIs, now using gpt-4
+2025/07/25: updated to latest OpenAI APIs, now using gpt-5-mini
 
 
 ## setting your OpenAI API key
@@ -19,6 +25,17 @@ to get all of the library examples from my book.
 ## Setting you Groq API key
 
  Define the  "GROQ_API_KEY" environment variable with the value of your OpenAI API key
+
+## Function reference
+
+- `openai:completions (starter-text &optional functions)` Issues a chat completion request to the OpenAI REST API using the model in `openai:*model*`. When `functions` is supplied, pass a list of function names (strings) that were registered via `openai::register-function`; the helper will include their JSON schemas so tool-calling responses can be routed to your Common Lisp functions.
+- `openai::register-function (name description parameters fn)` Adds metadata for a tool-callable function to the internal registry. The `parameters` argument should match the JSON schema you expect the model to emit, and `fn` is the callable that will be invoked if the model picks this tool.
+- `openai:summarize (some-text)` Wraps `openai-helper` with a prompt asking GPT-4 to summarize the provided text. Returns the model response as a string.
+- `openai:answer-question (question)` Prefixes the prompt with “Concisely answer the question:” and calls `openai:completions`, making it a quick helper for short factual queries.
+- `openai:embeddings (text)` Calls the embeddings endpoint with `text-embedding-3-small`, returning the numeric vector decoded from the JSON response.
+- `openai:dot-product (list1 list2)` Iteratively multiplies and sums two numeric lists, useful for cosine-similarity style workflows on embedding vectors. The internal `openai::dot-product-recursive` offers the same calculation implemented with recursion.
+- `openai:groq-completion (content)` Sends a chat completion request to the Groq-compatible endpoint using the Groq API key from `GROQ_API_KEY`, returning the parsed JSON structure.
+- `openai:groq-extract-content (resp)` Convenience accessor that drills into the Groq response and extracts the assistant message body.
 
 
 ## OpenAI examples:
@@ -327,4 +344,3 @@ Known topics: sports, health, chemistry, economy, politics
 
 Topic: sports
 ```
-
