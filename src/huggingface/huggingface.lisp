@@ -18,7 +18,7 @@
   (let* ((curl-command
           (concatenate
            'string
-           "curl https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+           "curl https://router.huggingface.co/hf-inference/models/facebook/bart-large-cnn"
            " -H \"Content-Type: application/json\""
            " -H \"Authorization: Bearer " (uiop:getenv "HF_API_TOKEN") "\" " 
            " -d '{\"inputs\": \"" some-text "\", \"max_length\": "
