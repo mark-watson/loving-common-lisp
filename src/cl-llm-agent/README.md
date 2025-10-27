@@ -11,6 +11,11 @@ maintain context, and interface with different LLM back-ends.
 - Testing suite with FiveAM
 
 ## Installation
+
+Define Gemini model to use:
+
+    export GEMINI_MODEL=gemini-2.5-pro
+
 1. Clone the repository.
 2. In your Lisp REPL:
    ```lisp

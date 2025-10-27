@@ -11,17 +11,17 @@
   (make-instance 'context))
 
 (defgeneric context-set (ctx key value)
-  "Set KEY to VALUE in CTX.")
+  (:documentation "Set KEY to VALUE in CTX."))
 (defmethod context-set ((ctx context) key value)
   (setf (gethash key (context-data ctx)) value))
 
 (defgeneric context-get (ctx key)
-  "Retrieve the value for KEY from CTX.")
+  (:documentation "Retrieve the value for KEY from CTX."))
 (defmethod context-get ((ctx context) key)
   (gethash key (context-data ctx)))
 
 (defgeneric context-remove (ctx key)
-  "Remove KEY from CTX.")
+  (:documentation "Remove KEY from CTX."))
 (defmethod context-remove ((ctx context) key)
   (remhash key (context-data ctx)))
 

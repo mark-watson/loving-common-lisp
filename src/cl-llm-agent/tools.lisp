@@ -49,7 +49,7 @@
                      (or (char= (char n 0) #\#)
                          (char= (char (aref n (1- (length n))) #\~)))
                    (uiop:directory-files path))
-        (error "Directory not found: ~A" path))))
+        (error "Directory not found: ~A" path)))))
 
 (register-tool "tool-read-directory"
                :description "Reads the contents of a directory."
@@ -81,7 +81,7 @@
 (defun helper-summarize (text)
   "Summarize TEXT using Gemini LLM backend."
   (let ((prompt (format nil "Summarize the following text:~%~A~%" text)))
-    (gemini:generate prompt)))
+    (gemini:generate (default-gemini-model-id) prompt)))
 
 (register-tool "tool-summarize"
                :description "Summarize text using Gemini."

@@ -14,13 +14,13 @@
       (error "Failed to parse JSON: ~A" json-string)))
 
 (defun strip-markdown-json (text)
-  "Remove markdown fences around JSON in TEXT."  
-  (let ((trimmed (string-trim '(#\Space #\Newline #\Tab #\Return) text)))
-    (if (and (search "```json" trimmed)
-             (search "```" trimmed :start2 (1+ (search "```json" trimmed))))
-        (subseq trimmed
-                (search "```json" trimmed)
-                (search "```" trimmed :start2 (1+ (search "```json" trimmed))))
+  "Remove markdown fences around JSON in TEXT."
+  (let* ((trimmed (string-trim '(#\Space #\Newline #\Tab #\Return) text))
+         (start (search "```json" trimmed)))
+    (if (and start (search "```" trimmed :start2 (1+ start)))
+        (let ((json-start (+ start 7))
+              (json-end (search "```" trimmed :start2 (1+ start))))
+          (subseq trimmed json-start json-end))
         trimmed)))
 
 ;; Macro to define new agent classes
@@ -49,7 +49,7 @@
 
 ;; LLM back-end generic
 (defgeneric agent-llm-call (agent prompt)
-  "Perform an LLM call with AGENT given PROMPT.")
+  (:documentation "Perform an LLM call with AGENT given PROMPT."))
 
 (defun make-agent (agent-type &rest initargs &key context)
   "Construct an agent of AGENT-TYPE with INITARGS and optional CONTEXT."
@@ -67,25 +67,36 @@
     (display-context (agent-context agent) "Context start:"))
   (let* ((tools-info (with-output-to-string (out)
                        (format out "tools:~%")
-                       (dolist (t (list-tools))
+                       (dolist (tool (list-tools))
                          (format out "  ~A: ~A~%"
-                                 (getf t :name)
-                                 (getf t :description)))))
+                                 (getf tool :name)
+                                 (getf tool :description)))))
          (prompt (format nil "~A~%User Input: ~A~%~%If using tools, respond in JSON." tools-info user-input))
          (raw (agent-llm-call agent prompt))
          (clean (strip-markdown-json raw))
-         (parsed (safe-parse-json clean))
-         (actions (if (getf parsed :actions)
-                      (getf parsed :actions)
-                      (list parsed))))
-    (when *agent-verbose*
-      (format t "[agent-converse] raw: ~A~%clean: ~A~%actions: ~A~%" raw clean actions))
-    (loop with prev = nil
-          for action across actions
-          for name   = (getf action :action)
-          for params = (getf action :parameters)
-          do (setf prev (apply #'execute-tool name
-                               (map 'list (lambda (p)
-                                            (if (string-equal p "PREV_RESULT") prev p))
-                                    params)))
-          finally (return (or prev (format nil "~A" raw)))))
+         (parsed (handler-case
+                     (safe-parse-json clean)
+                   (error (err)
+                     (when *agent-verbose*
+                       (format t "[agent-converse] JSON parse error: ~A~%" err))
+                     nil))))
+    (unless (and parsed
+                 (or (getf parsed :actions)
+                     (getf parsed :action)))
+      (when *agent-verbose*
+        (format t "[agent-converse] returning raw response: ~A~%" clean))
+      (return-from agent-converse clean))
+    (let ((actions (if (getf parsed :actions)
+                       (getf parsed :actions)
+                       (list parsed))))
+      (when *agent-verbose*
+        (format t "[agent-converse] raw: ~A~%clean: ~A~%actions: ~A~%" raw clean actions))
+      (loop with prev = nil
+            for action across actions
+            for name   = (getf action :action)
+            for params = (getf action :parameters)
+            do (setf prev (apply #'execute-tool name
+                                 (map 'list (lambda (p)
+                                              (if (string-equal p "PREV_RESULT") prev p))
+                                      params)))
+            finally (return (or prev (format nil "~A" raw)))))))
