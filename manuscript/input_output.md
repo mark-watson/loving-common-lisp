@@ -56,7 +56,7 @@ In this last example, we passed the file name as a string to the macro **with-op
           (make-pathname :directory "testdata"
                          :name "test.dat")))
     (with-open-file
-     (input-stream a-path-name :direction :input)
+     (input-stream a-path-name :direction :input)))
 ~~~~~~~~
 
 Here, we are specifying that we want to use the file **test.dat** in the subdirectory **testdata**. Note: I almost never use pathnames. Instead, I specify files using a string and the character / as a directory delimiter. I find this to be portable for the Macintosh, Windows, and Linux operating systems using all Common Lisp implementations.
