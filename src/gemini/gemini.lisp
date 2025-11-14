@@ -45,7 +45,7 @@
 
 (defun count-tokens (model-id prompt)
   "Counts the number of tokens for a given prompt and model.
-MODEL-ID: The ID of the model to use (e.g., \"gemini-1.5-pro-latest\", \"gemini-1.5-flash-latest\").
+MODEL-ID: The ID of the model to use (e.g., \"gemini-2.5-pro-latest\", \"gemini-2.5-flash-latest\").
 PROMPT: The text prompt to count tokens for.
 Returns the total token count as an integer."
   (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":countTokens"))
@@ -77,7 +77,7 @@ Returns the total token count as an integer."
 
 (defun run-tests ()
   "Runs tests for generate and count-tokens functions."
-  (let* ((model-id "gemini-2.0-flash")
+  (let* ((model-id "gemini-2.5-flash")
          (prompt "In one sentence, explain how AI works to a child.")
          (generated-text (generate model-id prompt))
          (token-count (count-tokens model-id prompt)))
@@ -96,7 +96,7 @@ Returns the total token count as an integer."
      (let ((user-prompt (read-line)))
        (princ user-prompt)
        (finish-output)
-       (let ((gemini-response (gemini:generate "gemini-2.0-flash"
+       (let ((gemini-response (gemini:generate "gemini-2.5-flash"
                 (concatenate 'string *chat-history* "\nUser: " user-prompt))))
          (princ gemini-response)
          (finish-output)
