@@ -143,3 +143,63 @@ Returns the total token count as an integer."
       text)))
 
 ;; (gemini::generate-with-search "gemini-2.5-flash" "Who won the euro 2024?")
+
+(defun generate-with-search-and-citations (model-id prompt)
+  (let* ((payload (make-hash-table :test 'equal)))
+    ;; Payload construction same as previous example):
+    (setf (gethash "contents" payload)
+          (list (let ((contents (make-hash-table :test 'equal)))
+                  (setf (gethash "parts" contents)
+                        (list (let ((part (make-hash-table :test 'equal)))
+                                (setf (gethash "text" part) prompt)
+                                part)))
+                  contents)))
+    (setf (gethash "tools" payload)
+          (list (let ((tool (make-hash-table :test 'equal)))
+                  (setf (gethash "google_search" tool)
+                        (make-hash-table :test 'equal))
+                  tool)))
+    
+    (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":generateContent"))
+           (data (cl-json:encode-json-to-string payload))
+           (response (dex:post api-url
+                               :headers `(("Content-Type" . "application/json")
+                                          ("x-goog-api-key" . ,*google-api-key*))
+                               :content data))
+           (response-string (if (stringp response)
+                                response
+                                (flex:octets-to-string response :external-format :utf-8)))
+           (decoded-response (cl-json:decode-json-from-string response-string))
+           (candidates-pair (assoc :CANDIDATES decoded-response))
+           (candidates (cdr candidates-pair))
+           (candidate (first candidates))
+           ;; 1. Extract Content Text
+           (content-pair (assoc :CONTENT candidate))
+           (content (cdr content-pair))
+           (parts-pair (assoc :PARTS content))
+           (parts (cdr parts-pair))
+           (first-part (first parts))
+           (text-pair (assoc :TEXT first-part))
+           (text (cdr text-pair))
+           ;; 2. Extract Grounding Metadata
+           (metadata-pair (assoc :GROUNDING-METADATA candidate))
+           (metadata (cdr metadata-pair))
+           (chunks-pair (assoc :GROUNDING-CHUNKS metadata))
+           (chunks (cdr chunks-pair))
+           ;; 3. Loop through chunks to find Web sources
+           (citations (loop for chunk in chunks
+                            for web-data-pair = (assoc :WEB chunk)
+                            for web-data = (cdr web-data-pair)
+                            when web-data
+                            collect (cons (cdr (assoc :TITLE web-data))
+                                          (cdr (assoc :URI web-data))))))
+      ;; Return both text and citations
+      (values text citations))))
+
+#|
+(multiple-value-bind (response sources)
+    (gemini::generate-with-search-and-citations "gemini-2.0-flash" "Who won the Super Bowl in 2024?")
+  (format t "Answer: ~a~%~%Sources:~%" response)
+  (loop for (title . url) in sources
+        do (format t "- ~a: ~a~%" title url)))
+|#
