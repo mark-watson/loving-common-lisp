@@ -25,10 +25,11 @@
         output
         (error "Curl command failed: ~A~%Error: ~A" curl-command error-output))))
 
-(defun generate (prompt)
+(defun generate (prompt &optional (model-id *model*))
   "Generates text from a given prompt using the specified model.
-   Uses *model* defined at the top of this file.
+   Uses *model* defined at the top of this file as default.
    PROMPT: The text prompt to generate content from.
+   MODEL-ID: Optional. The ID of the model to use.
    Returns the generated text as a string."
   (let* ((payload (make-hash-table :test 'equal)))
     (setf (gethash "contents" payload)
@@ -38,7 +39,7 @@
                                 (setf (gethash "text" part) prompt)
                                 part)))
                   contents)))
-    (let* ((api-url (concatenate 'string *gemini-api-base-url* *model* ":generateContent"))
+    (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":generateContent"))
            (data (cl-json:encode-json-to-string payload))
            (escaped-json (escape-json data))
            (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
@@ -60,12 +61,13 @@
 ;; (gemini:generate "In one sentence, explain how AI works to a child.")
 ;; (gemini:generate "Write a short, four-line poem about coding in Python.")
 
-(defun count-tokens (prompt)
+(defun count-tokens (prompt &optional (model-id *model*))
   "Counts the number of tokens for a given prompt and model.
-   Uses *model* defined at top of this file.
+   Uses *model* defined at top of this file as default.
    PROMPT: The text prompt to count tokens for.
+   MODEL-ID: Optional. The ID of the model to use.
    Returns the total token count as an integer."
-  (let* ((api-url (concatenate 'string *gemini-api-base-url* *model* ":countTokens"))
+  (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":countTokens"))
          (payload (make-hash-table :test 'equal)))
     ;; Construct payload similar to generate function
     (setf (gethash "contents" payload)
@@ -119,7 +121,7 @@
 
 ;; (gemini::chat)
 
-(defun generate-with-search (prompt)
+(defun generate-with-search (prompt &optional (model-id *model*))
   (let* ((payload (make-hash-table :test 'equal)))
     (setf (gethash "contents" payload)
           (list (let ((contents (make-hash-table :test 'equal)))
@@ -133,7 +135,7 @@
                   (setf (gethash "google_search" tool)
                         (make-hash-table :test 'equal))
                   tool)))
-    (let* ((api-url (concatenate 'string *gemini-api-base-url* *model* ":generateContent"))
+    (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":generateContent"))
            (data (cl-json:encode-json-to-string payload))
            (escaped-json (escape-json data))
            (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
@@ -154,7 +156,7 @@
 
 ;; (gemini:generate-with-search "Consultant Mark Watson has written Common Lisp, semantic web, Clojure, Java, and AI books. What musical instruments does he play?")
 
-(defun generate-with-search-and-citations (prompt)
+(defun generate-with-search-and-citations (prompt &optional (model-id *model*))
   (let* ((payload (make-hash-table :test 'equal)))
     ;; Payload construction same as previous example):
     (setf (gethash "contents" payload)
@@ -170,7 +172,7 @@
                         (make-hash-table :test 'equal))
                   tool)))
     
-    (let* ((api-url (concatenate 'string *gemini-api-base-url* *model* ":generateContent"))
+    (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":generateContent"))
            (data (cl-json:encode-json-to-string payload))
            (escaped-json (escape-json data))
            (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
