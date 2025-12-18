@@ -207,7 +207,7 @@
 
 #|
 (multiple-value-bind (response sources)
-    (gemini::generate-with-search-and-citations "Who won the Super Bowl in 2024?")
+    (gemini:generate-with-search-and-citations "Who won the Super Bowl in 2024?")
   (format t "Answer: ~a~%~%Sources:~%" response)
   (loop for (title . url) in sources
         do (format t "- ~a: ~a~%" title url)))

@@ -13,9 +13,10 @@ We need the function **post** in the external library **dexador**:
 
 (defpackage #:gemini
   (:use #:cl)
-  (:import-from #:dexador
-                #:post)  ; Only import the symbols we need
-  (:export #:generate))
+
+  (:export #:generate #:count-tokens #:send-chat-message
+           #:generate-streaming #:generate-with-search
+           #:generate-with-search-and-citations))
 ```
 
 ### gemini.asd
@@ -27,7 +28,7 @@ We need the function **post** in the external library **dexador**:
   :description "Library for using the perplexity search+LLM APIs"
   :author "Mark Watson"
   :license "Apache 2"
-  :depends-on (#:uiop #:cl-json #:dexador)
+  :depends-on (#:uiop #:cl-json #:alexandria)
   :components ((:file "package")
                (:file "gemini")))
 ```
@@ -46,10 +47,31 @@ Note: later we will look at the last part of the file **gemini.lisp** for code t
   *gemini-api-base-url*
   "https://generativelanguage.googleapis.com/v1beta/models/")
 
-(defun generate (model-id prompt)
+(defvar *model* "gemini-3-flash-preview") ;; model used for all use cases in this file.
+
+(defun escape-json (json-string)
+  (with-output-to-string (s)
+    (loop for char across json-string
+          do (case char
+               (#\" (write-string "\\\"" s))
+               (#\\ (write-string "\\\\" s))
+               (t (write-char char s))))))
+
+(defun run-curl-command (curl-command)
+  (multiple-value-bind (output error-output exit-code)
+      (uiop:run-program curl-command
+                        :output :string
+                        :error-output :string
+                        :ignore-error-status t)
+    (if (zerop exit-code)
+        output
+        (error "Curl command failed: ~A~%Error: ~A" curl-command error-output))))
+
+(defun generate (prompt &optional (model-id *model*))
   "Generates text from a given prompt using the specified model.
-   MODEL-ID: The ID of the model to use.
+   Uses *model* defined at the top of this file as default.
    PROMPT: The text prompt to generate content from.
+   MODEL-ID: Optional. The ID of the model to use.
    Returns the generated text as a string."
   (let* ((payload (make-hash-table :test 'equal)))
     (setf (gethash "contents" payload)
@@ -61,13 +83,10 @@ Note: later we will look at the last part of the file **gemini.lisp** for code t
                   contents)))
     (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":generateContent"))
            (data (cl-json:encode-json-to-string payload))
-           (response (dex:post api-url
-                               :headers `(("Content-Type" . "application/json")
-                                          ("x-goog-api-key" . ,*google-api-key*))
-                               :content data))
-           (response-string (if (stringp response)
-                                response
-                                (flex:octets-to-string response :external-format :utf-8)))
+           (escaped-json (escape-json data))
+           (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
+                             api-url *google-api-key* escaped-json))
+           (response-string (run-curl-command curl-cmd))
            (decoded-response (cl-json:decode-json-from-string response-string))
            (candidates-pair (assoc :CANDIDATES decoded-response))
            (candidates (cdr candidates-pair))
@@ -81,14 +100,15 @@ Note: later we will look at the last part of the file **gemini.lisp** for code t
            (text (cdr text-pair)))
        text)))
   
-;; (gemini:generate "gemini-2.0-flash" "In one sentence, explain how AI works to a child.")
-;; (gemini:generate "gemini-2.5-flash-preview-05-20" "Write a short, four-line poem about coding in Python.")
+;; (gemini:generate "In one sentence, explain how AI works to a child.")
+;; (gemini:generate "Write a short, four-line poem about coding in Python.")
 
-(defun count-tokens (model-id prompt)
+(defun count-tokens (prompt &optional (model-id *model*))
   "Counts the number of tokens for a given prompt and model.
-MODEL-ID: The ID of the model to use (e.g., \"gemini-1.5-pro-latest\", \"gemini-1.5-flash-latest\").
-PROMPT: The text prompt to count tokens for.
-Returns the total token count as an integer."
+   Uses *model* defined at top of this file as default.
+   PROMPT: The text prompt to count tokens for.
+   MODEL-ID: Optional. The ID of the model to use.
+   Returns the total token count as an integer."
   (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":countTokens"))
          (payload (make-hash-table :test 'equal)))
     ;; Construct payload similar to generate function
@@ -100,13 +120,10 @@ Returns the total token count as an integer."
                                 part)))
                   contents)))
     (let* ((data (cl-json:encode-json-to-string payload))
-           (response (dex:post api-url
-                               :headers `(("Content-Type" . "application/json")
-                                          ("x-goog-api-key" . ,*google-api-key*))
-                               :content data))
-           (response-string (if (stringp response)
-                                response
-                                (flex:octets-to-string response :external-format :utf-8)))
+           (escaped-json (escape-json data))
+           (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
+                             api-url *google-api-key* escaped-json))
+           (response-string (run-curl-command curl-cmd))
            (decoded-response (cl-json:decode-json-from-string response-string))
            ;; cl-json by default uses :UPCASE for keys, so :TOTAL-TOKENS should be correct
            (total-tokens-pair (assoc :TOTAL-TOKENS decoded-response)))
@@ -114,14 +131,13 @@ Returns the total token count as an integer."
           (cdr total-tokens-pair)
           (error "Could not retrieve token count from API response: ~S" decoded-response)))))
 
-;; (gemini:count-tokens "gemini-2.0-flash" "In one sentence, explain how AI works to a child.")
+;; (gemini:count-tokens "In one sentence, explain how AI works to a child.")
 
 (defun run-tests ()
   "Runs tests for generate and count-tokens functions."
-  (let* ((model-id "gemini-2.0-flash")
-         (prompt "In one sentence, explain how AI works to a child.")
-         (generated-text (generate model-id prompt))
-         (token-count (count-tokens model-id prompt)))
+  (let* ((prompt "In one sentence, explain how AI works to a child.")
+         (generated-text (generate prompt))
+         (token-count (count-tokens prompt)))
     (format t "Generated Text: ~A~%Token Count: ~A~%" generated-text token-count)))
 
 ;; Running the test
@@ -137,7 +153,7 @@ Returns the total token count as an integer."
      (let ((user-prompt (read-line)))
        (princ user-prompt)
        (finish-output)
-       (let ((gemini-response (gemini:generate "gemini-2.0-flash"
+       (let ((gemini-response (gemini:generate
                 (concatenate 'string *chat-history* "\nUser: " user-prompt))))
          (princ gemini-response)
          (finish-output)
@@ -151,10 +167,10 @@ Returns the total token count as an integer."
 ## Example Use
 
 ```text
-CL-USER 4 > (gemini:generate "gemini-2.5-flash" "In one sentence, explain how AI works to a child.")
+CL-USER 4 > (gemini:generate "In one sentence, explain how AI works to a child.")
 "AI is like teaching a computer with lots and lots of examples, so it can learn to figure things out and act smart all by itself."
 
-CL-USER 5 > (gemini:count-tokens "gemini-2.5-flash" "How many tokens is this sentence?")
+CL-USER 5 > (gemini:count-tokens "How many tokens is this sentence?")
 7
 ```
 
@@ -163,7 +179,7 @@ CL-USER 5 > (gemini:count-tokens "gemini-2.5-flash" "How many tokens is this sen
 Google’s “Grounding with Google Search” is a powerful feature that connects the Gemini model to real-time web information, allowing it to answer queries about current events and reducing the likelihood of "hallucinations" by anchoring responses in verifiable external data. The following Common Lisp program utilizes this feature by defining a function, generate-with-search, which builds a JSON payload that specifically includes a tools configuration. By inserting an empty Google Search object into this configuration, the code explicitly instructs the API to perform a web search—such as looking up the winner of a recent tournament like Euro 2024—and synthesize those findings into the final response, which is then parsed and returned as a string. The following code snippet is near the bottom of the file **gemini.lisp**:
 
 ```lisp
-(defun generate-with-search (model-id prompt)
+(defun generate-with-search (prompt &optional (model-id *model*))
   (let* ((payload (make-hash-table :test 'equal)))
     (setf (gethash "contents" payload)
           (list (let ((contents (make-hash-table :test 'equal)))
@@ -179,13 +195,10 @@ Google’s “Grounding with Google Search” is a powerful feature that connect
                   tool)))
     (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":generateContent"))
            (data (cl-json:encode-json-to-string payload))
-           (response (dex:post api-url
-                               :headers `(("Content-Type" . "application/json")
-                                          ("x-goog-api-key" . ,*google-api-key*))
-                               :content data))
-           (response-string (if (stringp response)
-                                response
-                                (flex:octets-to-string response :external-format :utf-8)))
+           (escaped-json (escape-json data))
+           (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
+                             api-url *google-api-key* escaped-json))
+           (response-string (run-curl-command curl-cmd))
            (decoded-response (cl-json:decode-json-from-string response-string))
            (candidates-pair (assoc :CANDIDATES decoded-response))
            (candidates (cdr candidates-pair))
@@ -199,7 +212,7 @@ Google’s “Grounding with Google Search” is a powerful feature that connect
            (text (cdr text-pair)))
       text)))
 
-;; (gemini::generate-with-search "gemini-2.5-flash" "Who won the euro 2024?")
+;; (gemini:generate-with-search "Consultant Mark Watson has written Common Lisp, semantic web, Clojure, Java, and AI books. What musical instruments does he play?")
 ```
 
 The core mechanism of this implementation relies on the payload hash table construction, specifically where the tools key is populated. Unlike a standard generation request, this payload includes a list containing a Google Search object; the presence of this specific key acts as a switch, granting the model permission to query Google's search index before formulating its answer. This is particularly critical for the example query regarding "Euro 2024," as the model's static training data would likely cut off before the event occurred, making the search tool indispensable for factual accuracy.
@@ -217,9 +230,45 @@ To load "gemini":
     gemini
 ; Loading "gemini"
 nil
-* (gemini::generate-with-search "gemini-2.5-flash" "Who won the euro 2024?")
-"Spain won the UEFA Euro 2024 tournament, defeating England 2-1 in the final held in Berlin. This victory marked Spain's record-breaking fourth European Championship title. They achieved this feat by winning all seven of their matches throughout the tournament."
-* 
+* (gemini:generate-with-search "What movies are playing in Flagstaff Arizona today at the Harkens Theater?")
+"Today, **Thursday, December 18, 2025**, the following movies are playing at the **Harkins Flagstaff 16** theater. 
+
+Please note that many major releases, such as *Avatar: Fire and Ash*, are currently running early \"preview\" screenings ahead of their official opening tomorrow.
+
+### **Movies & Showtimes**
+
+*   **Avatar: Fire and Ash** (PG-13)
+    *   **Ciné XL:** 2:00 PM, 6:15 PM, 10:30 PM
+    *   **3D HFR:** 2:30 PM, 5:00 PM, 6:45 PM, 9:15 PM
+    *   **Digital:** 3:00 PM, 4:00 PM, 7:15 PM, 8:15 PM, 9:30 PM
+*   **Five Nights at Freddy's 2** (PG-13)
+    *   11:30 AM, 12:30 PM, 2:05 PM, 4:50 PM, 7:35 PM, 10:20 PM
+*   **Zootopia 2** (PG)
+    *   1:45 PM, 5:10 PM, 7:25 PM, 8:10 PM
+*   **David** (PG)
+    *   12:45 PM, 3:30 PM, 6:15 PM, 9:00 PM
+*   **Ella McCay** (PG-13)
+    *   10:20 AM, 1:05 PM, 3:50 PM, 6:35 PM
+*   **Eternity** (PG-13)
+    *   10:45 AM, 1:35 PM, 4:20 PM, 7:05 PM
+*   **Hamnet** (PG-13)
+    *   12:20 PM, 3:25 PM, 6:30 PM
+*   **The Housemaid** (R)
+    *   2:00 PM, 5:00 PM, 8:00 PM, 10:15 PM
+*   **Wicked: For Good**
+    *   *Check theater for exact late-afternoon and evening showtimes.*
+
+### **Special Holiday Events**
+*   **How the Grinch Stole Christmas (25th Anniversary):** Screening as part of the Harkins Holiday Series.
+*   **Harkins Holiday Series:** Various seasonal classics are playing through December 22.
+
+---
+**Theater Information:**
+*   **Address:** 4751 East Marketplace Dr, Flagstaff, AZ 86004
+*   **Phone:** (928) 233-3005
+
+*Showtimes are subject to change. It is recommended to verify specific times on the official Harkins website or app before heading to the theater.*"
+*  
 ```
 
 ## Using Google’s “Grounding Search” With Citations
@@ -229,7 +278,7 @@ This example is also near the bottom of the file **gemini.lisp** and adds the di
 Here is the added code:
 
 ```lisp
-defun generate-with-search-and-citations (model-id prompt)
+(defun generate-with-search-and-citations (prompt &optional (model-id *model*))
   (let* ((payload (make-hash-table :test 'equal)))
     ;; Payload construction same as previous example):
     (setf (gethash "contents" payload)
@@ -247,13 +296,10 @@ defun generate-with-search-and-citations (model-id prompt)
     
     (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":generateContent"))
            (data (cl-json:encode-json-to-string payload))
-           (response (dex:post api-url
-                               :headers `(("Content-Type" . "application/json")
-                                          ("x-goog-api-key" . ,*google-api-key*))
-                               :content data))
-           (response-string (if (stringp response)
-                                response
-                                (flex:octets-to-string response :external-format :utf-8)))
+           (escaped-json (escape-json data))
+           (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
+                             api-url *google-api-key* escaped-json))
+           (response-string (run-curl-command curl-cmd))
            (decoded-response (cl-json:decode-json-from-string response-string))
            (candidates-pair (assoc :CANDIDATES decoded-response))
            (candidates (cdr candidates-pair))
