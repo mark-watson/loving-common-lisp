@@ -155,6 +155,8 @@
       text)))
 
 ;; (gemini:generate-with-search "Consultant Mark Watson has written Common Lisp, semantic web, Clojure, Java, and AI books. What musical instruments does he play?")
+;; (gemini:generate-with-search "What sci-fi movies are playing at Harkins 16 in Flagstaff today?")
+
 
 (defun generate-with-search-and-citations (prompt &optional (model-id *model*))
   (let* ((payload (make-hash-table :test 'equal)))
