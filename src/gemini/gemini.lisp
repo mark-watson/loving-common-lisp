@@ -156,6 +156,7 @@
 
 ;; (gemini:generate-with-search "Consultant Mark Watson has written Common Lisp, semantic web, Clojure, Java, and AI books. What musical instruments does he play?")
 ;; (gemini:generate-with-search "What sci-fi movies are playing at Harkins 16 in Flagstaff today?")
+;; (gemini:generate-with-search "What sci-fi movies are playing at Harkins 16 in Flagstaff today? Return data only as JSON with keys bein g movie titles and show times as a list of strings.")
 
 
 (defun generate-with-search-and-citations (prompt &optional (model-id *model*))
