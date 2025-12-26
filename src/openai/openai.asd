@@ -7,6 +7,5 @@
   :depends-on (#:uiop #:cl-json #:drakma)
   :components ((:file "package")
                (:file "openai")
-               (:file "utils")
-	             (:file "groq"))) 
+               (:file "utils")))
 
