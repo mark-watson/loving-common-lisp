@@ -2,4 +2,6 @@
 
 (defpackage #:ollama
   (:use #:cl #:uiop #:cl-json)
-  (:export #:completions #:summarize #:answer-question #:embeddings #:dot-product))
+  (:export #:completions #:completions-with-tools #:summarize
+           #:answer-question #:embeddings #:dot-product
+           *model-name* *tool-model-name* *model-host*))
