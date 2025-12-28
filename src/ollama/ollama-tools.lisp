@@ -10,23 +10,43 @@
 (defstruct ollama-function
   name
   description
-  parameters)
+  parameters
+  handler)  ;; Common Lisp function to handle the call
 
-(defun register-tool-function (name description parameters)
-  "Register a function that can be called by the LLM via tool calling."
+(defun register-tool-function (name description parameters handler)
+  "Register a function that can be called by the LLM via tool calling.
+   HANDLER is a Common Lisp function that takes a plist of arguments."
   (setf (gethash name *available-functions*)
         (make-ollama-function
          :name name
          :description description
-         :parameters parameters)))
+         :parameters parameters
+         :handler handler)))
+
+(defun infer-function-name-from-args (args)
+  "Infer the function name based on argument keys (workaround for models that return empty name)."
+  (let ((arg-keys (mapcar #'car args)))
+    (cond
+      ((member :location arg-keys) "get_weather")
+      ((member :expression arg-keys) "calculate")
+      (t nil))))
 
 (defun handle-tool-function-call (function-call)
-  "Handle a function call returned from the LLM."
-  (let* ((name (cdr (assoc :name function-call)))
+  "Handle a function call returned from the LLM by invoking the registered handler."
+  (format t "~%DEBUG handle-tool-function-call: ~a~%" function-call)
+  (let* ((raw-name (cdr (assoc :name function-call)))
          (args (cdr (assoc :arguments function-call)))
+         ;; If name is empty, try to infer from arguments
+         (name (if (or (null raw-name) (string= raw-name ""))
+                   (infer-function-name-from-args args)
+                   raw-name))
          (func (gethash name *available-functions*)))
+    (format t "DEBUG raw-name=~a inferred-name=~a args=~a func=~a~%" raw-name name args func)
     (if func
-        (format nil "Function ~a called with args: ~a" name args)
+        (let ((handler (ollama-function-handler func)))
+          (if handler
+              (funcall handler args)
+              (format nil "No handler for function ~a, args: ~a" name args)))
         (error "Unknown function: ~a" name))))
 
 (defun completions-with-tools (starter-text &optional functions)
@@ -61,14 +81,32 @@
           (handle-tool-function-call (car function-call))
           (or content "No response content")))))
 
-;; Register sample functions
+;; Define handler functions
+
+(defun get_weather (args)
+  "Handler for get_weather tool. ARGS is an alist with :location key."
+  (format t "get_weather called with args: ~a~%" args)
+  (let ((location (cdr (assoc :location args))))
+    (format nil "Weather in ~a: Sunny, 72°F" (or location "Unknown"))))
+
+(defun calculate (args)
+  "Handler for calculate tool. ARGS is an alist with :expression key."
+  (let ((expression (cdr (assoc :expression args))))
+    (if expression
+        (handler-case
+            (format nil "Result: ~a" (eval (read-from-string expression)))
+          (error (e) (format nil "Error calculating: ~a" e)))
+        "No expression provided")))
+
+;; Register sample functions with handlers
 (register-tool-function
  "get_weather"
  "Get current weather for a location"
  (list (cons :|type| "object")
        (cons :|properties| (list (cons :|location| (list (cons :|type| "string")
                                                          (cons :|description| "The city name")))))
-       (cons :|required| '("location"))))
+       (cons :|required| '("location")))
+ #'get_weather)
 
 (register-tool-function
  "calculate"
@@ -76,7 +114,8 @@
  (list (cons :|type| "object")
        (cons :|properties| (list (cons :|expression| (list (cons :|type| "string")
                                                            (cons :|description| "Math expression like 2 + 2")))))
-       (cons :|required| '("expression"))))
+       (cons :|required| '("expression")))
+ #'calculate)
 
 ;; Example call:
 ;;(ollama::completions-with-tools "Use function calling for: What's the weather like in New York?" '("get_weather" "calculate"))
