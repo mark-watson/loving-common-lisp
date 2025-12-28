@@ -24,7 +24,8 @@
          :handler handler)))
 
 (defun infer-function-name-from-args (args)
-  "Infer the function name based on argument keys (workaround for models that return empty name)."
+  "Infer the function name based on argument keys
+   (workaround for models that return empty name)."
   (let ((arg-keys (mapcar #'car args)))
     (cond
       ((member :location arg-keys) "get_weather")
@@ -32,7 +33,8 @@
       (t nil))))
 
 (defun handle-tool-function-call (function-call)
-  "Handle a function call returned from the LLM by invoking the registered handler."
+  "Handle a function call returned from the LLM
+   by invoking the registered handler."
   (format t "~%DEBUG handle-tool-function-call: ~a~%" function-call)
   (let* ((raw-name (cdr (assoc :name function-call)))
          (args (cdr (assoc :arguments function-call)))
@@ -41,40 +43,51 @@
                    (infer-function-name-from-args args)
                    raw-name))
          (func (gethash name *available-functions*)))
-    (format t "DEBUG raw-name=~a inferred-name=~a args=~a func=~a~%" raw-name name args func)
+    (format t "DEBUG raw-name=~a inferred-name=~a args=~a func=~a~%"
+            raw-name name args func)
     (if func
         (let ((handler (ollama-function-handler func)))
           (if handler
               (funcall handler args)
-              (format nil "No handler for function ~a, args: ~a" name args)))
+              (format nil
+                      "No handler for function ~a, args: ~a" name args)))
         (error "Unknown function: ~a" name))))
 
 (defun completions-with-tools (starter-text &optional functions)
   "Completion with function/tool calling support.
    STARTER-TEXT is the prompt to send to the LLM.
-   FUNCTIONS is an optional list of registered function names to make available."
-  (let* ((function-defs (when functions
-                          (mapcar (lambda (f)
-                                    (let ((func (gethash f *available-functions*)))
-                                      (list (cons :|name| (ollama-function-name func))
-                                            (cons :|description| (ollama-function-description func))
-                                            (cons :|parameters| (ollama-function-parameters func)))))
-                                  functions)))
+   FUNCTIONS is an optional list of registered function names
+   to make available."
+  (let* ((function-defs
+           (when functions
+             (mapcar
+              (lambda (f)
+                (let ((func (gethash f *available-functions*)))
+                  (list
+                   (cons :|name| (ollama-function-name func))
+                   (cons :|description|
+                         (ollama-function-description func))
+                   (cons :|parameters|
+                         (ollama-function-parameters func)))))
+              functions)))
          (message (list (cons :|role| "user")
                         (cons :|content| starter-text)))
          (base-data (list (cons :|model| *tool-model-name*)
                           (cons :|stream| nil)
                           (cons :|messages| (list message))))
          (data (if function-defs
-                   (append base-data (list (cons :|tools| function-defs)))
+                   (append base-data
+                           (list (cons :|tools| function-defs)))
                    base-data))
          (json-data (lisp-to-json-string data))
-         ;; Hack: cl-json encodes nil as null, but we need false for stream
-         (fixed-json-data (substitute-subseq json-data ":null" ":false" :test #'string=))
+         ;; Hack: cl-json encodes nil as null, but we need false
+         (fixed-json-data
+           (substitute-subseq json-data ":null" ":false"
+                              :test #'string=))
          (curl-command
-          (format nil "curl ~a -d ~s"
-                  ollama::*model-host*
-                  fixed-json-data)))
+           (format nil "curl ~a -d ~s"
+                   ollama::*model-host*
+                   fixed-json-data)))
     (multiple-value-bind (content function-call)
         (ollama-helper curl-command)
       (if function-call
@@ -94,7 +107,8 @@
   (let ((expression (cdr (assoc :expression args))))
     (if expression
         (handler-case
-            (format nil "Result: ~a" (eval (read-from-string expression)))
+            (format nil "Result: ~a"
+                    (eval (read-from-string expression)))
           (error (e) (format nil "Error calculating: ~a" e)))
         "No expression provided")))
 
@@ -103,8 +117,11 @@
  "get_weather"
  "Get current weather for a location"
  (list (cons :|type| "object")
-       (cons :|properties| (list (cons :|location| (list (cons :|type| "string")
-                                                         (cons :|description| "The city name")))))
+       (cons :|properties|
+             (list (cons :|location|
+                         (list (cons :|type| "string")
+                               (cons :|description|
+                                     "The city name")))))
        (cons :|required| '("location")))
  #'get_weather)
 
@@ -112,10 +129,14 @@
  "calculate"
  "Perform a mathematical calculation"
  (list (cons :|type| "object")
-       (cons :|properties| (list (cons :|expression| (list (cons :|type| "string")
-                                                           (cons :|description| "Math expression like 2 + 2")))))
+       (cons :|properties|
+             (list (cons :|expression|
+                         (list (cons :|type| "string")
+                               (cons :|description|
+                                     "Math expression like 2 + 2")))))
        (cons :|required| '("expression")))
  #'calculate)
 
- ;; (ollama::completions-with-tools "Use the get_weather tool for: What's the weather like in New York?" '("get_weather" "calculate"))
- 
+;; (ollama::completions-with-tools
+;;   "Use the get_weather tool for: What's the weather like in NY?"
+;;   '("get_weather" "calculate"))
