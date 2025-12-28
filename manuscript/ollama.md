@@ -15,31 +15,3 @@ TBD
 TBD
 
 Listing of package.lisp:
-
-```lisp
-;;;; package.lisp
-
-(defpackage #:ollama
-  (:use #:cl #:uiop #:cl-json)
-  (:export #:completions #:completions-with-tools #:summarize
-           #:answer-question #:embeddings #:dot-product
-           *model-name* *tool-model-name* *model-host*))
-```
-
-Listing of ollama.asd:
-
-```lisp
-;;;; ollama.asd
-
-(asdf:defsystem #:ollama
-  :description "Library for using the ollama APIs"
-  :author "Mark Watson"
-  :license "Apache 2"
-  :depends-on (#:uiop #:cl-json)
-  :components ((:file "package")
-               (:file "ollama-helper")
-               (:file "ollama-tools") 
-               (:file "ollama")))
-```
-
-
