@@ -3,7 +3,7 @@
 ;;; Ollama completions with tool/function calling support
 ;;; Uses shared utilities from ollama-helper.lisp
 
-(defvar *tool-model-name* "mistral:v0.3")
+(defvar *tool-model-name* "qwen3:1.7b")
 
 (defvar *available-functions* (make-hash-table :test 'equal))
 
@@ -117,11 +117,5 @@
        (cons :|required| '("expression")))
  #'calculate)
 
-;; Example call:
-
-#|
-* (ollama::completions-with-tools "Use function calling for: What's the weather like in New York?" '("get_weather" "calculate"))
-get_weather called with args: ((location . New York))
-"Weather in New York: Sunny, 72°F"
-|#
-
+ ;; (ollama::completions-with-tools "Use the get_weather tool for: What's the weather like in New York?" '("get_weather" "calculate"))
+ 
