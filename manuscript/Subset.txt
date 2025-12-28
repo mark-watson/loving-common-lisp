@@ -1,1 +1,1 @@
-autocontext.md
+ollama.md
