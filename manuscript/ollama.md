@@ -296,8 +296,7 @@ Sample output:
 
 ## Implementation of Tool Use/Function Calling Generative AI Functionality
 
-
-TBD
+The following listing an experimental implementation of tool-calling (also known as function-calling) within a Common Lisp environment using the Ollama API. By defining a custom **ollama-function** structure and a global registry via a hash table, the code allows developers to map Large Language Model (LLM) tool requests directly to native Lisp handlers. The primary entry point, **completions-with-tools**, handles the complex task of serializing Lisp data structures into the specific JSON format required by Ollama’s /api/chat endpoint, including a necessary workaround for JSON boolean representation. Furthermore, the implementation includes a defensive "inference" mechanism to recover function names from argument keys if the model returns an incomplete response, ensuring that calls to registered tools like get_weather or calculate are dispatched correctly even when the model's output is slightly malformed.
 
 Listing of ollama-tools.lisp:
 
@@ -441,6 +440,10 @@ Listing of ollama-tools.lisp:
        (cons :|required| '("expression")))
  #'calculate)
 ```
+
+The core of this system lies in the decoupling of tool definitions from their execution logic. By using the **register-tool-function** routine, you can define the JSON schema for a tool, specifying required parameters and types, while simultaneously binding it to a specific Lisp function. This allows the **handle-tool-function-call** dispatcher to act as a bridge, looking up the appropriate handler in the *available-functions* hash table and executing it with the arguments extracted from the LLM's response.
+
+One particularly noteworthy aspect of this implementation is its handling of Lisp's unique syntax and data types during the JSON conversion process. Because standard Lisp libraries often encode nil as null, the code performs a string substitution to ensure the API receives false, which is mandatory for the :stream parameter in the Ollama schema. Additionally, the calculate tool demonstrates the power of this integration by using read-from-string and eval, allowing the LLM to effectively execute dynamic mathematical expressions directly within a Common Lisp REPL or program.
 
 Sample output (I include a lot of debug printout):
 
