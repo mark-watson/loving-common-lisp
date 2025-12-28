@@ -1,4 +1,4 @@
-# Local LLMs Using Llama
+# Using Local LLMs With Ollama
 
 Running local models with Ollama offers several practical advantages for Common Lisp developers, especially those of us building exploratory or long-lived AI systems:
 
