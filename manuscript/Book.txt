@@ -29,7 +29,6 @@ kgn_common.md
 kgn_text_ui.md
 kgn_capi_ui.md	
 openai.md
-ollama.md
 perplexity.md
 moonshot.md
 huggingface.md
