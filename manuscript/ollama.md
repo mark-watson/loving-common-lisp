@@ -269,14 +269,6 @@ Listing of ollama-tools.lisp:
                                                            (cons :|description| "Math expression like 2 + 2")))))
        (cons :|required| '("expression")))
  #'calculate)
-
-;; Example call:
-
-#|
-* (ollama::completions-with-tools "Use function calling for: What's the weather like in New York?" '("get_weather" "calculate"))
-get_weather called with args: ((location . New York))
-"Weather in New York: Sunny, 72°F"
-|#
 ```
 
 Sample output:
