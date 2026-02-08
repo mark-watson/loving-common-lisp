@@ -44,6 +44,7 @@
            (escaped-json (escape-json data))
            (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
                              api-url *google-api-key* escaped-json))
+           (print curl-cmd)
            (response-string (run-curl-command curl-cmd))
            (decoded-response (cl-json:decode-json-from-string response-string))
            (candidates-pair (assoc :CANDIDATES decoded-response))
