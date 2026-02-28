@@ -1,0 +1,1786 @@
+IBM	http://dbpedia.org/resource/IBM
+Ford	http://dbpedia.org/resource/Ford_Motor_Company
+General Motors	http://dbpedia.org/resource/General_Motors
+GM	http://dbpedia.org/resource/GM
+Google	http://dbpedia.org/resource/Google
+Microsoft	http://dbpedia.org/resource/Microsoft
+3M	http://dbpedia.org/resource/3M
+Adobe	http://dbpedia.org/resource/Adobe
+AES	http://dbpedia.org/resource/AES
+Aetna	http://dbpedia.org/resource/Aetna
+AFLAC	http://dbpedia.org/resource/Aflac
+Agilent	http://dbpedia.org/resource/Agilent_Technologies
+Akamai	http://dbpedia.org/resource/Akamai
+Alcoa	http://dbpedia.org/resource/Alcoa
+Allegheny	http://dbpedia.org/resource/Allegheny
+Allstate	http://dbpedia.org/resource/Allstate
+Altera	http://dbpedia.org/resource/Altera
+Amazon	http://dbpedia.org/resource/Amazon
+American Express	http://dbpedia.org/resource/American_Express
+Analog Devices	http://dbpedia.org/resource/Analog_Devices
+Apple	http://dbpedia.org/resource/Apple
+AT&T	http://dbpedia.org/resource/AT&T
+Autodesk	http://dbpedia.org/resource/Autodesk
+Avon	http://dbpedia.org/resource/Avon
+Bank of America	http://dbpedia.org/resource/Bank_of_America
+Best Buy	http://dbpedia.org/resource/Best_Buy
+Boeing	http://dbpedia.org/resource/Boeing
+Boston Scientific	http://dbpedia.org/resource/Boston_Scientific
+Bristol-Myers Squibb	http://dbpedia.org/resource/Bristol-Myers_Squibb
+Broadcom	http://dbpedia.org/resource/Broadcom
+Campbell Soup	http://dbpedia.org/resource/Campbell_Soup_Company
+Chevron	http://dbpedia.org/resource/Chevron
+CIGNA	http://dbpedia.org/resource/Cigna
+Cisco	http://dbpedia.org/resource/Cisco_Systems
+Citigroup	http://dbpedia.org/resource/Citigroup
+Citrix	http://dbpedia.org/resource/Citrix_Systems
+Clorox	http://dbpedia.org/resource/Clorox
+Coca Cola	http://dbpedia.org/resource/Coca-Cola
+Colgate-Palmolive	http://dbpedia.org/resource/Colgate-Palmolive
+Comcast	http://dbpedia.org/resource/Comcast
+ConocoPhillips	http://dbpedia.org/resource/ConocoPhillips
+Corning	http://dbpedia.org/resource/Corning
+Costco	http://dbpedia.org/resource/Costco
+Dell	http://dbpedia.org/resource/Dell
+DeVry	http://dbpedia.org/resource/DeVry_Inc.
+DIRECTV	http://dbpedia.org/resource/DirecTV
+Dow Chemical	http://dbpedia.org/resource/Dow_Chemical_Company
+Du Pont	http://dbpedia.org/resource/DuPont
+eBay	http://dbpedia.org/resource/eBay
+Exxon Mobil	http://dbpedia.org/resource/ExxonMobil
+FedEx	http://dbpedia.org/resource/FedEx
+Ford Motor	http://dbpedia.org/resource/Ford_Motor_Company
+GameStop	http://dbpedia.org/resource/GameStop
+Gannett	http://dbpedia.org/resource/Gannett_Company
+General Electric	http://dbpedia.org/resource/General_Electric
+General Mills	http://dbpedia.org/resource/General_Mills
+Goldman Sachs	http://dbpedia.org/resource/Goldman_Sachs
+Goodyear	http://dbpedia.org/resource/Goodyear
+Halliburton	http://dbpedia.org/resource/Halliburton
+Hasbro	http://dbpedia.org/resource/Hasbro
+Heinz	http://dbpedia.org/resource/Heinz
+Hewlett-Packard	http://dbpedia.org/resource/Hewlett-Packard
+Honeywell	http://dbpedia.org/resource/Honeywell
+Hormel	http://dbpedia.org/resource/Hormel
+Humana	http://dbpedia.org/resource/Humana
+Intel	http://dbpedia.org/resource/Intel
+Intuit	http://dbpedia.org/resource/Intuit
+Kellogg	http://dbpedia.org/resource/Kellogg
+Kimco	http://dbpedia.org/resource/Kimco_Realty
+Kohl	http://dbpedia.org/resource/Kohl
+Kraft	http://dbpedia.org/resource/Kraft
+Marriott	http://dbpedia.org/resource/Marriott
+Mastercard	http://dbpedia.org/resource/MasterCard
+Mattel	http://dbpedia.org/resource/Mattel
+McAfee	http://dbpedia.org/resource/McAfee
+McGraw-Hill	http://dbpedia.org/resource/McGraw-Hill
+Merck	http://dbpedia.org/resource/Merck
+MetLife	http://dbpedia.org/resource/MetLife
+Microsoft	http://dbpedia.org/resource/Microsoft
+Monsanto	http://dbpedia.org/resource/Monsanto
+Morgan Stanley	http://dbpedia.org/resource/Morgan_Stanley
+NIKE	http://dbpedia.org/resource/Nike,_Inc.
+Nike	http://dbpedia.org/resource/Nike
+Novell	http://dbpedia.org/resource/Novell
+Nvidia	http://dbpedia.org/resource/Nvidia
+Office Depot	http://dbpedia.org/resource/Office_Depot
+Oracle	http://dbpedia.org/resource/Oracle
+Philip Morris	http://dbpedia.org/resource/Philip_Morris
+Procter & Gamble	http://dbpedia.org/resource/Procter_&_Gamble
+Prudential	http://dbpedia.org/resource/Prudential
+QLogic	http://dbpedia.org/resource/QLogic
+QUALCOMM	http://dbpedia.org/resource/Qualcomm
+Quest	http://dbpedia.org/resource/Quest
+Raytheon	http://dbpedia.org/resource/Raytheon
+Red Hat	http://dbpedia.org/resource/Red_Hat
+Rockwell	http://dbpedia.org/resource/Rockwell
+Safeway	http://dbpedia.org/resource/Safeway
+Salesforce	http://dbpedia.org/resource/Salesforce.com
+SanDisk	http://dbpedia.org/resource/SanDisk
+Schlumberger	http://dbpedia.org/resource/Schlumberger
+Sears	http://dbpedia.org/resource/Sears
+Sempra Energy	http://dbpedia.org/resource/Sempra_Energy
+Southwest Airlines	http://dbpedia.org/resource/Southwest_Airlines
+Starbucks	http://dbpedia.org/resource/Starbucks
+Sun Microsystems	http://dbpedia.org/resource/Sun_Microsystems
+Time Warner	http://dbpedia.org/resource/Time_Warner
+Verisign	http://dbpedia.org/resource/Verisign
+Volkswagen	http://dbpedia.org/resource/Volkswagen
+Wal-Mart	http://dbpedia.org/resource/Walmart
+Walgreen	http://dbpedia.org/resource/Walgreen
+WellPoint	http://dbpedia.org/resource/WellPoint
+Wells Fargo	http://dbpedia.org/resource/Wells_Fargo
+Winnebago	http://dbpedia.org/resource/Winnebago
+Xerox	http://dbpedia.org/resource/Xerox
+Yahoo	http://dbpedia.org/resource/Yahoo!
+New York Times	http://dbpedia.org/resource/The_New_York_Times
+Oxford University Press	http://dbpedia.org/resource/Oxford_University_Press
+Cambridge University Press	http://dbpedia.org/resource/Cambridge_University_Press
+Washington Post	http://dbpedia.org/resource/The_Washington_Post
+Harvard University Press	http://dbpedia.org/resource/Harvard_University_Press
+BBC Radio	http://dbpedia.org/resource/BBC_Radio
+American Broadcasting Company	http://dbpedia.org/resource/American_Broadcasting_Company
+Walt Disney	http://dbpedia.org/resource/Walt_Disney
+Princeton University Press	http://dbpedia.org/resource/Princeton_University_Press
+Columbia University Press	http://dbpedia.org/resource/Columbia_University_Press
+Associated Press	http://dbpedia.org/resource/Associated_Press
+Yale University Press	http://dbpedia.org/resource/Yale_University_Press
+Los Angeles Times	http://dbpedia.org/resource/Los_Angeles_Times
+MIT Press	http://dbpedia.org/resource/MIT_Press
+Warner Bros.	http://dbpedia.org/resource/Warner_Bros.
+General Motors	http://dbpedia.org/resource/General_Motors
+Daily Telegraph	http://dbpedia.org/resource/The_Daily_Telegraph
+Clarendon Press	http://dbpedia.org/resource/Oxford_University_Press
+General Electric	http://dbpedia.org/resource/General_Electric
+Walt Disney Company	http://dbpedia.org/resource/The_Walt_Disney_Company
+Paramount Pictures	http://dbpedia.org/resource/Paramount_Pictures
+Ford Motor Company	http://dbpedia.org/resource/Ford_Motor_Company
+Wall Street Journal	http://dbpedia.org/resource/The_Wall_Street_Journal
+USA Today	http://dbpedia.org/resource/USA_Today
+British East India Company	http://dbpedia.org/resource/East_India_Company
+Apple Inc.	http://dbpedia.org/resource/Apple_Inc.
+Greenwood Press	http://dbpedia.org/resource/Greenwood_Publishing_Group
+Sun Microsystems	http://dbpedia.org/resource/Sun_Microsystems
+Entertainment Weekly	http://dbpedia.org/resource/Entertainment_Weekly
+Apple Computer	http://dbpedia.org/resource/Apple_Inc.
+Cornell University Press	http://dbpedia.org/resource/Cornell_University_Press
+Johns Hopkins University Press	http://dbpedia.org/resource/Johns_Hopkins_University_Press
+Chicago Tribune	http://dbpedia.org/resource/Chicago_Tribune
+Dutch East India Company	http://dbpedia.org/resource/Dutch_East_India_Company
+Indiana University Press	http://dbpedia.org/resource/Indiana_University_Press
+Stanford University Press	http://dbpedia.org/resource/Stanford_University_Press
+Blackwell Publishing	http://dbpedia.org/resource/Wiley-Blackwell
+Boston Globe	http://dbpedia.org/resource/The_Boston_Globe
+San Francisco Chronicle	http://dbpedia.org/resource/San_Francisco_Chronicle
+Fox Broadcasting Company	http://dbpedia.org/resource/Fox_Broadcasting_Company
+Development Bank	http://dbpedia.org/resource/Development_bank
+Time Warner	http://dbpedia.org/resource/Time_Warner
+Texas Instruments	http://dbpedia.org/resource/Texas_Instruments
+International Herald Tribune	http://dbpedia.org/resource/International_Herald_Tribune
+John Wiley & Sons	http://dbpedia.org/resource/John_Wiley_&_Sons
+National Public Radio	http://dbpedia.org/resource/NPR
+Chicago Sun-Times	http://dbpedia.org/resource/Chicago_Sun-Times
+Norfolk Southern	http://dbpedia.org/resource/Norfolk_Southern_Railway
+Southern California	http://dbpedia.org/resource/Southern_California
+CRC Press	http://dbpedia.org/resource/CRC_Press
+Best Music	http://dbpedia.org/resource/Best_Music
+Houghton Mifflin Company	http://dbpedia.org/resource/Houghton_Mifflin_Harcourt
+Tuttle Publishing	http://dbpedia.org/resource/Tuttle_Publishing
+Digital Equipment Corporation	http://dbpedia.org/resource/Digital_Equipment_Corporation
+American Airlines	http://dbpedia.org/resource/American_Airlines
+International Business Machines	http://dbpedia.org/resource/IBM
+East India Company	http://dbpedia.org/resource/East_India_Company
+New York Stock Exchange	http://dbpedia.org/resource/New_York_Stock_Exchange
+United Airlines	http://dbpedia.org/resource/United_Airlines
+Sunday Times	http://dbpedia.org/resource/The_Sunday_Times
+Los Alamos National Laboratory	http://dbpedia.org/resource/Los_Alamos_National_Laboratory
+Sydney Morning Herald	http://dbpedia.org/resource/The_Sydney_Morning_Herald
+Da Capo Press	http://dbpedia.org/resource/Da_Capo_Press
+University Press	http://dbpedia.org/resource/University_Press
+McDonnell Douglas	http://dbpedia.org/resource/McDonnell_Douglas
+Le Monde	http://dbpedia.org/resource/Le_Monde
+Warner Bros	http://dbpedia.org/resource/Warner_Bros.
+New York Review	http://dbpedia.org/resource/New_York_Review
+Union Pacific	http://dbpedia.org/resource/Union_Pacific_Railroad
+Bell Labs	http://dbpedia.org/resource/Bell_Labs
+American general	http://dbpedia.org/resource/American_general
+International Bank	http://dbpedia.org/resource/International_Bank
+Bank of England	http://dbpedia.org/resource/Bank_of_England
+Westview Press	http://dbpedia.org/resource/Westview_Press
+Lockheed Martin	http://dbpedia.org/resource/Lockheed_Martin
+British Airways	http://dbpedia.org/resource/British_Airways
+Greenwood Publishing Group	http://dbpedia.org/resource/Greenwood_Publishing_Group
+Febrero co	http://dbpedia.org/resource/Febrero_co
+Electronic Arts	http://dbpedia.org/resource/Electronic_Arts
+London Stock Exchange	http://dbpedia.org/resource/London_Stock_Exchange
+Digital Equipment	http://dbpedia.org/resource/Digital_Equipment_Corporation
+ISBN Princeton University Press	http://dbpedia.org/resource/ISBN_Princeton_University_Press
+Duke University Press	http://dbpedia.org/resource/Duke_University_Press
+Orion Publishing Group	http://dbpedia.org/resource/Orion_Publishing_Group
+Canadian Broadcasting Corporation	http://dbpedia.org/resource/Canadian_Broadcasting_Corporation
+Australian Broadcasting Corporation	http://dbpedia.org/resource/Australian_Broadcasting_Corporation
+General Dynamics	http://dbpedia.org/resource/General_Dynamics
+Manchester University Press	http://dbpedia.org/resource/Manchester_University_Press
+SUNY Press	http://dbpedia.org/resource/State_University_of_New_York_Press
+John Wiley and Sons	http://dbpedia.org/resource/John_Wiley_&_Sons
+Southern Africa	http://dbpedia.org/resource/Southern_Africa
+Rutgers University Press	http://dbpedia.org/resource/Rutgers_University_Press
+Nike Inc.	http://dbpedia.org/resource/Nike,_Inc.
+Jerusalem Post	http://dbpedia.org/resource/The_Jerusalem_Post
+Delta Air Lines	http://dbpedia.org/resource/Delta_Air_Lines
+Washington Times	http://dbpedia.org/resource/The_Washington_Times
+Academic Press	http://dbpedia.org/resource/Academic_Press
+CBS News	http://dbpedia.org/resource/CBS_News
+Scarecrow Press	http://dbpedia.org/resource/Rowman_&_Littlefield
+Random House Inc.	http://dbpedia.org/resource/Random_House
+Viking Press	http://dbpedia.org/resource/Viking_Press
+Edinburgh University Press	http://dbpedia.org/resource/Edinburgh_University_Press
+Siemens AG	http://dbpedia.org/resource/Siemens
+Barnes & Noble	http://dbpedia.org/resource/Barnes_&_Noble
+W. Norton & Company	http://dbpedia.org/resource/W._Norton_&_Company
+LA Times	http://dbpedia.org/resource/Los_Angeles_Times
+Daily News	http://dbpedia.org/resource/Daily_News
+New York Post	http://dbpedia.org/resource/New_York_Post
+Silicon Graphics	http://dbpedia.org/resource/Silicon_Graphics
+New York Daily News	http://dbpedia.org/resource/Daily_News_(New_York)
+County Commissioners	http://dbpedia.org/resource/County_Commissioners
+Popular Music	http://dbpedia.org/resource/Popular_music
+New York University Press	http://dbpedia.org/resource/New_York_University_Press
+Canadian Pacific Railway	http://dbpedia.org/resource/Canadian_Pacific_Railway
+Super Mario Bros.	http://dbpedia.org/resource/Super_Mario_Bros.
+Japan Times	http://dbpedia.org/resource/The_Japan_Times
+Stars and Stripes	http://dbpedia.org/resource/Stars_&_Stripes
+Free Press	http://dbpedia.org/resource/Free_press
+Seattle Times	http://dbpedia.org/resource/The_Seattle_Times
+Omnibus Press	http://dbpedia.org/resource/Music_Sales_Group
+North Fork	http://dbpedia.org/resource/North_Fork
+Procter & Gamble	http://dbpedia.org/resource/Procter_&_Gamble
+Pan American World Airways	http://dbpedia.org/resource/Pan_American_World_Airways
+BBC Television	http://dbpedia.org/resource/BBC_Television
+Toronto Star	http://dbpedia.org/resource/Toronto_Star
+Christian Science Monitor	http://dbpedia.org/resource/The_Christian_Science_Monitor
+Houston Chronicle	http://dbpedia.org/resource/Houston_Chronicle
+Bank of America	http://dbpedia.org/resource/Bank_of_America
+Adobe Systems	http://dbpedia.org/resource/Adobe_Systems
+Oracle Corporation	http://dbpedia.org/resource/Oracle_Corporation
+Osprey Publishing	http://dbpedia.org/resource/Osprey_Publishing
+BAE Systems	http://dbpedia.org/resource/BAE_Systems
+NBC Universal	http://dbpedia.org/resource/NBCUniversal
+Dutch West India Company	http://dbpedia.org/resource/Dutch_West_India_Company
+Lawrence Livermore National Laboratory	http://dbpedia.org/resource/Lawrence_Livermore_National_Laboratory
+John Wiley & Sons Inc.	http://dbpedia.org/resource/John_Wiley_&_Sons_Inc.
+New England Journal	http://dbpedia.org/resource/New_England_Journal
+Kessinger Publishing	http://dbpedia.org/resource/Kessinger_Publishing
+Royal Shakespeare Company	http://dbpedia.org/resource/Royal_Shakespeare_Company
+Evening Standard	http://dbpedia.org/resource/Evening_Standard
+Globe and Mail	http://dbpedia.org/resource/The_Globe_and_Mail
+Microsoft Corporation	http://dbpedia.org/resource/Microsoft
+CBC Television	http://dbpedia.org/resource/CBC_Television
+Red Crescent International Labour International Monetary Fund	http://dbpedia.org/resource/Red_Crescent_International_Labour_International_Monetary_Fund
+Burger King	http://dbpedia.org/resource/Burger_King
+Bell Laboratories	http://dbpedia.org/resource/Bell_Labs
+Northwestern University Press	http://dbpedia.org/resource/Northwestern_University_Press
+Data General	http://dbpedia.org/resource/Data_General
+Cisco Systems	http://dbpedia.org/resource/Cisco_Systems
+New York Times Book Review	http://dbpedia.org/resource/The_New_York_Times_Book_Review
+General Electric Company	http://dbpedia.org/resource/General_Electric
+Naval Institute Press	http://dbpedia.org/resource/United_States_Naval_Institute
+Heavy Metal	http://dbpedia.org/resource/Heavy_metal
+TSR Inc.	http://dbpedia.org/resource/TSR,_Inc.
+Temple University Press	http://dbpedia.org/resource/Temple_University_Press
+Robert Appleton Company	http://dbpedia.org/resource/Catholic_Encyclopedia
+Eastman Kodak	http://dbpedia.org/resource/Eastman_Kodak
+Dover Publications Inc.	http://dbpedia.org/resource/Dover_Publications_Inc.
+Jet Propulsion Laboratory	http://dbpedia.org/resource/Jet_Propulsion_Laboratory
+Guardian Unlimited	http://dbpedia.org/resource/Guardian.co.uk
+Super Smash Bros	http://dbpedia.org/resource/Super_Smash_Bros.
+International Finance Corporation	http://dbpedia.org/resource/International_Finance_Corporation
+Comic Book Resources	http://dbpedia.org/resource/Comic_Book_Resources
+Irish Times	http://dbpedia.org/resource/The_Irish_Times
+Pergamon Press	http://dbpedia.org/resource/Pergamon_Press
+W.W. Norton & Company	http://dbpedia.org/resource/W.W._Norton_&_Company
+News Corporation	http://dbpedia.org/resource/News_Corporation
+Natural Resources	http://dbpedia.org/resource/Natural_Resources
+World Scientific	http://dbpedia.org/resource/World_Scientific
+National Trust	http://dbpedia.org/resource/National_Trust
+Judaica Press	http://dbpedia.org/resource/Judaica_Press
+Intellectual Property World Meteorological World Tourism World Trade	http://dbpedia.org/resource/Intellectual_Property_World_Meteorological_World_Tourism_World_Trade
+Paulist Press	http://dbpedia.org/resource/Paulist_Fathers
+Square Co.	http://dbpedia.org/resource/Square_(company)
+Continental Airlines	http://dbpedia.org/resource/Continental_Airlines
+Air Canada	http://dbpedia.org/resource/Air_Canada
+CBC Radio	http://dbpedia.org/resource/CBC_Radio
+Northrop Grumman	http://dbpedia.org/resource/Northrop_Grumman
+Warner Music Group	http://dbpedia.org/resource/Warner_Music_Group
+America Online	http://dbpedia.org/resource/AOL
+State Street	http://dbpedia.org/resource/State_Street
+Belknap Press	http://dbpedia.org/resource/Harvard_University_Press
+Hewlett Packard	http://dbpedia.org/resource/Hewlett-Packard
+Harper's Weekly	http://dbpedia.org/resource/Harper's_Magazine
+Oak Ridge National Laboratory	http://dbpedia.org/resource/Oak_Ridge_National_Laboratory
+Continuum International Publishing Group	http://dbpedia.org/resource/Continuum_International_Publishing_Group
+Northwest Airlines	http://dbpedia.org/resource/Northwest_Airlines
+Coca-Cola Company	http://dbpedia.org/resource/The_Coca-Cola_Company
+Southwest Airlines	http://dbpedia.org/resource/Southwest_Airlines
+Boydell Press	http://dbpedia.org/resource/Boydell_&_Brewer
+New York Herald	http://dbpedia.org/resource/New_York_Herald
+Control Data Corporation	http://dbpedia.org/resource/Control_Data_Corporation
+Palm Beach	http://dbpedia.org/resource/Palm_Beach
+Garland Publishing	http://dbpedia.org/resource/Garland_Science
+Wells Fargo	http://dbpedia.org/resource/Wells_Fargo
+Second Bank of the United States	http://dbpedia.org/resource/Second_Bank_of_the_United_States
+Prentice-Hall Inc.	http://dbpedia.org/resource/Prentice-Hall_Inc.
+Advanced Micro Devices	http://dbpedia.org/resource/Advanced_Micro_Devices
+Western Union	http://dbpedia.org/resource/Western_Union
+Wesleyan University Press	http://dbpedia.org/resource/Wesleyan_University_Press
+Miami Herald	http://dbpedia.org/resource/The_Miami_Herald
+Nuclear Suppliers Group	http://dbpedia.org/resource/Nuclear_Suppliers_Group
+RAND Corporation	http://dbpedia.org/resource/RAND_Corporation
+Daimler AG	http://dbpedia.org/resource/Daimler_AG
+London Gazette	http://dbpedia.org/resource/The_London_Gazette
+American Express	http://dbpedia.org/resource/American_Express
+LA Weekly	http://dbpedia.org/resource/LA_Weekly
+Trans World Airlines	http://dbpedia.org/resource/Trans_World_Airlines
+Country Music	http://dbpedia.org/resource/Country_music
+Philadelphia Inquirer	http://dbpedia.org/resource/The_Philadelphia_Inquirer
+British Broadcasting Corporation	http://dbpedia.org/resource/BBC
+Monsanto Company	http://dbpedia.org/resource/Monsanto
+US Airways	http://dbpedia.org/resource/US_Airways
+World Bank Group	http://dbpedia.org/resource/World_Bank_Group
+Chosen Freeholders	http://dbpedia.org/resource/Chosen_Freeholders
+Bell Telephone Laboratories	http://dbpedia.org/resource/Bell_Labs
+American Standard	http://dbpedia.org/resource/American_Standard
+InterVarsity Press	http://dbpedia.org/resource/InterVarsity_Press
+Pluto Press	http://dbpedia.org/resource/Pluto_Press
+Macmillan Company	http://dbpedia.org/resource/Macmillan_Publishers
+North West Company	http://dbpedia.org/resource/North_West_Company
+New York Tribune	http://dbpedia.org/resource/New-York_Tribune
+Granada Television	http://dbpedia.org/resource/ITV_Granada
+British Telecom	http://dbpedia.org/resource/BT_Group
+National Semiconductor	http://dbpedia.org/resource/National_Semiconductor
+Baltimore Sun	http://dbpedia.org/resource/The_Baltimore_Sun
+Time Inc.	http://dbpedia.org/resource/Time_Inc.
+National Physical Laboratory	http://dbpedia.org/resource/National_Physical_Laboratory
+Publishers Weekly	http://dbpedia.org/resource/Publishers_Weekly
+Worshipful Company	http://dbpedia.org/resource/Livery_Company
+BBC Wales	http://dbpedia.org/resource/BBC_Cymru_Wales
+Thames Television	http://dbpedia.org/resource/Thames_Television
+Fairchild Semiconductor	http://dbpedia.org/resource/Fairchild_Semiconductor
+British Museum Press	http://dbpedia.org/resource/British_Museum
+General Mills	http://dbpedia.org/resource/General_Mills
+Black Hills	http://dbpedia.org/resource/Black_Hills
+PC World	http://dbpedia.org/resource/PC_World
+Sony Music	http://dbpedia.org/resource/Sony_Music_Entertainment
+United Parcel Service	http://dbpedia.org/resource/United_Parcel_Service
+Abingdon Press	http://dbpedia.org/resource/Abingdon_Press
+Electronic Music	http://dbpedia.org/resource/Electronic_music
+Robert Bosch GmbH	http://dbpedia.org/resource/Robert_Bosch_GmbH
+Coca Cola	http://dbpedia.org/resource/Coca-Cola
+Paris Review	http://dbpedia.org/resource/The_Paris_Review
+CBS Radio	http://dbpedia.org/resource/CBS_Radio
+Burroughs Corporation	http://dbpedia.org/resource/Burroughs_Corporation
+Nintendo of America	http://dbpedia.org/resource/Nintendo
+London Review	http://dbpedia.org/resource/The_London_Review
+Roxy Music	http://dbpedia.org/resource/Roxy_Music
+New Zealand Herald	http://dbpedia.org/resource/The_New_Zealand_Herald
+Human Rights	http://dbpedia.org/resource/Human_rights
+Chrysler Corporation	http://dbpedia.org/resource/Chrysler
+Johnson & Johnson	http://dbpedia.org/resource/Johnson_&_Johnson
+Argonne National Laboratory	http://dbpedia.org/resource/Argonne_National_Laboratory
+Polity Press	http://dbpedia.org/resource/Polity_(publisher)
+Syracuse University Press	http://dbpedia.org/resource/Syracuse_University_Press
+Arcadia Publishing	http://dbpedia.org/resource/Arcadia_Publishing
+Bank of Sweden Prize	http://dbpedia.org/resource/Nobel_Memorial_Prize_in_Economic_Sciences
+Wayne State University Press	http://dbpedia.org/resource/Wayne_State_University_Press
+South End Press	http://dbpedia.org/resource/South_End_Press
+NCR Corporation	http://dbpedia.org/resource/NCR_Corporation
+World Wide Fund	http://dbpedia.org/resource/World_Wide_Fund_for_Nature
+Penguin Group	http://dbpedia.org/resource/Penguin_Group
+Smithsonian Institution Press	http://dbpedia.org/resource/Smithsonian_Institution
+Gale Group	http://dbpedia.org/resource/Gale_(publisher)
+IARC Group	http://dbpedia.org/resource/IARC_Group
+Review Award	http://dbpedia.org/resource/Review_Award
+Goldman Sachs	http://dbpedia.org/resource/Goldman_Sachs
+Singapore Airlines	http://dbpedia.org/resource/Singapore_Airlines
+Times of India	http://dbpedia.org/resource/The_Times_of_India
+Remington Rand	http://dbpedia.org/resource/Remington_Rand
+Dish Network	http://dbpedia.org/resource/Dish_Network
+Atlantic Slave Trade	http://dbpedia.org/resource/Atlantic_slave_trade
+Intel Corporation	http://dbpedia.org/resource/Intel
+Inter-American Development Bank	http://dbpedia.org/resource/Inter-American_Development_Bank
+Hitachi Ltd.	http://dbpedia.org/resource/Hitachi
+Deere & Company	http://dbpedia.org/resource/Deere_&_Company
+Angiosperm Phylogeny Group	http://dbpedia.org/resource/Angiosperm_Phylogeny_Group
+Kraft Foods	http://dbpedia.org/resource/Kraft_Foods
+Westminster John Knox Press	http://dbpedia.org/resource/Westminster_John_Knox
+Deutsche Bank	http://dbpedia.org/resource/Deutsche_Bank
+Warner Brothers	http://dbpedia.org/resource/Warner_Bros.
+St. Petersburg Times	http://dbpedia.org/resource/Tampa_Bay_Times
+Lehman Brothers	http://dbpedia.org/resource/Lehman_Brothers
+Shell Oil Company	http://dbpedia.org/resource/Shell_Oil_Company
+NYU Press	http://dbpedia.org/resource/New_York_University
+Hackett Publishing	http://dbpedia.org/resource/Hackett_Publishing_Company
+Caves Books Ltd.	http://dbpedia.org/resource/Caves_Books_Ltd.
+Universum Film AG	http://dbpedia.org/resource/Universum_Film_AG
+Electric Company	http://dbpedia.org/resource/The_Electric_Company
+Eastern Air Lines	http://dbpedia.org/resource/Eastern_Air_Lines
+Penguin Press	http://dbpedia.org/resource/Penguin_Group
+Morgan Stanley	http://dbpedia.org/resource/Morgan_Stanley
+American Music	http://dbpedia.org/resource/American_Music
+Canadian National Railway	http://dbpedia.org/resource/Canadian_National_Railway
+American General	http://dbpedia.org/resource/American_International_Group
+Corriere della Sera	http://dbpedia.org/resource/Corriere_della_Sera
+DC Comics	http://dbpedia.org/resource/DC_Comics
+IBM Personal Computer	http://dbpedia.org/resource/IBM_Personal_Computer
+El Paso	http://dbpedia.org/resource/El_Paso,_Texas
+XM Satellite Radio	http://dbpedia.org/resource/XM_Satellite_Radio
+Aurum Press	http://dbpedia.org/resource/Aurum_Press
+Douglas Aircraft	http://dbpedia.org/resource/Douglas_Aircraft_Company
+London Corporation	http://dbpedia.org/resource/London_Corporation
+Southern Europe	http://dbpedia.org/resource/Southern_Europe
+News of the World	http://dbpedia.org/resource/News_of_the_World
+Volkswagen Group	http://dbpedia.org/resource/Volkswagen_Group
+El Mundo	http://dbpedia.org/resource/El_Mundo
+Readers Digest	http://dbpedia.org/resource/Reader's_Digest
+Pennsylvania State University Press	http://dbpedia.org/resource/Penn_State_University_Press
+Louisiana State University Press	http://dbpedia.org/resource/Louisiana_State_University_Press
+Lawrence Berkeley National Laboratory	http://dbpedia.org/resource/Lawrence_Berkeley_National_Laboratory
+Vega Science Trust	http://dbpedia.org/resource/Vega_Science_Trust
+Sirius Satellite Radio	http://dbpedia.org/resource/Sirius_Satellite_Radio
+New York Journal	http://dbpedia.org/resource/New_York_Journal-American
+Atari Inc.	http://dbpedia.org/resource/Atari,_Inc.
+Merrill Lynch	http://dbpedia.org/resource/Merrill_Lynch
+Universal Time	http://dbpedia.org/resource/Universal_Time
+U.S. Steel	http://dbpedia.org/resource/U.S._Steel
+Apple Computer Inc.	http://dbpedia.org/resource/Apple_Inc.
+Japan Airlines	http://dbpedia.org/resource/Japan_Airlines
+Detroit Free Press	http://dbpedia.org/resource/Detroit_Free_Press
+Nazi Germany	http://dbpedia.org/resource/Nazi_Germany
+New York Herald Tribune	http://dbpedia.org/resource/New_York_Herald_Tribune
+Netscape Communications Corporation	http://dbpedia.org/resource/Netscape
+Turner Network Television	http://dbpedia.org/resource/TNT_(TV_channel)
+Harry N. Abrams Inc.	http://dbpedia.org/resource/Abrams_Books
+Eli Lilly and Company	http://dbpedia.org/resource/Eli_Lilly_and_Company
+Financial Times	http://dbpedia.org/resource/Financial_Times
+Eli Lilly	http://dbpedia.org/resource/Eli_Lilly
+Safeway Inc.	http://dbpedia.org/resource/Safeway_Inc.
+BBC America	http://dbpedia.org/resource/BBC_America
+Boston Herald	http://dbpedia.org/resource/Boston_Herald
+Home Depot	http://dbpedia.org/resource/The_Home_Depot
+MCI Inc.	http://dbpedia.org/resource/MCI_Inc.
+Ernst & Young	http://dbpedia.org/resource/Ernst_&_Young
+San Jose Mercury News	http://dbpedia.org/resource/San_Jose_Mercury_News
+Russell Group	http://dbpedia.org/resource/Russell_Group
+Bank of the United States	http://dbpedia.org/resource/Bank_of_the_United_States
+Rio Group	http://dbpedia.org/resource/Rio_Group
+Caribbean Development Bank	http://dbpedia.org/resource/Caribbean_Development_Bank
+Frankfurter Allgemeine	http://dbpedia.org/resource/Frankfurter_Allgemeine_Zeitung
+Melbourne University Press	http://dbpedia.org/resource/Melbourne_University_Publishing
+Liturgical Press	http://dbpedia.org/resource/Saint_John's_Abbey
+NBC Radio	http://dbpedia.org/resource/NBC_Red_Network
+Sinauer Associates	http://dbpedia.org/resource/Sinauer_Associates
+Brown and Co.	http://dbpedia.org/resource/Brown_and_Co.
+BT Group	http://dbpedia.org/resource/BT_Group
+Honourable East India Company	http://dbpedia.org/resource/East_India_Company
+Citadel Press	http://dbpedia.org/resource/Kensington_Books
+Modern Music	http://dbpedia.org/resource/Modern_Music
+Rockwell International	http://dbpedia.org/resource/Rockwell_International
+Daily Herald	http://dbpedia.org/resource/Daily_Herald
+Cable & Wireless	http://dbpedia.org/resource/Cable_&_Wireless
+Plenum Press	http://dbpedia.org/resource/Springer_Science+Business_Media
+Electronic Data Systems	http://dbpedia.org/resource/Electronic_Data_Systems
+Justice League Unlimited	http://dbpedia.org/resource/Justice_League_Unlimited
+Westinghouse Electric Corporation	http://dbpedia.org/resource/Westinghouse_Electric_(1886)
+Denver Post	http://dbpedia.org/resource/The_Denver_Post
+Brookhaven National Laboratory	http://dbpedia.org/resource/Brookhaven_National_Laboratory
+Rio Tinto	http://dbpedia.org/resource/Rio_Tinto
+J.P. Morgan	http://dbpedia.org/resource/J._P._Morgan
+SAP AG	http://dbpedia.org/resource/SAP_AG
+Beacon Press	http://dbpedia.org/resource/Beacon_Press
+Bank of Sweden	http://dbpedia.org/resource/Sveriges_Riksbank
+Daily Star	http://dbpedia.org/resource/Daily_Star
+Folk Music	http://dbpedia.org/resource/Folk_music
+Best Buy	http://dbpedia.org/resource/Best_Buy
+Turner Broadcasting	http://dbpedia.org/resource/Turner_Broadcasting_System
+World Music	http://dbpedia.org/resource/World_music
+CBS Corporation	http://dbpedia.org/resource/CBS_Corporation
+New Music	http://dbpedia.org/resource/New_music
+Humanities Press	http://dbpedia.org/resource/Humanities_Press
+Liverpool University Press	http://dbpedia.org/resource/Liverpool_University_Press
+Continental Europe	http://dbpedia.org/resource/Continental_Europe
+London Weekend Television	http://dbpedia.org/resource/London_Weekend_Television
+North Point Press	http://dbpedia.org/resource/Farrar,_Straus_and_Giroux
+National Post	http://dbpedia.org/resource/National_Post
+British Aircraft Corporation	http://dbpedia.org/resource/British_Aircraft_Corporation
+Pearson Education Inc.	http://dbpedia.org/resource/Pearson_Education_Inc.
+Early Music	http://dbpedia.org/resource/Early_music
+Boeing Integrated Defense Systems	http://dbpedia.org/resource/Boeing_Defense,_Space_&_Security
+Curzon Press	http://dbpedia.org/resource/Curzon_Press
+Metro Goldwyn Mayer	http://dbpedia.org/resource/Metro-Goldwyn-Mayer
+Union Carbide	http://dbpedia.org/resource/Union_Carbide
+Kyle Cathie Limited	http://dbpedia.org/resource/Kyle_Cathie_Limited
+Southern Italy	http://dbpedia.org/resource/Southern_Italy
+Broadview Press	http://dbpedia.org/resource/Broadview_Press
+World Bank	http://dbpedia.org/resource/World_Bank
+Hal Leonard Corporation	http://dbpedia.org/resource/Hal_Leonard_Corporation
+Virgin Media	http://dbpedia.org/resource/Virgin_Media
+NSU Motorenwerke AG	http://dbpedia.org/resource/NSU_Motorenwerke
+Sutton Publishing	http://dbpedia.org/resource/The_History_Press
+Standard Oil Company	http://dbpedia.org/resource/Standard_Oil
+Belfast Telegraph	http://dbpedia.org/resource/The_Belfast_Telegraph
+Weinstein Company	http://dbpedia.org/resource/The_Weinstein_Company
+Bilderberg Group	http://dbpedia.org/resource/Bilderberg_Group
+French East India Company	http://dbpedia.org/resource/French_East_India_Company
+General Motors Corporation	http://dbpedia.org/resource/General_Motors
+JHU Press	http://dbpedia.org/resource/Johns_Hopkins_University_Press
+Houghton Mifflin Co.	http://dbpedia.org/resource/Houghton_Mifflin_Harcourt
+Ten Speed Press	http://dbpedia.org/resource/Ten_Speed_Press
+Air France	http://dbpedia.org/resource/Air_France
+Alaska Airlines	http://dbpedia.org/resource/Alaska_Airlines
+Virgin Atlantic Airways	http://dbpedia.org/resource/Virgin_Atlantic
+Warner Communications	http://dbpedia.org/resource/Warner_Communications
+Knights of Columbus	http://dbpedia.org/resource/Knights_of_Columbus
+International Trade	http://dbpedia.org/resource/International_trade
+Martin Marietta	http://dbpedia.org/resource/Martin_Marietta
+Super Mario Bros	http://dbpedia.org/resource/Super_Mario_Bros.
+Thales Group	http://dbpedia.org/resource/Thales_Group
+Merck & Co.	http://dbpedia.org/resource/Merck_&_Co.
+Sandia National Laboratories	http://dbpedia.org/resource/Sandia_National_Laboratories
+Yorkshire Television	http://dbpedia.org/resource/ITV_Yorkshire
+Taipei Times	http://dbpedia.org/resource/Taipei_Times
+Victor Talking Machine Company	http://dbpedia.org/resource/Victor_Talking_Machine_Company
+University Press of America	http://dbpedia.org/resource/University_Press_of_America
+Palm Inc.	http://dbpedia.org/resource/Palm,_Inc.
+Southern Ontario	http://dbpedia.org/resource/Southern_Ontario
+H. J. Heinz Company	http://dbpedia.org/resource/H._J._Heinz_Company
+Analog Devices	http://dbpedia.org/resource/Analog_Devices
+Fox Network	http://dbpedia.org/resource/Fox_Broadcasting_Company
+ABC Radio	http://dbpedia.org/resource/ABC_Radio
+Bank of Scotland	http://dbpedia.org/resource/Bank_of_Scotland
+British South Africa Company	http://dbpedia.org/resource/British_South_Africa_Company
+National Academy Press	http://dbpedia.org/resource/National_Academies_Press
+Rio Tinto Group	http://dbpedia.org/resource/Rio_Tinto_Group
+Pan American Airways	http://dbpedia.org/resource/Pan_American_World_Airways
+Marconi Company	http://dbpedia.org/resource/Marconi_Company
+National Bank	http://dbpedia.org/resource/National_bank
+Southern Rhodesia	http://dbpedia.org/resource/Southern_Rhodesia
+English East India Company	http://dbpedia.org/resource/East_India_Company
+Bristol Aeroplane Company	http://dbpedia.org/resource/Bristol_Aeroplane_Company
+Sperry Corporation	http://dbpedia.org/resource/Sperry_Corporation
+Barclays Bank	http://dbpedia.org/resource/Barclays
+Raven Software	http://dbpedia.org/resource/Raven_Software
+AMS Press	http://dbpedia.org/resource/AMS_Press
+Harcourt Brace Jovanovich	http://dbpedia.org/resource/Harcourt_(publisher)
+Mercer University Press	http://dbpedia.org/resource/Mercer_University_Press
+Grove Press	http://dbpedia.org/resource/Grove_Press
+Carl Zeiss AG	http://dbpedia.org/resource/Carl_Zeiss_AG
+Ralph Lauren	http://dbpedia.org/resource/Ralph_Lauren
+Abbeville Press	http://dbpedia.org/resource/Abbeville_Publishing_Group
+Lucent Technologies	http://dbpedia.org/resource/Lucent
+AOL Time Warner	http://dbpedia.org/resource/Time_Warner
+Die Welt	http://dbpedia.org/resource/Die_Welt
+Father and Son	http://dbpedia.org/resource/Father_and_Son
+Chicago University Press	http://dbpedia.org/resource/University_of_Chicago_Press
+Monsters Inc.	http://dbpedia.org/resource/Monsters,_Inc.
+American Broadcasting	http://dbpedia.org/resource/American_Broadcasting
+Texas A&M University Press	http://dbpedia.org/resource/Texas_A&M_University_Press
+Exxon Mobil	http://dbpedia.org/resource/ExxonMobil
+IEEE Press	http://dbpedia.org/resource/Institute_of_Electrical_and_Electronics_Engineers
+Mario Bros	http://dbpedia.org/resource/Mario_Bros.
+UBS AG	http://dbpedia.org/resource/UBS
+Lawrence Erlbaum Associates	http://dbpedia.org/resource/Taylor_&_Francis
+National Broadcasting Company	http://dbpedia.org/resource/NBC
+Slave Trade	http://dbpedia.org/resource/History_of_slavery
+Rolls-Royce plc	http://dbpedia.org/resource/Rolls-Royce_plc
+David Steel	http://dbpedia.org/resource/David_Steel
+D. Van Nostrand Company	http://dbpedia.org/resource/D._Van_Nostrand_Company
+20th Century Fox	http://dbpedia.org/resource/20th_Century_Fox
+South Vietnam	http://dbpedia.org/resource/South_Vietnam
+Earth Metrics Inc.	http://dbpedia.org/resource/Earth_Metrics_Inc.
+Edwin Mellen Press	http://dbpedia.org/resource/Edwin_Mellen_Press
+Atlanta Journal	http://dbpedia.org/resource/The_Atlanta_Journal-Constitution
+McGraw-Hill Book Company	http://dbpedia.org/resource/McGraw-Hill
+Catalan Company	http://dbpedia.org/resource/Catalan_Company
+Clear Channel	http://dbpedia.org/resource/Clear_Channel_Communications
+MIT Lincoln Laboratory	http://dbpedia.org/resource/Lincoln_Laboratory
+Walt Disney Parks and Resorts	http://dbpedia.org/resource/Walt_Disney_Parks_and_Resorts
+Rotten Tomatoes	http://dbpedia.org/resource/Rotten_Tomatoes
+Human Resources	http://dbpedia.org/resource/Human_resources
+Carolina Academic Press	http://dbpedia.org/resource/Carolina_Academic_Press
+News Corp.	http://dbpedia.org/resource/News_Corporation
+Kent State University Press	http://dbpedia.org/resource/Kent_State_University
+Open University Press	http://dbpedia.org/resource/McGraw-Hill
+Hearst Corporation	http://dbpedia.org/resource/Hearst_Corporation
+NZ Herald	http://dbpedia.org/resource/The_New_Zealand_Herald
+Computer Sciences	http://dbpedia.org/resource/Computer_Sciences
+Hogarth Press	http://dbpedia.org/resource/Hogarth_Press
+Cathay Pacific	http://dbpedia.org/resource/Cathay_Pacific
+B. Eerdmans Publishing	http://dbpedia.org/resource/B._Eerdmans_Publishing
+Naval Research Laboratory	http://dbpedia.org/resource/United_States_Naval_Research_Laboratory
+Canadian Press	http://dbpedia.org/resource/The_Canadian_Press
+Coachella Valley Music	http://dbpedia.org/resource/Coachella_Valley_Music
+W.W. Norton & Co.	http://dbpedia.org/resource/W.W._Norton_&_Co.
+Standard & Poor's	http://dbpedia.org/resource/Standard_%26_Poor%27s
+Boeing Company	http://dbpedia.org/resource/Boeing
+McFarland & Company	http://dbpedia.org/resource/McFarland_&_Company
+Bank of China	http://dbpedia.org/resource/Bank_of_China
+Iberia Airlines	http://dbpedia.org/resource/Iberia_(airline)
+Sky Television plc	http://dbpedia.org/resource/Sky_Television_plc
+ACM Press	http://dbpedia.org/resource/Association_for_Computing_Machinery
+France Telecom	http://dbpedia.org/resource/France_T%C3%A9l%C3%A9com
+La Repubblica	http://dbpedia.org/resource/La_Repubblica
+Thievery Corporation	http://dbpedia.org/resource/Thievery_Corporation
+Central Bank	http://dbpedia.org/resource/Central_bank
+Royal Asiatic Translation Fund	http://dbpedia.org/resource/Royal_Asiatic_Translation_Fund
+Cray Research	http://dbpedia.org/resource/Cray
+Johns Hopkins Press	http://dbpedia.org/resource/Johns_Hopkins_University_Press
+Gulf Oil	http://dbpedia.org/resource/Gulf_Oil
+Miramax Films	http://dbpedia.org/resource/Miramax_Films
+Sveriges Riksbank	http://dbpedia.org/resource/Sveriges_Riksbank
+United States Steel Corporation	http://dbpedia.org/resource/U.S._Steel
+John Hopkins University Press	http://dbpedia.org/resource/Johns_Hopkins_University_Press
+Macquarie Library Pty Ltd	http://dbpedia.org/resource/Macquarie_Library_Pty_Ltd
+Eckert-Mauchly Computer Corporation	http://dbpedia.org/resource/Eckert%E2%80%93Mauchly_Computer_Corporation
+Irish Independent	http://dbpedia.org/resource/Irish_Independent
+Banque de France	http://dbpedia.org/resource/Banque_de_France
+Nissan Motors	http://dbpedia.org/resource/Nissan_Motor_Company
+Southern France	http://dbpedia.org/resource/Southern_France
+Coors Brewing Company	http://dbpedia.org/resource/Coors_Brewing_Company
+J.C. Penney	http://dbpedia.org/resource/J._C._Penney
+Gladstone Publishing	http://dbpedia.org/resource/Gladstone_Publishing
+Super Mario USA	http://dbpedia.org/resource/Super_Mario_Bros._2
+Altria Group	http://dbpedia.org/resource/Altria
+Norfolk Wildlife Trust	http://dbpedia.org/resource/Norfolk_Wildlife_Trust
+Freedom Press	http://dbpedia.org/resource/Freedom_Press
+J. P. Morgan	http://dbpedia.org/resource/J._P._Morgan
+du Pont	http://dbpedia.org/resource/du_Pont
+Haworth Press	http://dbpedia.org/resource/Haworth_Press
+General Dynamics Corporation	http://dbpedia.org/resource/General_Dynamics
+Kia Motors	http://dbpedia.org/resource/Kia_Motors
+Princeton Architectural Press	http://dbpedia.org/resource/Princeton_Architectural_Press
+Iron Mountain	http://dbpedia.org/resource/Iron_Mountain
+ING Group	http://dbpedia.org/resource/ING_Group
+Guilford Press	http://dbpedia.org/resource/Guilford_Press
+Asiana Airlines	http://dbpedia.org/resource/Asiana_Airlines
+Sky News	http://dbpedia.org/resource/Sky_News
+Business Wire	http://dbpedia.org/resource/Business_Wire
+United Press International	http://dbpedia.org/resource/United_Press_International
+Northeastern University Press	http://dbpedia.org/resource/University_Press_of_New_England
+Sheffield Academic Press	http://dbpedia.org/resource/Sheffield_Academic_Press
+Canon Inc.	http://dbpedia.org/resource/Canon_Inc.
+Pacific Northwest National Laboratory	http://dbpedia.org/resource/Pacific_Northwest_National_Laboratory
+Arno Press	http://dbpedia.org/resource/Arno_Press
+Minute Maid	http://dbpedia.org/resource/Minute_Maid
+Film Music	http://dbpedia.org/resource/Film_score
+China Airlines	http://dbpedia.org/resource/China_Airlines
+Total S.A.	http://dbpedia.org/resource/Total_S.A.
+Commonwealth Bank	http://dbpedia.org/resource/Commonwealth_Bank
+Dow Jones	http://dbpedia.org/resource/Dow_Jones_&_Company
+Western Digital	http://dbpedia.org/resource/Western_Digital
+MTV Europe	http://dbpedia.org/resource/MTV_Europe
+Portia Group	http://dbpedia.org/resource/Portia_Group
+Three Rivers Press	http://dbpedia.org/resource/Three_Rivers_Press
+Bibliographic Resources	http://dbpedia.org/resource/Bibliographic_Resources
+Milton Bradley Company	http://dbpedia.org/resource/Milton_Bradley_Company
+Washington Mutual	http://dbpedia.org/resource/Washington_Mutual
+Avon Products	http://dbpedia.org/resource/Avon_Products
+Norsk Hydro	http://dbpedia.org/resource/Norsk_Hydro
+Dow Jones & Company	http://dbpedia.org/resource/Dow_Jones_&_Company
+Ty Inc.	http://dbpedia.org/resource/Ty_Inc.
+American Fur Company	http://dbpedia.org/resource/American_Fur_Company
+Arcade Publishing	http://dbpedia.org/resource/Arcade_Publishing
+Levi Strauss	http://dbpedia.org/resource/Levi_Strauss
+Continental AG	http://dbpedia.org/resource/Continental_AG
+South African Airways	http://dbpedia.org/resource/South_African_Airways
+ADV Films	http://dbpedia.org/resource/A.D._Vision
+Bloomsbury Group	http://dbpedia.org/resource/Bloomsbury_Group
+Tribune Company	http://dbpedia.org/resource/Tribune_Company
+Hilton Hotels	http://dbpedia.org/resource/Hilton_Hotels_&_Resorts
+Imperial Airways	http://dbpedia.org/resource/Imperial_Airways
+Gramophone Company	http://dbpedia.org/resource/Gramophone_Company
+Hudson Ltd.	http://dbpedia.org/resource/Hudson_Ltd.
+Honourable Artillery Company	http://dbpedia.org/resource/Honourable_Artillery_Company
+Berkshire Hathaway	http://dbpedia.org/resource/Berkshire_Hathaway
+Imperial Oil	http://dbpedia.org/resource/Imperial_Oil
+Deutsche Telekom	http://dbpedia.org/resource/Deutsche_Telekom
+Atari Corp.	http://dbpedia.org/resource/Atari_Corporation
+Apogee Software	http://dbpedia.org/resource/Apogee_Software
+Phaidon Press	http://dbpedia.org/resource/Phaidon_Press
+Historical Capital	http://dbpedia.org/resource/Historical_Capital
+Addison-Wesley Publishing	http://dbpedia.org/resource/Addison-Wesley
+Steinway & Sons	http://dbpedia.org/resource/Steinway_&_Sons
+All Nippon Airways	http://dbpedia.org/resource/All_Nippon_Airways
+Free Software	http://dbpedia.org/resource/Free_software
+W. Norton & Co.	http://dbpedia.org/resource/W._Norton_&_Co.
+Fox Film Corporation	http://dbpedia.org/resource/20th_Century_Fox
+Milwaukee Journal Sentinel	http://dbpedia.org/resource/Milwaukee_Journal_Sentinel
+Generations Network Inc.	http://dbpedia.org/resource/Generations_Network_Inc.
+Thames Bank	http://dbpedia.org/resource/Thames_Bank
+Arizona Republic	http://dbpedia.org/resource/The_Arizona_Republic
+Philip Morris USA	http://dbpedia.org/resource/Philip_Morris_USA
+World Trade	http://dbpedia.org/resource/World_Trade
+Eastern Daily Press	http://dbpedia.org/resource/Eastern_Daily_Press
+Left Bank	http://dbpedia.org/resource/Rive_Gauche_(Paris)
+Open Source Software	http://dbpedia.org/resource/Open-source_software
+Sea Venture	http://dbpedia.org/resource/Sea_Venture
+Development Corporation	http://dbpedia.org/resource/Development_Corporation
+Green and Co.	http://dbpedia.org/resource/Green_and_Co.
+Liberty Media	http://dbpedia.org/resource/Liberty_Media
+Fox network	http://dbpedia.org/resource/Fox_Broadcasting_Company
+Ashgate Publishing Ltd.	http://dbpedia.org/resource/Ashgate_Publishing_Ltd.
+Cavendish Laboratory	http://dbpedia.org/resource/Cavendish_Laboratory
+Fannie Mae	http://dbpedia.org/resource/Fannie_Mae
+William B. Eerdmans Publishing Company	http://dbpedia.org/resource/William_B._Eerdmans_Publishing_Company
+South Sea Company	http://dbpedia.org/resource/South_Sea_Company
+MCI Communications	http://dbpedia.org/resource/MCI_Communications
+British Sky Broadcasting	http://dbpedia.org/resource/BSkyB
+Red Bank	http://dbpedia.org/resource/Red_Bank
+Hartford Courant	http://dbpedia.org/resource/Hartford_Courant
+Vivendi Universal	http://dbpedia.org/resource/Vivendi
+Macmillan Publishing	http://dbpedia.org/resource/Macmillan_Publishers
+Sony Pictures Television	http://dbpedia.org/resource/Sony_Pictures_Television
+Bausch & Lomb	http://dbpedia.org/resource/Bausch_&_Lomb
+Thomson SA	http://dbpedia.org/resource/Technicolor_SA
+BHP Billiton	http://dbpedia.org/resource/BHP_Billiton
+Abercrombie & Fitch	http://dbpedia.org/resource/Abercrombie_&_Fitch
+Glenn L. Martin Company	http://dbpedia.org/resource/Glenn_L._Martin_Company
+Super Smash Bros.	http://dbpedia.org/resource/Super_Smash_Bros.
+Canberra Times	http://dbpedia.org/resource/The_Canberra_Times
+Philip Morris	http://dbpedia.org/resource/Philip_Morris
+Sveriges Television	http://dbpedia.org/resource/Sveriges_Television
+MOS Technology Inc.	http://dbpedia.org/resource/MOS_Technology_Inc.
+Notre Dame Press	http://dbpedia.org/resource/University_of_Notre_Dame_Press
+Orange SA	http://dbpedia.org/resource/Orange_(telecommunications)
+United U.S.	http://dbpedia.org/resource/United_U.S.
+Xinhua News Agency	http://dbpedia.org/resource/Xinhua_News_Agency
+W.W. Norton & Company Inc.	http://dbpedia.org/resource/W.W._Norton_&_Company_Inc.
+Staples Inc.	http://dbpedia.org/resource/Staples_Inc.
+Wal-Mart stores	http://dbpedia.org/resource/Wal-Mart_stores
+Bank of Montreal	http://dbpedia.org/resource/Bank_of_Montreal
+Cairns Group	http://dbpedia.org/resource/Cairns_Group
+Freddie Mac	http://dbpedia.org/resource/Freddie_Mac
+Dallas Morning News	http://dbpedia.org/resource/The_Dallas_Morning_News
+American Motors Corporation	http://dbpedia.org/resource/American_Motors
+Dell Inc.	http://dbpedia.org/resource/Dell
+St. James Press	http://dbpedia.org/resource/Gale_(publisher)
+Puma AG	http://dbpedia.org/resource/Puma_SE
+Yahoo! Music	http://dbpedia.org/resource/Yahoo!_Music
+SIAM Journal	http://dbpedia.org/resource/SIAM_Journal
+Information Systems	http://dbpedia.org/resource/Information_systems
+National High Magnetic Field Laboratory	http://dbpedia.org/resource/National_High_Magnetic_Field_Laboratory
+Los Alamos Scientific Laboratory	http://dbpedia.org/resource/Los_Alamos_National_Laboratory
+Hershey Company	http://dbpedia.org/resource/The_Hershey_Company
+National Academies Press	http://dbpedia.org/resource/National_Academies_Press
+Fortress Press	http://dbpedia.org/resource/Augsburg_Fortress
+Working Group	http://dbpedia.org/resource/Working_Group
+Second City Television	http://dbpedia.org/resource/Second_City_Television
+Wang Laboratories	http://dbpedia.org/resource/Wang_Laboratories
+Arab Monetary Fund	http://dbpedia.org/resource/Arab_Monetary_Fund
+Southern Asia	http://dbpedia.org/resource/South_Asia
+Thorndike Press	http://dbpedia.org/resource/Gale_(publisher)
+Christian Dior	http://dbpedia.org/resource/Christian_Dior
+Review Awards	http://dbpedia.org/resource/Review_Awards
+Penn State Press	http://dbpedia.org/resource/Penn_State_University_Press
+Artificial Intelligence Laboratory	http://dbpedia.org/resource/Artificial_Intelligence_Laboratory
+First Bank of the United States	http://dbpedia.org/resource/First_Bank_of_the_United_States
+Water Resources	http://dbpedia.org/resource/Water_resources
+Boston Review	http://dbpedia.org/resource/Boston_Review
+Scientific Data Systems	http://dbpedia.org/resource/Scientific_Data_Systems
+British European Airways	http://dbpedia.org/resource/British_European_Airways
+Object Management Group	http://dbpedia.org/resource/Object_Management_Group
+Chicago Daily Tribune	http://dbpedia.org/resource/Chicago_Tribune
+Hot Dance Music	http://dbpedia.org/resource/Hot_Dance_Music
+UPS Airlines	http://dbpedia.org/resource/UPS_Airlines
+Pearson PLC	http://dbpedia.org/resource/Pearson_PLC
+American Motors	http://dbpedia.org/resource/American_Motors
+Southern India	http://dbpedia.org/resource/South_India
+Hudson Bay Company	http://dbpedia.org/resource/Hudson's_Bay_Company
+Subterranean Press	http://dbpedia.org/resource/Subterranean_Press
+British Heavy Metal	http://dbpedia.org/resource/British_Heavy_Metal
+Who Do You Trust	http://dbpedia.org/resource/Who_Do_You_Trust
+New Super Mario Bros	http://dbpedia.org/resource/New_Super_Mario_Bros.
+Oxford Clarendon Press	http://dbpedia.org/resource/Oxford_University_Press
+Phoenix Press	http://dbpedia.org/resource/Phoenix_Books
+ION Television	http://dbpedia.org/resource/Ion_Television
+Montreal Gazette	http://dbpedia.org/resource/The_Gazette_(Montreal)
+Bank of Canada	http://dbpedia.org/resource/Bank_of_Canada
+Birmingham Small Arms Company	http://dbpedia.org/resource/Birmingham_Small_Arms_Company
+Investment Bank	http://dbpedia.org/resource/Investment_banking
+Canterbury University Press	http://dbpedia.org/resource/University_of_Canterbury
+Abbott Laboratories	http://dbpedia.org/resource/Abbott_Laboratories
+Leamington Spa	http://dbpedia.org/resource/Royal_Leamington_Spa
+BT Group plc	http://dbpedia.org/resource/BT_Group
+Parker Brothers	http://dbpedia.org/resource/Parker_Brothers
+Trafford Publishing	http://dbpedia.org/resource/Trafford_Publishing
+Bank of France	http://dbpedia.org/resource/Banque_de_France
+Control Data	http://dbpedia.org/resource/Control_Data_Corporation
+Leicester University Press	http://dbpedia.org/resource/University_of_Leicester
+Du Pont	http://dbpedia.org/resource/DuPont
+Traditional Music	http://dbpedia.org/resource/Traditional_Music
+Bell Atlantic	http://dbpedia.org/resource/Verizon_Communications
+MAN AG	http://dbpedia.org/resource/MAN_SE
+Tandy Corporation	http://dbpedia.org/resource/Tandy_Corporation
+Southern Illinois University Press	http://dbpedia.org/resource/Southern_Illinois_University_Press
+Penguin Books Ltd.	http://dbpedia.org/resource/Penguin_Books_Ltd.
+Moody Press	http://dbpedia.org/resource/Moody_Publishers
+Mainstream Publishing	http://dbpedia.org/resource/Mainstream_Publishing
+SCO Group	http://dbpedia.org/resource/SCO_Group
+Mercer Human Resource Consulting	http://dbpedia.org/resource/Mercer_(consulting_firm)
+Le monde	http://dbpedia.org/resource/Le_Monde
+Flerov Laboratory	http://dbpedia.org/resource/Flerov_Laboratory
+Scania AB	http://dbpedia.org/resource/Scania_AB
+Sears Roebuck	http://dbpedia.org/resource/Sears
+Classical Music	http://dbpedia.org/resource/Classical_music
+Duke Energy	http://dbpedia.org/resource/Duke_Energy
+Mediacorp Canada Inc.	http://dbpedia.org/resource/Mediacorp_Canada_Inc.
+John Wiley & Songs Inc.	http://dbpedia.org/resource/John_Wiley_&_Songs_Inc.
+National Cash Register Company	http://dbpedia.org/resource/NCR_Corporation
+RIA Novosti	http://dbpedia.org/resource/RIA_Novosti
+Broadcast Music	http://dbpedia.org/resource/Broadcast_Music
+Rockwell Collins	http://dbpedia.org/resource/Rockwell_Collins
+Hilton Hotels Corporation	http://dbpedia.org/resource/Hilton_Worldwide
+Birlinn Ltd.	http://dbpedia.org/resource/Birlinn_Ltd.
+Silicon Graphics Inc.	http://dbpedia.org/resource/Silicon_Graphics
+Indian Head	http://dbpedia.org/resource/Indian_Head
+Danmarks Radio	http://dbpedia.org/resource/DR_(broadcaster)
+Doubleday & Company	http://dbpedia.org/resource/Doubleday_&_Company
+Somers Isles Company	http://dbpedia.org/resource/Somers_Isles_Company
+Foreign Trade	http://dbpedia.org/resource/International_trade
+International Fund	http://dbpedia.org/resource/International_Fund
+World Wildlife Fund	http://dbpedia.org/resource/World_Wide_Fund_for_Nature
+AT&T Bell Labs	http://dbpedia.org/resource/AT&T_Bell_Labs
+United Fruit Company	http://dbpedia.org/resource/United_Fruit_Company
+Ohio University Press	http://dbpedia.org/resource/Ohio_University_Press
+Volkswagen AG	http://dbpedia.org/resource/Volkswagen_Group
+Knight Ridder	http://dbpedia.org/resource/Knight_Ridder
+Publishers Inc.	http://dbpedia.org/resource/Publishers_Inc.
+Wiley & Sons	http://dbpedia.org/resource/Wiley_&_Sons
+United Technologies	http://dbpedia.org/resource/United_Technologies_Corporation
+Steppenwolf Theatre Company	http://dbpedia.org/resource/Steppenwolf_Theatre_Company
+Chicago Sun Times	http://dbpedia.org/resource/Chicago_Sun-Times
+Ashgate Publishing	http://dbpedia.org/resource/Ashgate_Publishing
+Southern Maryland	http://dbpedia.org/resource/Southern_Maryland
+Westminster Press	http://dbpedia.org/resource/Westminster_Press
+Adamant Media Corporation	http://dbpedia.org/resource/Adamant_Media_Corporation
+Wildside Press	http://dbpedia.org/resource/Wildside_Press
+NASA's Jet Propulsion Laboratory	http://dbpedia.org/resource/Jet_Propulsion_Laboratory
+Jet Propulsion Laboratory	http://dbpedia.org/resource/Jet_Propulsion_Laboratory
+JPL	http://dbpedia.org/resource/Jet_Propulsion_Laboratory
+New Testament Introduction	http://dbpedia.org/resource/New_Testament_Introduction
+Southern Sudan	http://dbpedia.org/resource/South_Sudan
+Dow Chemical Company	http://dbpedia.org/resource/Dow_Chemical_Company
+CNN International	http://dbpedia.org/resource/CNN_International
+Getty Oil	http://dbpedia.org/resource/Getty_Oil
+Cycorp Inc.	http://dbpedia.org/resource/Cycorp_Inc.
+Seven Stories Press	http://dbpedia.org/resource/Seven_Stories_Press
+New Line Cinema	http://dbpedia.org/resource/New_Line_Cinema
+Lulu Press	http://dbpedia.org/resource/Lulu_(company)
+MacMillan Company	http://dbpedia.org/resource/MacMillan_Company
+Gemstone Publishing	http://dbpedia.org/resource/Gemstone_Publishing
+Popular Press	http://dbpedia.org/resource/Mass_media
+Encyclopaedia Britannica Inc.	http://dbpedia.org/resource/Encyclop%C3%A6dia_Britannica,_Inc.
+Delta Airlines	http://dbpedia.org/resource/Delta_Air_Lines
+WarioWare Inc.	http://dbpedia.org/resource/Wario_(franchise)
+Private Eye	http://dbpedia.org/resource/Private_Eye
+Sprint Nextel	http://dbpedia.org/resource/Sprint_Nextel
+Two Chief World Systems	http://dbpedia.org/resource/Two_Chief_World_Systems
+Macintosh LC	http://dbpedia.org/resource/Macintosh_LC
+British Overseas Airways Corporation	http://dbpedia.org/resource/British_Overseas_Airways_Corporation
+Mitsubishi Heavy Industries	http://dbpedia.org/resource/Mitsubishi_Heavy_Industries
+Bad Company	http://dbpedia.org/resource/Bad_Company
+Moog Music	http://dbpedia.org/resource/Moog_Music
+Particle Data Group	http://dbpedia.org/resource/Particle_Data_Group
+Old Testament Introduction	http://dbpedia.org/resource/Old_Testament_Introduction
+Fairleigh Dickinson University Press	http://dbpedia.org/resource/Fairleigh_Dickinson_University_Press
+South Bank	http://dbpedia.org/resource/South_Bank
+Parthenon Press	http://dbpedia.org/resource/Parthenon_Press
+William Kaufmann Inc.	http://dbpedia.org/resource/William_Kaufmann_Inc.
+Joseph Henry Press	http://dbpedia.org/resource/Joseph_Henry_Press
+Hudson Motor Car Company	http://dbpedia.org/resource/Hudson_Motor_Car_Company
+Hackett Publishing Company	http://dbpedia.org/resource/Hackett_Publishing_Company
+LG Electronics	http://dbpedia.org/resource/LG_Electronics
+Tokyo Stock Exchange	http://dbpedia.org/resource/Tokyo_Stock_Exchange
+ITT Corporation	http://dbpedia.org/resource/ITT_Corporation
+International Crisis Group	http://dbpedia.org/resource/International_Crisis_Group
+Inter Press Service	http://dbpedia.org/resource/Inter_Press_Service
+Amadeus Press	http://dbpedia.org/resource/Hal_Leonard_Corporation
+Management Information Systems	http://dbpedia.org/resource/Management_information_system
+Edward Jones	http://dbpedia.org/resource/Edward_Jones
+PepsiCo Inc.	http://dbpedia.org/resource/PepsiCo
+Chicago Times	http://dbpedia.org/resource/Chicago_Times
+Columbia Records	http://dbpedia.org/resource/Columbia_Records
+St. Martins Press	http://dbpedia.org/resource/St._Martin's_Press
+Paris Match	http://dbpedia.org/resource/Paris_Match
+Indian Music	http://dbpedia.org/resource/Music_of_India
+Gnome Press	http://dbpedia.org/resource/Gnome_Press
+Southern Netherlands	http://dbpedia.org/resource/Southern_Netherlands
+Natural Trust	http://dbpedia.org/resource/Natural_Trust
+Helsinki Stock Exchange	http://dbpedia.org/resource/Helsinki_Stock_Exchange
+Contemporary Music	http://dbpedia.org/resource/Contemporary_classical_music
+BBC 6 Music	http://dbpedia.org/resource/BBC_Radio_6_Music
+Central European University Press	http://dbpedia.org/resource/Central_European_University_Press
+Apollo Computer	http://dbpedia.org/resource/Apollo_Computer
+Atari Corporation	http://dbpedia.org/resource/Atari_Corporation
+Merck KGaA	http://dbpedia.org/resource/Merck_KGaA
+Bombardment Group	http://dbpedia.org/resource/Bombardment_Group
+Victor Gollancz Ltd	http://dbpedia.org/resource/Victor_Gollancz_Ltd
+Carlsberg Laboratory	http://dbpedia.org/resource/Carlsberg_Laboratory
+ATA Airlines	http://dbpedia.org/resource/ATA_Airlines
+Simon and Schuster Inc.	http://dbpedia.org/resource/Simon_and_Schuster_Inc.
+Imperial College Press	http://dbpedia.org/resource/Imperial_College_Press
+Holland Land Company	http://dbpedia.org/resource/Holland_Land_Company
+Souvenir Press	http://dbpedia.org/resource/Ernest_Hecht
+Mario Bros.	http://dbpedia.org/resource/Mario_Bros.
+Marks & Spencer	http://dbpedia.org/resource/Marks_&_Spencer
+Lucasfilm Ltd.	http://dbpedia.org/resource/Lucasfilm
+ABC Television	http://dbpedia.org/resource/ABC_Television
+Bloomsbury Publishing	http://dbpedia.org/resource/Bloomsbury_Publishing
+Canada Limited	http://dbpedia.org/resource/Canada_Limited
+Broadcasting Corporation	http://dbpedia.org/resource/Broadcasting_Corporation
+Hyundai Motor Company	http://dbpedia.org/resource/Hyundai_Motor_Company
+Dornier GmbH	http://dbpedia.org/resource/Dornier_Flugzeugwerke
+Henry Holt & Company	http://dbpedia.org/resource/Henry_Holt_&_Company
+London Journal	http://dbpedia.org/resource/London_Journal
+Lincoln Laboratory	http://dbpedia.org/resource/Lincoln_Laboratory
+Shell Oil	http://dbpedia.org/resource/Royal_Dutch_Shell
+Rocky Mountain News	http://dbpedia.org/resource/Rocky_Mountain_News
+United Technologies Corporation	http://dbpedia.org/resource/United_Technologies_Corporation
+Evolution Publishing	http://dbpedia.org/resource/Evolution_Publishing
+Space Systems	http://dbpedia.org/resource/Space_Systems/Loral
+Mail & Guardian	http://dbpedia.org/resource/Mail_&_Guardian
+Imperial Chemical Industries	http://dbpedia.org/resource/Imperial_Chemical_Industries
+Southern England	http://dbpedia.org/resource/Southern_England
+SVS Press	http://dbpedia.org/resource/Saint_Vladimir's_Orthodox_Theological_Seminary
+Bank of Nova Scotia	http://dbpedia.org/resource/Scotiabank
+Borders Group	http://dbpedia.org/resource/Borders_Group
+SCM Press	http://dbpedia.org/resource/SCM_Press
+United Artists	http://dbpedia.org/resource/United_Artists
+Park Place	http://dbpedia.org/resource/Park_Place
+Levi Strauss & Co.	http://dbpedia.org/resource/Levi_Strauss_&_Co.
+Wellcome Trust	http://dbpedia.org/resource/Wellcome_Trust
+Bank of Greece	http://dbpedia.org/resource/Bank_of_Greece
+Greenwood Publishing	http://dbpedia.org/resource/Greenwood_Publishing_Group
+Embedded Systems	http://dbpedia.org/resource/Embedded_system
+Chase Manhattan Bank	http://dbpedia.org/resource/Chase_(bank)
+National Express East Anglia	http://dbpedia.org/resource/National_Express_East_Anglia
+National Educational Television	http://dbpedia.org/resource/National_Educational_Television
+National Petroleum	http://dbpedia.org/resource/National_Petroleum
+English Electric Company	http://dbpedia.org/resource/English_Electric
+Bomb Group	http://dbpedia.org/resource/Bomb_Group
+Weekly Standard	http://dbpedia.org/resource/The_Weekly_Standard
+Ursa Major Moving Group	http://dbpedia.org/resource/Ursa_Major_Moving_Group
+Cygnus Solutions	http://dbpedia.org/resource/Cygnus_Solutions
+Cambridge Computer Laboratory	http://dbpedia.org/resource/University_of_Cambridge_Computer_Laboratory
+Lockheed Corporation	http://dbpedia.org/resource/Lockheed_Corporation
+Hawker Siddeley Group	http://dbpedia.org/resource/Hawker_Siddeley
+Bantam Press	http://dbpedia.org/resource/Bantam_Press
+Yum! Brands Inc.	http://dbpedia.org/resource/Yum!_Brands
+Universal Pictures	http://dbpedia.org/resource/Universal_Studios
+Georgetown University Press	http://dbpedia.org/resource/Georgetown_University_Press
+Overlook Press	http://dbpedia.org/resource/The_Overlook_Press
+Southern Russia	http://dbpedia.org/resource/Southern_Russia
+AT&T Bell Laboratories	http://dbpedia.org/resource/AT&T_Bell_Laboratories
+IDW Publishing	http://dbpedia.org/resource/IDW_Publishing
+Fuji Television	http://dbpedia.org/resource/Fuji_Television
+Qatar Airways	http://dbpedia.org/resource/Qatar_Airways
+Calgary Herald	http://dbpedia.org/resource/Calgary_Herald
+Disney-ABC Television Group	http://dbpedia.org/resource/Disney%E2%80%93ABC_Television_Group
+Dow Chemical	http://dbpedia.org/resource/Dow_Chemical_Company
+Harvill Press	http://dbpedia.org/resource/Harvill_Secker
+Mongoose Publishing	http://dbpedia.org/resource/Mongoose_Publishing
+Dan River	http://dbpedia.org/resource/Dan_River
+Xerox Corporation	http://dbpedia.org/resource/Xerox
+Review Award for Best	http://dbpedia.org/resource/Review_Award_for_Best
+BAA Limited	http://dbpedia.org/resource/Heathrow_Airport_Holdings
+Yamaha Motor	http://dbpedia.org/resource/Yamaha_Motor_Company
+Aon Corporation	http://dbpedia.org/resource/Aon_plc
+Buick Motor Company	http://dbpedia.org/resource/Buick
+Applied Materials	http://dbpedia.org/resource/Applied_Materials
+St. Paul Pioneer Press	http://dbpedia.org/resource/St._Paul_Pioneer_Press
+FM Radio	http://dbpedia.org/resource/FM_broadcasting
+Paragon Book Reprint Corp.	http://dbpedia.org/resource/Paragon_Book_Reprint_Corp.
+Brown & Co.	http://dbpedia.org/resource/Brown_&_Co.
+Macmillan Publishers Ltd.	http://dbpedia.org/resource/Macmillan_Publishers_Ltd.
+Sinclair Research Ltd	http://dbpedia.org/resource/Sinclair_Research
+Indian Airlines	http://dbpedia.org/resource/Indian_(airline)
+Lyons Press	http://dbpedia.org/resource/Globe_Pequot_Press
+International Computers Limited	http://dbpedia.org/resource/International_Computers_Limited
+Eastman Kodak Company	http://dbpedia.org/resource/Eastman_Kodak
+Saudi Arabian Airlines	http://dbpedia.org/resource/Saudia
+Sinauer Associates Inc.	http://dbpedia.org/resource/Sinauer_Associates_Inc.
+Anglia Television	http://dbpedia.org/resource/ITV_Anglia
+LAN Airlines	http://dbpedia.org/resource/LAN_Airlines
+White Wolf Inc.	http://dbpedia.org/resource/White_Wolf_Inc.
+Intervarsity Press	http://dbpedia.org/resource/InterVarsity_Press
+Virtual Laboratory	http://dbpedia.org/resource/Virtual_Laboratory
+John Wiley and Sons Inc.	http://dbpedia.org/resource/John_Wiley_and_Sons_Inc.
+Freescale Semiconductor	http://dbpedia.org/resource/Freescale_Semiconductor
+Praeger Press	http://dbpedia.org/resource/Praeger_Press
+BBC Worldwide	http://dbpedia.org/resource/BBC_Worldwide
+Samsung Electronics	http://dbpedia.org/resource/Samsung_Electronics
+Schiffer Publishing	http://dbpedia.org/resource/Schiffer_Publishing
+American Telephone & Telegraph	http://dbpedia.org/resource/American_Telephone_&_Telegraph
+Heineken International	http://dbpedia.org/resource/Heineken_International
+LOT Polish Airlines	http://dbpedia.org/resource/LOT_Polish_Airlines
+General Instrument	http://dbpedia.org/resource/General_Instrument
+Public Radio	http://dbpedia.org/resource/Public_broadcasting
+Tiffany & Co.	http://dbpedia.org/resource/Tiffany_&_Co.
+Gran Turismo	http://dbpedia.org/resource/Gran_Turismo
+Mitsubishi Motors	http://dbpedia.org/resource/Mitsubishi_Motors
+Whispering Eagle Press	http://dbpedia.org/resource/Whispering_Eagle_Press
+Harvard Business School Press	http://dbpedia.org/resource/Harvard_Business_Press
+American International Group	http://dbpedia.org/resource/American_International_Group
+Lutterworth Press	http://dbpedia.org/resource/Lutterworth_Press
+Cooper Car Company	http://dbpedia.org/resource/Cooper_Car_Company
+Dance Music	http://dbpedia.org/resource/Dance_music
+BBC Northern Ireland	http://dbpedia.org/resource/BBC_Northern_Ireland
+Arab Bank	http://dbpedia.org/resource/Arab_Bank
+DK Publishing Inc.	http://dbpedia.org/resource/DK_Publishing_Inc.
+Pop Music	http://dbpedia.org/resource/Pop_music
+St. Regis	http://dbpedia.org/resource/Saint_Regis
+Tate Publishing	http://dbpedia.org/resource/Tate_Publishing
+JPMorgan Chase	http://dbpedia.org/resource/JPMorgan_Chase
+Sveriges Radio	http://dbpedia.org/resource/Sveriges_Radio
+Africa World Press	http://dbpedia.org/resource/Africa_World_Press
+Berkley Publishing Group	http://dbpedia.org/resource/Berkley_Books
+PalmSource Inc.	http://dbpedia.org/resource/PalmSource_Inc.
+Investor AB	http://dbpedia.org/resource/Investor_AB
+Biograph Company	http://dbpedia.org/resource/Biograph_Company
+Research In Motion	http://dbpedia.org/resource/BlackBerry_(company)
+Kawasaki Heavy Industries	http://dbpedia.org/resource/Kawasaki_Heavy_Industries
+Raven Press	http://dbpedia.org/resource/Raven_Press
+Universal Studios	http://dbpedia.org/resource/Universal_Studios
+Caterpillar Inc.	http://dbpedia.org/resource/Caterpillar_Inc.
+J. Wiley & Sons	http://dbpedia.org/resource/J._Wiley_&_Sons
+Ahmad Sa	http://dbpedia.org/resource/Ahmad_Sa
+Addison-Wesley Publishing Company	http://dbpedia.org/resource/Addison-Wesley
+Golden West	http://dbpedia.org/resource/Golden_West
+H&R Block	http://dbpedia.org/resource/H&R_Block
+RTL Group	http://dbpedia.org/resource/RTL_Group
+Straits Times	http://dbpedia.org/resource/The_Straits_Times
+Handmade Films	http://dbpedia.org/resource/HandMade_Films
+Newport News Shipbuilding	http://dbpedia.org/resource/Newport_News_Shipbuilding
+National Westminster Bank	http://dbpedia.org/resource/National_Westminster_Bank
+Delco Electronics	http://dbpedia.org/resource/Delco_Electronics
+British Broadcasting Company	http://dbpedia.org/resource/British_Broadcasting_Company
+Computer Research Corporation	http://dbpedia.org/resource/Computer_Research_Corporation
+Ford Motor Co.	http://dbpedia.org/resource/Ford_Motor_Company
+Barclays Banks	http://dbpedia.org/resource/Barclays_Banks
+Ars Technica	http://dbpedia.org/resource/Ars_Technica
+NPR Music	http://dbpedia.org/resource/NPR_Music
+Lotus Software	http://dbpedia.org/resource/Lotus_Software
+General Electric Company plc	http://dbpedia.org/resource/General_Electric_Company_plc
+Chicago Review Press	http://dbpedia.org/resource/Independent_Publishers_Group
+Ohio State University Press	http://dbpedia.org/resource/Ohio_State_University_Press
+Dogger Bank	http://dbpedia.org/resource/Dogger_Bank
+Occidental Petroleum	http://dbpedia.org/resource/Occidental_Petroleum
+Frontier Airlines	http://dbpedia.org/resource/Frontier_Airlines
+DuMont Television	http://dbpedia.org/resource/DuMont_Television_Network
+Star Tribune	http://dbpedia.org/resource/Star_Tribune
+Peter Lang Publishing	http://dbpedia.org/resource/Peter_Lang_(publishing_company)
+Lotus Development Corporation	http://dbpedia.org/resource/Lotus_Software
+Verizon Wireless	http://dbpedia.org/resource/Verizon_Wireless
+Carnegie Corporation	http://dbpedia.org/resource/Carnegie_Corporation_of_New_York
+UCL Press	http://dbpedia.org/resource/University_College_London
+Volvo AB	http://dbpedia.org/resource/Volvo
+Macmillan and Co.	http://dbpedia.org/resource/Macmillan_Publishers
+Northwestern United States	http://dbpedia.org/resource/Northwestern_United_States
+Cavendish Astrophysics Radio Astronomy Group	http://dbpedia.org/resource/Cavendish_Astrophysics_Radio_Astronomy_Group
+Protein Data Bank	http://dbpedia.org/resource/Protein_Data_Bank
+Lincoln National	http://dbpedia.org/resource/Lincoln_National_Corporation
+Routledge Press	http://dbpedia.org/resource/Routledge
+Equipment Corporation	http://dbpedia.org/resource/Equipment_Corporation
+Max Factor	http://dbpedia.org/resource/Max_Factor
+Jim Henson Company	http://dbpedia.org/resource/The_Jim_Henson_Company
+Electric Boat Company	http://dbpedia.org/resource/General_Dynamics_Electric_Boat
+Swatch Group Ltd.	http://dbpedia.org/resource/Swatch_Group_Ltd.
+Bell Telephone Company	http://dbpedia.org/resource/Bell_Telephone_Company
+Tyson Foods	http://dbpedia.org/resource/Tyson_Foods
+Virgin Group	http://dbpedia.org/resource/Virgin_Group
+Academic Press Inc.	http://dbpedia.org/resource/Academic_Press_Inc.
+Infinity Inc.	http://dbpedia.org/resource/Infinity,_Inc.
+NRC Handelsblad	http://dbpedia.org/resource/NRC_Handelsblad
+Tata Motors	http://dbpedia.org/resource/Tata_Motors
+Landor Associates	http://dbpedia.org/resource/Landor_Associates
+Paramount Television	http://dbpedia.org/resource/Paramount_Television
+Royal Dutch Shell	http://dbpedia.org/resource/Royal_Dutch_Shell
+Frankfurt Stock Exchange	http://dbpedia.org/resource/Frankfurt_Stock_Exchange
+Night Music	http://dbpedia.org/resource/Sunday_Night_(American_TV_program)
+Ferrero SpA	http://dbpedia.org/resource/Ferrero_SpA
+Fiji Times	http://dbpedia.org/resource/Fiji_Times
+Crown Publishers Inc.	http://dbpedia.org/resource/Crown_Publishers_Inc.
+Columbus Dispatch	http://dbpedia.org/resource/The_Columbus_Dispatch
+Right Bank	http://dbpedia.org/resource/Rive_Droite_(Paris)
+McFarland & Co.	http://dbpedia.org/resource/McFarland_&_Co.
+Atlantic Monthly Press	http://dbpedia.org/resource/Grove/Atlantic,_Inc.
+Parker Pen Company	http://dbpedia.org/resource/Parker_Pen_Company
+MIT Laboratory	http://dbpedia.org/resource/MIT_Laboratory
+American Telephone & Telegraph Company	http://dbpedia.org/resource/American_Telephone_&_Telegraph_Company
+London Docklands Development Corporation	http://dbpedia.org/resource/London_Docklands_Development_Corporation
+Tata Group	http://dbpedia.org/resource/Tata_Group
+Friden Inc.	http://dbpedia.org/resource/Friden_Inc.
+Cartier SA	http://dbpedia.org/resource/Cartier_(jeweler)
+Bechtel Corporation	http://dbpedia.org/resource/Bechtel
+South African Broadcasting Corporation	http://dbpedia.org/resource/South_African_Broadcasting_Corporation
+South Bank Show	http://dbpedia.org/resource/The_South_Bank_Show
+West Publishing Co.	http://dbpedia.org/resource/West_(publisher)
+Turkish Airlines	http://dbpedia.org/resource/Turkish_Airlines
+Humana Press	http://dbpedia.org/resource/Humana_Press
+Paternoster Press	http://dbpedia.org/resource/Paternoster_Press
+His Music	http://dbpedia.org/resource/His_Music
+Magna International	http://dbpedia.org/resource/Magna_International
+Games Workshop	http://dbpedia.org/resource/Games_Workshop
+Henry Holt & Co.	http://dbpedia.org/resource/Henry_Holt_&_Co.
+Kitchen Sink Press	http://dbpedia.org/resource/Kitchen_Sink_Press
+3rd Ed. Worth Publishing	http://dbpedia.org/resource/3rd_Ed._Worth_Publishing
+Winnipeg Free Press	http://dbpedia.org/resource/Winnipeg_Free_Press
+Golden Gryphon Press	http://dbpedia.org/resource/Golden_Gryphon_Press
+die Welt	http://dbpedia.org/resource/die_Welt
+Long Range Desert Group	http://dbpedia.org/resource/Long_Range_Desert_Group
+ATI Technologies	http://dbpedia.org/resource/ATI_Technologies
+Capitol Records	http://dbpedia.org/resource/Capitol_Records
+Archer Daniels Midland	http://dbpedia.org/resource/Archer_Daniels_Midland
+Hughes Aircraft Company	http://dbpedia.org/resource/Hughes_Aircraft_Company
+Sussex Academic Press	http://dbpedia.org/resource/Sussex_Academic_Press
+Sun Microsystems Inc.	http://dbpedia.org/resource/Sun_Microsystems
+Minneapolis Tribune	http://dbpedia.org/resource/Star_Tribune
+MCI WorldCom	http://dbpedia.org/resource/MCI_Inc.
+Michigan State University Press	http://dbpedia.org/resource/Michigan_State_University_Press
+Trusted Computing Group	http://dbpedia.org/resource/Trusted_Computing_Group
+Chicago Tunnel Company	http://dbpedia.org/resource/Chicago_Tunnel_Company
+Kellogg Company	http://dbpedia.org/resource/Kellogg_Company
+Acme Corporation	http://dbpedia.org/resource/Acme_Corporation
+Western Music	http://dbpedia.org/resource/Western_music
+Walker & Company	http://dbpedia.org/resource/Walker_&_Company
+Greater Arab Free Trade	http://dbpedia.org/resource/Greater_Arab_Free_Trade
+Hanson plc	http://dbpedia.org/resource/Hanson_plc
+Lindisfarne Press	http://dbpedia.org/resource/Lindisfarne_Press
+Morgan Reynolds Publishing	http://dbpedia.org/resource/Morgan_Reynolds_Publishing
+Otis Elevator Company	http://dbpedia.org/resource/Otis_Elevator_Company
+Engineering Ltd	http://dbpedia.org/resource/Engineering_Ltd
+Associated TeleVision	http://dbpedia.org/resource/Associated_Television
+National Capital	http://dbpedia.org/resource/Capital_city
+Bucknell University Press	http://dbpedia.org/resource/Bucknell_University_Press
+Ebury Press	http://dbpedia.org/resource/Ebury_Publishing
+Garland Publishing Inc.	http://dbpedia.org/resource/Garland_Publishing_Inc.
+Marconi Electronic Systems	http://dbpedia.org/resource/Marconi_Electronic_Systems
+BBC Scotland	http://dbpedia.org/resource/BBC_Scotland
+News Limited	http://dbpedia.org/resource/News_Limited
+Minnesota Public Radio	http://dbpedia.org/resource/Minnesota_Public_Radio
+Emirates Airline	http://dbpedia.org/resource/Emirates_(airline)
+Native Americans	http://dbpedia.org/resource/Native_Americans
+Lotus Cars	http://dbpedia.org/resource/Lotus_Cars
+Oriental Steam Navigation Company	http://dbpedia.org/resource/Oriental_Steam_Navigation_Company
+Atlantic Records	http://dbpedia.org/resource/Atlantic_Records
+Western Electric Company	http://dbpedia.org/resource/Western_Electric
+DK Publishing	http://dbpedia.org/resource/Dorling_Kindersley
+Rock Music	http://dbpedia.org/resource/Rock_music
+Dun & Bradstreet	http://dbpedia.org/resource/Dun_&_Bradstreet
+Mars Incorporated	http://dbpedia.org/resource/Mars,_Incorporated
+Cadbury plc	http://dbpedia.org/resource/Cadbury
+SBC Communications	http://dbpedia.org/resource/AT&T
+Jet Airways	http://dbpedia.org/resource/Jet_Airways
+United States Playing Card Company	http://dbpedia.org/resource/United_States_Playing_Card_Company
+Sanford and Son	http://dbpedia.org/resource/Sanford_and_Son
+Metallurgical Laboratory	http://dbpedia.org/resource/Metallurgical_Laboratory
+Reconstruction Finance Corporation	http://dbpedia.org/resource/Reconstruction_Finance_Corporation
+Focal Press	http://dbpedia.org/resource/Focal_Press
+Ayer Publishing	http://dbpedia.org/resource/Ayer_Publishing
+Danielle Steel	http://dbpedia.org/resource/Danielle_Steel
+Blackstone Group	http://dbpedia.org/resource/Blackstone_Group
+Internet Corporation for Assigned Names	http://dbpedia.org/resource/Internet_Corporation_for_Assigned_Names
+Olympia Press	http://dbpedia.org/resource/Olympia_Press
+Royal Bank of Scotland	http://dbpedia.org/resource/The_Royal_Bank_of_Scotland
+Mozilla Corporation	http://dbpedia.org/resource/Mozilla_Corporation
+Contemporary Christian Music	http://dbpedia.org/resource/Contemporary_Christian_music
+Bain Capital	http://dbpedia.org/resource/Bain_Capital
+Caledonian Company	http://dbpedia.org/resource/Caledonian_Company
+NASDAQ stock market	http://dbpedia.org/resource/NASDAQ
+Teaching Company	http://dbpedia.org/resource/The_Great_Courses
+Wayne Corporation	http://dbpedia.org/resource/Wayne_Corporation
+Cold Spring Harbor Laboratory	http://dbpedia.org/resource/Cold_Spring_Harbor_Laboratory
+Muscovy Company	http://dbpedia.org/resource/Muscovy_Company
+Public Works	http://dbpedia.org/resource/Public_works
+Vlaamse Radio	http://dbpedia.org/resource/Vlaamse_Radio
+SKY Network Television	http://dbpedia.org/resource/SKY_TV_(New_Zealand)
+Netscape Communications	http://dbpedia.org/resource/Netscape
+Weird Tales	http://dbpedia.org/resource/Weird_Tales
+American Stock Exchange	http://dbpedia.org/resource/American_Stock_Exchange
+Father and son	http://dbpedia.org/resource/Father_and_Son
+A&E Television Networks	http://dbpedia.org/resource/A&E_Television_Networks
+Juniper Networks	http://dbpedia.org/resource/Juniper_Networks
+Elsevier Academic Press	http://dbpedia.org/resource/Elsevier_Academic_Press
+Edison Manufacturing Company	http://dbpedia.org/resource/Edison_Studios
+JP Morgan	http://dbpedia.org/resource/J._P._Morgan
+Lattice Semiconductor	http://dbpedia.org/resource/Lattice_Semiconductor
+King Features Syndicate	http://dbpedia.org/resource/King_Features_Syndicate
+James Clarke & Co Ltd	http://dbpedia.org/resource/James_Clarke_&_Co_Ltd
+Air New Zealand	http://dbpedia.org/resource/Air_New_Zealand
+Cerberus Capital Management	http://dbpedia.org/resource/Cerberus_Capital_Management
+Groupe Bull	http://dbpedia.org/resource/Groupe_Bull
+NFL Films	http://dbpedia.org/resource/NFL_Films
+SourceForge Inc.	http://dbpedia.org/resource/SourceForge_Inc.
+Air Force Research Laboratory	http://dbpedia.org/resource/Air_Force_Research_Laboratory
+Large Cities Climate Leadership Group	http://dbpedia.org/resource/C40_Cities_Climate_Leadership_Group
+Commercial Appeal	http://dbpedia.org/resource/The_Commercial_Appeal
+Trans-Pacific Strategic Economic Partnership	http://dbpedia.org/resource/Trans-Pacific_Strategic_Economic_Partnership
+LL.D. F.S.A.	http://dbpedia.org/resource/LL.D._F.S.A.
+McKinsey & Company	http://dbpedia.org/resource/McKinsey_&_Company
+Phoenix Technologies	http://dbpedia.org/resource/Phoenix_Technologies
+Le Journal	http://dbpedia.org/resource/Le_Journal_(Paris)
+Aer Lingus	http://dbpedia.org/resource/Aer_Lingus
+Maxim Integrated Products	http://dbpedia.org/resource/Maxim_Integrated
+Energy National Laboratories	http://dbpedia.org/resource/Energy_National_Laboratories
+El Universal	http://dbpedia.org/resource/El_Universal
+Blue Steel	http://dbpedia.org/resource/Blue_Steel
+Air Liquide	http://dbpedia.org/resource/Air_Liquide
+NLM Hazardous Substances Databank	http://dbpedia.org/resource/NLM_Hazardous_Substances_Databank
+Oxford U. Press	http://dbpedia.org/resource/Oxford_U._Press
+Timber Press	http://dbpedia.org/resource/Workman_Publishing_Company
+Southern Louisiana	http://dbpedia.org/resource/Southern_Louisiana
+Blue Man Group	http://dbpedia.org/resource/Blue_Man_Group
+Origin Systems	http://dbpedia.org/resource/Origin_Systems
+Shanghai Stock Exchange	http://dbpedia.org/resource/Shanghai_Stock_Exchange
+Wildlife Service	http://dbpedia.org/resource/Wildlife_Service
+Pan Am	http://dbpedia.org/resource/Pan_American_World_Airways
+Killeen Television	http://dbpedia.org/resource/Killeen_Television
+Hound Group	http://dbpedia.org/resource/Hound_Group
+Alfred A. Knopf Inc.	http://dbpedia.org/resource/Alfred_A._Knopf
+Google Inc.	http://dbpedia.org/resource/Google
+Voyageur Press	http://dbpedia.org/resource/Quarto_Group
+Old-Time Radio	http://dbpedia.org/resource/Old-time_radio
+Digital Press	http://dbpedia.org/resource/Digital_Press
+New Zealand Journal	http://dbpedia.org/resource/New_Zealand_Journal
+Compaq Computer Corporation	http://dbpedia.org/resource/Compaq
+Eastern Caribbean Central Bank	http://dbpedia.org/resource/Eastern_Caribbean_Central_Bank
+Nutting Associates	http://dbpedia.org/resource/Nutting_Associates
+All India Radio	http://dbpedia.org/resource/All_India_Radio
+Shockley Semiconductor Laboratory	http://dbpedia.org/resource/Shockley_Semiconductor_Laboratory
+Greatest Films	http://dbpedia.org/resource/List_of_films_considered_the_best
+Raytheon Missile Systems	http://dbpedia.org/resource/Raytheon_Missile_Systems
+In God We Trust	http://dbpedia.org/resource/In_God_we_trust
+MOS Technologies	http://dbpedia.org/resource/MOS_Technology
+Pacifica Radio	http://dbpedia.org/resource/Pacifica_Radio
+Country Music Television	http://dbpedia.org/resource/Country_Music_Television
+H.W. Wilson Co.	http://dbpedia.org/resource/H.W._Wilson_Co.
+Asahi Shimbun	http://dbpedia.org/resource/Asahi_Shimbun
+Capital Airlines	http://dbpedia.org/resource/Capital_Airlines
+Us Weekly	http://dbpedia.org/resource/Us_Weekly
+Loki Software	http://dbpedia.org/resource/Loki_Software
+E.B. Eddy Company	http://dbpedia.org/resource/E._B._Eddy_Company
+Kenya Airways	http://dbpedia.org/resource/Kenya_Airways
+Eastern Airlines	http://dbpedia.org/resource/Eastern_Air_Lines
+America West Airlines	http://dbpedia.org/resource/America_West_Airlines
+Popular Electronics	http://dbpedia.org/resource/Popular_Electronics
+Ralston Purina	http://dbpedia.org/resource/Ralston_Purina
+In Music	http://dbpedia.org/resource/In_Music
+JetBlue Airways	http://dbpedia.org/resource/JetBlue_Airways
+Engineering Laboratory	http://dbpedia.org/resource/Engineering_Laboratory
+TwoMorrows Publishing	http://dbpedia.org/resource/TwoMorrows_Publishing
+Open Court Publishing	http://dbpedia.org/resource/Open_Court_Publishing_Company
+Boots Group	http://dbpedia.org/resource/Boots_UK
+IUPAP Transfermium Working Group	http://dbpedia.org/resource/IUPAP_Transfermium_Working_Group
+Moving Picture Experts Group	http://dbpedia.org/resource/Moving_Picture_Experts_Group
+WB Television Network	http://dbpedia.org/resource/The_WB_Television_Network
+Spirit Airlines	http://dbpedia.org/resource/Spirit_Airlines
+Princeton Plasma Physics Laboratory	http://dbpedia.org/resource/Princeton_Plasma_Physics_Laboratory
+Dimension Films	http://dbpedia.org/resource/Dimension_Films
+Fair Trading	http://dbpedia.org/resource/Fair_Trading
+Mohawk Industries	http://dbpedia.org/resource/Mohawk_Industries
+Dublin Corporation	http://dbpedia.org/resource/Dublin_Corporation
+RKO Radio	http://dbpedia.org/resource/RKO_Pictures
+IBM Corporation	http://dbpedia.org/resource/IBM
+AirTran Airways	http://dbpedia.org/resource/AirTran_Airways
+HD Radio	http://dbpedia.org/resource/HD_Radio
+Pacific Fur Company	http://dbpedia.org/resource/Pacific_Fur_Company
+Ethiopian Airlines	http://dbpedia.org/resource/Ethiopian_Airlines
+Brookings Institution Press	http://dbpedia.org/resource/Brookings_Institution
+Motor Car Company	http://dbpedia.org/resource/Motor_Car_Company
+ABC Radio Australia	http://dbpedia.org/resource/Radio_Australia
+Ace Hardware	http://dbpedia.org/resource/Ace_Hardware
+Electronic Systems	http://dbpedia.org/resource/Electronic_Systems
+Deutsche Werke	http://dbpedia.org/resource/Deutsche_Werke
+Baroque Music	http://dbpedia.org/resource/Baroque_music
+Mead & Company	http://dbpedia.org/resource/Mead_&_Company
+Microsoft Press	http://dbpedia.org/resource/Microsoft_Press
+Alenia Marconi Systems	http://dbpedia.org/resource/Alenia_Marconi_Systems
+American Popular Music	http://dbpedia.org/resource/American_Popular_Music
+East Japan Railway Company	http://dbpedia.org/resource/East_Japan_Railway_Company
+Minnesota Law Review	http://dbpedia.org/resource/Minnesota_Law_Review
+Dolby Laboratories	http://dbpedia.org/resource/Dolby_Laboratories
+Potash Corporation of Saskatchewan	http://dbpedia.org/resource/Potash_Corporation_of_Saskatchewan
+Marconi plc	http://dbpedia.org/resource/Marconi_Communications
+McFarland & Company Inc.	http://dbpedia.org/resource/McFarland_&_Company_Inc.
+Chicago Herald	http://dbpedia.org/resource/Chicago_Herald
+Movie Gallery	http://dbpedia.org/resource/Movie_Gallery
+Stainless Steel	http://dbpedia.org/resource/Stainless_steel
+XM Radio	http://dbpedia.org/resource/XM_Satellite_Radio
+Canonical Ltd.	http://dbpedia.org/resource/Canonical_Ltd.
+Bombardier Inc.	http://dbpedia.org/resource/Bombardier_Inc.
+Lloyds TSB	http://dbpedia.org/resource/Lloyds_TSB
+Suncor Energy	http://dbpedia.org/resource/Suncor_Energy
+Nash Motors	http://dbpedia.org/resource/Nash_Motors
+IEEE Software	http://dbpedia.org/resource/IEEE_Software
+Chamber Music	http://dbpedia.org/resource/Chamber_music
+G. & C. Merriam Company	http://dbpedia.org/resource/G._&_C._Merriam_Company
+Bloomberg L.P.	http://dbpedia.org/resource/Bloomberg_L.P.
+Credit Suisse	http://dbpedia.org/resource/Credit_Suisse
+Iowa State University Press	http://dbpedia.org/resource/Iowa_State_University_Press
+Valero Energy Corporation	http://dbpedia.org/resource/Valero_Energy_Corporation
+SRI International	http://dbpedia.org/resource/SRI_International
+H.W. Wilson Company	http://dbpedia.org/resource/H._W._Wilson_Company
+National Express East Coast	http://dbpedia.org/resource/National_Express_East_Coast
+Boston History Company	http://dbpedia.org/resource/Boston_History_Company
+Doubleday & Company Inc.	http://dbpedia.org/resource/Doubleday_&_Company_Inc.
+Wal-Mart Stores Inc.	http://dbpedia.org/resource/Walmart
+Marine Biological Laboratory	http://dbpedia.org/resource/Marine_Biological_Laboratory
+Aquarian Press	http://dbpedia.org/resource/Aquarian_Press
+Eaton Corporation	http://dbpedia.org/resource/Eaton_Corporation
+AltaMira Press	http://dbpedia.org/resource/Rowman_&_Littlefield
+Universal Music Group	http://dbpedia.org/resource/Universal_Music_Group
+Deutsche Bundesbank	http://dbpedia.org/resource/Deutsche_Bundesbank
+Marvell Technology Group	http://dbpedia.org/resource/Marvell_Technology_Group
+LSI Logic	http://dbpedia.org/resource/LSI_Corporation
+UNESCO Publishing	http://dbpedia.org/resource/UNESCO_Publishing
+Weeb Ewbank	http://dbpedia.org/resource/Weeb_Ewbank
+HMV Group	http://dbpedia.org/resource/HMV_Group
+Red Sea Press	http://dbpedia.org/resource/Red_Sea_Press
+Be Inc.	http://dbpedia.org/resource/Be_Inc.
+Florida Times	http://dbpedia.org/resource/Florida_Times
+Ford Australia	http://dbpedia.org/resource/Ford_Motor_Company_of_Australia
+Universal Music	http://dbpedia.org/resource/Universal_Music_Group
+Island Press	http://dbpedia.org/resource/Island_Press
+Marvel Comics	http://dbpedia.org/resource/Marvel_Comics
+Mars Inc.	http://dbpedia.org/resource/Mars,_Incorporated
+Toronto Stock Exchange	http://dbpedia.org/resource/Toronto_Stock_Exchange
+Southern Lebanon	http://dbpedia.org/resource/Southern_Lebanon
+World Almanac Education Group	http://dbpedia.org/resource/World_Almanac_Education_Group
+William Heinemann Ltd.	http://dbpedia.org/resource/Heinemann_(publisher)
+Alliant Techsystems	http://dbpedia.org/resource/Alliant_Techsystems
+Canadian University Press	http://dbpedia.org/resource/Canadian_University_Press
+Chrysler LLC	http://dbpedia.org/resource/Chrysler
+John Knox Press	http://dbpedia.org/resource/John_Knox_Press
+Paladin Press	http://dbpedia.org/resource/Paladin_Press
+Axel Springer AG	http://dbpedia.org/resource/Axel_Springer_AG
+New Press	http://dbpedia.org/resource/The_New_Press
+Lend Lease	http://dbpedia.org/resource/Lend-Lease
+Columbia Pictures	http://dbpedia.org/resource/Columbia_Pictures
+USA TODAY	http://dbpedia.org/resource/USA_Today
+Water Music	http://dbpedia.org/resource/Water_Music
+Rolls-Royce Limited	http://dbpedia.org/resource/Rolls-Royce_Limited
+Canada Dry	http://dbpedia.org/resource/Canada_Dry
+Crowood Press	http://dbpedia.org/resource/Crowood_Press
+E.P. Dutton & Co. Inc.	http://dbpedia.org/resource/E.P._Dutton_&_Co._Inc.
+Wayne Enterprises	http://dbpedia.org/resource/Wayne_Enterprises
+Austrian Airlines	http://dbpedia.org/resource/Austrian_Airlines
+ConAgra Foods	http://dbpedia.org/resource/ConAgra_Foods
+Vauxhall Motors	http://dbpedia.org/resource/Vauxhall_Motors
+Delacorte Press	http://dbpedia.org/resource/Dell_Publishing
+Public Image Ltd.	http://dbpedia.org/resource/Public_Image_Ltd
+Complex Systems	http://dbpedia.org/resource/Complex_systems
+Fidelity Investments	http://dbpedia.org/resource/Fidelity_Investments
+Toyota Motor Corporation	http://dbpedia.org/resource/Toyota
+Tyrell Corporation	http://dbpedia.org/resource/Tyrell_Corporation
+Home Box Office	http://dbpedia.org/resource/HBO
+Thomas Crowell Press	http://dbpedia.org/resource/Thomas_Crowell_Press
+Asahi Breweries	http://dbpedia.org/resource/Asahi_Breweries
+Massachusetts Review	http://dbpedia.org/resource/The_Massachusetts_Review
+CBS Paramount Television	http://dbpedia.org/resource/CBS_Television_Studios
+Neural Networks	http://dbpedia.org/resource/Neural_network_(disambiguation)
+Hudson Ltd	http://dbpedia.org/resource/Hudson_Ltd
+Asia Television Limited	http://dbpedia.org/resource/Asia_Television_Limited
+Science Applications International Corporation	http://dbpedia.org/resource/SAIC_(U.S._company)
+Virginia Quarterly Review	http://dbpedia.org/resource/Virginia_Quarterly_Review
+Thinking Machines Corporation	http://dbpedia.org/resource/Thinking_Machines_Corporation
+Vanguard Group	http://dbpedia.org/resource/The_Vanguard_Group
+Harvester Press	http://dbpedia.org/resource/Linden,_New_Jersey
+Braniff International Airways	http://dbpedia.org/resource/Braniff_International_Airways
+Hoechst AG	http://dbpedia.org/resource/Hoechst_AG
+Ignatius Press	http://dbpedia.org/resource/Ignatius_Press
+National Express Group	http://dbpedia.org/resource/National_Express_Group
+Brussels Airlines	http://dbpedia.org/resource/Brussels_Airlines
+BNP Paribas	http://dbpedia.org/resource/BNP_Paribas
+Quaker Oats Company	http://dbpedia.org/resource/Quaker_Oats_Company
+Aerospace Corporation	http://dbpedia.org/resource/The_Aerospace_Corporation
+National Australia Bank	http://dbpedia.org/resource/National_Australia_Bank
+Broadcast Music Incorporated	http://dbpedia.org/resource/Broadcast_Music,_Inc.
+EMC Corporation	http://dbpedia.org/resource/EMC_Corporation
+RTL Television	http://dbpedia.org/resource/RTL_Television
+Valve Corporation	http://dbpedia.org/resource/Valve_Corporation
+J.B. Lippincott Company	http://dbpedia.org/resource/J.B._Lippincott_&_Co.
+Detroit Diesel	http://dbpedia.org/resource/Detroit_Diesel
+Presidio Press	http://dbpedia.org/resource/Ballantine_Books
+MIT Artificial Intelligence Laboratory	http://dbpedia.org/resource/MIT_Computer_Science_and_Artificial_Intelligence_Laboratory
+Telcordia Technologies	http://dbpedia.org/resource/Telcordia_Technologies
+Regnery Publishing	http://dbpedia.org/resource/Regnery_Publishing
+Museum Tusculanum Press	http://dbpedia.org/resource/Museum_Tusculanum_Press
+PS Publishing	http://dbpedia.org/resource/PS_Publishing
+REO Motor Car Company	http://dbpedia.org/resource/REO_Motor_Car_Company
+International Journal	http://dbpedia.org/resource/Canadian_International_Council
+Encyclopedia Britannica Inc.	http://dbpedia.org/resource/Encyclop%C3%A6dia_Britannica,_Inc.
+NPD Group	http://dbpedia.org/resource/NPD_Group
+United States Steel	http://dbpedia.org/resource/U.S._Steel
+Macmillan Co.	http://dbpedia.org/resource/Macmillan_Co.
+Gorgias Press LLC	http://dbpedia.org/resource/Gorgias_Press_LLC
+New York Times Co.	http://dbpedia.org/resource/The_New_York_Times_Company
+Philippine Stock Exchange	http://dbpedia.org/resource/Philippine_Stock_Exchange
+Aircraft Corporation	http://dbpedia.org/resource/Aircraft_Corporation
+American Reprographics Company	http://dbpedia.org/resource/ARC_Document_Solutions
+Power Corporation	http://dbpedia.org/resource/Power_Corporation_of_Canada
+Macmillan Press	http://dbpedia.org/resource/Macmillan_Publishers
+Bitstream Inc.	http://dbpedia.org/resource/Bitstream_Inc.
+Reserve Bank of Australia	http://dbpedia.org/resource/Reserve_Bank_of_Australia
+Zenith Press	http://dbpedia.org/resource/Quarto_Group
+Dodd Mead & Co.	http://dbpedia.org/resource/Dodd_Mead_&_Co.
+Swiss International Air Lines	http://dbpedia.org/resource/Swiss_International_Air_Lines
+Brown & Company	http://dbpedia.org/resource/Brown_&_Company
+Husky Energy	http://dbpedia.org/resource/Husky_Energy
+Open Systems	http://dbpedia.org/resource/Open_Systems
+Phillips Petroleum	http://dbpedia.org/resource/Phillips_Petroleum_Company
+Old Town Canoe Company	http://dbpedia.org/resource/Old_Town_Canoe
+Carnegie Steel Company	http://dbpedia.org/resource/Carnegie_Steel_Company
+Midland Publishing	http://dbpedia.org/resource/Midland_Publishing
+Associated Electrical Industries	http://dbpedia.org/resource/Associated_Electrical_Industries
+Bay Area Laboratory	http://dbpedia.org/resource/Bay_Area_Laboratory
+Erie Railroad Co.	http://dbpedia.org/resource/Erie_Railroad_Co.
+Marathon Petroleum Company	http://dbpedia.org/resource/Marathon_Petroleum
+CABI Publishing	http://dbpedia.org/resource/CABI_Publishing
+Amateur Radio	http://dbpedia.org/resource/Amateur_radio
+Al-Ahram Weekly	http://dbpedia.org/resource/Al-Ahram_Weekly
+National Capital Region Capital	http://dbpedia.org/resource/National_Capital_Region_Capital
+NTT DoCoMo	http://dbpedia.org/resource/NTT_DoCoMo
+Tesla Motors	http://dbpedia.org/resource/Tesla_Motors
+Green Bank	http://dbpedia.org/resource/Green_Bank
+Folk Metal	http://dbpedia.org/resource/Folk_metal
+United Productions of America	http://dbpedia.org/resource/UPA_(animation_studio)
+Fantasy Games Unlimited	http://dbpedia.org/resource/Fantasy_Games_Unlimited
+BBC Canada	http://dbpedia.org/resource/BBC_Canada
+American Tobacco Company	http://dbpedia.org/resource/American_Tobacco_Company
+Joint Photographic Experts Group	http://dbpedia.org/resource/Joint_Photographic_Experts_Group
+Buell Motorcycle Company	http://dbpedia.org/resource/Buell_Motorcycle_Company
+Covered Bridge Capital	http://dbpedia.org/resource/Covered_Bridge_Capital
+Toys R Us	http://dbpedia.org/resource/Toys_%22R%22_Us
+Canadian Broadcasting Company	http://dbpedia.org/resource/Canadian_Broadcasting_Corporation
+Geoscience Press	http://dbpedia.org/resource/Geoscience_Press
+Grolier Incorporated	http://dbpedia.org/resource/Grolier
+African Slave Trade	http://dbpedia.org/resource/Slavery_in_Africa
+Austin Motor Company	http://dbpedia.org/resource/Austin_Motor_Company
+British Racing Motors	http://dbpedia.org/resource/British_Racing_Motors
+TNT N.V.	http://dbpedia.org/resource/TNT_N.V.
+People Weekly	http://dbpedia.org/resource/People_(magazine)
+Malaysia Airlines	http://dbpedia.org/resource/Malaysia_Airlines
+San Diego Union Tribune	http://dbpedia.org/resource/U-T_San_Diego
+Philtrum Press	http://dbpedia.org/resource/Philtrum_Press
+Formula One Management	http://dbpedia.org/resource/Formula_One_Group
+Nippon Telegraph and Telephone	http://dbpedia.org/resource/Nippon_Telegraph_and_Telephone
+Telos Press	http://dbpedia.org/resource/Telos_(journal)
+Open Group	http://dbpedia.org/resource/The_Open_Group
+Stalky & Co	http://dbpedia.org/resource/Stalky_&_Co
+Bethlehem Steel	http://dbpedia.org/resource/Bethlehem_Steel
+MAN SE	http://dbpedia.org/resource/MAN_SE
+Mercury News	http://dbpedia.org/resource/San_Jose_Mercury_News
+ARM Limited	http://dbpedia.org/resource/ARM_Holdings
+Computing Tabulating Recording Corporation	http://dbpedia.org/resource/Computing_Tabulating_Recording_Company
+Lisp Machines Inc.	http://dbpedia.org/resource/Lisp_Machines
+Roundabout Theatre Company	http://dbpedia.org/resource/Roundabout_Theatre_Company
+Vancouver Sun	http://dbpedia.org/resource/The_Vancouver_Sun
+Devon Wildlife Trust	http://dbpedia.org/resource/Devon_Wildlife_Trust
+FOX network	http://dbpedia.org/resource/Fox_Broadcasting_Company
+B. Eerdmans Publishing Co.	http://dbpedia.org/resource/B._Eerdmans_Publishing_Co.
+New York Times Company	http://dbpedia.org/resource/The_New_York_Times_Company
+Air University Press	http://dbpedia.org/resource/Air_University_Press
+MIPS Technologies	http://dbpedia.org/resource/MIPS_Technologies
+New Worlds	http://dbpedia.org/resource/New_Worlds
+Continuum International Publishing	http://dbpedia.org/resource/Continuum_International_Publishing
+Disinformation Company	http://dbpedia.org/resource/Disinfo
+Gauntlet Press	http://dbpedia.org/resource/Gauntlet_Press
+Ashgate Publishing Ltd	http://dbpedia.org/resource/Ashgate_Publishing_Ltd
+World Scientific Publishing Co.	http://dbpedia.org/resource/World_Scientific
+Aral AG	http://dbpedia.org/resource/Aral_AG
+US Weekly	http://dbpedia.org/resource/Us_Weekly
+A&M Records	http://dbpedia.org/resource/A&M_Records
+TV4 AB	http://dbpedia.org/resource/TV4_Group
+Vanguard Press	http://dbpedia.org/resource/Vanguard_Press
+R.H. Donnelley	http://dbpedia.org/resource/DEX_One
+Columbia Journalism Review	http://dbpedia.org/resource/Columbia_Journalism_Review
+Digital Research Inc.	http://dbpedia.org/resource/Digital_Research
+E.W. Scripps	http://dbpedia.org/resource/E._W._Scripps
+Science Fiction	http://dbpedia.org/resource/Science_fiction
+Associated British Foods	http://dbpedia.org/resource/Associated_British_Foods
+Aeroflot - Russian Airlines	http://dbpedia.org/resource/Aeroflot
+Database Systems	http://dbpedia.org/resource/Database_Systems
+Super Junior	http://dbpedia.org/resource/Super_Junior
+State Street Corporation	http://dbpedia.org/resource/State_Street_Corporation
+Kessinger Publishing LLC	http://dbpedia.org/resource/Kessinger_Publishing
+Island Records	http://dbpedia.org/resource/Island_Records
+Burlington Northern Santa Fe	http://dbpedia.org/resource/BNSF_Railway
+Medical Examination Publishing Co.	http://dbpedia.org/resource/Medical_Examination_Publishing_Co.
+Eternal Music	http://dbpedia.org/resource/Eternal_Music
+International Paper	http://dbpedia.org/resource/International_Paper
+White Wolf Publishing	http://dbpedia.org/resource/White_Wolf_Publishing
+Public Television	http://dbpedia.org/resource/Public_broadcasting
+Fairleigh Dickinson Univ Press	http://dbpedia.org/resource/Fairleigh_Dickinson_University_Press
+Phillips Petroleum Company	http://dbpedia.org/resource/Phillips_Petroleum_Company
+Southern Oregon	http://dbpedia.org/resource/Southern_Oregon
+3Com Corporation	http://dbpedia.org/resource/3Com
+Pakistan International Airlines	http://dbpedia.org/resource/Pakistan_International_Airlines
+Falling Rain Genomics Inc	http://dbpedia.org/resource/Falling_Rain_Genomics_Inc
+Simon & Schuster Inc.	http://dbpedia.org/resource/Simon_&_Schuster_Inc.
+Network Working Group	http://dbpedia.org/resource/Network_Working_Group
+E. P. Dutton & Co.	http://dbpedia.org/resource/E._P._Dutton_&_Co.
+Great Lakes Airlines	http://dbpedia.org/resource/Great_Lakes_Airlines
+Wildlife Forensics Laboratory	http://dbpedia.org/resource/Wildlife_Forensics_Laboratory
+Literary Dictionary Company	http://dbpedia.org/resource/Literary_Dictionary_Company
+W. Norton & Company Inc.	http://dbpedia.org/resource/W._Norton_&_Company_Inc.
+Thomas Nelson Inc.	http://dbpedia.org/resource/Thomas_Nelson_Inc.
+C. F. Martin & Company	http://dbpedia.org/resource/C._F._Martin_&_Company
+Kyodo News	http://dbpedia.org/resource/Kyodo_News
+Stagecoach Group	http://dbpedia.org/resource/Stagecoach_Group
+St. Louis Business Journal	http://dbpedia.org/resource/American_City_Business_Journals
+Chevron Corporation	http://dbpedia.org/resource/Chevron_Corporation
+Mattel Inc.	http://dbpedia.org/resource/Mattel
+News International	http://dbpedia.org/resource/NI_Group
+American Bridge Company	http://dbpedia.org/resource/American_Bridge_Company
+Dell Publishing	http://dbpedia.org/resource/Dell_Publishing
+Soviet Russia	http://dbpedia.org/resource/Russian_Soviet_Federative_Socialist_Republic
+Kadena AB	http://dbpedia.org/resource/Kadena_Air_Base
+MRC Laboratory	http://dbpedia.org/resource/MRC_Laboratory
+Network Associates	http://dbpedia.org/resource/McAfee
+Red Hat Inc.	http://dbpedia.org/resource/Red_Hat
+United Artists Records	http://dbpedia.org/resource/United_Artists_Records
+Wallflower Press	http://dbpedia.org/resource/Wallflower_Press
+RKO Radio Pictures Inc.	http://dbpedia.org/resource/RKO_Pictures
+China Central Television	http://dbpedia.org/resource/China_Central_Television
+Confederate States of America	http://dbpedia.org/resource/Confederate_States_of_America
+Blue Bell	http://dbpedia.org/resource/Blue_Bell
+Japan Tobacco	http://dbpedia.org/resource/Japan_Tobacco
+Monotype Corporation	http://dbpedia.org/resource/Monotype_Corporation
+Black Rose Books Ltd.	http://dbpedia.org/resource/Black_Rose_Books_Ltd.
+China Southern Airlines	http://dbpedia.org/resource/China_Southern_Airlines
+Bobbs-Merrill Company	http://dbpedia.org/resource/Bobbs-Merrill_Company
+Chestnut Canoe Company	http://dbpedia.org/resource/Chestnut_Canoe_Company
+Intuit Inc.	http://dbpedia.org/resource/Intuit
+Insurance Australia Group	http://dbpedia.org/resource/Insurance_Australia_Group
+Royal Niger Company	http://dbpedia.org/resource/Royal_Niger_Company
+Power Electronics	http://dbpedia.org/resource/Power_electronics
+Virgin Records	http://dbpedia.org/resource/Virgin_Records
+System Development Corporation	http://dbpedia.org/resource/System_Development_Corporation
+Cosgrove Hall Films	http://dbpedia.org/resource/Cosgrove_Hall_Films
+Mega Inc.	http://dbpedia.org/resource/Mega_Inc.
+ASM Press	http://dbpedia.org/resource/American_Society_for_Microbiology
+B. Herder Book Co.	http://dbpedia.org/resource/B._Herder_Book_Co.
+Ancient Greek	http://dbpedia.org/resource/Ancient_Greek
+Sinclair Oil	http://dbpedia.org/resource/Sinclair_Oil_Corporation
+Long-Term Capital Management	http://dbpedia.org/resource/Long-Term_Capital_Management
+Henry Holt and Co.	http://dbpedia.org/resource/Henry_Holt_and_Company
+Space Corporation	http://dbpedia.org/resource/Space_Corporation
+New Jersey	http://dbpedia.org/resource/New_Jersey
+Bain & Company	http://dbpedia.org/resource/Bain_&_Company
+Dana International	http://dbpedia.org/resource/Dana_International
+Banco Popular de Puerto Rico	http://dbpedia.org/resource/Popular,_Inc.
+Longmans Green & Co.	http://dbpedia.org/resource/Longmans_Green_&_Co.
+Wadsworth Publishing	http://dbpedia.org/resource/Cengage_Learning
+General Motors Company	http://dbpedia.org/resource/General_Motors
+Thomas Y. Crowell Company	http://dbpedia.org/resource/Thomas_Y._Crowell_Co.
+RCA Records	http://dbpedia.org/resource/RCA_Records
+Mars Science Laboratory	http://dbpedia.org/resource/Mars_Science_Laboratory
+Gulf Research Laboratories	http://dbpedia.org/resource/Gulf_Research_Laboratories
+MITRE Corporation	http://dbpedia.org/resource/Mitre_Corporation
+Pennsylvania Railroad	http://dbpedia.org/resource/Pennsylvania_Railroad
+J.D. Power and Associates	http://dbpedia.org/resource/J._D._Power_and_Associates
+Liz Claiborne	http://dbpedia.org/resource/Liz_Claiborne
+Top 50 Cult Films	http://dbpedia.org/resource/Top_50_Cult_Films
+Scarecrow Press Inc.	http://dbpedia.org/resource/Scarecrow_Press_Inc.
+Cox Communications	http://dbpedia.org/resource/Cox_Communications
+Enron Corporation	http://dbpedia.org/resource/Enron
+Epoch Times	http://dbpedia.org/resource/The_Epoch_Times
+Oxford University Press Inc.	http://dbpedia.org/resource/Oxford_University_Press_Inc.
+Hutchinson & Co.	http://dbpedia.org/resource/Hutchinson_&_Co.
+Barings Bank	http://dbpedia.org/resource/Barings_Bank
+Applied Physics Laboratory	http://dbpedia.org/resource/Applied_Physics_Laboratory
+MTV Networks Europe	http://dbpedia.org/resource/Viacom_International_Media_Networks_(Europe)
+New Directions Publishing	http://dbpedia.org/resource/New_Directions_Publishing
+Charles Jenkins Laboratories	http://dbpedia.org/resource/Charles_Jenkins_Laboratories
+Total Film	http://dbpedia.org/resource/Total_Film
+Waltham Watch Company	http://dbpedia.org/resource/Waltham_Watch_Company
+Xlibris Corporation	http://dbpedia.org/resource/Xlibris
+US Forest Service	http://dbpedia.org/resource/United_States_Forest_Service
+Mega Party Inc.	http://dbpedia.org/resource/Mega_Party_Inc.
+Barnard Island Group	http://dbpedia.org/resource/Barnard_Island_Group
+Korean Air	http://dbpedia.org/resource/Korean_Air
+ABN AMRO	http://dbpedia.org/resource/ABN_AMRO
+Penn Central	http://dbpedia.org/resource/Penn_Central_Transportation_Company
+DuPont Company	http://dbpedia.org/resource/DuPont
+State Capital	http://dbpedia.org/resource/State_Capital
+Postal Telegraph Company	http://dbpedia.org/resource/Postal_Telegraph_Company
+Asian Development Bank	http://dbpedia.org/resource/Asian_Development_Bank
+Triad Publishing Company	http://dbpedia.org/resource/Triad_Publishing_Company
+Norton Simon	http://dbpedia.org/resource/Norton_Simon
+Herald Press	http://dbpedia.org/resource/Herald_Press
+Dassault Systemes	http://dbpedia.org/resource/Dassault_Syst%C3%A8mes
+SkyWest Airlines	http://dbpedia.org/resource/SkyWest_Airlines
+Abacus Software	http://dbpedia.org/resource/Abacus_Software
+Ace Radio	http://dbpedia.org/resource/Ace_Radio
+Denham Group	http://dbpedia.org/resource/Denham_Group
+W. H. Freeman and Co.	http://dbpedia.org/resource/W._H._Freeman_and_Co.
+East India East India Company	http://dbpedia.org/resource/East_India_East_India_Company
+Oak Knoll Press	http://dbpedia.org/resource/Oak_Knoll_Press
+Flinders Group	http://dbpedia.org/resource/Flinders_Group
+Fordham University Press	http://dbpedia.org/resource/Fordham_University_Press
+Stone Bridge Press	http://dbpedia.org/resource/Stone_Bridge_Press
+Sacred Music	http://dbpedia.org/resource/Religious_music
+Columbia Pictures Television	http://dbpedia.org/resource/Columbia_Pictures_Television
+Frankland Group	http://dbpedia.org/resource/Frankland_Group
+Park Street Press	http://dbpedia.org/resource/Inner_Traditions_%E2%80%93_Bear_&_Company
+Philadelphia Bulletin	http://dbpedia.org/resource/Philadelphia_Bulletin
+Acorn Computers Ltd	http://dbpedia.org/resource/Acorn_Computers
+Rover Company	http://dbpedia.org/resource/Rover_Company
+MTV Networks	http://dbpedia.org/resource/Viacom_Media_Networks
+Radiation Laboratory	http://dbpedia.org/resource/Radiation_Laboratory
+Jack in the Box	http://dbpedia.org/resource/Jack_in_the_Box
+Industrial Development Corporation	http://dbpedia.org/resource/Castle_Grande
+Athlone Press	http://dbpedia.org/resource/Continuum_International_Publishing_Group
+Consultative Group	http://dbpedia.org/resource/Consultative_Group
+Cardinal Health	http://dbpedia.org/resource/Cardinal_Health
+City Bridge Trust	http://dbpedia.org/resource/Bridge_House_Estates
+Cork University Press	http://dbpedia.org/resource/Cork_University_Press
+Manx Wildlife Trust	http://dbpedia.org/resource/Manx_Wildlife_Trust
+Eiffel Software	http://dbpedia.org/resource/Eiffel_Software
+Southern Illinois	http://dbpedia.org/resource/Southern_Illinois
+Hudsons Bay Company	http://dbpedia.org/resource/Hudson's_Bay_Company
+Sirius XM Radio	http://dbpedia.org/resource/Sirius_XM_Radio
+BBC Two	http://dbpedia.org/resource/BBC_Two
+British Music	http://dbpedia.org/resource/Music_of_the_United_Kingdom
+Norton & Company	http://dbpedia.org/resource/Norton_&_Company
+Marlowe & Company	http://dbpedia.org/resource/Marlowe_&_Company
+Living Resources	http://dbpedia.org/resource/Living_Resources
+Seattle Weekly	http://dbpedia.org/resource/Seattle_Weekly
+Copa Airlines	http://dbpedia.org/resource/Copa_Airlines
+Agency for the Prohibition	http://dbpedia.org/resource/Agency_for_the_Prohibition
+DIANE Publishing	http://dbpedia.org/resource/DIANE_Publishing
+Booz Allen	http://dbpedia.org/resource/Booz_Allen_Hamilton
+Broadman Press	http://dbpedia.org/resource/B&H_Publishing_Group
+Specialty Press	http://dbpedia.org/resource/Specialty_Press
+Creative Labs	http://dbpedia.org/resource/Creative_Technology
+Mitsubishi Electric	http://dbpedia.org/resource/Mitsubishi_Electric
+KPMG Europe LLP	http://dbpedia.org/resource/KPMG_Europe_LLP
+Avalon Hill	http://dbpedia.org/resource/Avalon_Hill
+Mitsubishi UFJ Financial Group	http://dbpedia.org/resource/Mitsubishi_UFJ_Financial_Group
+NATO Partnership	http://dbpedia.org/resource/NATO_Partnership
+MCA Inc.	http://dbpedia.org/resource/MCA_Inc.
+Mountain Music	http://dbpedia.org/resource/Mountain_Music
+Inner City Press	http://dbpedia.org/resource/Inner_City_Press
+Waveland Press	http://dbpedia.org/resource/Waveland_Press
+BiblioBazaar LLC	http://dbpedia.org/resource/BiblioBazaar
+Howick Group	http://dbpedia.org/resource/Howick_Group
+William Morrow & Co.	http://dbpedia.org/resource/William_Morrow_&_Co.
+Dick's Sporting Goods	http://dbpedia.org/resource/Dick%27s_Sporting_Goods
+Bath Spa	http://dbpedia.org/resource/Bath_Spa
+Harcourt Brace & Company	http://dbpedia.org/resource/Harcourt_Brace_&_Company
+Plumas Transit Systems	http://dbpedia.org/resource/Plumas_Transit_Systems
+Ambrosia Software	http://dbpedia.org/resource/Ambrosia_Software
+Ruth's Chris	http://dbpedia.org/resource/Ruth's_Chris_Steak_House
+Arkham House	http://dbpedia.org/resource/Arkham_House
+Shanghai Automotive Industry Corporation	http://dbpedia.org/resource/SAIC_Motor
+ARM Holdings	http://dbpedia.org/resource/ARM_Holdings
+Best Films	http://dbpedia.org/resource/Best_Films
+New Holland Ag	http://dbpedia.org/resource/New_Holland_Agriculture
+Turtle Beach Systems	http://dbpedia.org/resource/Turtle_Beach_Systems
+GNU Radio	http://dbpedia.org/resource/GNU_Radio
+Ringling Bros.	http://dbpedia.org/resource/Ringling_Bros._and_Barnum_&_Bailey_Circus
+Pullman Company	http://dbpedia.org/resource/Pullman_Company
+Oliphants Ltd.	http://dbpedia.org/resource/Oliphants_Ltd.
+Visa Inc.	http://dbpedia.org/resource/Visa_Inc.
+American can	http://dbpedia.org/resource/American_can
+Johnson Controls	http://dbpedia.org/resource/Johnson_Controls
+Blackwell Publishing Ltd.	http://dbpedia.org/resource/Wiley-Blackwell
+Computer Laboratory	http://dbpedia.org/resource/Computer_Laboratory
+Short Brothers	http://dbpedia.org/resource/Short_Brothers
+Campbell Soup	http://dbpedia.org/resource/Campbell_Soup_Company
+Tandem Computers	http://dbpedia.org/resource/Tandem_Computers
+Shugart Associates	http://dbpedia.org/resource/Shugart_Associates
+National Bus Company	http://dbpedia.org/resource/National_Bus_Company
+United Nations Industrial Development Universal Postal Union	http://dbpedia.org/resource/United_Nations_Industrial_Development_Universal_Postal_Union
+Waste management	http://dbpedia.org/resource/Waste_management
+Great Beacon Press	http://dbpedia.org/resource/Great_Beacon_Press
+Bell Canada	http://dbpedia.org/resource/Bell_Canada
+MIPS Computer Systems Inc.	http://dbpedia.org/resource/MIPS_Technologies
+Metal Machine Music	http://dbpedia.org/resource/Metal_Machine_Music
+Open Court Publishing Company	http://dbpedia.org/resource/Open_Court_Publishing_Company
+Eyre Methuen Ltd	http://dbpedia.org/resource/Eyre_Methuen_Ltd
+Standard Chartered Bank	http://dbpedia.org/resource/Standard_Chartered
+John Benjamins Publishing Company	http://dbpedia.org/resource/John_Benjamins_Publishing_Company
+Fe Co	http://dbpedia.org/resource/Fe_Co
+United States Naval Institute Press	http://dbpedia.org/resource/United_States_Naval_Institute
+Anglo American plc	http://dbpedia.org/resource/Anglo_American_plc
+Cisco Systems Inc.	http://dbpedia.org/resource/Cisco_Systems
+Resorts Company	http://dbpedia.org/resource/Resorts_Company
+Barclays plc	http://dbpedia.org/resource/Barclays
+Metropolitan Life Insurance Company	http://dbpedia.org/resource/MetLife
+Pacific Crest	http://dbpedia.org/resource/Pacific_Crest
+Thomas Y. Crowell Co.	http://dbpedia.org/resource/Thomas_Y._Crowell_Co.
+Schlumberger Limited	http://dbpedia.org/resource/Schlumberger
+Nimbus Publishing	http://dbpedia.org/resource/Nimbus_Publishing
+Milton Hershey School Trust	http://dbpedia.org/resource/Milton_Hershey_School_Trust
+Pharaonic Egypt	http://dbpedia.org/resource/Ancient_Egypt
+Tyndale Press	http://dbpedia.org/resource/Tyndale_Press
+Ford of Europe	http://dbpedia.org/resource/Ford_of_Europe
+Playboy Enterprises	http://dbpedia.org/resource/Playboy_Enterprises
+Vueling Airlines	http://dbpedia.org/resource/Vueling
+Fuji Heavy Industries	http://dbpedia.org/resource/Fuji_Heavy_Industries
+Audi AG	http://dbpedia.org/resource/Audi
+Perseus Publishing	http://dbpedia.org/resource/Perseus_Books_Group
+Rand Corporation	http://dbpedia.org/resource/RAND_Corporation
+Plant Genetic Resources	http://dbpedia.org/resource/Plant_Genetic_Resources
+Soncino Press	http://dbpedia.org/resource/Soncino_Press
+De Nederlandsche Bank	http://dbpedia.org/resource/De_Nederlandsche_Bank
+Briggs & Stratton	http://dbpedia.org/resource/Briggs_&_Stratton
+KM Group	http://dbpedia.org/resource/KM_Group
+El Pais	http://dbpedia.org/resource/El_Pa%C3%ADs
+NEC Corporation	http://dbpedia.org/resource/NEC
+Ford Crown Victoria	http://dbpedia.org/resource/Ford_Crown_Victoria
+Orlando Sentinel	http://dbpedia.org/resource/Orlando_Sentinel
+General Foods	http://dbpedia.org/resource/General_Foods
+Crown Publishers Inc	http://dbpedia.org/resource/Crown_Publishers_Inc
+Morris Motor Company	http://dbpedia.org/resource/Morris_Motors
+Simulations Publications Inc.	http://dbpedia.org/resource/Simulation_Publications
+Henry Holt & Co	http://dbpedia.org/resource/Henry_Holt_&_Co
+Warner Music	http://dbpedia.org/resource/Warner_Music_Group
+Bayer AG	http://dbpedia.org/resource/Bayer
+Australian Securities Exchange	http://dbpedia.org/resource/Australian_Securities_Exchange
+Bank of Japan	http://dbpedia.org/resource/Bank_of_Japan
+Ansett Australia	http://dbpedia.org/resource/Ansett_Australia
+Four Courts Press	http://dbpedia.org/resource/Four_Courts_Press
+E! Entertainment Television	http://dbpedia.org/resource/E!
+Black Entertainment Television	http://dbpedia.org/resource/Black_Entertainment_Television
+Computer Associates	http://dbpedia.org/resource/CA_Technologies
+Clear Channel Communications	http://dbpedia.org/resource/Clear_Channel_Communications
+Bangemall Group	http://dbpedia.org/resource/Bangemall_Group
+MICRA Inc.	http://dbpedia.org/resource/MICRA_Inc.
+Bear Stearns	http://dbpedia.org/resource/Bear_Stearns
+E. Remington and Sons	http://dbpedia.org/resource/E._Remington_and_Sons
+Lucas Industries plc	http://dbpedia.org/resource/Lucas_Industries
+Irish Music	http://dbpedia.org/resource/Music_of_Ireland
+Trans-Canada Airlines	http://dbpedia.org/resource/Trans-Canada_Air_Lines
+Royal Bank of Canada	http://dbpedia.org/resource/Royal_Bank_of_Canada
+West Publishing	http://dbpedia.org/resource/West_(publisher)
+Northern Rock	http://dbpedia.org/resource/Northern_Rock
+Oxford English Dictionary	http://dbpedia.org/resource/Oxford_English_Dictionary
+Sri Lanka Telecom	http://dbpedia.org/resource/Sri_Lanka_Telecom
+Wonderwall Music	http://dbpedia.org/resource/Wonderwall_Music
+America Online Inc.	http://dbpedia.org/resource/AOL
+Bristol-Myers Squibb	http://dbpedia.org/resource/Bristol-Myers_Squibb
+New York Inc.	http://dbpedia.org/resource/New_York_Inc.
+Turner Publishing Company	http://dbpedia.org/resource/Turner_Publishing_Company
+Mayfield Publishing	http://dbpedia.org/resource/Mayfield_Publishing
+Valero Energy	http://dbpedia.org/resource/Valero_Energy_Corporation
+Northrop Grumman Corporation	http://dbpedia.org/resource/Northrop_Grumman
+Visible Ink Press	http://dbpedia.org/resource/Visible_Ink_Press
+Woody Press	http://dbpedia.org/resource/Woody_Press
+Amsterdam Stock Exchange	http://dbpedia.org/resource/Amsterdam_Stock_Exchange
+Quarry Bank	http://dbpedia.org/resource/Quarry_Bank
+NXP Semiconductors	http://dbpedia.org/resource/NXP_Semiconductors
+Rough Guides Ltd.	http://dbpedia.org/resource/Rough_Guides_Ltd.
+Sudan Airways	http://dbpedia.org/resource/Sudan_Airways
+Sony Corporation	http://dbpedia.org/resource/Sony
+Quintet Publishing	http://dbpedia.org/resource/Quintet_Publishing
+Aldine Press	http://dbpedia.org/resource/Aldine_Press
+National Railway Company	http://dbpedia.org/resource/National_Railway_Company
+Essex Wildlife Trust	http://dbpedia.org/resource/Essex_Wildlife_Trust
+Dairy Queen	http://dbpedia.org/resource/Dairy_Queen
+Publisher Inc.	http://dbpedia.org/resource/Publisher_Inc.
+Pacific Southwest Airlines	http://dbpedia.org/resource/Pacific_Southwest_Airlines
+South China Morning Post	http://dbpedia.org/resource/South_China_Morning_Post
+Ames Laboratory	http://dbpedia.org/resource/Ames_Laboratory
+Gem Trade	http://dbpedia.org/resource/Gem_Trade
+Kinney National Company	http://dbpedia.org/resource/Kinney_National_Company
+Polar Music	http://dbpedia.org/resource/Polar_Music
+American World Airways	http://dbpedia.org/resource/American_World_Airways
+Indian Classical Music	http://dbpedia.org/resource/Indian_classical_music
+Whole Foods Market	http://dbpedia.org/resource/Whole_Foods_Market
+Local Group	http://dbpedia.org/resource/Local_Group
+Edison Trust	http://dbpedia.org/resource/Motion_Picture_Patents_Company
+Engineering Research Associates	http://dbpedia.org/resource/Engineering_Research_Associates
+Pernod Ricard	http://dbpedia.org/resource/Pernod_Ricard
+Sterling Publishing Company Inc	http://dbpedia.org/resource/Sterling_Publishing_Company_Inc
+Hawaiian Airlines	http://dbpedia.org/resource/Hawaiian_Airlines

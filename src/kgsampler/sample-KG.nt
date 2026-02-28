@@ -1,0 +1,844 @@
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Bill_Gates>
+
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/portal>	"Business and economics"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://xmlns.com/foaf/0.1/name>	"Bill Gates"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/birthPlace>	"Seattle, Washington, U.S."@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/n>	"yes"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/before>	"Company founded"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/2a>	"Manes"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/portal>	"Companies"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/occupation>	"Software developer"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/title>	"Offices and distinctions"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/d>	"yes"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/dSearch>	"Q5284"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/birthName>	"William Henry Gates III"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/spouse>	""@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/portal>	"Renewable energy"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/1a>	"Lesinski"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/portal>	"Technology"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/alt>	"Head and shoulders photo of Bill Gates"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/title>	"Articles related to Bill Gates"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/nSearch>	"Category:Bill Gates"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/name>	"Bill Gates"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/occupation>	"investor"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/q>	"yes"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/signature>	"Bill Gates signature.svg"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/ontology/birthName>	"William Henry Gates III"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://www.w3.org/2000/01/rdf-schema#label>	"Bill Gates"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/caption>	"Gates in 2018"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/portal>	"Biography"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/knownFor>	"Co-founding Microsoft"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/ontology/abstract>	"William Henry Gates III (born October 28, 1955) is an American business magnate, software developer, investor, and philanthropist. He is best known as the co-founder of Microsoft Corporation. During his career at Microsoft, Gates held the positions of chairman, chief executive officer (CEO), president and chief software architect, while also being the largest individual shareholder until May 2014. He is one of the best-known entrepreneurs and pioneers of the microcomputer revolution of the 1970s and 1980s. Born and raised in Seattle, Washington, Gates co-founded Microsoft with childhood friend Paul Allen in 1975, in Albuquerque, New Mexico; it went on to become the world's largest personal computer software company. Gates led the company as chairman and CEO until stepping down as CEO in January 2000, but he remained chairman and became chief software architect. During the late 1990s, Gates had been criticized for his business tactics, which have been considered anti-competitive. This opinion has been upheld by numerous court rulings. In June 2006, Gates announced that he would be transitioning to a part-time role at Microsoft and full-time work at the Bill & Melinda Gates Foundation, the private charitable foundation that he and his wife, Melinda Gates, established in 2000. He gradually transferred his duties to Ray Ozzie and Craig Mundie. He stepped down as chairman of Microsoft in February 2014 and assumed a new post as technology adviser to support the newly appointed CEO Satya Nadella. Since 1987, he has been included in the Forbes list of the world's wealthiest people. From 1995 to 2017, he held the Forbes title of the richest person in the world all but four of those years. In October 2017, he was surpassed by Amazon founder and CEO Jeff Bezos, who had an estimated net worth of US$90.6 billion compared to Gates' net worth of US$89.9 billion at the time. As of July 2020, Gates had an estimated net worth of US$111.8 billion, making him the second-wealthiest person in the world, behind Bezos. Later in his career and since leaving day-to-day operations at Microsoft in 2008, Gates has pursued a number of philanthropic endeavors. He has given sizable amounts of money to various charitable organizations and scientific research programs through the Bill & Melinda Gates Foundation, reported to be the world's largest private charity. In 2009, Gates and Warren Buffett founded The Giving Pledge, whereby they and other billionaires pledge to give at least half of their wealth to philanthropy. The foundation works to improve global health, and is working with Rotary International to eliminate polio."@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/netWorth>	""@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/commons>	"yes"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/occupation>	"entrepreneur"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/title>	"CEO of Microsoft"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://www.w3.org/2000/01/rdf-schema#comment>	"William Henry Gates III (born October 28, 1955) is an American business magnate, software developer, investor, and philanthropist. He is best known as the co-founder of Microsoft Corporation. During his career at Microsoft, Gates held the positions of chairman, chief executive officer (CEO), president and chief software architect, while also being the largest individual shareholder until May 2014. He is one of the best-known entrepreneurs and pioneers of the microcomputer revolution of the 1970s and 1980s."@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/portal>	"Computer programming"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/video>	"The Machine That Changed The World; Interview with Bill Gates, 1990 , 44:03, Open Vault WGBH"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/align>	"right"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/signatureAlt>	"Gates' signature"@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/property/occupation>	""@en .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Gates_family> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Recipients_of_the_Padma_Bhushan_in_social_work> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Recipients_of_the_Cross_of_Recognition> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Presidential_Medal_of_Freedom_recipients> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:National_Medal_of_Technology_recipients> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_corporate_directors> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Personal_computing> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:People_from_Medina,_Washington> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_venture_capitalists> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Spokespersons> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Living_people> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:20th-century_American_businesspeople> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Harvard_College_alumni> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:History_of_Microsoft> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_people_of_Scottish_descent> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_people_of_Scotch-Irish_descent> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Bill_Gates> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Grand_Cordons_of_the_Order_of_the_Rising_Sun> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Honorary_Knights_Commander_of_the_Order_of_the_British_Empire> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_inventors> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Dudley\u2013Winthrop_family> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_billionaires> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:20th-century_American_engineers> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Big_History> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_investors> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Freemen_of_the_City_of_London> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_computer_programmers> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Fellows_of_the_British_Computer_Society> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Phillips_family_(New_England)> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_computer_businesspeople> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:People_from_Seattle> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:HuffPost_bloggers> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Giving_Pledgers> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Placards_of_the_Order_of_the_Aztec_Eagle> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_people_of_German_descent> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:21st-century_American_businesspeople> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Directors_of_Microsoft> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_chairmen_of_corporations> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:21st-century_philanthropists> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_financiers> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Wired_(magazine)_people> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:History_of_computing> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_nonprofit_chief_executives> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_technology_company_founders> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_philanthropists> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Windows_people> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Lakeside_School_alumni> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:1955_births> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Businesspeople_in_software> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Writers_from_Seattle> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_people_of_English_descent> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Bill_&_Melinda_Gates_Foundation_people> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_technology_chief_executives> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Nerd_culture> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_technology_writers> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:21st-century_American_engineers> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Members_of_the_United_States_National_Academy_of_Engineering> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_humanitarians> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Foreign_members_of_the_Chinese_Academy_of_Engineering> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Cornell_family> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Directors_of_Berkshire_Hathaway> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Businesspeople_from_Seattle> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Microsoft_employees> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_software_engineers> .
+<http://dbpedia.org/resource/Bill_Gates>	<http://dbpedia.org/ontology/occupation>	<http://dbpedia.org/resource/Bill_Gates__PersonFunction__1> .
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Steve_Jobs>
+
+<http://dbpedia.org/resource/Steve_Jobs>	<http://www.w3.org/2000/01/rdf-schema#label>	"Steve Jobs"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/ontology/title>	"Founder, Chairman, and CEO ofNeXT"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/boards>	"The Walt Disney Company"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/wikt>	"no"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/date>	"March 2018"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/boards>	"Apple Inc."@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/name>	"Steve Jobs"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/title>	"Primary investor and Chairman of Pixar"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/knownFor>	"Pioneer of the personal computer revolution with Steve Wozniak"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/source>	"\u2014Steve Jobs"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/title>	"Co-founder, Chairman, and CEO of Apple Inc."@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/source>	"\u2014Steve Jobs, 1995. From the documentary, Steve Jobs: The Lost Interview."@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/knownFor>	"Co-creator of the Macintosh, iPod, iPhone, iPad, and first Apple Stores"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/birthName>	"Steven Paul Jobs"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/needed>	"y"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/s>	"no"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/boards>	""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/quote>	"\"Of all the inventions of humans, the computer is going to rank near or at the top as history unfolds and we look back. It is the most awesome tool that we have ever invented. I feel incredibly lucky to be at exactly the right place in Silicon Valley, at exactly the right time, historically, where this invention has taken form.\""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/signature>	"Steve Jobs signature.svg"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/quote>	"\"Basically Steve Wozniak and I invented the Apple because we wanted a personal computer. Not only couldn't we afford the computers that were on the market, those computers were impractical for us to use. We needed a Volkswagen. The Volkswagen isn't as fast or comfortable as other ways of traveling, but the VW owners can go where they want, when they want and with whom they want. The VW owners have personal control of their car.\""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/title>	"Founder, Chairman, and CEO of NeXT"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/ontology/title>	"Co-founder, Chairman, and CEO ofApple Inc."@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/occupation>	""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/quote>	"I was lucky to get into computers when it was a very young and idealistic industry. There weren't many degrees offered in computer science, so people in computers were brilliant people from mathematics, physics, music, zoology, whatever. They loved it, and no one was really in it for the money [...] There are people around here who start companies just to make money, but the great companies, well, that's not what they're about.\""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/ontology/title>	"Primary investor and Chairman ofPixar"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://xmlns.com/foaf/0.1/name>	"Steve Jobs"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/source>	"\u2014Jeffrey S. Young, 1987. From the book, Steve Jobs: The Journey is the Reward ."@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/source>	"\u2014Mona Simpson"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/knownFor>	""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/quote>	"\"I was interested in Eastern mysticism which hit the shores about then. At Reed there was a constant flow of people stopping by \u2013 from Timothy Leary and Richard Alpert, to Gary Snyder. There was a constant flow of intellectual questioning about the truth of life. That was the time when every college student in the country read Be Here Now and Diet for a Small Planet.\""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/networth>	""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/birthPlace>	"San Francisco, California, U.S."@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://www.w3.org/2000/01/rdf-schema#comment>	"Steven Paul Jobs (; February 24, 1955 \u2013 October 5, 2011) was an American business magnate, industrial designer, investor, and media proprietor. He was the chairman, chief executive officer (CEO), and co-founder of Apple Inc., the chairman and majority shareholder of Pixar, a member of The Walt Disney Company's board of directors following its acquisition of Pixar, and the founder, chairman, and CEO of NeXT. Jobs is widely recognized as a pioneer of the personal computer revolution of the 1970s and 1980s, along with Apple co-founder Steve Wozniak."@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/quote>	"\"I always thought of myself as a humanities person as a kid, but I liked electronics \u2026 then I read something that one of my heroes, Edwin Land of Polaroid, said about the importance of people who could stand at the intersection of humanities and sciences, and I decided that's what I wanted to do.\""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/ontology/abstract>	"Steven Paul Jobs (; February 24, 1955 \u2013 October 5, 2011) was an American business magnate, industrial designer, investor, and media proprietor. He was the chairman, chief executive officer (CEO), and co-founder of Apple Inc., the chairman and majority shareholder of Pixar, a member of The Walt Disney Company's board of directors following its acquisition of Pixar, and the founder, chairman, and CEO of NeXT. Jobs is widely recognized as a pioneer of the personal computer revolution of the 1970s and 1980s, along with Apple co-founder Steve Wozniak. Jobs was born in San Francisco, California, and put up for adoption. He was raised in the San Francisco Bay Area. He attended Reed College in 1972 before dropping out that same year, and traveled through India in 1974 seeking enlightenment and studying Zen Buddhism. His declassified FBI report states that he used marijuana and LSD while he was in college, and once told a reporter that taking LSD was \"one of the two or three most important things\" he had done in his life. Jobs and Wozniak co-founded Apple in 1976 to sell Wozniak's Apple I personal computer. Together the duo gained fame and wealth a year later with the Apple II, one of the first highly successful mass-produced microcomputers. Jobs saw the commercial potential of the Xerox Alto in 1979, which was mouse-driven and had a graphical user interface (GUI). This led to the development of the unsuccessful Apple Lisa in 1983, followed by the breakthrough Macintosh in 1984, the first mass-produced computer with a GUI. The Macintosh introduced the desktop publishing industry in 1985 with the addition of the Apple LaserWriter, the first laser printer to feature vector graphics. Jobs was forced out of Apple in 1985 after a long power struggle with the company's board and its then-CEO John Sculley. That same year, Jobs took a few of Apple's members with him to found NeXT, a computer platform development company that specialized in computers for higher-education and business markets. In addition, he helped to develop the visual effects industry when he funded the computer graphics division of George Lucas's Lucasfilm in 1986. The new company was Pixar, which produced the first 3D computer animated feature film Toy Story (1995). Apple acquired NeXT in 1997, and Jobs became CEO of his former company within a few months. He was largely responsible for helping revive Apple, which had been on the verge of bankruptcy. He worked closely with designer Jony Ive to develop a line of products that had larger cultural ramifications, beginning in 1997 with the \"Think different\" advertising campaign and leading to the iMac, iTunes, iTunes Store, Apple Store, iPod, iPhone, App Store, and the iPad. In 2001, the original Mac OS was replaced with a completely new Mac OS X, based on NeXT's NeXTSTEP platform, giving the OS a modern Unix-based foundation for the first time. Jobs was diagnosed with a pancreatic neuroendocrine tumor in 2003. He died of respiratory arrest related to the tumor at age 56 on October 5, 2011."@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/b>	"no"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/align>	"right"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/v>	"Steve jobs the end of an era"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/quote>	"\"I grew up as an only child, with a single mother. Because we were poor and because I knew my father had emigrated from Syria, I imagined he looked like Omar Sharif. I hoped he would be rich and kind and would come into our lives  and help us. Later, after I'd met my father, I tried to believe he'd changed his number and left no forwarding address because he was an idealistic revolutionary, plotting a new world for the Arab people. Even as a feminist, my whole life I'd been waiting for a man to love, who could love me. For decades, I'd thought that man would be my father. When I was 25, I met that man, and he was my brother.\""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/quote>	"\"For what characterizes Apple is that its scientific staff always acted and performed like artists \u2013 in a field filled with dry personalities limited by the rational and binary worlds they inhabit, Apple's engineering teams had passion. They always believed that what they were doing was important and, most of all, fun. Working at Apple was never just a job; it was also a crusade, a mission, to bring better computer power to people. At its roots that attitude came from Steve Jobs. It was \"Power to the People\", the slogan of the sixties, rewritten in technology for the eighties and called Macintosh.\""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/title>	""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/caption>	"Jobs presenting the iPhone 4 in 2010"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/float>	"right"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/video>	"Machine That Changed The World, The; Paperback Computer, The; Interview with Steve Jobs, 1990, 50:08, 05/14/1990, WGBH Media Library & Archives"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/deathPlace>	"Palo Alto, California, U.S."@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/ontology/birthName>	"Steven Paul Jobs"@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/property/spouse>	""@en .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Psychedelic_drug_advocates> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_financiers> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:1955_births> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Directors_of_Apple_Inc.> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_adoptees> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:People_from_San_Francisco> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:People_from_Mountain_View,_California> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Spokespersons> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Pixar> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Businesspeople_from_California> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_technology_company_founders> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_technology_chief_executives> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Apple_Inc._executives> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Internet_pioneers> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_industrial_designers> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Deaths_from_pancreatic_cancer> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Burials_in_California> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_Zen_Buddhists> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_film_studio_executives> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:People_from_Palo_Alto,_California> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Businesspeople_from_San_Francisco> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_computer_businesspeople> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_people_of_Swiss_descent> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Businesspeople_in_software> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_people_of_German_descent> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:20th-century_American_businesspeople> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Pixar_people> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Deaths_from_cancer_in_California> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Atari_people> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_people_of_Syrian_descent> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Steve_Jobs> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Disney_executives> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:People_from_Cupertino,_California> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:NeXT> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Computer_designers> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_billionaires> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Personal_computing> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Liver_transplant_recipients> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Apple_Inc.> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:National_Medal_of_Technology_recipients> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:People_from_Los_Altos,_California> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:21st-century_American_businesspeople> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:2011_deaths> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/ontology/occupation>	<http://dbpedia.org/resource/Investor> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/ontology/occupation>	<http://dbpedia.org/resource/Media_proprietor> .
+<http://dbpedia.org/resource/Steve_Jobs>	<http://dbpedia.org/ontology/occupation>	<http://dbpedia.org/resource/Steve_Jobs__PersonFunction__1> .
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Microsoft>
+
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/display>	"Microsoft"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/s>	"no"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/products>	"Mobile"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/products>	"Xbox"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"TechNet"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/imageCaption>	"Building 92 on the Microsoft Redmond campus"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/style>	"font-size:100%"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"LinkedIn"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/date>	"May 2019"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/logo>	"Microsoft logo and wordmark.svg"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/keyPeople>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/equity>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/voy>	"no"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/founded>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/products>	"Dynamics"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/industry>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/tradedAs>	"NASDAQ-100 component"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/keyPeople>	"CEO: Satya Nadella"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/text>	"\"We provide customer data only when we receive a legally binding order or subpoena to do so, and never on a voluntary basis. In addition we only ever comply with orders for requests about specific accounts or identifiers. If the government has a broader voluntary national security program to gather customer data, we don't participate in it.\""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"Office 365"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/keyPeople>	"President: Brad Smith"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/tradedAs>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/founders>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/reason>	"\"The Internet\" is a huge network of cables, microwave links and switching equipment, and even Microsoft at the time didn't have the financial means to replicate it, nor would there have been any business reason to do so."@en .
+<http://dbpedia.org/resource/Microsoft>	<http://www.w3.org/2000/01/rdf-schema#label>	"Microsoft"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/keyPeople>	"Technical advisor: Bill Gates"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://www.w3.org/2000/01/rdf-schema#comment>	"Microsoft Corporation () is an American multinational technology company with headquarters in Redmond, Washington. It develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services. Its best known software products are the Microsoft Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers. Its flagship hardware products are the Xbox video game consoles and the Microsoft Surface lineup of touchscreen personal computers. In 2016, it was the world's largest software maker by revenue (currently Alphabet/Google has more revenue). The word \"Microsoft\" is a portmanteau of \"microcomputer\" and \"software\". Microsoft is ranked No. 30 in the 2018 Fortune 500 rankings of the la"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/tradedAs>	"S&P 500 component"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/products>	"List of software"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"Xbox Game Pass"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"Bing"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://xmlns.com/foaf/0.1/name>	"Microsoft Corporation"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/yahoo>	"MSFT"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/n>	"yes"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/founded>	"Albuquerque, New Mexico, U.S."@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/species>	"no"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"Microsoft Store"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/google>	"MSFT"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/tradedAs>	"DJIA component"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"Pay"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/commons>	"Category:Microsoft"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/d>	"no"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/products>	"Windows"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/logoAlt>	"A square divided into four sub-squares, colored red, green, yellow and blue , with the company name appearing to its right."@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/assets>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/operatingIncome>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"GitHub"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/abstract>	"Microsoft Corporation () is an American multinational technology company with headquarters in Redmond, Washington. It develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services. Its best known software products are the Microsoft Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers. Its flagship hardware products are the Xbox video game consoles and the Microsoft Surface lineup of touchscreen personal computers. In 2016, it was the world's largest software maker by revenue (currently Alphabet/Google has more revenue). The word \"Microsoft\" is a portmanteau of \"microcomputer\" and \"software\". Microsoft is ranked No. 30 in the 2018 Fortune 500 rankings of the largest United States corporations by total revenue. It is considered one of the Big Five technology companies alongside Amazon, Apple, Google, and Facebook. Microsoft was founded by Bill Gates and Paul Allen on April 4, 1975, to develop and sell BASIC interpreters for the Altair 8800. It rose to dominate the personal computer operating system market with MS-DOS in the mid-1980s, followed by Microsoft Windows. The company's 1986 initial public offering (IPO), and subsequent rise in its share price, created three billionaires and an estimated 12,000 millionaires among Microsoft employees. Since the 1990s, it has increasingly diversified from the operating system market and has made a number of corporate acquisitions, their largest being the acquisition of LinkedIn for $26.2 billion in December 2016, followed by their acquisition of Skype Technologies for $8.5 billion in May 2011. As of 2015, Microsoft is market-dominant in the IBM PC compatible operating system market and the office software suite market, although it has lost the majority of the overall operating system market to Android. The company also produces a wide range of other consumer and enterprise software for desktops, laptops, tabs, gadgets, and servers, including Internet search (with Bing), the digital services market (through MSN), mixed reality (HoloLens), cloud computing (Azure), and software development (Visual Studio). Steve Ballmer replaced Gates as CEO in 2000, and later envisioned a \"devices and services\" strategy. This unfolded with Microsoft acquiring Danger Inc. in 2008, entering the personal computer production market for the first time in June 2012 with the launch of the Microsoft Surface line of tablet computers, and later forming Microsoft Mobile through the acquisition of Nokia's devices and services division. Since Satya Nadella took over as CEO in 2014, the company has scaled back on hardware and has instead focused on cloud computing, a move that helped the company's shares reach its highest value since December 1999. Earlier dethroned by Apple in 2010, in 2018 Microsoft reclaimed its position as the most valuable publicly traded company in the world. In April 2019, Microsoft reached the trillion-dollar market cap, becoming the third U.S. public company to be valued at over $1 trillion after Apple and Amazon respectively."@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/products>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/tradedAs>	"NASDAQ:MSFT"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/products>	"Surface"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/tradedAs>	"S&P 100 component"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/symbol>	"MSFT"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/netIncome>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/b>	"no"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/q>	"Microsoft"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"Azure"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"Windows Update"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/products>	"Visual Studio"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"Yammer"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/mw>	"no"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"OneDrive"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/products>	"Office"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/v>	"Portal:Microsoft"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/hqLocationCountry>	"U.S."@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/keyPeople>	"Chairman: John W. Thompson"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"Xbox Live"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/wikt>	"no"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"MSDN"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/areaServed>	"Worldwide"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/name>	"Microsoft Corporation"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/services>	"Outlook.com"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/products>	"Servers"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/products>	"Skype"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/bloomberg>	"MSFT:US"@en .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/revenue>	""@en .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Computer_companies_established_in_1975> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Supply_chain_software_companies> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:1975_establishments_in_New_Mexico> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Companies_in_the_PRISM_network> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Software_companies_of_the_United_States> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Electronics_companies_established_in_1975> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Companies_in_the_NASDAQ-100_Index> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Technology_companies_of_the_United_States> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Multinational_companies_headquartered_in_the_United_States> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:ERP_software_companies> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Cloud_computing_providers> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Companies_in_the_Dow_Jones_Industrial_Average> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:1980s_initial_public_offerings> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Microsoft> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Software_companies_established_in_1975> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Web_service_providers> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_companies_established_in_1975> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Companies_listed_on_NASDAQ> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:CRM_software_companies> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Companies_based_in_Redmond,_Washington> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Technology_companies_established_in_1975> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Business_software_companies> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_brands> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Electronics_companies_of_the_United_States> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Mobile_phone_manufacturers> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Software_companies_based_in_Washington_(state)> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Entertainment_Software_Association_members> .
+<http://dbpedia.org/resource/Microsoft>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Computer_hardware_companies> .
+# Empty NT
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Consumer_electronics> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Software_development> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Corporate_venture_capital> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Computer_hardware> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Cloud_computing> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Internet> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Video_game_industry> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Social_networking_service> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/keyPerson>	<http://dbpedia.org/resource/President_(corporate_title)> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/keyPerson>	<http://dbpedia.org/resource/Chairman> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/keyPerson>	<http://dbpedia.org/resource/Chief_executive_officer> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/keyPerson>	<http://dbpedia.org/resource/Technical_advisor> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Microsoft_Servers> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Skype> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Xbox> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Microsoft_Dynamics> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Microsoft_Visual_Studio> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Microsoft_Mobile> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Microsoft_Windows> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Microsoft_Surface> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Microsoft_Office> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/List_of_Microsoft_software> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Outlook.com> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/OneDrive> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/GitHub> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Xbox_Game_Pass> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Bing_(search_engine)> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Microsoft_Developer_Network> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Microsoft_Azure> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Microsoft_Pay> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Office_365> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/LinkedIn> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Yammer> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Microsoft_TechNet> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Windows_Update> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Xbox_Live> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Microsoft_Store_(digital)> .
+<http://dbpedia.org/resource/Microsoft>	<http://dbpedia.org/property/wordnet_type>	<http://www.w3.org/2006/03/wn/wn20/instances/synset-company-noun-1> .
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Melinda_Gates>
+
+<http://dbpedia.org/resource/Melinda_Gates>	<http://www.w3.org/2000/01/rdf-schema#comment>	"Melinda Ann Gates (n\u00E9e French; August 15, 1964) is an American philanthropist and a former general manager at Microsoft. In 2000, she co-founded the Bill & Melinda Gates Foundation with her husband Bill Gates, the world's largest private charitable organization as of 2015. Gates has consistently been ranked as one of the world's most powerful women by Forbes."@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/property/birthPlace>	"Dallas, Texas, U.S."@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://www.w3.org/2000/01/rdf-schema#label>	"Melinda Gates"@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/property/spouse>	""@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/property/name>	"Melinda Gates"@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/property/nationality>	"American"@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/property/caption>	"Gates in 2011"@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/ontology/birthName>	"Melinda Ann French"@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/property/reason>	"This quote becomes incredibly weird without proper context. Why should women spend more time doing such activities? Most importantly: why can't they?"@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/property/date>	"September 2019"@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/property/education>	"Duke University"@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/property/occupation>	"Co-Chair and Founder, Bill & Melinda Gates Foundation"@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/ontology/abstract>	"Melinda Ann Gates (n\u00E9e French; August 15, 1964) is an American philanthropist and a former general manager at Microsoft. In 2000, she co-founded the Bill & Melinda Gates Foundation with her husband Bill Gates, the world's largest private charitable organization as of 2015. Gates has consistently been ranked as one of the world's most powerful women by Forbes."@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://xmlns.com/foaf/0.1/name>	"Melinda Gates"@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/property/birthName>	"Melinda Ann French"@en .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Fellows_of_the_American_Academy_of_Arts_and_Sciences> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Duke_University_alumni> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:People_from_Dallas> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Living_people> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Gates_family> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_women_in_business> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Businesspeople_from_Texas> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Catholics_from_Washington_(state)> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Insignia_propers_of_the_Order_of_the_Aztec_Eagle> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_women_chief_executives> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Businesspeople_from_Seattle> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_Roman_Catholics> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Recipients_of_the_Padma_Bhushan_in_social_work> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Fuqua_School_of_Business_alumni> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:People_from_Medina,_Washington> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Catholics_from_Texas> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Microsoft_employees> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Wired_(magazine)_people> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Bill_&_Melinda_Gates_Foundation_people> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_humanitarians> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_nonprofit_chief_executives> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Recipients_of_the_Cross_of_Recognition> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Presidential_Medal_of_Freedom_recipients> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:The_Washington_Post_people> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Honorary_Dames_Commander_of_the_Order_of_the_British_Empire> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Giving_Pledgers> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_women_philanthropists> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:21st-century_philanthropists> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:1964_births> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/ontology/occupation>	<http://dbpedia.org/resource/Bill_&_Melinda_Gates_Foundation> .
+<http://dbpedia.org/resource/Melinda_Gates>	<http://dbpedia.org/ontology/occupation>	<http://dbpedia.org/resource/Melinda_Gates__PersonFunction__1> .
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Apple_Inc.>
+
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/logo>	"Apple logo black.svg"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/google>	"AAPL"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/areaServed>	"Worldwide"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Beats 1"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/name>	"Apple Inc."@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/formerName>	"Apple Computer Company"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/caption>	"Third logo"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/image>	"Apple Logo 1998.jpg"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/imageCaption>	"Overhead view of Apple Park located in Cupertino, California"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/assets>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Apple Arcade"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/image>	"Apple first logo.png"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/image>	"Apple Computer Logo rainbow.svg"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/keyPeople>	"CEO: Tim Cook"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/secCik>	"AAPL"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/revenue>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Genius Bar"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/formerName>	"(1977\u2013January 2007)"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://xmlns.com/foaf/0.1/name>	"Apple Inc."@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/subsid>	"Apple Energy, LLC"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/formerName>	"Apple Computer, Inc."@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/subsid>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Apple News+"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/products>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Apple TV+"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/formerName>	"Apple Computer, Inc."@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/tradedAs>	"NASDAQ:AAPL"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Apple Store"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/direction>	"vertical"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://www.w3.org/2000/01/rdf-schema#label>	"Apple Inc."@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/netIncome>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/align>	"right"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/symbol>	"AAPL"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/founders>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"App Store"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/keyPeople>	"COO: Jeff Williams"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/logoCaption>	"Logo since 1998"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/keyPeople>	"Chairman: Arthur D. Levinson"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/image>	"Apple Power Macintosh G5 Late 2005 02.jpg"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/operatingIncome>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/image>	"Apple logo black.svg"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Apple Music"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/subsid>	"Apple Services"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/abstract>	"Apple Inc. is an American multinational technology company headquartered in Cupertino, California, that designs, develops, and sells consumer electronics, computer software, and online services. It is considered one of the Big Tech technology companies, alongside Amazon, Google, Microsoft and Facebook. The company's hardware products include the iPhone smartphone, the iPad tablet computer, the Mac personal computer, the iPod portable media player, the Apple Watch smartwatch, the Apple TV digital media player, the AirPods wireless earbuds and the HomePod smart speaker. Apple's software includes macOS, iOS, iPadOS, watchOS, and tvOS operating systems, the iTunes media player, the Safari web browser, the Shazam music identifier, and the iLife and iWork creativity and productivity suites, as well as professional applications like Final Cut Pro, Logic Pro, and Xcode. Its online services include the iTunes Store, the iOS App Store, Mac App Store, Apple Music, Apple TV+, iMessage, and iCloud. Other services include Apple Store, Genius Bar, AppleCare, Apple Pay, Apple Pay Cash, and Apple Card. Apple was founded by Steve Jobs, Steve Wozniak, and Ronald Wayne in April 1976 to develop and sell Wozniak's Apple I personal computer, though Wayne sold his share back within 12 days. It was incorporated as Apple Computer, Inc., in January 1977, and sales of its computers, including the Apple II, grew quickly. Within a few years, Jobs and Wozniak had hired a staff of computer designers and had a production line. Apple went public in 1980 to instant financial success. Over the next few years, Apple shipped new computers featuring innovative graphical user interfaces, such as the original Macintosh in 1984, and Apple's marketing advertisements for its products received widespread critical acclaim. However, the high price of its products and limited application library caused problems, as did power struggles between executives. In 1985, Wozniak departed Apple amicably and remained an honorary employee, while Jobs and others resigned to found NeXT. As the market for personal computers expanded and evolved through the 1990s, Apple lost market share to the lower-priced duopoly of Microsoft Windows on Intel PC clones. The board recruited CEO Gil Amelio to what would be a 500-day charge for him to rehabilitate the financially troubled company\u2014reshaping it with layoffs, executive restructuring, and product focus. In 1997, he led Apple to buy NeXT, solving the desperately failed operating system strategy and bringing Jobs back. Jobs pensively regained leadership status, becoming CEO in 2000. Apple swiftly returned to profitability under the revitalizing Think different campaign, as he rebuilt Apple's status by launching the iMac in 1998, opening the retail chain of Apple Stores in 2001, and acquiring numerous companies to broaden the software portfolio. In January 2007, Jobs renamed the company Apple Inc., reflecting its shifted focus toward consumer electronics, and launched the iPhone to great critical acclaim and financial success. In August 2011, Jobs resigned as CEO due to health complications, and Tim Cook became the new CEO. Two months later, Jobs died, marking the end of an era for the company. In June 2019, Jony Ive, Apple's CDO, left the company to start his own firm, but stated he would work with Apple as its primary client. Apple is well known for its size and revenues. Its worldwide annual revenue totaled $265 billion for the 2018 fiscal year. Apple is the world's largest technology company by revenue and one of the world's most valuable companies. It is also the world's third-largest mobile phone manufacturer after Samsung and Huawei. In August 2018, Apple became the first publicly traded U.S. company to be valued at over $1 trillion. The company employs 137,000 full-time employees and maintains 510 retail stores in 25 countries as of 2020. It operates the iTunes Store, which is the world's largest music retailer. As of January 2020, more than 1.5 billion Apple products are actively in use worldwide. The company also has a high level of brand loyalty and is ranked as the world's most valuable brand. However, Apple receives significant criticism regarding the labor practices of its contractors, its environmental practices and unethical business practices, including anti-competitive behavior, as well as the origins of source materials."@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/subsid>	"Apple Worldwide Video"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/quote>	"\"The scenes I witnessed at the opening of the new Apple store in London's Covent Garden were more like an evangelical prayer meeting than a chance to buy a phone or a laptop.\""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/yahoo>	"AAPL"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/industry>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/image>	"Apple Power Macintosh G5 Late 2005 01.jpg"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/formerName>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/source>	"\u2014Alex Riley, writing for the BBC"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/style>	"font-size:100%"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/text>	"We don't take so long and make the way we make for fiscal reasons ... Quite the reverse. The body is made from a single piece of machined aluminum... The whole thing is polished first to a mirror finish and then is very finely textured, except for the Apple logo. The chamfers [smoothed-off edges] are cut with diamond-tipped cutters. The cutters don't usually last very long, so we had to figure out a way of mass-manufacturing long-lasting ones. The camera cover is sapphire crystal. Look at the details around the SIM-card slot. It's extraordinary!"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/footer>	"Power Macintosh is a line of Apple Macintosh workstation-class personal computers based on various models of PowerPC microprocessors, that were developed from 1994 to 2006."@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"iTunes Store"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/caption>	"Current logo"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Cash"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Apple Card"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/formerName>	"Apple Computer Company"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/caption>	"First official logo"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Apple Pay"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://www.w3.org/2000/01/rdf-schema#comment>	"Apple Inc. is an American multinational technology company headquartered in Cupertino, California, that designs, develops, and sells consumer electronics, computer software, and online services. It is considered one of the Big Tech technology companies, alongside Amazon, Google, Microsoft and Facebook."@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/keyPeople>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/title>	"Apple-related navigation boxes"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/caption>	"First Apple logo"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/subsid>	"Apple Sales International"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/equity>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"iCloud"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/formerName>	"(1976\u20131977)"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"iMessage"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Mac App Store"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/tradedAs>	""@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/services>	"Apple Books"@en .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Portable_audio_player_manufacturers> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:1980s_initial_public_offerings> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Software_companies_established_in_1976> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Home_computer_hardware_companies> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:1976_establishments_in_California> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Companies_listed_on_NASDAQ> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Companies_in_the_PRISM_network> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Companies_in_the_Dow_Jones_Industrial_Average> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Display_technology_companies> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Multinational_companies_headquartered_in_the_United_States> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Technology_companies_established_in_1976> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Companies_based_in_Cupertino,_California> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Retail_companies_of_the_United_States> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Electronics_companies_of_the_United_States> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Technology_companies_of_the_United_States> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Computer_companies_established_in_1976> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Computer_companies_of_the_United_States> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Technology_companies_based_in_the_San_Francisco_Bay_Area> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Steve_Jobs> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Mobile_phone_manufacturers> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Networking_hardware_companies> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Software_companies_based_in_the_San_Francisco_Bay_Area> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:American_brands> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Apple_Inc.> .
+# Empty NT
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Financial_technology> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Consumer_electronics> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Digital_distribution> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Electronic_media> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Cloud_computing> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Artificial_intelligence> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Semiconductors> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Fabless_manufacturing> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Computer_software> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/industry>	<http://dbpedia.org/resource/Computer_hardware> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/keyPerson>	<http://dbpedia.org/resource/Chief_operating_officer> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/keyPerson>	<http://dbpedia.org/resource/Chief_executive_officer> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/keyPerson>	<http://dbpedia.org/resource/Chairman> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Shazam_(application)> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/WatchOS> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/IPod> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/TvOS> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Logic_Pro> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/IWork> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Siri> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/IPad> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/IPadOS> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Apple_Watch> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Apple_TV> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Final_Cut_Pro> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/HomePod> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/GarageBand> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/IOS> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/ILife> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/MacOS> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/Macintosh> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/product>	<http://dbpedia.org/resource/IPhone> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Apple_Arcade> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Genius_Bar> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Beats_1> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Apple_TV+> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/IMessage> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Apple_Music> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Apple_Books> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Apple_Store> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Apple_Card> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/ICloud> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/ITunes_Store> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Apple_Pay> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Apple_Pay_Cash> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Apple_News+> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/App_Store_(iOS)> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/ontology/service>	<http://dbpedia.org/resource/Mac_App_Store> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/wordnet_type>	<http://www.w3.org/2006/03/wn/wn20/instances/synset-company-noun-1> .
+<http://dbpedia.org/resource/Apple_Inc.>	<http://dbpedia.org/property/wordnet_type>	<http://www.w3.org/2006/03/wn/wn20/instances/synset-web_site-noun-1> .
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/California>
+
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/footer>	"Two prominent California landmarks representing the state's mass media and entertainment: the Hollywood Sign  symbolizes the Los Angeles entertainment industry, while San Francisco's Sutro Tower  transmits numerous TV and radio stations across the Bay Area"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/city>	"San Jose, CaliforniaSan Jose"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/ontology/abstract>	"California is a state in the Pacific Region of the United States. With 39.5 million residents across a total area of about 163,696 square miles (423,970 km2), California is the most populous U.S. state and the third-largest by area, and is also the world's thirty-fourth most populous subnational entity. California is also the most populated subnational entity in North America, and has its state capital in Sacramento. The Greater Los Angeles Area and the San Francisco Bay Area are the nation's second- and fifth-most populous urban regions, with 18.7 million and 9.7 million residents respectively. Los Angeles is California's most populous city, and the country's second-most populous, after New York City. California also has the nation's most populous county, Los Angeles County, and its largest county by area, San Bernardino County. The City and County of San Francisco is both the country's second most densely populated major city after New York City and the fifth most densely populated county, behind only four of the five New York City boroughs. California's economy, with a gross state product of $3.0 trillion, is the largest sub-national economy in the world. If it were a country, California would be the fifth-largest economy in the world, and the 37th-most populous as of 2020. The Greater Los Angeles Area and the San Francisco Bay Area are the nation's second- and third-largest urban economies ($1.3 trillion and $1.0 trillion respectively as of 2020), after the New York metropolitan area ($2.0 trillion). The San Francisco Bay Area PSA had the nation's highest gross domestic product per capita in 2018 ($106,757) among large primary statistical areas, and is home to four of the world's ten largest companies by market capitalization and four of the world's ten richest people. California culture is considered a global trendsetter in popular culture, communication, information, innovation, environmentalism, economics, politics, and entertainment. As a result of the state's diversity and migration, California integrates foods, languages, and traditions from other areas across the country and around the globe. It is considered the origin of the American film industry, the hippie counterculture, barbecue, fast food, beach and car culture, the Internet, and the personal computer, among others. The San Francisco Bay Area and the Greater Los Angeles Area are widely seen as centers of the global technology and entertainment industries, respectively. California's economy is very diverse: 58% of it is based on finance, government, real estate services, technology, and professional, scientific, and technical business services. Although it accounts for only 1.5% of the state's economy, California's agriculture industry has the highest output of any U.S. state. California shares a border with Oregon to the north, Nevada and Arizona to the east, and the Mexican state of Baja California to the south. The state's diverse geography ranges from the Pacific Coast in the west to the Sierra Nevada mountain range in the east, and from the redwood and Douglas fir forests in the northwest to the Mojave Desert in the southeast. The Central Valley, a major agricultural area, dominates the state's center. Although California is well-known for its warm Mediterranean climate, the large size of the state results in climates that vary from moist temperate rainforest in the north to arid desert in the interior, as well as snowy alpine in the mountains. Over time, drought and wildfires have become more frequent. What is now California was first settled by various Native Californian tribes before being explored by a number of Europeans during the 16th and 17th centuries. The Spanish Empire then claimed and colonized it. In 1804 it was included in Alta California province, within the Viceroyalty of New Spain. The area became a part of Mexico in 1821 following its successful war for independence but was ceded to the United States in 1848 after the Mexican\u2013American War. The western portion of Alta California was then organized and admitted as the 31st state on September 9, 1850. The California Gold Rush starting in 1848 led to dramatic social and demographic changes, with large-scale emigration from the east and abroad with an accompanying economic boom."@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/align>	"center"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/titlebar>	"#ddd"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/divLink>	"Counties of CaliforniaCounty"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/footer>	"Mount Whitney  is less than  away from Badwater Basin in Death Valley ."@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/img>	"SAN JOSE CALIFORNIA BAYAREA01.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/governor>	""@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/alt>	"The main gate of Camp Pendleton"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/flag>	"Flag of California.svg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/image>	"Beale-afb-main-gate-sign.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/img>	"San Francisco Skyline-02.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/city>	"Anaheim, CaliforniaAnaheim"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/imageSeal>	"Seal of California.svg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/imageFlag>	"Flag of California.svg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/right>	"percent"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/image>	"Badwater elevation sign.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/name>	"California"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/image>	"Hollywood Sign .jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/colors>	"Blue & gold"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/representative>	""@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/image>	"Camp Pendleton front gate.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/officialName>	"State of California"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/div>	"Alameda County, CaliforniaAlameda"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/city>	"Sacramento, CaliforniaSacramento"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/div>	"Kern County, CaliforniaKern"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/div>	"Fresno County, CaliforniaFresno"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/city>	"Long Beach, CaliforniaLong Beach"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/elevationMinM>	"\u221285.0"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/routeMarker>	"California 1.svg"@en .
+<http://dbpedia.org/resource/California>	<http://xmlns.com/foaf/0.1/nick>	"Golden State"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/alt>	"Beale Air Force Base main gate"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/motto>	"\"Eureka\""@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/direction>	"horizontal"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/postalCode>	"CA"@en .
+<http://dbpedia.org/resource/California>	<http://xmlns.com/foaf/0.1/name>	"California"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/footerAlign>	"center"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/div>	"Orange County, CaliforniaOrange"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/content>	"* Coastal California\n** North Coast\n** Greater Bay Area\n** Central Coast\n** South Coast\n*** Greater Los Angeles\n*** Greater San Diego\n** Channel Islands\n* Northern California\n** Cascade Range\n** Klamath Mountains\n** North Coast\n** Greater Sacramento\n** Sacramento\u2013San Joaquin River Delta\n** Central California\n** Greater Bay Area\n** Northern Sierra\n* Central California\n** Greater Sacramento\n** San Joaquin Valley\n** Sacramento\u2013San Joaquin River Delta\n** Central Coast\n* Eastern California\n** Central Sierra\n** Inland Empire\n* Southern California\n** South Coast\n*** Greater Los Angeles\n** Channel Islands\n** Inland Empire\n** Southern Border Region\n*** Greater San Diego\u2013Tijuana\n*** Greater El Centro"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/elevationMinFt>	"\u2212279"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/div>	"Santa Clara County, CaliforniaSanta Clara"@en .
+<http://dbpedia.org/resource/California>	<http://www.w3.org/2000/01/rdf-schema#comment>	"California is a state in the Pacific Region of the United States. With 39.5 million residents across a total area of about 163,696 square miles (423,970 km2), California is the most populous U.S. state and the third-largest by area, and is also the world's thirty-fourth most populous subnational entity. California is also the most populated subnational entity in North America, and has its state capital in Sacramento. The Greater Los Angeles Area and the San Francisco Bay Area are the nation's second- and fifth-most populous urban regions, with 18.7 million and 9.7 million residents respectively. Los Angeles is California's most populous city, and the country's second-most populous, after New York City. California also has the nation's most populous county, Los Angeles County, and its large"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/statRef>	"Source:"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/img>	"Los Angeles, Winter 2016.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/country>	"United States"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/languages>	"Language spoken at home:\n* English: 58.1%\n* Spanish: 28.8%\n* Other: 13.1%"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/city>	"Los Angeles, CaliforniaLos Angeles"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/title>	"The Golden State"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/alt>	"Welcome sign at Fort Irwin National Training Center"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/nickname>	"Golden State"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/city>	"San Diego, CaliforniaSan Diego"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/direction>	"vertical"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/align>	"right"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/imageMap>	"California in United States.svg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/anthem>	"center"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/alt>	"Coast Guard Island in the Oakland Estuary"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/city>	"Oakland, CaliforniaOakland"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/city>	"Bakersfield, CaliforniaBakersfield"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/mottoenglish>	"I have found it"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/image>	"Coast Guard Island May 2009.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/img>	"SanDiegoSkylineBay.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/populationDemonym>	"Californian"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/class>	"nav"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/image>	"Sutro Tower from Grandview.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/div>	"San Diego County, CaliforniaSan Diego"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/lieutenantGovernor>	""@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/flagLink>	"Flag of California"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/image>	"Mount Whitney 2003-03-25.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://www.w3.org/2000/01/rdf-schema#label>	"California"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/float>	"right"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/isoCode>	"US-CA"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/image>	"Fort Irwin National Training Center - Welcome sign - 1.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/seal>	"Seal of California.png"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/tradabbreviation>	"Calif., Cal."@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/footer>	"United States Armed Forces in California. From left to right: Fort Irwin, Camp Pendleton, NAS North Island, Beale Air Force Base, and Coast Guard Island"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/city>	"Fresno, CaliforniaFresno"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/image>	"US Navy 100506-N-8421M-124 The aircraft carriers USS Ronald Reagan , USS Nimitz  and USS Carl Vinson  are pierside at Naval Air Station North Island.jpg"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/anthem>	"\"I Love You, California\""@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/ontology/demonym>	"Californian"@en .
+<http://dbpedia.org/resource/California>	<http://xmlns.com/foaf/0.1/name>	"State of California"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/alt>	"Carl Vinson, Nimitz and Ronald Reagan at North Island Naval Air Station"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/name>	"Largest cities"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/state>	"expanded"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/div>	"Sacramento County, CaliforniaSacramento"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/country>	"California"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/title>	"Religion in California"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/left>	"religion"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/title>	"Topics related to California"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/div>	"Los Angeles County, CaliforniaLos Angeles"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/div>	"San Francisco County, CaliforniaSan Francisco"@en .
+<http://dbpedia.org/resource/California>	<http://dbpedia.org/property/city>	"San Francisco, CaliforniaSan Francisco"@en .
+<http://dbpedia.org/resource/California>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Western_United_States> .
+<http://dbpedia.org/resource/California>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:1850_establishments_in_California> .
+<http://dbpedia.org/resource/California>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:States_of_the_West_Coast_of_the_United_States> .
+<http://dbpedia.org/resource/California>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:States_of_the_United_States> .
+<http://dbpedia.org/resource/California>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Former_Spanish_colonies> .
+<http://dbpedia.org/resource/California>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:States_and_territories_established_in_1850> .
+<http://dbpedia.org/resource/California>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:California> .
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Seatle>
+
+<http://dbpedia.org/resource/Seatle>	<http://www.w3.org/2000/01/rdf-schema#label>	"Seatle"@en .
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Software>
+
+<http://dbpedia.org/resource/Software>	<http://dbpedia.org/property/date>	"August 2018"@en .
+<http://dbpedia.org/resource/Software>	<http://dbpedia.org/property/wikt>	"software"@en .
+<http://dbpedia.org/resource/Software>	<http://dbpedia.org/ontology/abstract>	"Computer software, or simply software, is a collection of data or computer instructions that tell the computer how to work. This is in contrast to physical hardware, from which the system is built and actually performs the work. In computer science and software engineering, computer software is all information processed by computer systems, programs and data. Computer software includes computer programs, libraries and related non-executable data, such as online documentation or digital media. Computer hardware and software require each other and neither can be realistically used on its own. At the lowest programming level, executable code consists of machine language instructions supported by an individual processor\u2014typically a central processing unit (CPU) or a graphics processing unit (GPU). A machine language consists of groups of binary values signifying processor instructions that change the state of the computer from its preceding state. For example, an instruction may change the value stored in a particular storage location in the computer\u2014an effect that is not directly observable to the user. An instruction may also invoke one of many input or output operations, for example displaying some text on a computer screen; causing state changes which should be visible to the user. The processor executes the instructions in the order they are provided, unless it is instructed to \"jump\" to a different instruction, or is interrupted by the operating system. As of 2015, most personal computers, smartphone devices and servers have processors with multiple execution units or multiple processors performing computation together, and computing has become a much more concurrent activity than in the past. The majority of software is written in high-level programming languages. They are easier and more efficient for programmers because they are closer to natural languages than machine languages. High-level languages are translated into machine language using a compiler or an interpreter or a combination of the two. Software may also be written in a low-level assembly language, which has strong correspondence to the computer's machine language instructions and is translated into machine language using an assembler."@en .
+<http://dbpedia.org/resource/Software>	<http://dbpedia.org/property/q>	"no"@en .
+<http://dbpedia.org/resource/Software>	<http://dbpedia.org/property/reason>	"What 'level' means can be unclear to non-technical readers"@en .
+<http://dbpedia.org/resource/Software>	<http://dbpedia.org/property/commons>	"Special:Search/Software"@en .
+<http://dbpedia.org/resource/Software>	<http://www.w3.org/2000/01/rdf-schema#label>	"Software"@en .
+<http://dbpedia.org/resource/Software>	<http://dbpedia.org/property/v>	"Computer Software"@en .
+<http://dbpedia.org/resource/Software>	<http://www.w3.org/2000/01/rdf-schema#comment>	"Computer software, or simply software, is a collection of data or computer instructions that tell the computer how to work. This is in contrast to physical hardware, from which the system is built and actually performs the work. In computer science and software engineering, computer software is all information processed by computer systems, programs and data. Computer software includes computer programs, libraries and related non-executable data, such as online documentation or digital media. Computer hardware and software require each other and neither can be realistically used on its own."@en .
+<http://dbpedia.org/resource/Software>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Software> .
+<http://dbpedia.org/resource/Software>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Computer_science> .
+<http://dbpedia.org/resource/Software>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Mathematical_and_quantitative_methods_(economics)> .
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Computer>
+
+<http://dbpedia.org/resource/Computer>	<http://www.w3.org/2000/01/rdf-schema#comment>	"A computer is a machine that can be instructed to carry out sequences of arithmetic or logical operations automatically via computer programming. Modern computers have the ability to follow generalized sets of operations, called programs. These programs enable computers to perform an extremely wide range of tasks. A \"complete\" computer including the hardware, the operating system (main software), and peripheral equipment required and used for \"full\" operation can be referred to as a computer system. This term may as well be used for a group of computers that are connected and work together, in particular a computer network or computer cluster."@en .
+<http://dbpedia.org/resource/Computer>	<http://www.w3.org/2000/01/rdf-schema#label>	"Computer"@en .
+<http://dbpedia.org/resource/Computer>	<http://dbpedia.org/property/project>	"v"@en .
+<http://dbpedia.org/resource/Computer>	<http://dbpedia.org/ontology/abstract>	"A computer is a machine that can be instructed to carry out sequences of arithmetic or logical operations automatically via computer programming. Modern computers have the ability to follow generalized sets of operations, called programs. These programs enable computers to perform an extremely wide range of tasks. A \"complete\" computer including the hardware, the operating system (main software), and peripheral equipment required and used for \"full\" operation can be referred to as a computer system. This term may as well be used for a group of computers that are connected and work together, in particular a computer network or computer cluster. Computers are used as control systems for a wide variety of industrial and consumer devices. This includes simple special purpose devices like microwave ovens and remote controls, factory devices such as industrial robots and computer-aided design, and also general purpose devices like personal computers and mobile devices such as smartphones. The Internet is run on computers and it connects hundreds of millions of other computers and their users. Early computers were only conceived as calculating devices. Since ancient times, simple manual devices like the abacus aided people in doing calculations. Early in the Industrial Revolution, some mechanical devices were built to automate long tedious tasks, such as guiding patterns for looms. More sophisticated electrical machines did specialized analog calculations in the early 20th century. The first digital electronic calculating machines were developed during World War II. The first semiconductor transistors in the late 1940s were followed by the silicon-based MOSFET (MOS transistor) and monolithic integrated circuit (IC) chip technologies in the late 1950s, leading to the microprocessor and the microcomputer revolution in the 1970s. The speed, power and versatility of computers have been increasing dramatically ever since then, with MOS transistor counts increasing at a rapid pace (as predicted by Moore's law), leading to the Digital Revolution during the late 20th to early 21st centuries. Conventionally, a modern computer consists of at least one processing element, typically a central processing unit (CPU) in the form of a metal-oxide-semiconductor (MOS) microprocessor, along with some type of computer memory, typically MOS semiconductor memory chips. The processing element carries out arithmetic and logical operations, and a sequencing and control unit can change the order of operations in response to stored information. Peripheral devices include input devices (keyboards, mice, joystick, etc.), output devices (monitor screens, printers, etc.), and input/output devices that perform both functions (e.g., the 2000s-era touchscreen). Peripheral devices allow information to be retrieved from an external source and they enable the result of operations to be saved and retrieved."@en .
+<http://dbpedia.org/resource/Computer>	<http://dbpedia.org/property/short>	"yes"@en .
+<http://dbpedia.org/resource/Computer>	<http://dbpedia.org/property/title>	"Computer"@en .
+<http://dbpedia.org/resource/Computer>	<http://dbpedia.org/property/caption>	"Computers and computing devices from various eras"@en .
+<http://dbpedia.org/resource/Computer>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Consumer_electronics> .
+<http://dbpedia.org/resource/Computer>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Computers> .
+<http://dbpedia.org/resource/Computer>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Articles_with_example_code> .
+<http://dbpedia.org/resource/Computer>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Articles_containing_video_clips> .
+<http://dbpedia.org/resource/Computer>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Electronics_industry> .
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Artificial_Intelligence>
+
+<http://dbpedia.org/resource/Artificial_Intelligence>	<http://www.w3.org/2000/01/rdf-schema#label>	"Artificial Intelligence"@en .
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Economy>
+
+<http://dbpedia.org/resource/Economy>	<http://www.w3.org/2000/01/rdf-schema#comment>	"An economy (from Greek \u03BF\u03AF\u03BA\u03BF\u03C2 \u2013 \"household\" and \u03BD\u03AD\u03BCo\u03BC\u03B1\u03B9 \u2013 \"manage\") is an area of the production, distribution and trade, as well as consumption of goods and services by different agents. Understood in its broadest sense, 'The economy is defined as a social domain that emphasize the practices, discourses, and material expressions associated with the production, use, and management of resources'. A given economy is the result of a set of processes that involves its culture, values, education, technological evolution, history, social organization, political structure and legal systems, as well as its geography, natural resource endowment, and ecology, as main factors. These factors give context, content, and set the conditions and parameters in which an economy functions. In other words, the "@en .
+<http://dbpedia.org/resource/Economy>	<http://www.w3.org/2000/01/rdf-schema#label>	"Economy"@en .
+<http://dbpedia.org/resource/Economy>	<http://dbpedia.org/ontology/abstract>	"An economy (from Greek \u03BF\u03AF\u03BA\u03BF\u03C2 \u2013 \"household\" and \u03BD\u03AD\u03BCo\u03BC\u03B1\u03B9 \u2013 \"manage\") is an area of the production, distribution and trade, as well as consumption of goods and services by different agents. Understood in its broadest sense, 'The economy is defined as a social domain that emphasize the practices, discourses, and material expressions associated with the production, use, and management of resources'. A given economy is the result of a set of processes that involves its culture, values, education, technological evolution, history, social organization, political structure and legal systems, as well as its geography, natural resource endowment, and ecology, as main factors. These factors give context, content, and set the conditions and parameters in which an economy functions. In other words, the economic domain is a social domain of human practices and transactions. It does not stand alone. Economic agents can be individuals, businesses, organizations, or governments. Economic transactions occur when two groups or parties agree to the value or price of the transacted good or service, commonly expressed in a certain currency. However, monetary transactions only account for a small part of the economic domain. Economic activity is spurred by production which uses natural resources, labor and capital. It has changed over time due to technology (automation, accelerator of process, reduction of cost functions), innovation (new products, services, processes, expanding markets, diversification of markets, niche markets, increases revenue functions) such as, that which produces intellectual property and changes in industrial relations (most notably child labor being replaced in some parts of the world with universal access to education). A market-based economy is one where goods and services are produced and exchanged according to demand and supply between participants (economic agents) by barter or a medium of exchange with a credit or debit value accepted within the network, such as a unit of currency. A command-based economy is one where political agents directly control what is produced and how it is sold and distributed. A green economy is low-carbon, resource efficient and socially inclusive. In a green economy, growth in income and employment is driven by public and private investments that reduce carbon emissions and pollution, enhance energy and resource efficiency, and prevent the loss of biodiversity and ecosystem services. A gig economy is one in which short-term jobs are assigned or chosen via online platforms. New economy is a term referred to the whole emerging ecosystem where new standards and practices were introduced, usually as a result of technological innovations."@en .
+<http://dbpedia.org/resource/Economy>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Main_topic_articles> .
+<http://dbpedia.org/resource/Economy>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Economy> .
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Politics>
+
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/property/wikt>	"yes"@en .
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/property/d>	"yes"@en .
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/property/n>	"yes"@en .
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/property/s>	"yes"@en .
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/property/q>	"yes"@en .
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/property/dSearch>	"Q7163"@en .
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/property/b>	"yes"@en .
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/property/wiktSearch>	"politics"@en .
+<http://dbpedia.org/resource/Politics>	<http://www.w3.org/2000/01/rdf-schema#comment>	"Politics (from Greek: \u03A0\u03BF\u03BB\u03B9\u03C4\u03B9\u03BA\u03AC, politik\u00E1, 'affairs of the cities') is the set of activities that are associated with making decisions in groups, or other forms of power relations between individuals, such as the distribution of resources or status. The academic study of politics is referred to as political science."@en .
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/property/v>	"yes"@en .
+<http://dbpedia.org/resource/Politics>	<http://www.w3.org/2000/01/rdf-schema#label>	"Politics"@en .
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/ontology/abstract>	"Politics (from Greek: \u03A0\u03BF\u03BB\u03B9\u03C4\u03B9\u03BA\u03AC, politik\u00E1, 'affairs of the cities') is the set of activities that are associated with making decisions in groups, or other forms of power relations between individuals, such as the distribution of resources or status. The academic study of politics is referred to as political science. Politics is a multifaceted word. It may be used positively in the context of a \"political solution\" which is compromising and non-violent, or descriptively as \"the art or science of government\", but also often carries a negative connotation. For example, abolitionist Wendell Phillips declared that \"we do not play politics; anti-slavery is no half-jest with us.\" The concept has been defined in various ways, and different approaches have fundamentally differing views on whether it should be used extensively or limitedly, empirically or normatively, and on whether conflict or co-operation is more essential to it. A variety of methods are deployed in politics, which include promoting one's own political views among people, negotiation with other political subjects, making laws, and exercising force, including warfare against adversaries. Politics is exercised on a wide range of social levels, from clans and tribes of traditional societies, through modern local governments, companies and institutions up to sovereign states, to the international level. In modern nation states, people often form political parties to represent their ideas. Members of a party often agree to take the same position on many issues and agree to support the same changes to law and the same leaders. An election is usually a competition between different parties. A political system is a framework which defines acceptable political methods within a society. The history of political thought can be traced back to early antiquity, with seminal works such as Plato's Republic, Aristotle's Politics, Chanakya's Arthashastra and Chanakya Niti (3rd century BCE), as well as the works of Confucius."@en .
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/property/commons>	"yes"@en .
+<http://dbpedia.org/resource/Politics>	<http://dbpedia.org/property/sSearch>	"Category:Politics"@en .
+<http://dbpedia.org/resource/Politics>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Main_topic_articles> .
+<http://dbpedia.org/resource/Politics>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Politics> .
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+
+
+# ENTITY NAME: <http://dbpedia.org/resource/Corporation>
+
+<http://dbpedia.org/resource/Corporation>	<http://www.w3.org/2000/01/rdf-schema#comment>	"A corporation is an organization\u2014usually a group of people or a company\u2014authorized by the state to act as a single entity (a legal entity; a legal person in legal context) and recognized as such in law for certain purposes. Early incorporated entities were established by charter (i.e. by an ad hoc act granted by a monarch or passed by a parliament or legislature). Most jurisdictions now allow the creation of new corporations through registration."@en .
+<http://dbpedia.org/resource/Corporation>	<http://dbpedia.org/ontology/abstract>	"A corporation is an organization\u2014usually a group of people or a company\u2014authorized by the state to act as a single entity (a legal entity; a legal person in legal context) and recognized as such in law for certain purposes. Early incorporated entities were established by charter (i.e. by an ad hoc act granted by a monarch or passed by a parliament or legislature). Most jurisdictions now allow the creation of new corporations through registration. Corporations come in many different types but are usually divided by the law of the jurisdiction where they are chartered based on two aspects: by whether they can issue stock, or by whether they are formed to make a profit. Depending on the number of owners, a corporation can be classified as aggregate (the subject of this article) or sole (a legal entity consisting of a single incorporated office occupied by a single natural person). Where local law distinguishes corporations by their ability to issue stock, corporations allowed to do so are referred to as stock corporations; ownership of the corporation is through stock, and owners of stock are referred to as stockholders or shareholders. Corporations not allowed to issue stock are referred to as non-stock corporations; i.e. those who are considered the owners of a non-stock corporation are persons (or other entities) who have obtained membership in the corporation and are referred to as a member of the corporation. Corporations chartered in regions where they are distinguished by whether they are allowed to be for-profit are referred to as for-profit and not-for-profit corporations, respectively. There is some overlap between stock/non-stock and for-profit/not-for-profit in that not-for-profit corporations are always non-stock as well. A for-profit corporation is almost always a stock corporation, but some for-profit corporations may choose to be non-stock. To simplify the explanation, whenever \"stockholder\" or \"shareholder\" is used in the rest of this article to refer to a stock corporation, it is presumed to mean the same as \"member\" for a non-profit corporation or for a profit, non-stock corporation. Registered corporations have legal personality and their shares are owned by shareholders whose liability is generally limited to their investment. Shareholders do not typically actively manage a corporation; shareholders instead elect or appoint a board of directors to control the corporation in a fiduciary capacity. In most circumstances, a shareholder may also serve as a director or officer of a corporation. In American English, the word corporation is most often used to describe large business corporations. In British English and in the Commonwealth countries, the term company is more widely used to describe the same sort of entity while the word corporation encompasses all incorporated entities. In American English, the word company can include entities such as partnerships that would not be referred to as companies in British English as they are not a separate legal entity. Late in the 19th century, a new form of the company having the limited liability protections of a corporation, and the more favorable tax treatment of either a sole proprietorship or partnership was developed. While not a corporation, this new type of entity became very attractive as an alternative for corporations not needing to issue stock. In Germany, the organization was referred to as Gesellschaft mit beschr\u00E4nkter Haftung or GmbH. In the last quarter of the 20th century, this new form of non-corporate organization became available in the United States and other countries, and was known as the limited liability company or LLC. Since the GmbH and LLC forms of organization are technically not corporations (even though they have many of the same features), they will not be discussed in this article."@en .
+<http://dbpedia.org/resource/Corporation>	<http://www.w3.org/2000/01/rdf-schema#label>	"Corporation"@en .
+<http://dbpedia.org/resource/Corporation>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Corporate_law> .
+<http://dbpedia.org/resource/Corporation>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Legal_entities> .
+<http://dbpedia.org/resource/Corporation>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Companies> .
+<http://dbpedia.org/resource/Corporation>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Business_law> .
+<http://dbpedia.org/resource/Corporation>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Types_of_business_entity> .
+<http://dbpedia.org/resource/Corporation>	<http://purl.org/dc/terms/subject>	<http://dbpedia.org/resource/Category:Corporations> .
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+# Empty NT
+
+
+# DISCOVERED RELATIONSHIPS
+
+
+<http://dbpedia.org/resource/Bill_Gates> <http://dbpedia.org/ontology/knownFor> <http://dbpedia.org/resource/Microsoft> .
+
+<http://dbpedia.org/resource/Bill_Gates> <http://dbpedia.org/property/spouse> <http://dbpedia.org/resource/Melinda_Gates> .
+
+<http://dbpedia.org/resource/Bill_Gates> <http://dbpedia.org/ontology/spouse> <http://dbpedia.org/resource/Melinda_Gates> .
+
+<http://dbpedia.org/resource/Steve_Jobs> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://dbpedia.org/resource/Apple_Inc.> .
+
+<http://dbpedia.org/resource/Steve_Jobs> <http://dbpedia.org/property/title> <http://dbpedia.org/resource/Apple_Inc.> .
+
+<http://dbpedia.org/resource/Steve_Jobs> <http://dbpedia.org/ontology/board> <http://dbpedia.org/resource/Apple_Inc.> .
+
+<http://dbpedia.org/resource/Steve_Jobs> <http://dbpedia.org/ontology/birthPlace> <http://dbpedia.org/resource/California> .
+
+<http://dbpedia.org/resource/Microsoft> <http://dbpedia.org/property/founders> <http://dbpedia.org/resource/Bill_Gates> .
+
+<http://dbpedia.org/resource/Microsoft> <http://dbpedia.org/ontology/foundedBy> <http://dbpedia.org/resource/Bill_Gates> .
+
+<http://dbpedia.org/resource/Melinda_Gates> <http://dbpedia.org/property/spouse> <http://dbpedia.org/resource/Bill_Gates> .
+
+<http://dbpedia.org/resource/Melinda_Gates> <http://dbpedia.org/ontology/spouse> <http://dbpedia.org/resource/Bill_Gates> .
+
+<http://dbpedia.org/resource/Apple_Inc.> <http://dbpedia.org/property/founders> <http://dbpedia.org/resource/Steve_Jobs> .
+
+<http://dbpedia.org/resource/Apple_Inc.> <http://dbpedia.org/ontology/foundedBy> <http://dbpedia.org/resource/Steve_Jobs> .
+
+<http://dbpedia.org/resource/Apple_Inc.> <http://dbpedia.org/property/hqLocation> <http://dbpedia.org/resource/California> .
+
+<http://dbpedia.org/resource/Apple_Inc.> <http://dbpedia.org/ontology/headquarter> <http://dbpedia.org/resource/California> .
+
+<http://dbpedia.org/resource/Apple_Inc.> <http://dbpedia.org/property/industry> <http://dbpedia.org/resource/Software> .
