@@ -40,5 +40,6 @@ tavily.md
 autocontext.md
 agent_llm.md
 agent_part2.md
+llm_lib.md
 wolfram.md
 book_wrapup.md
