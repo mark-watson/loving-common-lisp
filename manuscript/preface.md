@@ -1,6 +1,6 @@
 # Cover Material, Copyright, and License
 
-Copyright 2011-2025 Mark Watson. All rights reserved. This book may be shared using the Creative Commons "share and share alike, no modifications, no commercial reuse" license.
+Copyright 2011-2026 Mark Watson. All rights reserved. This book may be shared using the Creative Commons "share and share alike, no modifications, no commercial reuse" license.
 
 This eBook will be updated occasionally so please periodically check the [leanpub.com web page for this book](https://leanpub.com/lovinglisp) for updates.
 
@@ -12,7 +12,7 @@ If you would like to support my work please consider purchasing my books on [Lea
 
 # Preface
 
-This book has been a continual work in progress since 2011. This current edition is released on Julie 29, 2025. I have used Common Lisp professionally since 1982 and I love the language!
+This book has been a continual work in progress since 2011. This current edition is released March, 2026. I have used Common Lisp professionally since 1982 and I love the language!
 
 I hope you have fun with this book and that you find the content useful for your own projects.
 
