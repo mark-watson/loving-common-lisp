@@ -53,7 +53,7 @@ The test code is in the directory **loving-common-lisp/src/llm_test**.
         string)))
 ```
 
-This utility package exports just three functions. run-curl-command shells out to curl via UIOP and returns the response body as a string, signaling an error if the exit code is non-zero. escape-json walks a string character by character and escapes double-quotes and backslashes so the JSON payload can be safely embedded inside a shell double-quoted string argument — a necessary workaround when building curl commands this way. Finally, substitute-subseq does a single-pass string substitution; it is used to replace :null with :false in serialized JSON, which corrects a quirk in how cl-json renders nil values that would otherwise confuse the LLM APIs.
+This utility package exports just three functions. Function *run-curl-command* shells out to curl via UIOP and returns the response body as a string, signaling an error if the exit code is non-zero. Function **escape-json** walks a string character by character and escapes double-quotes and backslashes so the JSON payload can be safely embedded inside a shell double-quoted string argument — a necessary workaround when building curl commands this way. Finally, substitute-subseq does a single-pass string substitution; it is used to replace :null with :false in serialized JSON, which corrects a quirk in how cl-json renders nil values that would otherwise confuse the LLM APIs.
 
 ### simple-tools.lisp — Provider-Agnostic Tool Registry
 
@@ -119,9 +119,9 @@ ARGS is a list of (param-name type description) triples."
         collect (rest (assoc (intern (string-upcase param-name) :keyword) args))))
 ```
 
-The simple-tools package is the heart of the tool support system. Tools are defined with the define-tool macro, which takes a name, a list of parameter triples of the form (param-name type description), a docstring description, and a body. Internally each tool is stored as a struct in the *tools* hash table, keyed by its lowercase string name. This means tools defined once are immediately available to all provider backends — you define a tool in one place and can pass it by name to claude:completions, ollama:completions, or any future Gemini wrapper without modification.
+The simple-tools package is the heart of the tool support system. Tools are defined with the **define-tool** macro which takes a name, a list of parameter triples of the form (param-name type description), a docstring description, and a body. Internally each tool is stored as a struct in the *tools* hash table, keyed by its lowercase string name. This means tools defined once are immediately available to all provider backends — you define a tool in one place and can pass it by name to claude:completions, ollama:completions, or any future Gemini wrapper without modification.
 The render-tool function serializes a tool into the OpenAI-compatible JSON schema format used by Ollama. Claude's API uses a slightly different schema key (input_schema rather than parameters), so the claude.lisp file provides its own render-tool-for-claude function that produces the correct structure while still reading from the same *tools* registry.
-map-args-to-parameters handles the impedance mismatch between the alist of named arguments returned by the JSON parser and the positional argument list expected by the tool's underlying lambda. It walks the tool's declared parameter list in order and looks up each parameter by its keyword-interned name in the response alist, returning an ordered list of values ready for apply.
+Function **map-args-to-parameters** handles the impedance mismatch between the alist of named arguments returned by the JSON parser and the positional argument list expected by the tool's underlying lambda. It walks the tool's declared parameter list in order and looks up each parameter by its keyword-interned name in the response alist, returning an ordered list of values ready for apply.
 
 ### claude.lisp — Anthropic Claude Backend
 
@@ -309,7 +309,7 @@ The Ollama backend targets a locally running Ollama server on localhost:11434 an
   (format nil "Capitalized: ~A" (string-upcase text)))
 ```
 
-This file demonstrates the define-tool macro in practice. Notice that get-weather stubs out real weather data — it simply returns "22" for Celsius and "72" for Fahrenheit — but the important point is the dispatch mechanism: the LLM correctly identifies which tool to call and with what arguments based solely on the natural language query and the tool's description and parameter metadata. add-numbers and get-current-time show that tools can have purely numeric parameters or no parameters at all, and capitalize-text shows a simple single-parameter string tool. All four end up in the *tools* hash table under their lowercase string names the moment the file is loaded.
+This file demonstrates the define-tool macro in practice. Notice that get-weather stubs out real weather data — it simply returns "22" for Celsius and "72" for Fahrenheit — but the important point is the dispatch mechanism: The LLM correctly identifies which tool to call and with what arguments based solely on the natural language query and the tool's description and parameter metadata. Tools **add-numbers** and **get-current-time** show that tools can have purely numeric parameters or no parameters at all, and the tool **capitalize-text** shows a simple single-parameter string tool. All four end up in the ***tools*** hash table under their lowercase string names the moment the file is loaded.
 
 ### Testing the Claude Backend — claude_test.lisp
 
@@ -336,7 +336,7 @@ This file demonstrates the define-tool macro in practice. Notice that get-weathe
   (format t "Response:~%~A~%" response))
 ```
 
-The test file loads the example tools first to populate *tools*, then exercises claude:completions in two modes: without tools (the plain sky-blue question) and with a single named tool passed as a one-element list of strings. Each tool name string must exactly match the key registered in *tools* by define-tool, which uses string-downcase on the symbol name — so '("get-weather") matches the tool defined as get-weather. Running this file with a valid CLAUDE_API environment variable should produce five blocks of output showing both a normal text completion and four successful tool dispatches.
+The test file loads the example tools first to populate *tools*, then exercises claude:completions in two modes: Without tools (the plain sky-blue question) and with a single named tool passed as a one-element list of strings. Each tool name string must exactly match the key registered in *tools* by define-tool, which uses string-downcase on the symbol name — so '("get-weather") matches the tool defined as get-weather. Running this file with a valid CLAUDE_API environment variable should produce five blocks of output showing both a normal text completion and four successful tool dispatches.
 
 ### Design Notes and Tradeoffs
 
@@ -437,7 +437,7 @@ t
 * 
 ```
 
-We didn't cover the implementation of the Gemini back end but here is example test code using the combined search and LLM capability:
+We didn't cover the implementation of the Gemini backend but here is example test code using the combined search and LLM capability:
 
 ```lisp
 (format t "~%--- Testing Gemini Completions With Google Search ---~%")
