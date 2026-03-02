@@ -54,12 +54,17 @@ ARGS is a list of (param-name type description) triples."
                       (:description . ,(tool-description tool))
                       ,(when (tool-parameters tool)
                          `(:parameters . ((:type . "object")
-                                          (:properties . ,(loop for p in (tool-parameters tool)
-                                                                collect (list (first p)
-                                                                              (cons :type (second p))
-                                                                              (cons :description (third p)))))
-                                          (:required . ,(loop for p in (tool-parameters tool)
-                                                              collect (first p)))))))))))
+                                          (:properties
+					   .
+					   ,(loop for p in (tool-parameters tool)
+                                                  collect (list
+							   (first p)
+                                                           (cons :type (second p))
+                                                           (cons :description (third p)))))
+                                          (:required
+					   .
+					   ,(loop for p in (tool-parameters tool)
+                                                  collect (first p)))))))))))
 
 (defun map-args-to-parameters (tool args)
   "Map an alist of JSON arguments to positional values in the tool's declared parameter order."
