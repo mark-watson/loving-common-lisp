@@ -5,6 +5,8 @@
   (:use #:cl #:llm)
   (:export #:claude-llm
            #:completions
+           #:completions-with-search
+           #:completions-with-search-and-citations
            #:answer-question))
 
 (in-package #:claude)
@@ -82,6 +84,71 @@
                 (format nil "~{~A~^~%~}" results))
               (let ((first-block (car content)))
                 (or (cdr (assoc :text first-block)) "No response content"))))))))
+
+(defun completions-with-search (prompt &optional (model-id *claude-model*))
+  "Call Claude with the built-in web search tool enabled. Returns the text response."
+  (let* ((messages (list `((:role . "user")
+                           (:content . (((:type . "text") (:text . ,prompt)))))))
+         (search-tool `((:type . "web_search_20250305") (:name . "web_search")))
+         (data `((:model . ,model-id)
+                 (:max--tokens . ,*claude-max-tokens*)
+                 (:temperature . 0)
+                 (:messages . ,messages)
+                 (:tools . (,search-tool))))
+         (request-body (cl-json:encode-json-to-string data))
+         (fixed-json-data (llm:substitute-subseq request-body ":null" ":false" :test #'string=))
+         (escaped-json (llm:escape-json fixed-json-data))
+         (curl-command (format nil "curl ~A -H \"x-api-key: ~A\" -H \"anthropic-version: 2023-06-01\" -H \"anthropic-beta: web-search-2025-03-05\" -H \"content-type: application/json\" -d \"~A\""
+                               *claude-endpoint*
+                               (get-claude-api-key)
+                               escaped-json))
+         (response (llm:run-curl-command curl-command)))
+    (with-input-from-string (s response)
+      (let* ((json-as-list (cl-json:decode-json s))
+             (content (cdr (assoc :content json-as-list)))
+             (text-blocks (remove-if-not (lambda (block)
+                                           (string= (cdr (assoc :type block)) "text"))
+                                         content))
+             (last-text-block (car (last text-blocks))))
+        (or (cdr (assoc :text last-text-block)) "No response content")))))
+
+(defun completions-with-search-and-citations (prompt &optional (model-id *claude-model*))
+  "Call Claude with the built-in web search tool enabled.
+Returns (values text citations) where citations is a list of (title . url) pairs."
+  (let* ((messages (list `((:role . "user")
+                           (:content . (((:type . "text") (:text . ,prompt)))))))
+         (search-tool `((:type . "web_search_20250305") (:name . "web_search")))
+         (data `((:model . ,model-id)
+                 (:max--tokens . ,*claude-max-tokens*)
+                 (:temperature . 0)
+                 (:messages . ,messages)
+                 (:tools . (,search-tool))))
+         (request-body (cl-json:encode-json-to-string data))
+         (fixed-json-data (llm:substitute-subseq request-body ":null" ":false" :test #'string=))
+         (escaped-json (llm:escape-json fixed-json-data))
+         (curl-command (format nil "curl ~A -H \"x-api-key: ~A\" -H \"anthropic-version: 2023-06-01\" -H \"anthropic-beta: web-search-2025-03-05\" -H \"content-type: application/json\" -d \"~A\""
+                               *claude-endpoint*
+                               (get-claude-api-key)
+                               escaped-json))
+         (response (llm:run-curl-command curl-command)))
+    (with-input-from-string (s response)
+      (let* ((json-as-list (cl-json:decode-json s))
+             (content (cdr (assoc :content json-as-list)))
+             (text-blocks (remove-if-not (lambda (block)
+                                           (string= (cdr (assoc :type block)) "text"))
+                                         content))
+             (last-text-block (car (last text-blocks)))
+             (text (or (cdr (assoc :text last-text-block)) "No response content"))
+             (result-blocks (remove-if-not (lambda (block)
+                                             (string= (cdr (assoc :type block)) "web_search_tool_result"))
+                                           content))
+             (citations (loop for block in result-blocks
+                              for block-content = (cdr (assoc :content block))
+                              append (loop for result in block-content
+                                           when (string= (cdr (assoc :type result)) "web_search_result")
+                                           collect (cons (cdr (assoc :title result))
+                                                         (cdr (assoc :url result)))))))
+        (values text citations)))))
 
 (defun answer-question (question)
   (completions (concatenate 'string "Concisely answer the question: " question)))

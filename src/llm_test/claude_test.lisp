@@ -25,3 +25,15 @@
 (format t "~%--- Testing Claude Tool Calling: capitalize-text ---~%")
 (let ((response (claude:completions "Please capitalize the text 'hello world'" '("capitalize-text"))))
   (format t "Response:~%~A~%" response))
+
+(format t "~%--- Testing Claude Completions with Search ---~%")
+(let ((response (claude:completions-with-search "What are the latest developments in fusion energy research?")))
+  (format t "Response:~%~A~%" response))
+
+(format t "~%--- Testing Claude Completions with Search and Citations ---~%")
+(multiple-value-bind (text citations)
+    (claude:completions-with-search-and-citations "What is the current population of Tokyo?")
+  (format t "Response:~%~A~%" text)
+  (format t "Citations:~%")
+  (loop for (title . url) in citations
+        do (format t "  ~A~%     ~A~%" title url)))
