@@ -6,10 +6,16 @@ Dear reader, as I write this chapter in March 2026 I already have six chapters i
 
 
 Dear reader, as I write this chapter in March 2026 I already have six chapters in this book covering the use of LLMs from different providers. I experiment a lot rewriting code, and I have a new library included in the GitHub repository for this book called llm that is the result of spending the last week refactoring my older code and adding new functionality with the goal of having a small library that supports Ollama local models, Anthropic Claude APIs, and Google Gemini APIs with similar functionality except for adding support for Google's integrated web search and Gemini APIs.
-Here are a few Common Lisp source files I will use:
-Library Structure Overview
+
+### Library Structure Overview
 
 The llm library is organized into three focused source files that work together: llm.lisp provides shared low-level utilities, simple-tools.lisp defines a provider-agnostic tool registry and schema system, and provider-specific files like claude.lisp and ollama.lisp implement the actual API calls. This separation of concerns makes it straightforward to add new providers without touching the tool infrastructure.
+
+### Source Code
+
+The **llm** library code is in the book Github repository in the directory **loving-common-lisp/src/llm**.
+
+The test code is in the directory **loving-common-lisp/src/llm_test**.
 
 ### llm.lisp — Shared Utilities
 
