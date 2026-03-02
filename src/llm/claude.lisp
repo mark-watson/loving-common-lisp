@@ -37,7 +37,7 @@
       (:description . ,(simple-tools:tool-description tool))
       (:input--schema . ,schema))))
 
-(defun completions (starter-text &optional tools (model-id *claude-model*))
+(defun completions (starter-text &key tools (model-id *claude-model*))
   (let* ((tools-rendered (when tools
                            (loop for tool-symbol in tools
                                  collect (let ((tool (gethash (string tool-symbol) simple-tools:*tools*)))

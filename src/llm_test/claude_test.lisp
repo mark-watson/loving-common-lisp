@@ -11,19 +11,19 @@
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Claude Tool Calling ---~%")
-(let ((response (claude:completions "What is the weather in Paris, France in celsius?" '("get-weather"))))
+(let ((response (claude:completions "What is the weather in Paris, France in celsius?" :tools '("get-weather"))))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Claude Tool Calling: add-numbers ---~%")
-(let ((response (claude:completions "What is 42 plus 58?" '("add-numbers"))))
+(let ((response (claude:completions "What is 42 plus 58?" :tools '("add-numbers"))))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Claude Tool Calling: get-current-time ---~%")
-(let ((response (claude:completions "What is the current time?" '("get-current-time"))))
+(let ((response (claude:completions "What is the current time?" :tools '("get-current-time"))))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Claude Tool Calling: capitalize-text ---~%")
-(let ((response (claude:completions "Please capitalize the text 'hello world'" '("capitalize-text"))))
+(let ((response (claude:completions "Please capitalize the text 'hello world'" :tools '("capitalize-text"))))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Claude Completions with Search ---~%")

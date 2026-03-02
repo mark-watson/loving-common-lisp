@@ -15,7 +15,7 @@
 (defun get-openai-api-key ()
   (uiop:getenv "OPENAI_KEY"))
 
-(defun completions (starter-text &optional tools (model-id *openai-model*))
+(defun completions (starter-text &key tools (model-id *openai-model*))
   (let* ((tools-rendered (when tools
                            (loop for tool-symbol in tools
                                  collect (let ((tool (gethash (string tool-symbol) simple-tools:*tools*)))

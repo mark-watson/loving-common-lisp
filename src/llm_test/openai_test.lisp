@@ -11,5 +11,5 @@
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing OpenAI Tool Calling ---~%")
-(let ((response (openai:completions "What is the weather in Paris, France in celsius?" '("get-weather"))))
+(let ((response (openai:completions "What is the weather in Paris, France in celsius?" :tools '("get-weather"))))
   (format t "Response:~%~A~%" response))

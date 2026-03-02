@@ -7,7 +7,7 @@
 (in-package #:gemini-test)
 
 (format t "~%--- Testing Gemini Completions ---~%")
-(let ((response (gemini:generate "Why is the sky blue?")))
+(let ((response (gemini:generate "Be concise: Why is the sky blue?")))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Gemini Completions With Google Search ---~%")
@@ -15,17 +15,20 @@
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Gemini Tool Calling: get-weather ---~%")
-(let ((response (gemini:generate "What is the weather in Paris, France in celsius?" '("get-weather"))))
+(let ((response (gemini:generate "What is the weather in Paris, France in celsius?"
+				 :tools '("get-weather"))))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Gemini Tool Calling: add-numbers ---~%")
-(let ((response (gemini:generate "What is 42 plus 58?" '("add-numbers"))))
+(let ((response (gemini:generate "What is 42 plus 58?"
+				 :tools '("add-numbers"))))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Gemini Tool Calling: get-current-time ---~%")
-(let ((response (gemini:generate "What is the current time?" '("get-current-time"))))
+(let ((response (gemini:generate "What is the current time?"
+				 :tools '("get-current-time"))))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Gemini Tool Calling: capitalize-text ---~%")
-(let ((response (gemini:generate "Please capitalize the text 'hello world'" '("capitalize-text"))))
+(let ((response (gemini:generate "Please capitalize the text 'hello world'" :tools '("capitalize-text"))))
   (format t "Response:~%~A~%" response))

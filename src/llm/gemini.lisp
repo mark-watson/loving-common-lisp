@@ -20,7 +20,7 @@
 (defun get-google-api-key ()
   (uiop:getenv "GOOGLE_API_KEY"))
 
-(defun generate (prompt &optional tools (model-id *gemini-model*))
+(defun generate (prompt &key tools (model-id *gemini-model*))
   (let* ((payload (make-hash-table :test 'equal)))
     (setf (gethash "contents" payload)
           (list (let ((contents (make-hash-table :test 'equal)))
