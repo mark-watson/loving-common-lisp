@@ -11,9 +11,11 @@
 (in-package #:ollama)
 
 (defvar *ollama-endpoint* "http://localhost:11434/api/chat")
-(defvar *ollama-model* "mistral:v0.3")
+;;(defvar *ollama-model* "mistral:v0.3")
+;;(defvar *ollama-model* "qwen3.5:9b")
+(defvar *ollama-model* "qwen3.5:0.8b")
 
-(defun completions (starter-text &optional tools (model-id *ollama-model*))
+(defun completions (starter-text &key tools (model-id *ollama-model*) (think t))
   (let* ((tools-rendered
           (when tools
             (loop for tool-symbol in tools
@@ -25,6 +27,7 @@
                         (cons :|content| starter-text)))
          (data (list (cons :|model| model-id)
                      (cons :|stream| nil)
+                     (cons :|think| think)
                      (cons :|messages| (list message))))
          (data-with-tools (if tools-rendered
                               (append data (list (cons :|tools| tools-rendered)))

@@ -7,21 +7,26 @@
 (in-package #:ollama-test)
 
 (format t "~%--- Testing Ollama Completions ---~%")
-(let ((response (ollama:completions "Why is the sky blue?")))
+(let ((response (ollama:completions "Be very concise: Why is the sky blue?"
+				    :think nil)))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Ollama Tool Calling ---~%")
-(let ((response (ollama:completions "What is the weather in Paris, France in celsius?" '("get-weather"))))
+(let ((response (ollama:completions "What is the weather in Paris, France in celsius?"
+				    :tools '("get-weather"))))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Ollama Tool Calling: add-numbers ---~%")
-(let ((response (ollama:completions "What is 42 plus 58?" '("add-numbers"))))
+(let ((response (ollama:completions "What is 42 plus 58?"
+				    :tools'("add-numbers"))))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Ollama Tool Calling: get-current-time ---~%")
-(let ((response (ollama:completions "What is the current time?" '("get-current-time"))))
+(let ((response (ollama:completions "What is the current time?"
+				    :tools '("get-current-time"))))
   (format t "Response:~%~A~%" response))
 
 (format t "~%--- Testing Ollama Tool Calling: capitalize-text ---~%")
-(let ((response (ollama:completions "Please capitalize the text 'hello world'" '("capitalize-text"))))
+(let ((response (ollama:completions "Please capitalize the text 'hello world'"
+				    :tools'("capitalize-text"))))
   (format t "Response:~%~A~%" response))
