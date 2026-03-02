@@ -365,14 +365,8 @@ The sky appears blue because of a phenomenon called **Rayleigh scattering**.
 
 1. **Sunlight contains all colors** - White sunlight is made up of all the colors of the rainbow, each with different wavelengths.
 
-2. **Light enters the atmosphere** - When sunlight enters Earth's atmosphere, it collides with gas molecules (mainly nitrogen and oxygen).
-
-### Why not violet?
-
-Violet light scatters even more than blue, but the sky doesn't look violet because:
-- The sun emits less violet light
-- Our eyes are more sensitive to blue
-- Some violet light is absorbed in the upper atmosphere
+  ...
+  
 
 --- Testing Claude Tool Calling ---
 $$ data:
@@ -436,6 +430,34 @@ Capitalized: HELLO WORLD
 t
 * 
 ```
+
+We didn't cover the implementation of the Gemini back end but here is example test code using the combined search and LLM capability:
+
+```lisp
+(format t "~%--- Testing Gemini Completions With Google Search ---~%")
+(let ((response (gemini:generate-with-search "What sci-fi movies are playing in Flagstaff Arizona today?")))
+  (format t "Response:~%~A~%" response))
+```
+
+The output (edited for brevity) looks like this:
+
+```lisp
+--- Testing Gemini Completions With Google Search ---
+Response:
+Today, Monday, March 2, 2026, there are several science fiction movies playing in Flagstaff, Arizona, primarily at the **Harkins Flagstaff 16** theater.
+
+The following sci-fi films have confirmed showtimes for today:
+
+### **Harkins Flagstaff 16**
+*   **Avatar: Fire and Ash** (Sci-Fi/Adventure)
+    *   **Showtime:** 12:55 PM (3D HFR)
+*   **Bugonia** (Sci-Fi/Thriller/Comedy)
+    *   **Showtime:** 5:30 PM
+
+  ...
+```
+
+
 
 ## Wrap Up
 
