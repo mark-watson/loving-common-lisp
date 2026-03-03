@@ -28,10 +28,10 @@
 (defvar *tools* (make-hash-table :test 'equalp))
 
 (defmacro define-tool (name args description &body body)
-  "Define a tool callable by LLM completions.
-ARGS is a list of (param-name type description) triples."
+  "Define a tool callable by LLM completions. ARGS is a list of (param-name type description) triples."
   (let ((name-str (if (symbolp name) (string-downcase (symbol-name name)) name))
-        (arg-names (mapcar (lambda (arg) (intern (string-upcase (first arg)))) args)))
+        (arg-names (mapcar (lambda (arg)
+			     (intern (string-upcase (first arg)))) args)))
     `(setf (gethash ,name-str *tools*)
            (make-tool
             :name ,name-str
@@ -49,22 +49,24 @@ ARGS is a list of (param-name type description) triples."
 (defun render-tool (tool)
   "Render a tool as a JSON schema alist for LLM API requests."
   `((:type . "function")
-    (:function . ,(remove nil
-                    `((:name . ,(tool-name tool))
-                      (:description . ,(tool-description tool))
-                      ,(when (tool-parameters tool)
-                         `(:parameters . ((:type . "object")
-                                          (:properties
-					   .
-					   ,(loop for p in (tool-parameters tool)
-                                                  collect (list
-							   (first p)
-                                                           (cons :type (second p))
-                                                           (cons :description (third p)))))
-                                          (:required
-					   .
-					   ,(loop for p in (tool-parameters tool)
-                                                  collect (first p)))))))))))
+    (:function
+     .
+     ,(remove nil
+              `((:name . ,(tool-name tool))
+                (:description . ,(tool-description tool))
+                ,(when (tool-parameters tool)
+                   `(:parameters . ((:type . "object")
+                                    (:properties
+				     .
+				     ,(loop for p in (tool-parameters tool)
+                                            collect (list
+						     (first p)
+                                                     (cons :type (second p))
+                                                     (cons :description (third p)))))
+                                    (:required
+				     .
+				     ,(loop for p in (tool-parameters tool)
+                                            collect (first p)))))))))))
 
 (defun map-args-to-parameters (tool args)
   "Map an alist of JSON arguments to positional values in the tool's declared parameter order."

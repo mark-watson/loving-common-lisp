@@ -4,11 +4,11 @@
 
 Dear reader, as I write this chapter in March 2026 I already have six chapters in this book covering the use of LLMs from different providers. I experiment a lot rewriting code, and I have a new library included in the GitHub repository for this book called **llm** that is the result of spending the last week refactoring my older code and adding new functionality with the goal of having a small library that supports Ollama local models, Anthropic Claude APIs, and Google Gemini APIs with similar functionality except for adding support for Google's integrated web search and Gemini APIs.
 
-### Library Structure Overview
+## Library Structure Overview
 
 The llm library is organized into three focused source files that work together: llm.lisp provides shared low-level utilities, simple-tools.lisp defines a provider-agnostic tool registry and schema system, and provider-specific files like **claude.lisp** and **ollama.lisp** implement the actual API calls. This separation of concerns makes it straightforward to add new providers without touching the tool infrastructure.
 
-### Source Code
+## Source Code
 
 The **llm** library code is in the book Github repository in the directory **loving-common-lisp/src/llm**.
 
@@ -55,9 +55,6 @@ This utility package exports just three functions. Function *run-curl-command* s
 ### simple-tools.lisp — Provider-Agnostic Tool Registry
 
 ```lisp
-;;; Copyright (C) 2026 Mark Watson <markw@markwatson.com>
-;;; MIT License
-
 (defpackage #:simple-tools
   (:use #:cl)
   (:export #:*tools*
@@ -126,7 +123,6 @@ ARGS is a list of (param-name type description) triples."
   "Map an alist of JSON arguments to positional values in the tool's declared parameter order."
   (loop for (param-name param-type param-desc) in (tool-parameters tool)
         collect (rest (assoc (intern (string-upcase param-name) :keyword) args))))
-
 ```
 
 The simple-tools package is the heart of the tool support system. Tools are defined with the **define-tool** macro which takes a name, a list of parameter triples of the form (param-name type description), a docstring description, and a body. Internally each tool is stored as a struct in the *tools* hash table, keyed by its lowercase string name. This means tools defined once are immediately available to all provider backends — you define a tool in one place and can pass it by name to claude:completions, ollama:completions, or any future Gemini wrapper without modification.
@@ -319,10 +315,12 @@ Tool schema rendering diverges from the Ollama format: Claude expects a top-leve
   (let* ((tools-rendered
           (when tools
             (loop for tool-symbol in tools
-                  collect (let ((tool (gethash (string tool-symbol) simple-tools:*tools*)))
+                  collect (let ((tool (gethash (string tool-symbol)
+				                        simple-tools:*tools*)))
                             (if tool
                                 (simple-tools:render-tool tool)
-                                (error "Undefined tool function: ~A" tool-symbol))))))
+                                (error "Undefined tool function: ~A"
+								  tool-symbol))))))
          (message (list (cons :|role| "user")
                         (cons :|content| starter-text)))
          (data (list (cons :|model| model-id)
@@ -352,7 +350,8 @@ Tool schema rendering diverges from the Ollama format: Claude expects a top-leve
                                          (name (cdr (assoc :name func)))
                                          (args (cdr (assoc :arguments func)))
                                          (tool (gethash name simple-tools:*tools*))
-                                         (mapped-args (simple-tools:map-args-to-parameters tool args)))
+                                         (mapped-args
+										   (simple-tools:map-args-to-parameters tool args)))
                                      (apply (simple-tools:tool-fn tool) mapped-args)))))
                 (format nil "~{~A~^~%~}" results))
               (or content "No response content")))))))
@@ -366,7 +365,7 @@ Tool schema rendering diverges from the Ollama format: Claude expects a top-leve
 
 The Ollama backend targets a locally running Ollama server on localhost:11434 and defaults to mistral:v0.3, though any model name supported by your local Ollama installation can be passed as the optional third argument. Unlike the Claude backend, no authentication header is needed. The request format follows the OpenAI chat completions convention that Ollama implements, so simple-tools:render-tool (which produces the {type: "function", function: {...}} shape) is used directly without a custom renderer. Tool call detection reads from message.tool_calls in the response rather than from a top-level stop_reason, reflecting the structural difference between the two APIs. The package also exports convenience wrappers summarize and answer-question that prepend simple prompt prefixes.
 
-### Defining Tools — example_tools.lisp
+## Defining Tools — example_tools.lisp
 
 ```lisp
 (ql:quickload :llm)
@@ -397,7 +396,7 @@ The Ollama backend targets a locally running Ollama server on localhost:11434 an
 
 This file demonstrates the define-tool macro in practice. Notice that get-weather stubs out real weather data — it simply returns "22" for Celsius and "72" for Fahrenheit — but the important point is the dispatch mechanism: The LLM correctly identifies which tool to call and with what arguments based solely on the natural language query and the tool's description and parameter metadata. Tools **add-numbers** and **get-current-time** show that tools can have purely numeric parameters or no parameters at all, and the tool **capitalize-text** shows a simple single-parameter string tool. All four end up in the ***tools*** hash table under their lowercase string names the moment the file is loaded.
 
-### Testing the Claude Backend — claude_test.lisp
+## Testing the Claude Backend — claude_test.lisp
 
 ```lisp
 (load (merge-pathnames "example_tools.lisp"
@@ -448,7 +447,7 @@ The test file loads the example tools first to populate *tools*, then exercises 
 The decision to shell out to curl rather than using a native HTTP client library keeps the dependency footprint minimal. The tradeoff is that JSON must be escaped for shell embedding, which is what llm:escape-json handles. For production use you would likely want to replace the curl layer with dexador or usocket-based HTTP, but for experimentation and book examples the curl approach is refreshingly transparent — you can paste the printed curl command directly into a terminal to inspect the raw API interaction.
 One limitation of the current tool dispatch is that only a single round-trip is performed. If the model's tool call result should be fed back to the model for a follow-up response (the full agentic loop), the caller must manage that conversation state manually by building a message list and passing it as starter-text. The completions function's acceptance of either a plain string or a pre-built message list makes this possible, and it is a natural extension to explore in the next chapter when we look at multi-step agent loops.
 
-### Example Program Output
+## Example Program Output
 
 I left debug printout in my code that always starts with two dollar signs. I also edited some output for brevity:
 
