@@ -42,4 +42,5 @@ agent_llm.md
 agent_part2.md
 llm_lib.md
 wolfram.md
+symbolic-math.md
 book_wrapup.md

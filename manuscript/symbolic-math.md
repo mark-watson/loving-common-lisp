@@ -1,5 +1,7 @@
 # Symbolic Mathematics in Common Lisp
 
+Dear reader, in the early 1970s I earned a Bachelor Of Science degree in Physics from UC Santa Barbara. Although little of my work in the last 50 years has involved either Physics or pure mathematics, I have a long term interest in symbolic math systems, starting when I installed the Reduce system on my Xerox Lisp Machine in 1982. Please note that the material here is for my own Lisp hacking enjoyment.
+
 Common Lisp has long been a natural home for symbolic computation. Its homoiconic nature, rich macro system, and first-class support for rational arithmetic make it an ideal language for building systems that manipulate mathematical expressions as data rather than reducing them immediately to floating-point numbers. In this chapter we build a small but complete symbolic mathematics library from scratch. We define data structures for variables, constants, monomials, polynomials, and integrals; implement symbolic differentiation using the power rule; and implement symbolic integration using the reverse power rule together with the Fundamental Theorem of Calculus. The result is a readable, testable, purely functional library that illuminates both the mathematics and the Lisp idioms involved.
 
 ## The Data Layer
