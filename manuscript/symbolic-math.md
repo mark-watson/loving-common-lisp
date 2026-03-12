@@ -12,7 +12,7 @@ Every symbolic computation system needs a representation for the objects it mani
 
 The library is deliberately **CLOS-free**. Every type is defined with `defstruct`, which gives us lightweight value structs with automatic constructors, slot accessors, and copy functions. All arithmetic operations return fresh structs; no existing object is ever mutated. This immutable, functional style keeps the code easy to reason about and makes it straightforward to use results as inputs to further computation without defensive copying.
 
-The entire data layer lives in the `SYMBOLIC-MATH` package and is loaded from a single file, `data.lisp`. The package exports every public name — constructors, predicates, accessors, and helpers — so that the differentiation and integration layers can import only what they need with `(:use #:cl #:symbolic-math)`.
+The entire data layer lives in the `SYMBOLIC-MATH` package and is loaded from a single file, `data.lisp`. The package exports every public name: constructors, predicates, accessors, and helpers so that the differentiation and integration layers can import only what they need with `(:use #:cl #:symbolic-math)`.
 
 ### Variables and Constants
 
@@ -21,7 +21,7 @@ The two most primitive objects in the system are symbolic variables (unknowns li
 ```lisp
 (defstruct (sym-variable (:conc-name variable-))
   "A symbolic variable such as x, y, or t.
-DOMAIN may be :real (default), :complex, or :integer."
+   DOMAIN may be :real (default), :complex, or :integer."
   (name   nil :type symbol)
   (domain :real :type keyword))
 
@@ -32,6 +32,7 @@ DOMAIN may be :real (default), :complex, or :integer."
   Example:
     (make-variable 'x)              ; => sym-variable x ∈ ℝ
     (make-variable 't :domain :real)"
+    
   (check-type name symbol)
   (assert (member domain '(:real :complex :integer))
           (domain) "DOMAIN must be :real, :complex, or :integer, got ~s" domain)
@@ -43,7 +44,7 @@ DOMAIN may be :real (default), :complex, or :integer."
 
 (defun variable= (a b)
   "Return T if variables A and B represent the same symbolic variable.
-Two variables are equal when their names and domains match."
+   Two variables are equal when their names and domains match."
   (and (sym-variable-p a)
        (sym-variable-p b)
        (eq (variable-name a) (variable-name b))
@@ -51,13 +52,13 @@ Two variables are equal when their names and domains match."
 
 (defstruct (sym-constant (:conc-name constant-))
   "A named mathematical constant.
-VALUE may be a Common Lisp number, :pi, or :e (Euler's number)."
+   VALUE may be a Common Lisp number, :pi, or :e (Euler's number)."
   (name  nil :type symbol)
   (value nil))                          ; number | :pi | :e
 
 (defun make-constant (name value)
   "Create a named constant with NAME (symbol) and VALUE.
-VALUE may be a real number, :pi, or :e."
+   VALUE may be a real number, :pi, or :e."
   (check-type name symbol)
   (assert (or (numberp value) (member value '(:pi :e)))
           (value) "VALUE must be a number, :pi, or :e, got ~s" value)
@@ -69,7 +70,7 @@ VALUE may be a real number, :pi, or :e."
 
 (defun constant-numeric-value (c)
   "Return the numeric (floating-point) value of constant C.
-:pi → pi, :e → e, numbers are returned as-is."
+   :pi → pi, :e → e, numbers are returned as-is."
   (check-type c sym-constant)
   (let ((v (constant-value c)))
     (cond
@@ -84,24 +85,25 @@ VALUE may be a real number, :pi, or :e."
 
 ### Monomials (Terms)
 
-A monomial — a single product of a coefficient, a variable, and a non-negative integer power — is the atom from which polynomials are assembled. The `sym-term` struct and its helpers are shown below.
+A monomial is a single product of a coefficient, a variable, and a non-negative integer power is the atom from which polynomials are assembled. The `sym-term` struct and its helpers are shown below.
 
 ```lisp
 (defstruct (sym-term (:conc-name term-))
   "A single monomial: COEFFICIENT * VARIABLE ^ EXPONENT.
-EXPONENT is a non-negative integer (0 gives a constant term)."
+  EXPONENT is a non-negative integer (0 gives a constant term)."
   (coefficient 0 :type real)
   (variable    nil)                     ; sym-variable
   (exponent    0 :type (integer 0 *)))
 
 (defun make-term (coefficient variable exponent)
   "Create a monomial: COEFFICIENT * VARIABLE ^ EXPONENT.
-EXPONENT must be a non-negative integer.
+  EXPONENT must be a non-negative integer.
 
   Examples:
     (make-term 3  x 2)   ; 3x²
     (make-term -1 x 1)   ; -x
     (make-term 5  x 0)   ; constant 5"
+    
   (check-type coefficient real)
   (check-type variable sym-variable)
   (check-type exponent  (integer 0 *))
@@ -115,7 +117,7 @@ EXPONENT must be a non-negative integer.
 
 (defun term= (a b)
   "Return T if terms A and B are structurally equal
-(same variable, exponent, and coefficient)."
+   (same variable, exponent, and coefficient)."
   (and (sym-term-p a) (sym-term-p b)
        (= (term-coefficient a) (term-coefficient b))
        (variable= (term-variable a) (term-variable b))
@@ -136,7 +138,7 @@ EXPONENT must be a non-negative integer.
 
 (defun term->string (term)
   "Return a human-readable string representation of TERM.
-Example: 3x^2, -x^1, 5 (for exponent 0)."
+   Example: 3x^2, -x^1, 5 (for exponent 0)."
   (let ((c (term-coefficient term))
         (v (symbol-name (variable-name (term-variable term))))
         (e (term-exponent term)))
@@ -149,7 +151,7 @@ Example: 3x^2, -x^1, 5 (for exponent 0)."
        (format nil "~a~a^~a" c v e)))))
 ```
 
-The exponent type specifier `(integer 0 *)` in the struct definition is not merely documentation — Common Lisp compilers can use it to generate better code, and the runtime will signal a type error if anything other than a non-negative integer is stored there. The `term-negate` and `term-scale` functions are pure: they build new `sym-term` structs rather than mutating the original. This purity matters because the polynomial arithmetic functions rely on these helpers and expect their inputs to remain unchanged.
+The exponent type specifier `(integer 0 *)` in the struct definition is not merely documentation: Common Lisp compilers can use it to generate better code, and the runtime will signal a type error if anything other than a non-negative integer is stored there. The `term-negate` and `term-scale` functions are pure: they build new `sym-term` structs rather than mutating the original. This purity matters because the polynomial arithmetic functions rely on these helpers and expect their inputs to remain unchanged.
 
 `term->string` uses a three-branch `cond` to handle the three visually distinct cases: a constant term (exponent zero, print only the number), a linear term (exponent one, omit the `^1`), and a higher-degree term (print the full `c v^e` form). The `symbol-name` call converts the Lisp symbol stored in the variable to a plain string so that `format` does not print an unexpected package prefix.
 
@@ -274,7 +276,7 @@ Polynomial arithmetic is elegantly simple because `make-polynomial` already norm
 
 ### Integrals as Data
 
-The last data structure in the layer represents an unevaluated integral expression — either indefinite (no bounds) or definite (with a lower and upper bound). Storing the integral as data rather than immediately computing it allows the system to display it symbolically before choosing to evaluate it numerically.
+The last data structure in the layer represents an unevaluated integral expression, either indefinite (no bounds) or definite (with a lower and upper bound). Storing the integral as data rather than immediately computing it allows the system to display it symbolically before choosing to evaluate it numerically.
 
 ```lisp
 (defstruct (sym-integral (:conc-name integral-))
@@ -332,7 +334,7 @@ Definite:    ∫[a,b](expr) dx"
     (format nil "∫~a(~a) d~a" bounds body var)))
 ```
 
-The `make-integral` constructor enforces the constraint that bounds must come in pairs: you may supply both `lower` and `upper`, or neither, but supplying only one is a programming error caught at runtime with `assert`. This is a small but valuable design choice — it prevents silently constructing a malformed integral whose lower bound is non-nil but whose upper bound is nil.
+The `make-integral` constructor enforces the constraint that bounds must come in pairs: you may supply both `lower` and `upper`, or neither, but supplying only one is a programming error caught at runtime with `assert`. This is a small but valuable design choice because it prevents silently constructing a malformed integral whose lower bound is non-nil but whose upper bound is nil.
 
 `integral->string` uses the Unicode integral sign `∫` directly in a format string, which works in any modern Common Lisp environment whose source files are saved in UTF-8. The body of the integral is rendered by dispatching on the integrand's type: if it is a `sym-polynomial` the existing `polynomial->string` is used; anything else falls back to `format`'s default `~a` printer. Bounds are rendered by the private `%bound->string` helper, which knows how to convert both plain numbers and `sym-constant` objects to strings.
 
@@ -402,7 +404,7 @@ pi-int    : ∫[0,pi](3x^2 + -1x^1 + 5) dx
 
 ## Symbolic Differentiation
 
-With the data layer in place we can build the differentiation engine. Polynomial differentiation is driven by two classical rules: the **power rule** for individual terms, and the **sum rule** for multi-term polynomials. Because our polynomial representation is already a list of terms, the sum rule requires no special code — it is a natural consequence of mapping the power rule over every element of the list.
+With the data layer in place we can build the differentiation engine. Polynomial differentiation is driven by two classical rules: the **power rule** for individual terms, and the **sum rule** for multi-term polynomials. Because our polynomial representation is already a list of terms, the sum rule requires no special code and it is a natural consequence of mapping the power rule over every element of the list.
 
 The differentiation package lives in `differentiation.lisp` and declares itself as `SYMBOLIC-MATH/DIFF`, using `(:use #:cl #:symbolic-math)` to inherit the full data layer.
 
@@ -429,7 +431,7 @@ Returns a new sym-term, or NIL when the term differentiates to zero."
 
 The implementation is a two-branch `if`. When the exponent is zero the term is a constant and its derivative is zero; returning `nil` rather than a zero-coefficient term lets the caller use `remove nil` to discard it cleanly without an extra zero in the term list. For any positive exponent the function multiplies the coefficient by the exponent (`n·c`) and decrements the exponent by one (`n−1`), producing a new `sym-term` via `make-term`.
 
-Because the function is pure — it reads three slots from an existing term and constructs a brand-new one — it is trivially testable in isolation. It also composes naturally with `mapcar` since it is a function from one term to one term-or-nil, which is exactly what polynomial-level differentiation needs.
+Because the function is pure, it reads three slots from an existing term and constructs a brand-new one and it is trivially testable in isolation. It also composes naturally with `mapcar` since it is a function from one term to one term-or-nil, which is exactly what polynomial-level differentiation needs.
 
 ### Differentiating a Polynomial
 
@@ -551,7 +553,38 @@ The differentiation module includes its own smoke test to verify all four export
     (format t "~%==================================~%")))
 ```
 
-The test covers differentiation of a quadratic through to the zero polynomial, a degree-4 polynomial differentiated both step-by-step and with `differentiate-n`, and two critical-point tests — one at the true critical point `x = 1/6` and one at `x = 0` which is not a critical point. Embedding the expected values in the format strings (`expected -1`, `expected T`, etc.) means the output is self-documenting: a developer reading the terminal output can immediately see whether each result is correct without consulting a separate specification.
+The test covers differentiation of a quadratic through to the zero polynomial, a degree-4 polynomial differentiated both step-by-step and with `differentiate-n`, and two critical-point tests, one at the true critical point `x = 1/6` and one at `x = 0` which is not a critical point. Embedding the expected values in the format strings (`expected -1`, `expected T`, etc.) means the output is self-documenting: a developer reading the terminal output can immediately see whether each result is correct without consulting a separate specification.
+
+Here we run the smoke test:
+
+```
+ $ sbcl
+* (load "differentiation.lisp")
+* (in-package #:symbolic-math/diff)
+#<package "SYMBOLIC-MATH/DIFF">
+* (run-smoke-test)
+
+=== Differentiation Smoke Test ===
+
+p            : 3X^2 + -1X + 5
+p'           : 6X + -1
+p''          : 6
+p'''         : 0
+
+q            : 1X^4 + -2X^3 + 1X
+q'           : 4X^3 + -6X^2 + 1
+q'' (via n=2): 12X^2 + -12X
+
+gradient-at(p, 0)      : -1  (expected -1)
+gradient-at(p, 1)      : 5  (expected  5)
+critical-point-p(p,1/6): t  (expected T)
+critical-point-p(p,0)  : nil  (expected NIL)
+
+==================================
+nil
+* 
+```
+
 
 ## Symbolic Integration
 
@@ -585,13 +618,13 @@ the polynomial level by the caller.
     (make-term new-coef v new-exp)))
 ```
 
-The division `(/ c new-exp)` is the algebraic heart of the function. In Common Lisp, dividing an integer by another integer produces an exact rational number rather than a float. Integrating the term `(make-term 3 x 2)` (representing 3x²) yields the new coefficient `3/3 = 1`; integrating `(make-term -1 x 1)` (representing −x) yields `-1/2`. These rationals propagate unchanged through subsequent operations, so no precision is lost until the caller explicitly requests a float — a significant advantage over languages that default to floating-point division.
+The division `(/ c new-exp)` is the algebraic heart of the function. In Common Lisp, dividing an integer by another integer produces an exact rational number rather than a float. Integrating the term `(make-term 3 x 2)` (representing 3x²) yields the new coefficient `3/3 = 1`; integrating `(make-term -1 x 1)` (representing −x) yields `-1/2`. These rationals propagate unchanged through subsequent operations, so no precision is lost until the caller explicitly requests a float which is a significant advantage over languages that default to floating-point division.
 
 Unlike `differentiate-term`, this function never returns nil because every term, including a constant term with exponent zero, integrates to a non-zero result. A constant `5` integrates to `5x`, so there is no zero-result case to handle.
 
 ### The Antiderivative of a Polynomial
 
-`integrate` maps `integrate-term` over every term of the polynomial and assembles the results into a new polynomial of degree `(degree poly + 1)`.
+The function `integrate` maps `integrate-term` over every term of the polynomial and assembles the results into a new polynomial of degree `(degree poly + 1)`.
 
 ```lisp
 (defun integrate (poly)
@@ -646,7 +679,7 @@ Uses the Fundamental Theorem of Calculus:
        (polynomial-evaluate F a))))
 ```
 
-`%resolve-bound` is a small dispatch function that converts whichever bound type was supplied — plain number, `sym-constant`, or an unexpected type — to a numeric value or signals an informative error. The two `coerce` calls in `evaluate-definite` ensure the bounds are `double-float` before passing them to `polynomial-evaluate`, which prevents mixed exact/floating-point arithmetic from producing surprising results. The final subtraction `F(b) - F(a)` is the Fundamental Theorem in code, and its simplicity is a direct reflection of the theorem's elegance.
+The function `%resolve-bound` is a small dispatch function that converts whichever bound type was supplied: a plain number, `sym-constant`, or an unexpected type to a numeric value or signals an informative error. The two `coerce` calls in `evaluate-definite` ensure the bounds are `double-float` before passing them to `polynomial-evaluate`, which prevents mixed exact/floating-point arithmetic from producing surprising results. The final subtraction `F(b) - F(a)` is the Fundamental Theorem in code, and its simplicity is a direct reflection of the theorem's elegance.
 
 ### Iterated Antiderivatives
 
@@ -692,7 +725,7 @@ LOWER and UPPER may be real numbers or sym-constant objects.
   (make-integral poly (polynomial-variable poly) :lower lower :upper upper))
 ```
 
-These functions exist purely for ergonomics. Without them, a caller would need to separately extract the polynomial's variable and pass it as the second argument to `make-integral` — a minor but unnecessary repetition. By encapsulating that extraction, the wrappers let calling code read more naturally: `(make-indefinite-integral p)` rather than `(make-integral p (polynomial-variable p))`. Note that these constructors store the original polynomial as the integrand; they do not pre-compute the antiderivative. Evaluation is deferred to an explicit call to `evaluate-definite` or `integrate`.
+These functions exist purely for ergonomics. Without them, a caller would need to separately extract the polynomial's variable and pass it as the second argument to `make-integral` that is a minor but unnecessary repetition. By encapsulating that extraction, the wrappers let calling code read more naturally: `(make-indefinite-integral p)` rather than `(make-integral p (polynomial-variable p))`. Note that these constructors store the original polynomial as the integrand; they do not pre-compute the antiderivative. Evaluation is deferred to an explicit call to `evaluate-definite` or `integrate`.
 
 ### Integration Smoke Test
 
@@ -742,16 +775,50 @@ The integration smoke test verifies each exported function and echoes expected v
     (format t "~%==============================~%")))
 ```
 
-The test checks the antiderivative of `p` (a quadratic), the second antiderivative of `p`, the antiderivative of `q` (a linear polynomial), two numerical definite integrals with known exact values (5.5 and 5.0), a definite integral with a `sym-constant` bound (`π`), and the string rendering of all three integral shell variants. The `~f` directive for the `π`-bounded result prints a floating-point number whose exact digits will vary by implementation but whose value should be approximately `102.olean` — a sanity check that the numeric path through `sym-constant` works end-to-end.
+The test checks the antiderivative of `p` (a quadratic), the second antiderivative of `p`, the antiderivative of `q` (a linear polynomial), two numerical definite integrals with known exact values (5.5 and 5.0), a definite integral with a `sym-constant` bound (`π`), and the string rendering of all three integral shell variants. The `~f` directive for the `π`-bounded result prints a floating-point number whose exact digits will vary by implementation but whose value should be approximately `102.olean` that is a sanity check that the numeric path through `sym-constant` works end-to-end.
+
+Here is the output of the smoke test:
+
+```
+$ sbcl
+* (load "integration.lisp")
+warning: redefining symbolic-math:run-smoke-test in DEFUN
+t
+* (in-package #:symbolic-math/integ)
+#<package "SYMBOLIC-MATH/INTEG">
+* (run-smoke-test)
+
+=== Integration Smoke Test ===
+
+p              : 3X^2 + -1X + 5
+∫p dx          : 1X^3 + -1/2X^2 + 5X
+∫∫p dx dx      : 1/4X^4 + -1/6X^3 + 5/2X^2
+
+q              : 6X + 2
+∫q dx          : 3X^2 + 2X
+
+∫₀¹  p dx      : 5.5d0  (expected 5.5)
+∫₀¹  q dx      : 5.0d0  (expected 5.0)
+∫₀^π p dx      : 41.77943774770411
+
+indef shell    : ∫(3X^2 + -1X + 5) dX
+def [0,1]      : ∫[0,1](3X^2 + -1X + 5) dX
+def [0,pi]     : ∫[0,PI](3X^2 + -1X + 5) dX
+
+==============================
+nil
+* 
+```
+
 
 ## Wrap Up
 
 In this chapter we built a three-file symbolic mathematics library in Common Lisp that demonstrates how a language designed for symbolic computation can express mathematical concepts cleanly and correctly.
 
-The **data layer** (`data.lisp`) showed how `defstruct` provides a lightweight, functional alternative to CLOS for domain objects. By enforcing invariants at construction time with `check-type` and `assert`, we ensured that ill-formed objects never enter the system. The canonical-form polynomial representation — terms always sorted by descending exponent with like terms combined — removed the need for normalization logic in every downstream consumer.
+The **data layer** (`data.lisp`) showed how `defstruct` provides a lightweight, functional alternative to CLOS for domain objects. By enforcing invariants at construction time with `check-type` and `assert`, we ensured that ill-formed objects never enter the system. The canonical-form polynomial representation: terms always sorted by descending exponent with like terms combined, removing the need for normalization logic in every downstream consumer.
 
 The **differentiation layer** (`differentiation.lisp`) demonstrated that the power rule and sum rule can be encoded almost literally in code. `differentiate-term` is a direct transliteration of `d/dx(cxⁿ) = ncx^(n−1)`; `differentiate` applies it via `mapcar` and `remove nil`, and the sum rule emerges automatically from the polynomial's list structure. Higher-order derivatives and numerical gradient evaluation required only a handful of additional lines.
 
-The **integration layer** (`integration.lisp`) mirrored the differentiation layer but introduced the important advantage of Common Lisp's exact rational arithmetic. Coefficients produced by the reverse power rule — such as the `-1/2` arising from integrating `-x` — are stored as exact rationals, so no precision is lost across multiple integrations. The Fundamental Theorem of Calculus translated into a three-line function that computes an antiderivative symbolically and then performs two numerical evaluations, achieving both symbolic clarity and numeric accuracy.
+The **integration layer** (`integration.lisp`) mirrored the differentiation layer but introduced the important advantage of Common Lisp's exact rational arithmetic. Coefficients produced by the reverse power rule, such as the `-1/2` arising from integrating `-x` and are stored as exact rationals, so no precision is lost across multiple integrations. The Fundamental Theorem of Calculus translated into a three-line function that computes an antiderivative symbolically and then performs two numerical evaluations, achieving both symbolic clarity and numeric accuracy.
 
 Taken together, the three files illustrate a broader lesson: when you model a problem domain faithfully as data, the algorithms that manipulate that data often become nearly self-evident. The mathematics drives the code structure rather than the other way around, and the result is software that is simultaneously easier to understand, easier to test, and easier to extend.
