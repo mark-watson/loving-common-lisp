@@ -8,5 +8,6 @@
   :components ((:file "package")
                (:file "ollama-helper")
                (:file "ollama-tools") 
-               (:file "ollama")))
+               (:file "ollama")
+	       (:file "ollama-cloud-search")))
 

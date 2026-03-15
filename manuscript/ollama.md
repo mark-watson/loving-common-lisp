@@ -9,6 +9,9 @@ Running local models with Ollama offers several practical advantages for Common 
 
 The **ollama** package developed here provides generative AI code and tool use/function calling generative AI code in the directory **loving-common-lisp/src/ollama**.
 
+**Note: I added an example for using built in web search tooling with Ollama Cloud on March 15, 2026.**
+
+
 ## Design Notes (Optional Material)
 
 Here we describe the design and architecture of the Ollama Common Lisp library, which provides an interface to the Ollama API for running local LLMs.
@@ -483,5 +486,234 @@ get_weather called with args: ((location . New York))
 "Weather in New York: Sunny, 72°F"
 * 
 ```
+
+## Using Built In Web Search Tool on Ollama Cloud
+
+The file ** ollama-cloud-search.lisp** demonstrates how to integrate Common Lisp with the Ollama Cloud API to create an autonomous agent capable of performing real-time web searches and content retrieval. By defining explicit tool schemas for web_search and web_fetch, the code instructs a model running on the Ollama Cloud service to identify when it requires external data to fulfill a user request. This implementation leverages **uiop:run-program** to execute curl commands for network communication and utilizes the **cl-json** library to handle the translation between Lisp association lists and the JSON format required by the API. This architectural pattern transforms a static LLM into a dynamic agent that can bridge the gap between its training data and the live web, specifically handling the iterative loop of requesting tools, executing local functions, and feeding results back to the model until a final answer is synthesized.
+
+```lisp
+(in-package #:ollama)
+
+;;; Ollama Cloud agent with web_search and web_fetch tool calling.
+;;; Mirrors the Python example using the Ollama Cloud API.
+;;; Requires OLLAMA_API_KEY to be set in the environment.
+
+(defvar *cloud-model-name* "gpt-oss:120b-cloud")
+(defvar *cloud-host* "https://ollama.com/api/chat")
+
+;;; Tool schemas sent to the model
+
+(defvar *web-search-tool-schema*
+  (list (cons :|type| "function")
+        (cons :|function|
+              (list (cons :|name| "web_search")
+                    (cons :|description| "Search the web for current information")
+                    (cons :|parameters|
+                          (list (cons :|type| "object")
+                                (cons :|properties|
+                                      (list (cons :|query|
+                                                  (list (cons :|type| "string")
+                                                        (cons :|description|
+                                                              "The search query string")))))
+                                (cons :|required| '("query"))))))))
+
+(defvar *web-fetch-tool-schema*
+  (list (cons :|type| "function")
+        (cons :|function|
+              (list (cons :|name| "web_fetch")
+                    (cons :|description| "Fetch the content of a web page by URL")
+                    (cons :|parameters|
+                          (list (cons :|type| "object")
+                                (cons :|properties|
+                                      (list (cons :|url|
+                                                  (list (cons :|type| "string")
+                                                        (cons :|description|
+                                                              "The URL to fetch")))))
+                                (cons :|required| '("url"))))))))
+
+;;; API key helper
+
+(defun get-api-key ()
+  "Read OLLAMA_API_KEY from the environment. Signals an error if not set."
+  (or (uiop:getenv "OLLAMA_API_KEY")
+      (error "OLLAMA_API_KEY environment variable is not set")))
+
+;;; Tool execution
+
+(defun execute-web-search (args)
+  "Search the web via DuckDuckGo. ARGS is an alist with :query key."
+  (let* ((query (or (cdr (assoc :query args)) ""))
+         (encoded (substitute #\+ #\Space query))
+         (url (format nil
+                      "https://api.duckduckgo.com/?q=~a&format=json&no_html=1&skip_disambig=1"
+                      encoded))
+         (curl-cmd (format nil "curl -s --max-time 10 ~s" url)))
+    (format t "  [web_search] query: ~a~%" query)
+    (handler-case
+        (let ((result (uiop:run-program curl-cmd :output :string :error-output :string)))
+          (format t "  [web_search] got ~a chars~%" (length result))
+          result)
+      (error (e) (format nil "web_search error: ~a" e)))))
+
+(defun execute-web-fetch (args)
+  "Fetch the content of a URL. ARGS is an alist with :url key."
+  (let* ((url (or (cdr (assoc :url args)) ""))
+         (curl-cmd (format nil "curl -s -L --max-time 15 ~s" url)))
+    (format t "  [web_fetch] url: ~a~%" url)
+    (handler-case
+        (let ((result (uiop:run-program curl-cmd :output :string :error-output :string)))
+          (format t "  [web_fetch] got ~a chars~%" (length result))
+          ;; Limit size to avoid overwhelming the model context
+          (subseq result 0 (min 4000 (length result))))
+      (error (e) (format nil "web_fetch error: ~a" e)))))
+
+;;; Single API call to Ollama Cloud
+
+(defun cloud-ollama-call (messages)
+  "Make one chat request to Ollama Cloud with web_search/web_fetch tools.
+   Returns (values content tool-calls raw-message-alist)."
+  (let* ((api-key (get-api-key))
+         (tools (list *web-search-tool-schema* *web-fetch-tool-schema*))
+         (data (list (cons :|model| *cloud-model-name*)
+                     (cons :|stream| nil)
+                     (cons :|messages| messages)
+                     (cons :|tools| tools)))
+         (json-data (lisp-to-json-string data))
+         ;; Hack: cl-json encodes nil as null, but stream needs false
+         (fixed-json (substitute-subseq json-data ":null" ":false" :test #'string=))
+         (auth-header (format nil "Authorization: Bearer ~a" api-key))
+         (curl-cmd
+           (format nil "curl -s -H ~s -H \"Content-Type: application/json\" ~a -d ~s"
+                   auth-header
+                   *cloud-host*
+                   fixed-json)))
+    (format t "~%Calling Ollama Cloud (~a)...~%" *cloud-model-name*)
+    (handler-case
+        (let ((response (uiop:run-program curl-cmd :output :string :error-output :string)))
+          (format t "Raw response: ~a~%" response)
+          (with-input-from-string (s response)
+            (let* ((parsed (json:decode-json s))
+                   ;; raw-message is an alist; re-encoding it preserves tool_calls
+                   ;; because cl-json round-trips :TOOL--CALLS <-> "tool_calls"
+                   (raw-message (cdr (assoc :message parsed)))
+                   (content (cdr (assoc :content raw-message)))
+                   (tool-calls (cdr (assoc :tool--calls raw-message))))
+              (values content tool-calls raw-message))))
+      (error (e)
+        (format t "Error calling Ollama Cloud: ~a~%" e)
+        (values nil nil nil)))))
+
+;;; Agent loop
+
+(defun cloud-search-agent (prompt)
+  "Agent loop: calls Ollama Cloud with web_search and web_fetch tools,
+   executing any tool calls and feeding results back until the model
+   returns a final answer. Returns the final answer string."
+  (let ((messages (list (list (cons :|role| "user")
+                              (cons :|content| prompt)))))
+    (loop
+      (multiple-value-bind (content tool-calls raw-message)
+          (cloud-ollama-call messages)
+        ;; Append the model's response (including any tool_calls) to history.
+        ;; raw-message is the cl-json decoded alist; re-encoding it is safe because
+        ;; cl-json round-trips :ROLE -> "role", :TOOL--CALLS -> "tool_calls", etc.
+        (when raw-message
+          (setf messages (append messages (list raw-message))))
+
+        (cond
+          ;; Model requested one or more tool calls
+          (tool-calls
+           (format t "~%Model requested ~a tool call(s).~%" (length tool-calls))
+           (dolist (tc tool-calls)
+             (let* ((func (cdr (assoc :function tc)))
+                    (name (cdr (assoc :name func)))
+                    (args (cdr (assoc :arguments func)))
+                    (result
+                      (cond
+                        ((string= name "web_search") (execute-web-search args))
+                        ((string= name "web_fetch")  (execute-web-fetch args))
+                        (t (format nil "Unknown tool: ~a" name)))))
+               (format t "  Tool ~a completed.~%" name)
+               ;; Append tool result to history (role "tool" per Ollama Cloud spec)
+               (setf messages
+                     (append messages
+                             (list (list (cons :|role| "tool")
+                                         (cons :|content| (format nil "~a" result))
+                                         (cons :|tool--name| name)))))))
+           ;; Loop back so the model can process the tool results
+           )
+
+          ;; No tool calls - this is the final answer
+          (t
+           (format t "~%Final Answer: ~a~%" content)
+           (return (or content "No response"))))))))
+
+;; Usage:
+;; (setf (uiop:getenv "OLLAMA_API_KEY") "your-key-here")  ; or export in shell
+;; (ollama::cloud-search-agent
+;;   "What is the current price of Bitcoin and who is the CEO of Nvidia?")
+```
+
+The core of the implementation lies in the cloud-search-agent loop, which manages the stateful conversation history between the user and the assistant. When the model determines that a query requires current information—such as the price of a cryptocurrency or recent corporate news—it returns a tool_calls object instead of a text response. The Lisp code parses these calls, dispatches the appropriate local functions to query the DuckDuckGo API or scrape a webpage, and appends the results to the message list with the specific tool role. This enables the model to "see" the results of its requested actions in the next iteration.
+
+Dear reader, please note the technical detail in the handling of the JSON boolean conversion; since **cl-json** typically encodes **nil** as **null**, the code includes a *hack* of string substitution to ensure the stream parameter is explicitly sent as false, satisfying the API's strict type requirements. Additionally, the **execute-web-fetch** function includes a character limit on the returned content to prevent overwhelming the model's context window. This conservative approach to tool calling provides a blueprint for building sophisticated Lisp applications that interact with modern, hosted large language models.
+
+Here is an example search tool use (note that I left the debug printout in the example code - you might want to remove it after tracing through a few tool calls):
+
+```
+ $ sbcl
+* (ql:quickload :ollama)
+To load "ollama":
+  Load 1 ASDF system:
+    ollama
+; Loading "ollama"
+* (ollama::cloud-search-agent "What is the current price of Bitcoin?")
+
+Calling Ollama Cloud (gpt-oss:120b-cloud)...
+Raw response: {"model":"gpt-oss:120b-cloud","created_at":"2026-03-15T16:06:58.193679768Z","message":{"role":"assistant","content":"","thinking":"User asks \"What is the current price of Bitcoin?\" Need to fetch up-to-date price. Use web search.","tool_calls":[{"id":"call_h2hs6qtc","function":{"index":0,"name":"web_search","arguments":{"query":"current price of Bitcoin USD"}}}]},"done":true,"done_reason":"stop","total_duration":957583450,"prompt_eval_count":169,"eval_count":55}
+
+Model requested 1 tool call(s).
+  [web_search] query: current price of Bitcoin USD
+  [web_search] got 1252 chars
+  Tool web_search completed.
+
+Calling Ollama Cloud (gpt-oss:120b-cloud)...
+Raw response: {"model":"gpt-oss:120b-cloud","created_at":"2026-03-15T16:06:59.7867423Z","message":{"role":"assistant","content":"","thinking":"The web search didn't return relevant info; maybe need a better source like CoinDesk. Search again.","tool_calls":[{"id":"call_ay1ikwv5","function":{"index":0,"name":"web_search","arguments":{"query":"Bitcoin price USD site:coindesk.com"}}}]},"done":true,"done_reason":"stop","total_duration":794687005,"prompt_eval_count":542,"eval_count":52}
+
+Model requested 1 tool call(s).
+  [web_search] query: Bitcoin price USD site:coindesk.com
+  [web_search] got 1252 chars
+  Tool web_search completed.
+
+Calling Ollama Cloud (gpt-oss:120b-cloud)...
+Raw response: {"model":"gpt-oss:120b-cloud","created_at":"2026-03-15T16:07:02.297827159Z","message":{"role":"assistant","content":"","thinking":"Seems the search function is not returning real results maybe due to restrictions. Alternative: use known API like CoinGecko. Could fetch https://api.coingecko.com/api/v3/simple/price?ids=bitcoin\u0026vs_currencies=usd . Use web_fetch.","tool_calls":[{"id":"call_72fzg0b0","function":{"index":0,"name":"web_fetch","arguments":{"url":"https://api.coingecko.com/api/v3/simple/price?ids=bitcoin\u0026vs_currencies=usd"}}}]},"done":true,"done_reason":"stop","total_duration":1592044680,"prompt_eval_count":916,"eval_count":100}
+
+Model requested 1 tool call(s).
+  [web_fetch] url: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd
+  [web_fetch] got 25 chars
+  Tool web_fetch completed.
+
+Calling Ollama Cloud (gpt-oss:120b-cloud)...
+Raw response: {"model":"gpt-oss:120b-cloud","created_at":"2026-03-15T16:07:04.353934655Z","message":{"role":"assistant","content":"**Current Bitcoin Price (USD)** – ≈ **$71,560**  \n\n*Source:* CoinGecko API (simple price endpoint) – data fetched just now (2024‑06‑15).  \n\n\u003e Prices can fluctuate rapidly across exchanges, so the exact rate may differ by a few dollars at any moment. For the most up‑to‑date figure, you can query the same endpoint or check a live market ticker (e.g., CoinDesk, Binance, Kraken).","thinking":"The fetched price is $71,560. Need to present answer with timestamp. Provide approximate current price. Also note markets vary. Provide source."},"done":true,"done_reason":"stop","total_duration":1341640736,"prompt_eval_count":1037,"eval_count":138}
+
+Final Answer: **Current Bitcoin Price (USD)** – ≈ **$71,560**  
+
+*Source:* CoinGecko API (simple price endpoint) – data fetched just now (2024‑06‑15).  
+
+> Prices can fluctuate rapidly across exchanges, so the exact rate may differ by a few dollars at any moment. For the most up‑to‑date figure, you can query the same endpoint or check a live market ticker (e.g., CoinDesk, Binance, Kraken).
+"**Current Bitcoin Price (USD)** – ≈ **$71,560**  
+
+*Source:* CoinGecko API (simple price endpoint) – data fetched just now (2024‑06‑15).  
+
+> Prices can fluctuate rapidly across exchanges, so the exact rate may differ by a few dollars at any moment. For the most up‑to‑date figure, you can query the same endpoint or check a live market ticker (e.g., CoinDesk, Binance, Kraken)."
+* 
+```
+
+## Ollama Chapter Wrap Up
+
+Dear reader, this chapter demonstrates that the marriage of Common Lisp’s symbolic strengths and Ollama’s local inference creates a powerful environment for building autonomous, privacy-respecting AI systems. By bridging Lisp with a local REST API via Common Lisp libraries **uiop** and **cl-json**, we have moved beyond simple text generation into the realm of structured tool use and function calling. The architecture we developed—centered around a central dispatcher and a robust registration system—allows the LLM to behave as a high-level controller that can orchestrate native Lisp code to perform calculations, fetch weather data, or even query the live web.
+
+Looking ahead, the shift from local execution to hybrid cloud agents illustrates the evolving landscape of AI development. As seen in the Ollama Cloud integration with web search and web fetch tools, the transition from a deterministic subsystem to a dynamic agent loop requires careful state management and prompt engineering to handle iterative tool requests. Whether you are leveraging the low latency of a local Mistral model instance or the broad capabilities of a cloud-based search agent, the patterns established here of JSON serialization hacks, error handling for external processes, and recursive agent loops provide a flexible foundation for any modern Lisp-based AI application that can be improved by using LLMs.
+
 
 

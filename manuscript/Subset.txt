@@ -1,3 +1,3 @@
-symbolic-math.md
+ollama.md
 
 
