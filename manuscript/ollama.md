@@ -489,13 +489,13 @@ get_weather called with args: ((location . New York))
 
 ## Using Built In Web Search Tool on Ollama Cloud
 
-The file ** ollama-cloud-search.lisp** demonstrates how to integrate Common Lisp with the Ollama Cloud API to create an autonomous agent capable of performing real-time web searches and content retrieval. By defining explicit tool schemas for web_search and web_fetch, the code instructs a model running on the Ollama Cloud service to identify when it requires external data to fulfill a user request. This implementation leverages **uiop:run-program** to execute curl commands for network communication and utilizes the **cl-json** library to handle the translation between Lisp association lists and the JSON format required by the API. This architectural pattern transforms a static LLM into a dynamic agent that can bridge the gap between its training data and the live web, specifically handling the iterative loop of requesting tools, executing local functions, and feeding results back to the model until a final answer is synthesized.
+The file **ollama-cloud-search.lisp** demonstrates how to integrate Common Lisp with the Ollama Cloud API to create an autonomous agent capable of performing real-time web searches and content retrieval. By defining explicit tool schemas for the **web_search** and **web_fetch**, this example code instructs a model running on the Ollama Cloud service to identify when it requires external data to fulfill a user request. This implementation leverages **uiop:run-program** to execute curl commands for network communication and utilizes the **cl-json** library to handle the translation between Lisp association lists and the JSON format required by the API. This architectural pattern transforms a static LLM into a dynamic agent that can bridge the gap between its training data and the live web, specifically handling the iterative loop of requesting tools, executing local functions, and feeding results back to the model until a final answer is synthesized.
 
 ```lisp
+;; ollama-cloud-search.lisp
 (in-package #:ollama)
 
 ;;; Ollama Cloud agent with web_search and web_fetch tool calling.
-;;; Mirrors the Python example using the Ollama Cloud API.
 ;;; Requires OLLAMA_API_KEY to be set in the environment.
 
 (defvar *cloud-model-name* "gpt-oss:120b-cloud")
@@ -513,8 +513,9 @@ The file ** ollama-cloud-search.lisp** demonstrates how to integrate Common Lisp
                                 (cons :|properties|
                                       (list (cons :|query|
                                                   (list (cons :|type| "string")
-                                                        (cons :|description|
-                                                              "The search query string")))))
+                                                        (cons
+														  :|description|
+                                                          "The search query string")))))
                                 (cons :|required| '("query"))))))))
 
 (defvar *web-fetch-tool-schema*
@@ -544,13 +545,17 @@ The file ** ollama-cloud-search.lisp** demonstrates how to integrate Common Lisp
   "Search the web via DuckDuckGo. ARGS is an alist with :query key."
   (let* ((query (or (cdr (assoc :query args)) ""))
          (encoded (substitute #\+ #\Space query))
-         (url (format nil
-                      "https://api.duckduckgo.com/?q=~a&format=json&no_html=1&skip_disambig=1"
-                      encoded))
+         (url
+		   (format
+		     nil
+             "https://api.duckduckgo.com/?q=~a&format=json&no_html=1&skip_disambig=1"
+             encoded))
          (curl-cmd (format nil "curl -s --max-time 10 ~s" url)))
     (format t "  [web_search] query: ~a~%" query)
     (handler-case
-        (let ((result (uiop:run-program curl-cmd :output :string :error-output :string)))
+        (let ((result
+		        (uiop:run-program
+				  curl-cmd :output :string :error-output :string)))
           (format t "  [web_search] got ~a chars~%" (length result))
           result)
       (error (e) (format nil "web_search error: ~a" e)))))
@@ -561,7 +566,9 @@ The file ** ollama-cloud-search.lisp** demonstrates how to integrate Common Lisp
          (curl-cmd (format nil "curl -s -L --max-time 15 ~s" url)))
     (format t "  [web_fetch] url: ~a~%" url)
     (handler-case
-        (let ((result (uiop:run-program curl-cmd :output :string :error-output :string)))
+      (let ((result
+	          (uiop:run-program curl-cmd :output :string
+			                    :error-output :string)))
           (format t "  [web_fetch] got ~a chars~%" (length result))
           ;; Limit size to avoid overwhelming the model context
           (subseq result 0 (min 4000 (length result))))
@@ -589,7 +596,9 @@ The file ** ollama-cloud-search.lisp** demonstrates how to integrate Common Lisp
                    fixed-json)))
     (format t "~%Calling Ollama Cloud (~a)...~%" *cloud-model-name*)
     (handler-case
-        (let ((response (uiop:run-program curl-cmd :output :string :error-output :string)))
+        (let ((response
+		        (uiop:run-program curl-cmd :output :string
+				                  :error-output :string)))
           (format t "Raw response: ~a~%" response)
           (with-input-from-string (s response)
             (let* ((parsed (json:decode-json s))
@@ -654,11 +663,11 @@ The file ** ollama-cloud-search.lisp** demonstrates how to integrate Common Lisp
 ;;   "What is the current price of Bitcoin and who is the CEO of Nvidia?")
 ```
 
-The core of the implementation lies in the cloud-search-agent loop, which manages the stateful conversation history between the user and the assistant. When the model determines that a query requires current information—such as the price of a cryptocurrency or recent corporate news—it returns a tool_calls object instead of a text response. The Lisp code parses these calls, dispatches the appropriate local functions to query the DuckDuckGo API or scrape a webpage, and appends the results to the message list with the specific tool role. This enables the model to "see" the results of its requested actions in the next iteration.
+The core of the implementation lies in the cloud-search-agent loop, which manages the stateful conversation history between the user and the assistant. When the model determines that a query requires current information such as the price of a cryptocurrency or recent corporate news, and it returns a tool_calls object instead of a text response. The Lisp code parses these calls, dispatches the appropriate local functions and appends the results to the message list with the specific tool role. This enables the model to "see" the results of its requested actions (i.e., either calls to local Common Lisp functions you write or built in functions like **web_search**) in the next iteration.
 
-Dear reader, please note the technical detail in the handling of the JSON boolean conversion; since **cl-json** typically encodes **nil** as **null**, the code includes a *hack* of string substitution to ensure the stream parameter is explicitly sent as false, satisfying the API's strict type requirements. Additionally, the **execute-web-fetch** function includes a character limit on the returned content to prevent overwhelming the model's context window. This conservative approach to tool calling provides a blueprint for building sophisticated Lisp applications that interact with modern, hosted large language models.
+Dear reader,  please note the technical detail in the handling of the JSON boolean conversion; since **cl-json** typically encodes **nil** as **null**, the code includes a *hack* of string substitution to ensure the stream parameter is explicitly sent as false, satisfying the API's strict type requirements. Additionally, the **execute-web-fetch** function includes a character limit on the returned content to prevent overwhelming the model's context window. This conservative approach to tool calling provides a blueprint for building sophisticated Lisp applications that interact with modern, hosted large language models.
 
-Here is an example search tool use (note that I left the debug printout in the example code - you might want to remove it after tracing through a few tool calls):
+Here is an example search tool use (note that I left the debug printout in the example code - you might want to remove these debug print statements after tracing through a few tool calls):
 
 ```
  $ sbcl
@@ -705,7 +714,7 @@ Final Answer: **Current Bitcoin Price (USD)** – ≈ **$71,560**
 
 *Source:* CoinGecko API (simple price endpoint) – data fetched just now (2024‑06‑15).  
 
-> Prices can fluctuate rapidly across exchanges, so the exact rate may differ by a few dollars at any moment. For the most up‑to‑date figure, you can query the same endpoint or check a live market ticker (e.g., CoinDesk, Binance, Kraken)."
+> Prices can fluctuate rapidly across exchanges, so the exact rate may differ by a few dollars at any moment. For the most up-to-date figure, you can query the same endpoint or check a live market ticker (e.g., CoinDesk, Binance, Kraken)."
 * 
 ```
 
