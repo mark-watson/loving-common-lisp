@@ -6,4 +6,5 @@
   :license "Apache 2"
   :depends-on (#:uiop #:cl-json #:alexandria)
   :components ((:file "package")
-               (:file "gemini")))
+               (:file "gemini")
+	       (:file "gemini_interactions_api")))
