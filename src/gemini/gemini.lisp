@@ -5,7 +5,7 @@
   *gemini-api-base-url*
   "https://generativelanguage.googleapis.com/v1beta/models/")
 
-(defvar *model* "gemini-3-flash-preview") ;; model used for all use cases in this file.
+(defvar *model* "gemini-3-flash-preview") ;; model used in this file.
 
 (defun escape-json (json-string)
   (with-output-to-string (s)
@@ -39,11 +39,15 @@
                                 (setf (gethash "text" part) prompt)
                                 part)))
                   contents)))
-    (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":generateContent"))
+    (let* ((api-url (concatenate 'string *gemini-api-base-url*
+				 model-id ":generateContent"))
            (data (cl-json:encode-json-to-string payload))
            (escaped-json (escape-json data))
-           (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
-                             api-url *google-api-key* escaped-json))
+           (curl-cmd
+	    (format
+	     nil
+	     "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
+             api-url *google-api-key* escaped-json))
            (response-string (run-curl-command curl-cmd))
            (decoded-response (cl-json:decode-json-from-string response-string))
            (candidates-pair (assoc :CANDIDATES decoded-response))
@@ -67,7 +71,8 @@
    PROMPT: The text prompt to count tokens for.
    MODEL-ID: Optional. The ID of the model to use.
    Returns the total token count as an integer."
-  (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":countTokens"))
+  (let* ((api-url (concatenate 'string
+			       *gemini-api-base-url* model-id ":countTokens"))
          (payload (make-hash-table :test 'equal)))
     ;; Construct payload similar to generate function
     (setf (gethash "contents" payload)
@@ -79,15 +84,20 @@
                   contents)))
     (let* ((data (cl-json:encode-json-to-string payload))
            (escaped-json (escape-json data))
-           (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
-                             api-url *google-api-key* escaped-json))
+           (curl-cmd
+	    (format
+	     nil
+	     "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
+             api-url *google-api-key* escaped-json))
            (response-string (run-curl-command curl-cmd))
            (decoded-response (cl-json:decode-json-from-string response-string))
-           ;; cl-json by default uses :UPCASE for keys, so :TOTAL-TOKENS should be correct
+           ;; cl-json by default uses :UPCASE for keys,
+	   ;; so :TOTAL-TOKENS should be correct
            (total-tokens-pair (assoc :TOTAL-TOKENS decoded-response)))
       (if total-tokens-pair
           (cdr total-tokens-pair)
-          (error "Could not retrieve token count from API response: ~S" decoded-response)))))
+          (error "Could not retrieve token count from API response: ~S"
+		 decoded-response)))))
 
 ;; (gemini:count-tokens "In one sentence, explain how AI works to a child.")
 
@@ -116,8 +126,9 @@
          (princ gemini-response)
          (finish-output)
          (setf *chat-history*
-               (concatenate 'string "User: " user-prompt "\n" "Gemini: " gemini-response
-                                  "\n" *chat-history* "\n\n")))))))
+               (concatenate 'string "User: " user-prompt "\n" "Gemini: "
+			    gemini-response
+                            "\n" *chat-history* "\n\n")))))))
 
 ;; (gemini::chat)
 
