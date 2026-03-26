@@ -1,14 +1,6 @@
 # Common Lisp library to access Mistral LLM APIs
 
-From my book URI: https://leanpub.com/lovinglisp
-
-There is a **Makefile** in the repo https://github.com/mark-watson/loving-common-lisp that can be copied
-to your **~/quicklisp/local-projects** directory. Then in **~/quicklisp/local-projects** run:
-
-    make fetch
-
-to get all of the library examples from my book.
-
+From my book URI: https://leanpub.com/lovinglisp (look in the **src** directory).
 
 
 ## setting your mistral API key
