@@ -6,7 +6,7 @@
 ;; Hash table to store available functions for tool calling
 (defvar *available-functions* (make-hash-table :test 'equal))
 
-(ql:quickload '("drakma" "cl-json" "uiop"))
+(ql:quickload '("cl-json" "uiop"))
 
 (defstruct moonshot-function
   name
