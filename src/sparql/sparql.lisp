@@ -4,6 +4,8 @@
 (in-package #:sparql)
 
 (defun wikidata (query)
+  "Query Wikidata SPARQL endpoint.
+  : Returns list of bindings from JSON response."
   (let ((response
          (myutils:replace-all
           (myutils:replace-all
@@ -27,6 +29,9 @@
 
 
 (defun dbpedia (query)
+  "Query DBpedia SPARQL endpoint.
+  : Prints query and response for debugging.
+  : Returns list of bindings from JSON response."
   (print (list "dbpeia SPARQL:" query "\n"))
   (let ((response
          (myutils:replace-all
@@ -51,6 +56,11 @@
                 (cdr (cadddr (cadr json-as-list))))))))
 
 (defun fuseki (query &key (host "http://127.0.0.1") (port 3030) (suffix "/news/sparql"))
+  "Query Fuseki SPARQL endpoint.
+  host: SPARQL endpoint host URL
+  port: SPARQL endpoint port
+  suffix: path to SPARQL endpoint
+  : Returns list of bindings from JSON response."
     (let* ((uri (format nil "~a:~a~a?query=" host port suffix))
            (response
             (uiop:run-program 
@@ -89,6 +99,11 @@
 
 
 (defun agraph (query &key (host "mark:mark@127.0.0.1") (port 10035) (suffix "/repositories/news"))
+  "Query Agraph SPARQL endpoint with basic auth.
+  host: Agraph host URL
+  port: Agraph port
+  suffix: path to SPARQL endpoint
+  : Returns list of rows (each row is list of values in variable order)"
     (let* ((uri (format nil "~a:~a~a?accept=application/json&user=mark&passwd=mark&query=" host port suffix))
            (response
             (uiop:run-program 
@@ -109,6 +124,11 @@
 
 
 (defun stardog (query &key (host "http://127.0.0.1") (port 5820) (suffix "/testdb/query"))
+  "Query Stardog SPARQL endpoint with basic auth.
+  host: Stardog host URL
+  port: Stardog port
+  suffix: path to SPARQL endpoint
+  : Returns list with var-names followed by list of rows"
     (let* ((response
             (uiop:run-program 
              (concatenate 'string
@@ -140,6 +160,9 @@
                                                   var-names)) values)))))))
 
 (defun ask-dbpedia (query)
+  "Boolean SPARQL query to DBpedia.
+  : Searches response for 'true' string.
+  : Returns T/F based on boolean result."
   (let* ((response
            (myutils:replace-all
             (myutils:replace-all
@@ -158,6 +181,7 @@
       nil)))
 
 (defun sparql-manual ()
+  "Print example SPARQL queries for all endpoints."
   (princ "Package sparql examples:")
   (terpri) (terpri)
   (princ "
