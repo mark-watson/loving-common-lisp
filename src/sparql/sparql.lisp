@@ -1,4 +1,4 @@
-;; Copyright 2021-2022 Mark Watson All Rights Reserved.
+;; Copyright 2021-2026 Mark Watson All Rights Reserved.
 ;; License: Apache 2
 
 (in-package #:sparql)
