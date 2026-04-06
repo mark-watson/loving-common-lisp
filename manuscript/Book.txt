@@ -30,9 +30,11 @@ kgn_text_ui.md
 kgn_capi_ui.md	
 openai.md
 ollama.md
+ollama_image_processing.md
 perplexity.md
 moonshot.md
 huggingface.md
+knowledge-navigator.md
 doc_qa.md
 prompts.md
 gemini.md

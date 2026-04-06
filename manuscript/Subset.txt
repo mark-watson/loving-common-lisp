@@ -1,4 +1,6 @@
-gemini.md
+ollama_image_processing.md
+knowledge-navigator.md
+
 
 
 
