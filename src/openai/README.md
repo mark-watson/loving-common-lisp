@@ -42,7 +42,7 @@ to get all of the library examples from my book.
 
 ```lisp
 cl-user> (ql:quickload :openai)
-cl-user> (openai:completions "The President went to Congress" 200)
+cl-user> (openai:completions "The President went to Congress")
 " instead. The Congress was not oblivious of what the Supreme Court's
 majority had ruled. Even four Justices had found nothing to criticize
 in the President's requirement that the Federal Government's four-year

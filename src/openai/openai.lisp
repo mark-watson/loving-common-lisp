@@ -5,7 +5,7 @@
 (defvar *model-host* "https://api.openai.com/v1/chat/completions")
 
 ;; use gpt-5 for better results, but much more expensive:
-(defvar *model* "gpt-5-mini")
+(defvar *model* "gpt-5-nano")
 
 ;; Hash table to store available functions for tool calling
 (defvar *available-functions* (make-hash-table :test 'equal))
