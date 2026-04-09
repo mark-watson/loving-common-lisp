@@ -4,7 +4,7 @@
 
 (defvar *model-host* "https://api.openai.com/v1/chat/completions")
 ;; use gpt-4o for very good results, or gpt-4o-mini to save abt 20x on costs, with similar results:
-(defvar *model* "gpt-4o-mini")
+(defvar *model* "gpt-4o-nano")
 
 ;; Hash table to store available functions for tool calling
 (defvar *available-functions* (make-hash-table :test 'equal))
@@ -71,7 +71,7 @@
 (defun prepare-request (messages max-tokens tool-defs)
   (let ((data (list (cons :model *model*)
                     (cons :messages messages)
-                    (cons :max_tokens max-tokens))))
+                    (cons :max_completion_tokens max-tokens))))
     (when tool-defs
       (push (cons :tools tool-defs) data))
     (cl-json:encode-json-to-string (nreverse data))))

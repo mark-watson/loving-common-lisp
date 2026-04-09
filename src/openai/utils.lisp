@@ -8,7 +8,7 @@
                       " -H \"Content-Type: application/json\""
                       " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" "
                       " -d '{\"messages\": [{\"role\": \"user\", \"content\": \"Summarize: " some-text 
-                      "\"}], \"model\": \"gpt-4\"}'")))
+                      "\"}], \"model\": \"gpt-5-nano\"}'")))
     (openai-helper curl-command)))
 
 (defun answer-question (question)
