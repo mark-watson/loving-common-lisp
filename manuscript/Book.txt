@@ -35,6 +35,7 @@ perplexity.md
 moonshot.md
 huggingface.md
 knowledge-navigator.md
+lightpanda.md
 doc_qa.md
 prompts.md
 gemini.md
