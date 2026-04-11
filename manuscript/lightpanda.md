@@ -1,6 +1,6 @@
 # Interfacing with External Programs: A Lightpanda Browser Client
 
-In this chapter, we build a complete Common Lisp library that interfaces with an external program: the Lightpanda headless browser. This example demonstrates practical techniques for shell integration, string processing, and building reusable APIs. Directions for installing the Lightpanda command line tool can be found in the [Lightpanda documentation](https://lightpanda.io/docs/open-source/installation).
+In this chapter, we build a complete Common Lisp library that interfaces with an external program: the Lightpanda headless web browser. This example demonstrates practical techniques for shell integration, string processing, and building reusable APIs. Directions for installing the Lightpanda command line tool can be found in the [Lightpanda documentation](https://lightpanda.io/docs/open-source/installation).
 
 ## The Problem: JavaScript-Rendered Web Content
 
@@ -51,9 +51,9 @@ We define a package with explicit exports, creating a clean public API:
 (in-package #:lightpanda)
 ```
 
-The `:use #:cl` imports the standard Common Lisp symbols. `#:*lightpanda-binary*` and other symbols marked with `#:export` become part of the public API—users call these with package prefixes like `(lightpanda:fetch-url "https://example.com/")`.
+The `:use #:cl` imports the standard Common Lisp symbols. `#:*lightpanda-binary*` and other symbols marked with `#:export` become part of the public API that users call with these package prefixes like `(lightpanda:fetch-url "https://example.com/")`.
 
-## Configuration with Defvar
+## Configuration
 
 You must have the `lightpanda` tool installed; here I verify the installation on my laptop:
 

@@ -4,7 +4,9 @@ Earlier we looked the my old Knowledge Graph Navigator (KGN) project that combin
 
 The code can be found in the directory: **loving-common-lisp/src/knowledge-base-navigator**.
 
-In this chapter, we explore a practical application that combines modern AI APIs with Common Lisp to create an interactive knowledge exploration tool. The Knowledge Base Navigator demonstrates how to integrate external services, handle JSON data, and build user-friendly REPL interfaces.
+In this chapter, we explore a practical application that combines modern AI APIs with Common Lisp to create an interactive knowledge exploration tool. The Knowledge Base Navigator demonstrates how to integrate external services, handle JSON data, and supply a user-friendly text interfaces.
+
+This example differs from the KGN project since no *knowledge base* is constructed and stored. Here we use live web searches via Google’s `web_search` tool that is available with the Gemini APIs to dynamically construct user content. Dear reader, this is a different approach!
 
 ## Project Overview
 
@@ -21,7 +23,7 @@ The New Knowledge Navigator consists of three files, one source file and two sma
 
 ```
 knowledge-base-navigator/
-├── knowledge-base-navigator.asd    # ASDF system definition
+├── knowledge-base-navigator.asd     # ASDF system definition
 ├── project.lisp                     # Package definition
 └── knowledge-base-navigator.lisp    # Core application
 ```
