@@ -8,7 +8,7 @@ In this chapter, we explore a practical application that combines modern AI APIs
 
 ## Project Overview
 
-The Knowledge Base Navigator is a modern evolution of the classic Knowledge Graph Navigator (KGN). It uses Google's Gemini Flash LLM API to extract entities from natural language, disambiguate them, and retrieve detailed encyclopedic information. This represents a paradigm shift from traditional database-backed systems to an AI-driven pipeline.
+The Knowledge Base Navigator is a modern evolution of my classic Knowledge Graph Navigator (KGN). This new version uses Google's Gemini Flash LLM API to extract entities from natural language, disambiguate them, discover semantic links between entities, and retrieve detailed encyclopedic information. This represents a paradigm shift from traditional database-backed systems to an AI-driven pipeline.
 
 The system follows a two-stage process:
 
@@ -17,7 +17,7 @@ The system follows a two-stage process:
 
 ## Project Structure
 
-Common Lisp projects typically use ASDF (Another System Definition Facility) for build configuration. The Navigator consists of three files:
+The New Knowledge Navigator consists of three files, one source file and two small configuration files:
 
 ```
 knowledge-base-navigator/
