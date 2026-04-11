@@ -1,6 +1,6 @@
 # Interfacing with External Programs: A Lightpanda Browser Client
 
-In this chapter, we build a complete Common Lisp library that interfaces with an external program—the Lightpanda headless browser. This example demonstrates practical techniques for shell integration, string processing, and building reusable APIs.
+In this chapter, we build a complete Common Lisp library that interfaces with an external program: the Lightpanda headless browser. This example demonstrates practical techniques for shell integration, string processing, and building reusable APIs. Directions for installing the Lightpanda command line tool can be found in the [Lightpanda documentation](https://lightpanda.io/docs/open-source/installation).
 
 ## The Problem: JavaScript-Rendered Web Content
 
@@ -31,7 +31,7 @@ Key elements:
 - `:depends-on` — External dependencies (loaded via Quicklisp)
 - `:components` — Source files in load order
 
-## Package Definition
+**Package Definition:**
 
 We define a package with explicit exports, creating a clean public API:
 
@@ -55,6 +55,13 @@ The `:use #:cl` imports the standard Common Lisp symbols. `#:*lightpanda-binary*
 
 ## Configuration with Defvar
 
+You must have the `lightpanda` tool installed; here I verify the installation on my laptop:
+
+```
+$ which lightpanda
+/Users/mark/bin/lightpanda
+```
+
 We use `defvar` for configurable settings:
 
 ```lisp
@@ -64,14 +71,14 @@ We use `defvar` for configurable settings:
 
 Using `defvar` (not `defparameter`) means users can `setf` this variable, and it won't be reset if the file is reloaded. The earmuffs (`*...*`) convention marks it as a special variable.
 
-Users can configure:
+Users can configure a new file path:
 ```lisp
 (setf lightpanda:*lightpanda-binary* "/usr/local/bin/lightpanda")
 ```
 
 ## Running External Programs with UIOP
 
-Common Lisp doesn't have a standard way to run subprocesses, but UIOP (Universal Interface to OS Processes) provides portable functions. UIOP comes bundled with ASDF, so it's universally available.
+Common Lisp doesn't have a built-in standard way to run subprocesses, but the UIOP (Universal Interface to OS Processes) library provides portable functions. UIOP comes bundled with ASDF, so it's universally available.
 
 ```lisp
 (defun %run (command)
@@ -196,7 +203,6 @@ Higher-level helpers make common operations easy:
         (format t "No HTML returned.~%"))))
 ```
 
-The `progn` groups multiple expressions into one—required since `if` takes exactly three arguments (condition, then, else). `when` and `unless` are alternatives when you don't need an else branch.
 
 ## Usage Examples
 
@@ -233,13 +239,13 @@ For users who prefer a different package name, we provide an alias:
 
 Using `(:use #:cl #:lightpanda)` re-exports all symbols from `lightpanda`, so `(lightpanda-browser:fetch-url ...)` works identically.
 
-## Key Takeaways
+## Key Code Style Takeaways
 
 1. **UIOP:run-program** — Portable subprocess execution in Common Lisp
-2. **Defvar with earmuffs** — Configurable special variables
+2. **defvar with earmuffs** — Configurable special variables
 3. **Package exports** — Design a clean public API
 4. **Private function conventions** — Use `%` prefix for internal helpers
 5. **Format directives** — `~{~a~^ ~}` for clean command construction
 6. **Key arguments with defaults** — `&key (param default)` makes flexible APIs
 
-This pattern—shelling out to a specialized tool and processing its output—is a powerful technique. You can wrap any command-line tool this way: databases, image processors, compilers, or your own scripts. The result is a Lisp API that hides the implementation details while providing full access to the tool's capabilities.
+This pattern—shelling out to a specialized tool and processing its output—is a powerful technique. You can wrap any command-line tool this way: databases, image processors, compilers, or your own scripts. The result is a Lisp API that hides the implementation details while providing access to the tool's capabilities.

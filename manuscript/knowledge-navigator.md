@@ -71,6 +71,8 @@ The package file establishes the namespace and exports:
 
 ## Core Implementation
 
+The following code snippets are part of the file **knowledge-base-navigator.lisp**.
+
 ### Tokenizer Utility
 
 The tokenizer parses user input into individual tokens:
@@ -123,7 +125,7 @@ Rather than using Common Lisp HTTP libraries (which can have SSL/Certificate iss
       response-body)))
 ```
 
-**Key technique**: JSON payload is written to a temporary file, then passed to curl with `-d @filename`. This avoids complex shell escaping issues with embedded quotes and special characters.
+**Key technique**: JSON payload is written to a temporary file, then passed to curl with `-d @filename`. This avoids complex shell escaping issues with embedded quotes and special characters. 
 
 The flow:
 1. Create temp file with `mktemp`
@@ -189,7 +191,7 @@ The main API function constructs requests and parses responses:
 
 ### Interactive UI Loop
 
-The `kbn-ui` function implements a REPL-style interface:
+The `kbn-ui` function implements an interactive text user interface:
 
 ```lisp
 (defun kbn-ui ()
@@ -247,7 +249,10 @@ Load the system via Quicklisp:
 
 ```lisp
 ;; Ensure project directory is in Quicklisp's path
-;; Usually via symlink: ln -s /path/to/knowledge-base-navigator ~/quicklisp/local-projects/
+;; Usually via symlink:
+;;  ln -s /path/to/knowledge-base-navigator ~/quicklisp/local-projects/
+;; or by adding the current directory (or a parent directory)
+;; to ql:*local-project-directories*
 
 ;; Load system
 (ql:quickload "knowledge-base-navigator")
