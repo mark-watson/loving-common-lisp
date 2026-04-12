@@ -1,3 +1,8 @@
+---
+name: cl-book-apis-new
+description: This skill helps developersz finf useful COmmon Lisp APIs from Mark Watson's Common Lisp book. Use this skill for accessing LLMs, SPARQL queries
+---
+
 # Mark's Common Lisp Utilities APIs
 
 Knowledge of public APIs and how to run code for these Common Lisp libraries by Mark Watson.

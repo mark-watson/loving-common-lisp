@@ -1,0 +1,247 @@
+---
+name: cl-book-apis-new
+description: This skill helps developersz finf useful COmmon Lisp APIs from Mark Watson's Common Lisp book. Use this skill for accessing LLMs, SPARQL queries
+---
+
+# Mark's Common Lisp Utilities APIs
+
+Knowledge of public APIs and how to run code for these Common Lisp libraries by Mark Watson.
+
+## Quicklisp Loading
+
+All libraries are loaded via Quicklisp after copying to `~/quicklisp/local-projects/`:
+
+    (ql:quickload :package-name)
+
+---
+
+## anthropic
+
+**Load:** `(ql:quickload :anthropic)`
+**Deps:** uiop, cl-json
+**Env var:** `ANTHROPIC_API_KEY`
+
+### Exported API
+
+- `(anthropic:completions text max-tokens)` — Send a completion request to Anthropic's API (claude-instant-1 model). Returns generated text string.
+
+### Example
+    (anthropic:completions "Answer concisely. Mary is 30 years old and Bob is 25. Who is older?" 12)
+
+---
+
+## entities
+
+**Load:** `(ql:quickload :entities)`
+**Deps:** myutils
+**Data files:** Loads `linguistic_data/names.{cities,companies,countries,people,products,universities}` at compile/load time.
+
+### Exported API
+
+- `(entities:entity)` — Struct with slots: cities, companies, countries, people, products, universities
+- `(entities:text->entities words)` — Main NER entry point. Accepts a string or vector of word strings. Returns an `entity` struct with matched names. Checks 1/2/3-word phrases.
+- `(entities:entities-cities eo)` / `entities-companies` / `entities-countries` / `entities-people` / `entities-products` / `entities-universities` — Accessor slots on entity struct.
+
+### Example
+    (entities:text->entities "President Bush went to San Diego to meet Ms Jones at Google")
+
+---
+
+## gemini
+
+**Load:** `(ql:quickload :gemini)`
+**Deps:** uiop, cl-json, alexandria
+**Env var:** `GOOGLE_API_KEY`
+**Default model:** `gemini-3-flash-preview`
+
+### Exported API
+
+- `(gemini:generate prompt &optional model-id)` — Generate text from a prompt. Returns text string.
+- `(gemini:count-tokens prompt &optional model-id)` — Count tokens for a prompt. Returns integer.
+- `(gemini:generate-with-search prompt &optional model-id)` — Generate with Google Search grounding. Returns text string.
+- `(gemini:generate-with-search-and-citations prompt &optional model-id)` — Returns `(values text citations)` where citations is a list of `(title . url)` cons pairs.
+- `(gemini:make-function-declaration name description parameters &optional required-params)` — Build a function declaration hash-table for tool use. Parameters is list of `(name type description)` triples.
+- `(gemini:generate-with-tools prompt function-declarations &key model-id google-search-p)` — Turn 1: send prompt with tools. Returns `(values text function-calls model-content-ht)`. Function-calls is list of plists `(:NAME :ID :ARGS)`.
+- `(gemini:continue-with-function-responses original-prompt model-content-ht function-responses function-declarations &key model-id google-search-p)` — Turn 2+: provide function results. Function-responses is list of plists `(:NAME :ID :RESPONSE)`. Returns final text.
+
+### Examples
+    (gemini:generate "Write a short poem about coding.")
+    (gemini:generate-with-search "What sci-fi movies are playing at Harkins 16 in Flagstaff today?")
+    (multiple-value-bind (response sources)
+        (gemini:generate-with-search-and-citations "Who won the Super Bowl in 2024?")
+      (format t "Answer: ~a~%Sources: ~a~%" response sources))
+
+---
+
+## kbnlp
+
+**Load:** `(ql:quickload :kbnlp)`
+**Deps:** myutils, fasttag, entity-uris
+**Data files:** Loads extensive linguistic data at compile/load time (names, places, companies, products, stop words, category data).
+
+### Exported API
+
+- `(kbnlp:make-text-object)` — Constructor for `text` struct.
+- `(kbnlp:sumarize text-object)` — Summarize a text object (note: spelling with one 'm').
+- `(kbnlp:text)` — Struct with slots: url, title, summary, category-tags, key-words, key-phrases, human-names, place-names, company-names, text, tags.
+- `(kbnlp:replace-all string part replacement &key test)` — Replace all occurrences of `part` with `replacement` in `string`.
+
+### Internal helpers (not exported but useful to know)
+- `find-names` — Detect human names in word vector using POS tags + name hash tables
+- `find-places` — Detect place names in word vector
+- `find-companies` — Detect company names in word vector
+- `find-names-places` — Wrapper that finds both names and places in a text object
+- `get-word-list-category` — Classify text into categories using word scoring
+
+---
+
+## knowledge-base-navigator
+
+**Load:** `(ql:quickload :knowledge-base-navigator)`
+**Deps:** cl-json, uiop, alexandria
+**Env var:** `GEMINI_API_KEY`
+**Model:** `gemini-3-flash-preview`
+
+### Exported API
+
+- `(knowledge-base-navigator:kbn-ui)` — Interactive REPL loop. Enter entity names or descriptive sentences; Gemini extracts entities, shows numbered list; user picks numbers for detailed info.
+- `(knowledge-base-navigator:get-gemini-chat-completion user-prompt)` — Low-level: send a prompt to Gemini, return text response string.
+
+### Example
+    (knowledge-base-navigator:kbn-ui)
+    ;; Then interactively: "Bill Gates Microsoft Seattle"
+
+---
+
+## lightpanda
+
+**Load:** `(ql:quickload :lightpanda)`
+**Deps:** cl-json
+**Binary required:** `lightpanda` headless browser on PATH (or set `*lightpanda-binary*`)
+
+### Exported API
+
+- `lightpanda:*lightpanda-binary*` — Path to lightpanda binary (default: `"lightpanda"`).
+- `(lightpanda:fetch-url url &key log-level obey-robots dump)` — Fetch URL via lightpanda headless browser. `:dump` controls output format: `"html"` (default), `"markdown"`, `"semantic_tree"`, `"semantic_tree_text"`. Returns JS-rendered content string.
+- `(lightpanda:fetch-and-extract-links url)` — Fetch URL and return list of href link strings.
+- `(lightpanda:demo-fetch url)` — Fetch URL, print HTML snippet and discovered links.
+
+### Examples
+    (lightpanda:fetch-url "https://markwatson.com/")
+    (lightpanda:fetch-url "https://markwatson.com/" :dump "markdown")
+    (lightpanda:fetch-and-extract-links "https://markwatson.com/")
+
+---
+
+## ollama
+
+**Load:** `(ql:quickload :ollama)`
+**Deps:** uiop, cl-json
+**Server:** Requires Ollama running at `http://localhost:11434/api/chat`
+**Default model:** `mistral:v0.3` / tool model: `qwen3:1.7b`
+
+### Exported API
+
+- `(ollama:completions starter-text)` — Simple completion. Returns text string.
+- `(ollama:completions-with-tools starter-text &optional functions)` — Completion with tool/function calling. `functions` is list of registered function name strings. Returns text or function call result.
+- `(ollama:summarize some-text)` — Summarize text via completions.
+- `(ollama:answer-question some-text)` — Answer a question via completions.
+- `ollama:*model-name*` — Default model name (mistral:v0.3)
+- `ollama:*tool-model-name*` — Tool-calling model name (qwen3:1.7b)
+- `ollama:*model-host*` — API host URL
+
+### Tool registration (internal but key)
+- `(ollama::register-tool-function name description parameters handler)` — Register a CL function for LLM tool calling.
+- Pre-registered: `get_weather`, `calculate`
+
+### Cloud search agent (requires `OLLAMA_API_KEY`)
+- `(ollama::cloud-search-agent prompt)` — Agent loop using Ollama Cloud with `web_search` and `web_fetch` tools. Returns final answer string.
+- Model: `gpt-oss:120b-cloud`
+
+### Examples
+    (ollama:completions "Complete the following text: The President went to")
+    (ollama:summarize "Long text to summarize...")
+    (ollama:answer-question "Where were the 1992 Olympics held?")
+    (ollama::completions-with-tools "What's the weather in NY?" '("get_weather"))
+
+---
+
+## ollama_images
+
+**Not an ASDF system.** Load standalone:
+    (load "ollama_images/describe-image.lisp")
+**Deps:** cl-base64, cl-json, uiop (quickloaded internally)
+**Server:** Requires Ollama running with a vision model
+**Default model:** `qwen3.5:0.8b`
+**Env vars:** `OLLAMA_MODEL`, `OLLAMA_HOST` (optional overrides)
+
+### Package: describe-image
+
+- `(describe-image:image-to-text image-paths prompt &key model host)` — Send one or more images to Ollama vision model with a text prompt. `image-paths` can be a single string or list of strings. Returns text string.
+- `(describe-image:describe-image-simple image-path)` — Convenience: describe a single image with default prompt "What is in this image?".
+- `describe-image:*model-name*` — Default vision model.
+- `describe-image:*ollama-host*` — Ollama API endpoint.
+
+### Examples
+    (describe-image:image-to-text "ticket.png" "Print out the plain text in this image")
+    (describe-image:image-to-text '("a.png" "b.png") "Compare these two images.")
+    (describe-image:describe-image-simple "photo.jpg")
+
+---
+
+## openai
+
+**Load:** `(ql:quickload :openai)`
+**Deps:** uiop, cl-json, drakma
+**Env var:** `OPENAI_KEY`
+**Default model:** `gpt-5-nano`
+
+### Exported API
+
+- `(openai:completions starter-text &optional functions)` — Send completion request. `functions` is optional list of registered function name strings for tool calling. Returns text string.
+- `(openai:summarize some-text)` — Summarize text.
+- `(openai:answer-question question)` — Answer a question concisely.
+- `(openai:embeddings text)` — Get embeddings using `text-embedding-3-small` model. Returns embedding vector.
+- `(openai:dot-product list1 list2)` — Calculate dot product of two embedding vectors.
+
+### Tool calling (internal but key)
+- `(openai::register-function name description parameters fn)` — Register a CL function for tool calling.
+- `(openai::openai-function)` — Struct: name, description, parameters, func.
+
+### Examples
+    (openai:completions "Complete the following text: The President went to Congress")
+    (openai:answer-question "Where were the 1992 Olympics held?")
+    (openai:embeddings "Hello world")
+    (openai:dot-product emb1 emb2)
+
+---
+
+## sparql
+
+**Load:** `(ql:quickload :sparql)`
+**Deps:** uiop, drakma, cl-json, myutils
+
+### Exported API
+
+- `(sparql:dbpedia query)` — Query DBpedia SPARQL endpoint. Returns list of bindings `((var-name . value) ...)`.
+- `(sparql:wikidata query)` — Query Wikidata SPARQL endpoint. Returns list of bindings.
+- `(sparql:fuseki query &key host port suffix)` — Query Fuseki SPARQL endpoint. Default: `http://127.0.0.1:3030/news/sparql`.
+- `(sparql:agraph query &key host port suffix)` — Query AllegroGraph SPARQL endpoint with basic auth.
+- `(sparql:stardog query &key host port suffix)` — Query Stardog SPARQL endpoint with basic auth.
+- `(sparql:ask-dbpedia query)` — Boolean ASK query to DBpedia. Returns T or NIL.
+- `(sparql:sparql-manual)` — Print example SPARQL queries.
+
+### Examples
+    (sparql:dbpedia "select ?s ?p { ?s ?p \"Steve Jobs\"@en }")
+    (sparql:wikidata "select ?s ?p { ?s ?p \"Bill Gates\"@en }")
+    (sparql:ask-dbpedia "ASK { ?s ?p \"Steve Jobs\"@en }")
+    (sparql:fuseki "select ?s ?p ?o { ?s ?p ?o }" :port 3030)
+
+---
+
+## General Notes
+
+- All LLM API libraries use `curl` via `uiop:run-program` for HTTP requests (no HTTP client library except openai which also uses drakma).
+- Environment variables must be set before use: `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`, `OPENAI_KEY`, `GEMINI_API_KEY`, `OLLAMA_API_KEY` (cloud only).
+- The `myutils` package provides shared utilities like `tokenize-string` and `replace-all` used by several libraries.
+- Data-loading libraries (entities, kbnlp) read linguistic data files at load time; `*base-pathname*` is resolved at compile time relative to source file location.
