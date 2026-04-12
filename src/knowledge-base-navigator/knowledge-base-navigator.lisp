@@ -8,7 +8,7 @@
 (in-package #:knowledge-base-navigator)
 
 ;; Tokenizer utility for parsing user selection space-separated integers
-(defun tokenize-string (string &key (separators '(#\Space #\Tab #\Newline #\Return)))
+(defun tokenize-string (string &key (separators '(#\Space #\Tab #\Newline #\Return #\Comma)))
   (let ((tokens '())
         (current-word (make-string-output-stream)))
     (loop for char across string
