@@ -1,5 +1,4 @@
-knowledge-navigator.md
-lightpanda.md
+kgsampler.md
 
 
 

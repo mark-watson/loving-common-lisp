@@ -2,6 +2,12 @@
 
 I find it convenient to be able to "sample" small parts of larger knowledge graphs. The example program in this chapter accepts a list of DBPedia entity URIs, attempts top find links between these entities, and writes these nodes and discovered edges to a RDF triples file.
 
+## Overview of Architecture
+
+![Architecture Diagram](../src/kgsampler/kgsampler_architecture.jpg)
+
+## Code
+
 The code is in the directory **src/kgsampler**. As seen in the configuration files **kg-add-dbpedia-triples.asd** and **package.lisp**, we will use the **sparql** library we developed earlier as well as the libraries **uiop** and **drakma**:
 
 {lang="lisp",linenos=off}
