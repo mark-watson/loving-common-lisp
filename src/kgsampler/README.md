@@ -6,9 +6,11 @@ From my book URI: https://leanpub.com/lovinglisp
 
 Repo https://github.com/mark-watson/loving-common-lisp
 
+## Architecture
 
+![Architecture Diagram](kgsampler_architecture.jpg)
 
-Run sample program:
+## Run sample program:
 
       (kgsampler::create-sample-KG)
 
