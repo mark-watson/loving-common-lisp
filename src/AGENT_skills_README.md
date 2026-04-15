@@ -2,7 +2,7 @@
 
 ## gemini-cli
 
-###One time only: install skill
+### One time only: install skill
 
 Symlink (Recommended for local development): If you want to keep the skill in your book's repository but use it globally, link it using the CLI:
 
