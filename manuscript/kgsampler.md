@@ -4,7 +4,8 @@ I find it convenient to be able to "sample" small parts of larger knowledge grap
 
 ## Overview of Architecture
 
-![Architecture Diagram](../src/kgsampler/kgsampler_architecture.jpg)
+{width: "100%"}
+![Architecture Diagram](images/kgsampler_architecture.jpg)
 
 ## Code
 
