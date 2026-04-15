@@ -2,12 +2,7 @@
 
 I find it convenient to be able to "sample" small parts of larger knowledge graphs. The example program in this chapter accepts a list of DBPedia entity URIs, attempts top find links between these entities, and writes these nodes and discovered edges to a RDF triples file.
 
-## Overview of Architecture
-
-{width: "100%"}
-![Architecture Diagram](images/kgsampler_architecture.jpg)
-
-## Code
+## Project Definition
 
 The code is in the directory **src/kgsampler**. As seen in the configuration files **kg-add-dbpedia-triples.asd** and **package.lisp**, we will use the **sparql** library we developed earlier as well as the libraries **uiop** and **drakma**:
 
@@ -32,6 +27,15 @@ The code is in the directory **src/kgsampler**. As seen in the configuration fil
   (:use #:cl #:uiop #:sparql)
   (:export #:sample))
 ~~~~~~~~
+
+
+## Overview of Architecture
+
+{width: "100%"}
+![Architecture Diagram](images/kgsampler_architecture.jpg)
+
+
+## Code
 
 The program starts with a list of entities and tries to find links on DBPedia between the entities. A small sample graph of the input entities and any discovered links is written to a file. The function **dbpedia-as-nt** spawns a process to use the *curl* utility to make a HTTP request to DBPedia. The function **construct-from-dbpedia** takes a list of entities and writes SPARQL CONSTRUCT statements with the entity as the subject and the object filtered to a string value in the English language to an output stream. The function **find-relations** runs at **O(N^2)** where **N** is the number of input entities so you should avoid using this program with a large number of input entities.
 
