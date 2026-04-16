@@ -16,6 +16,8 @@ The **ollama** package developed here provides generative AI code and tool use/f
 
 Here we describe the design and architecture of the Ollama Common Lisp library, which provides an interface to the Ollama API for running local LLMs.
 
+![Architecture Diagram](images/ollama_architecture.jpg)
+
 ### 1. Common Utilities
 
 The shared utilities are defined in `ollama-helper.lisp` and provide foundational functionality used by both basic completions and tool-calling APIs.

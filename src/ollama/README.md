@@ -2,14 +2,11 @@
 
 From my book URI: https://leanpub.com/lovinglisp
 
-There is a **Makefile** in the repo https://github.com/mark-watson/loving-common-lisp that can be copied
-to your **~/quicklisp/local-projects** directory. Then in **~/quicklisp/local-projects** run:
+Source repo: https://github.com/mark-watson/loving-common-lisp
 
-    make fetch
+## Architecture
 
-to get all of the library examples from my book.
-
-2024/01/09: updated to latest ollama APIs, now using gpt-4
+![Architecture Diagram](ollama_architecture.jpg)
 
 ## Running the Ollama LLM service
 
