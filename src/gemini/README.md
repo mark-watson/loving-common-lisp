@@ -1,5 +1,8 @@
 # Common Lisp library to access Google Gemini LLM APIs
 
+**Book Chapter:** [Client Library for the Google Gemini LLM APIs](https://leanpub.com/read/lovinglisp/client-library-for-the-google-gemini-llm-apis) — *Loving Common Lisp* (free to read online).
+
+
 This library provides a Common Lisp interface to Google's Gemini Large Language Models. It supports various models like Gemini 1.5 Pro and Gemini 1.5 Flash, and offers functionalities including text generation, token counting, chat conversations, and streaming responses.
 
 This project was originally forked from a library for Perplexity AI in the book [Loving Common Lisp](https://leanpub.com/lovinglisp) by Mark Watson.

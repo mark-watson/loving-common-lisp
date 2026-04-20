@@ -1,5 +1,8 @@
 # Create LLM contexts form huge text datasets for one-shot LLM prompts
 
+**Book Chapter:** [AutoContext: Prepare Effective Prompts with Context for LLM Queries](https://leanpub.com/read/lovinglisp/autocontext-prepare-effective-prompts-with-context-for-llm-queries) — *Loving Common Lisp* (free to read online).
+
+
 Run with more heap space:
 
 ```

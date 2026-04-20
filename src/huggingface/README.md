@@ -1,5 +1,7 @@
 # Common Lisp library to access Hugging Face Deep Learning APIs
 
+**Book Chapter:** [Using the Hugging Face Deep Learning Natural Language Processing APIs](https://leanpub.com/read/lovinglisp/using-the-hugging-face-deep-learning-natural-language-processing-apis) — *Loving Common Lisp* (free to read online).
+
 From my book URI: https://leanpub.com/lovinglisp
 
 Edit your file ~/.sbclrc to add the following line of code:

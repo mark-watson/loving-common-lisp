@@ -1,5 +1,7 @@
 # Common Lisp library to access Mistral LLM APIs
 
+**Book Chapter:** [Using the OpenAI and Mistral APIs](https://leanpub.com/read/lovinglisp/using-the-openai-and-mistral-apis) — *Loving Common Lisp* (free to read online).
+
 From my book URI: https://leanpub.com/lovinglisp (look in the **src** directory).
 
 

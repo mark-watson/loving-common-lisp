@@ -1,5 +1,7 @@
 # Knowledge Graph Sampler
 
+**Book Chapter:** [Knowledge Graph Sampler for Creating Small Custom Knowledge Graphs](https://leanpub.com/read/lovinglisp/knowledge-graph-sampler-for-creating-small-custom-knowledge-graphs) — *Loving Common Lisp* (free to read online).
+
 Given a list of entity URIs from DBPedia, generate N-Triple data like the sample file `sample-KG.nt`.
 
 From my book URI: https://leanpub.com/lovinglisp

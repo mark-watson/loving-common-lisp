@@ -1,5 +1,7 @@
 # Common Lisp portable SPARQL clients
 
+**Book Chapter:** [Semantic Web and Linked Data](https://leanpub.com/read/lovinglisp/semantic-web-and-linked-data) — *Loving Common Lisp* (free to read online).
+
 From my book URI: https://leanpub.com/lovinglisp
 
 Clone this repo into ~/quicklisp/local-projects

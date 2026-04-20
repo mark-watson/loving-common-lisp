@@ -1,5 +1,8 @@
 # Common Lisp LLM Tools: a work in progress
 
+**Book Chapter:** [New LLM Library With Tool Support](https://leanpub.com/read/lovinglisp/new-llm-library-with-tool-support) — *Loving Common Lisp* (free to read online).
+
+
 A collection of small, self-contained Common Lisp command-line tools designed
 for use as LLM tool-calls in **LM Studio**, **gemini-clj**, and **Claude Code**.
 

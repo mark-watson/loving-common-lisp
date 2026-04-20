@@ -1,5 +1,8 @@
 # Common Lisp LLM Library
 
+**Book Chapter:** [New LLM Library With Tool Support](https://leanpub.com/read/lovinglisp/new-llm-library-with-tool-support) — *Loving Common Lisp* (free to read online).
+
+
 A Common Lisp library providing a unified interface for multiple LLM providers (Google Gemini, OpenAI, and Ollama) with tool/function-calling support.
 
 Copyright (C) 2026 Mark Watson — Apache 2 / MIT License

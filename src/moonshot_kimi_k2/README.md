@@ -1,5 +1,8 @@
 # Moonshot AI Common Lisp Examples
 
+**Book Chapter:** [Moonshot's Kimi K2 Model](https://leanpub.com/read/lovinglisp/moonshots-kimi-k2-model) — *Loving Common Lisp* (free to read online).
+
+
 This repository contains Common Lisp examples for interacting with the Moonshot AI API.
 
 ## Files

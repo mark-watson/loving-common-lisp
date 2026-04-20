@@ -1,5 +1,8 @@
 # lightpanda — Common Lisp interface to the Lightpanda headless browser: NOT YET IN BOOK
 
+**Book:** [Loving Common Lisp](https://leanpub.com/read/lovinglisp) — free to read online. (This example is not yet included in the book.)
+
+
 Shells out to the [Lightpanda](https://github.com/lightpanda-io/browser) binary
 to fetch JS-rendered web pages. No server process required.
 

@@ -1,5 +1,8 @@
 # Knowledge Base Navigator (Gemini Edition)
 
+**Book Chapter:** [Knowledge Base Navigator: Building an AI-Powered Information System Using LLMs](https://leanpub.com/read/lovinglisp/knowledge-base-navigator-building-an-ai-powered-information-system-using-llms) — *Loving Common Lisp* (free to read online).
+
+
 Welcome to the **Knowledge Base Navigator**, an AI-powered text interface designed to extract, disambiguate, and retrieve encyclopedic data on entities from natural language input.
 
 This project is a modern evolution of the legacy Knowledge Graph Navigator (KGN) system. It completely shifts the backend from NLP/DBPedia/SPARQL queries to a highly efficient LLM pipeline powered by the Gemini 3 Flash API.

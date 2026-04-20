@@ -1,5 +1,7 @@
 # Common Lisp library to access local Ollama server APIs
 
+**Book Chapter:** [Using Local LLMs With Ollama](https://leanpub.com/read/lovinglisp/using-local-llms-with-ollama) — *Loving Common Lisp* (free to read online).
+
 From my book URI: https://leanpub.com/lovinglisp
 
 Source repo: https://github.com/mark-watson/loving-common-lisp

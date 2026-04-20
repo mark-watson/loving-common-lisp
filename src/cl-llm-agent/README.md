@@ -1,5 +1,8 @@
 # cl-llm-agent
 
+**Book Chapter:** [Agents Orchestrating LLM Tool Use](https://leanpub.com/read/lovinglisp/agents-orchestrating-llm-tool-use) — *Loving Common Lisp* (free to read online).
+
+
 cl-llm-agent is a Common Lisp framework for building LLM-based agents that can use tools,
 maintain context, and interface with different LLM back-ends.
 

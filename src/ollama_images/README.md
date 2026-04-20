@@ -1,4 +1,8 @@
-# Usage:
+# Ollama Image Processing Examples
+
+**Book Chapter:** [Image Processing With Local Ollama Models](https://leanpub.com/read/lovinglisp/image-processing-with-local-ollama-models) — *Loving Common Lisp* (free to read online).
+
+## Usage:
 
 ```lisp
 (load "describe-image.lisp")

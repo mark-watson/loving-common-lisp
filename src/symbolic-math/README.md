@@ -1,5 +1,8 @@
 # Symbolic Math — Common Lisp
 
+**Book Chapter:** [Symbolic Mathematics in Common Lisp](https://leanpub.com/read/lovinglisp/symbolic-mathematics-in-common-lisp) — *Loving Common Lisp* (free to read online).
+
+
 A foundational library for **symbolic mathematics** in Common Lisp.
 `data.lisp` defines the core data structures and operations used by the
 rest of the system (`differentiation.lisp`, `integration.lisp`, etc.).

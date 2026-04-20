@@ -1,5 +1,7 @@
 # Common Lisp library to access Perplexity Search and LLM APIs
 
+**Book Chapter:** [Using the Perplexity Sonar Web Search and LLM APIs](https://leanpub.com/read/lovinglisp/using-the-perplexity-sonar-web-search-and-llm-apis) — *Loving Common Lisp* (free to read online).
+
 From my book URI: https://leanpub.com/lovinglisp
 
 There is a **Makefile** in the repo https://github.com/mark-watson/loving-common-lisp that can be copied

@@ -1,5 +1,7 @@
 # Mark's simple clone of ISI-Grapher on top of LispWorks CAPI UI library
 
+**Book Chapter:** [Knowledge Graph Navigator User Interface Using LispWorks CAPI](https://leanpub.com/read/lovinglisp/knowledge-graph-navigator-user-interface-using-lispworks-capi) — *Loving Common Lisp* (free to read online).
+
 From my book: purchase at: https://leanpub.com/lovinglisp or read for free on my web site: https://markwatson.com
 
 Clone this repo into ~/quicklisp/local-projects

@@ -1,5 +1,8 @@
 # LLM Test
 
+**Book Chapter:** [New LLM Library With Tool Support](https://leanpub.com/read/lovinglisp/new-llm-library-with-tool-support) — *Loving Common Lisp* (free to read online).
+
+
 Example scripts for testing the `llm` Common Lisp library with multiple LLM backends. Each file demonstrates basic completions and tool calling using a different provider.
 
 ## Files
