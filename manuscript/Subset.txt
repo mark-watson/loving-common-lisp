@@ -1,4 +1,4 @@
-kgsampler.md
+karpathy.md
 
 
 
