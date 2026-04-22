@@ -25,6 +25,8 @@
 (defparameter *state-dict* (make-hash-table :test 'equal)) (defparameter *params* nil)
 
 ;;; Autograd
+(declaim (ftype (function (t t t) t) print-value))
+
 (defstruct (value (:print-function print-value) (:constructor %make-value))
   (data 0.0 :type single-float) (grad 0.0 :type single-float)
   (children nil) (local-grads nil))
