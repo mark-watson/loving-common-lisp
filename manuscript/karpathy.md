@@ -1,6 +1,6 @@
 # Building a MicroGPT in Common Lisp
 
-In the next several chapters we will use production-grade Large Language Models like GPT-5, Gemini, Claude, etc. Here we look at optional material: Karpathy’s MicroGPT re-implemented in Common Lisp.
+In the next several chapters we will use production-grade Large Language Models like GPT-5, Gemini, Claude, etc. Here we look at optional material: Karpathy’s MicroGPT re-implemented in Common Lisp. This is a simple implementation of a LLM. This chapter has, dear reader, little practical value except to teach you how LLMs work at a low level. Feel free to skip this chapter or read it later.
 
 ## Introduction
 
