@@ -1,6 +1,27 @@
-# Knowledge Graph Knowledge Graph Navigator Hunchentoot web app UI - see book "Loving Common Lisp, or the Savvy Programmer's Secret Weapon"
+# Knowledge Graph Navigator — Text-Based UI
 
 **Book Chapter:** [Knowledge Graph Navigator Text-Based User Interface](https://leanpub.com/read/lovinglisp/knowledge-graph-navigator-text-based-user-interface) — *Loving Common Lisp* (free to read online).
 
-You can read this book for free on my website [https://markwatson.com](https://markwatson.com) and if you would like to support my work then you can buy an eBook at [https://leanpub.com/lovinglisp](https://leanpub.com/lovinglisp).
+A terminal-based interactive front-end for the Knowledge Graph Navigator. It presents entity-selection menus in the console, letting you choose which discovered entities to explore further via DBpedia SPARQL queries. This provides the same core functionality as the LispWorks CAPI GUI version but runs in any Common Lisp REPL.
 
+## Prerequisites
+
+- **SBCL** with [Quicklisp](https://www.quicklisp.org/)
+- Sibling libraries: `kgn-common`, `sparql`, `kbnlp`, `myutils`
+
+## Dependencies
+
+- `kgn-common`, `sparql`, `kbnlp`, `myutils`
+
+## Usage
+
+```lisp
+(ql:quickload "kgn-text-ui")
+(kgn-text-ui:kgn-text-ui)
+```
+
+Enter a natural-language query at the prompt. The system will:
+1. Extract named entities from your query
+2. Present numbered selection menus for each entity category (people, places, etc.)
+3. Query DBpedia for the selected entities
+4. Display the results in the terminal

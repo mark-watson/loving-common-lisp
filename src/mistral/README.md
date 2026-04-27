@@ -1,23 +1,49 @@
-# Common Lisp library to access Mistral LLM APIs
+# Mistral LLM Client Library
 
 **Book Chapter:** [Using the OpenAI and Mistral APIs](https://leanpub.com/read/lovinglisp/using-the-openai-and-mistral-apis) — *Loving Common Lisp* (free to read online).
 
-From my book URI: https://leanpub.com/lovinglisp (look in the **src** directory).
+A Common Lisp client for the [Mistral AI](https://mistral.ai/) chat completions API. It provides functions for text generation, summarization, and question answering using Mistral's hosted models.
 
+## Prerequisites
 
-## setting your mistral API key
- 
- Define the  "MISTRAL_API_KEY" environment variable with the value of your mistral API key
- 
-## Example:
+- **SBCL** with [Quicklisp](https://www.quicklisp.org/)
+- A Mistral API key — set the `MISTRAL_API_KEY` environment variable
+
+## Dependencies
+
+- `uiop`, `cl-json`
+
+## Usage
 
 ```lisp
-cl-user> (ql:quickload :mistral)
-cl-user> (mistral:completions "The President went to Congress" 200)
-"When the President of a country goes to Congress, it typically means that they are making a formal address to a joint session of the legislative body. This is often done to present the State of the Union address, which outlines the administration's goals and priorities for the upcoming year. The President may also go to Congress to propose new legislation, rally support for existing bills, or address important national issues.
+(ql:quickload :mistral)
 
-During the address, members of Congress from both parties are usually present in the chamber, and they may respond with applause, standing ovations, or other forms of expression. The President's speech is typically broadcast live on television and radio, and it is covered extensively by the news media.
+;; Basic completion
+(mistral:completions "The President went to Congress" 200)
 
-The practice of the President going to Congress to deliver a State of the Union address dates back to the early years of the United States, when President George Washington gave the first such address in 1790. Since then, it has become a regular tradition for"
+;; Summarize text
+(mistral:summarize "Long article text here..." 100)
+
+;; Answer a question
+(mistral:answer-question "What is the capital of France?" 50)
 ```
 
+## Configuration
+
+The default model is `mistral-small-latest`. You can change it:
+
+```lisp
+(setf mistral:*default-model* "mistral-medium-latest")
+```
+
+Or pass a model per call:
+
+```lisp
+(mistral:completions "Hello" 50 "mistral-large-latest")
+```
+
+## Available Functions
+
+- `(mistral:completions text &optional max-tokens model)` — Generate a completion.
+- `(mistral:summarize text &optional max-tokens model)` — Summarize text.
+- `(mistral:answer-question question &optional max-tokens model)` — Answer a question.

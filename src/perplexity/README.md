@@ -1,22 +1,35 @@
-# Common Lisp library to access Perplexity Search and LLM APIs
+# Perplexity Sonar Search and LLM Client Library
 
 **Book Chapter:** [Using the Perplexity Sonar Web Search and LLM APIs](https://leanpub.com/read/lovinglisp/using-the-perplexity-sonar-web-search-and-llm-apis) — *Loving Common Lisp* (free to read online).
 
-From my book URI: https://leanpub.com/lovinglisp
+A Common Lisp client for the [Perplexity AI](https://www.perplexity.ai/) Sonar API. Unlike standard LLM APIs, Perplexity Sonar combines web search with language model reasoning, so responses include up-to-date information retrieved from the internet.
 
-There is a **Makefile** in the repo https://github.com/mark-watson/loving-common-lisp that can be copied
-to your **~/quicklisp/local-projects** directory. Then in **~/quicklisp/local-projects** run:
+## Prerequisites
 
-    make fetch
+- **SBCL** with [Quicklisp](https://www.quicklisp.org/)
+- A Perplexity API key — set the `PERPLEXITY_API_KEY` environment variable
 
-to get all of the library examples from my book.
+## Dependencies
 
-## setting your PERPLEXITY_API_KEY API key
- 
- Define the  "PERPLEXITY_API_KEY" environment variable with the value of your Perplexity API key
+- `uiop`, `cl-json`
 
-## Examples:
+## Usage
 
 ```lisp
-(perplexity:research "consultant Mark Watson has written AI and Lisp books. What musical instruments does he play?")
+(ql:quickload :perplexity)
+
+;; Research a topic — Perplexity searches the web and synthesizes an answer
+(perplexity:research "What are the latest developments in Common Lisp?")
 ```
+
+## Configuration
+
+The default model is `sonar-pro`. You can change it:
+
+```lisp
+(setf perplexity:*model* "sonar")
+```
+
+## Available Functions
+
+- `(perplexity:research query)` — Send a search+LLM query and return the text response with web-sourced information.

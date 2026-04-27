@@ -1,24 +1,30 @@
-# Common Lisp library to access Anthropic LLM APIs
+# Anthropic Claude Client Library
 
 **Book Chapter:** [Using the OpenAI and Mistral APIs](https://leanpub.com/read/lovinglisp/using-the-openai-and-mistral-apis) — *Loving Common Lisp* (free to read online).
 
-From my book URI: https://leanpub.com/lovinglisp
+A Common Lisp client for the [Anthropic](https://www.anthropic.com/) Claude API. It sends text prompts to Claude and returns the model's completion as a string.
 
-There is a **Makefile** in the repo https://github.com/mark-watson/loving-common-lisp that can be copied
-to your **~/quicklisp/local-projects** directory. Then in **~/quicklisp/local-projects** run:
+## Prerequisites
 
-    make fetch
+- **SBCL** with [Quicklisp](https://www.quicklisp.org/)
+- An Anthropic API key — set the `ANTHROPIC_API_KEY` environment variable
 
-to get all of the library examples from my book.
+## Dependencies
 
+- `uiop`, `cl-json`, `drakma`
 
-## setting your Anthropic API key
- 
- Define the  "ANTHROPIC_API_KEY" environment variable with the value of your Anthropic API key
- 
-## Example:
+## Usage
 
 ```lisp
-cl-user> (ql:quickload :anthropic)
-cl-user> (anthropic:completions "The President went to Congress" 20)
-"I don't have enough context to comment on a specific President going to Congress. As branches of the U.S. government, it's common for Presidents to engage with Congress on policy matters, budget proposals, nominations, and other issues within their constitutional roles and responsibilities."
+(ql:quickload :anthropic)
+
+(anthropic:completions "The President went to Congress" 200)
+;; => "I don't have enough context to comment on a specific President..."
+
+(anthropic:completions "Mary is 30 and Bob is 25. Who is older?" 12)
+;; => "Mary is older."
+```
+
+## Available Functions
+
+- `(anthropic:completions text max-tokens)` — Send a prompt to the Anthropic API and return the text response. The `max-tokens` parameter controls the maximum length of the response.

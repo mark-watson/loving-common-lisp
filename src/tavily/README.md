@@ -1,22 +1,28 @@
-# Common Lisp library to access Tavily Web Search APIs
+# Tavily Web Search Client Library
 
 **Book Chapter:** [Client Library for the Tavily Web Search APIs](https://leanpub.com/read/lovinglisp/client-library-for-the-tavily-web-search-apis) — *Loving Common Lisp* (free to read online).
 
-From my book URI: https://leanpub.com/lovinglisp
+A Common Lisp client for the [Tavily](https://tavily.com/) Search API. Tavily is an AI-optimized search engine designed for use by LLM agents and RAG pipelines. This library sends search queries and returns structured results containing the URL, title, and content snippet for each hit.
 
-There is a **Makefile** in the repo https://github.com/mark-watson/loving-common-lisp that can be copied
-to your **~/quicklisp/local-projects** directory. Then in **~/quicklisp/local-projects** run:
+## Prerequisites
 
-    make fetch
+- **SBCL** with [Quicklisp](https://www.quicklisp.org/)
+- A Tavily API key — set the `TAVILY_API_KEY` environment variable. You can obtain a key at [tavily.com](https://tavily.com/).
 
-to get all of the library examples from my book.
+## Dependencies
 
-## setting your TAVILY_API_KEY API key
- 
- Define the  "TAVILY_API_KEY" environment variable with the value of your Perplexity API key
+- `uiop`, `cl-json`, `dexador`, `jonathan`, `babel`
 
-## Examples:
+## Usage
 
 ```lisp
+(ql:quickload :tavily)
+
+;; Perform a web search
 (tavily:websearch "Fun things to do in Sedona Arizona")
+;; => (("https://..." "Top Activities in Sedona" "Here are the best things...") ...)
 ```
+
+## Available Functions
+
+- `(tavily:websearch query)` — Search the web via Tavily and return a list of `(url title content)` results (up to 5 by default).

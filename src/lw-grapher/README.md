@@ -1,17 +1,34 @@
-# Mark's simple clone of ISI-Grapher on top of LispWorks CAPI UI library
+# LW-Grapher — Graph Visualizer for LispWorks CAPI
 
 **Book Chapter:** [Knowledge Graph Navigator User Interface Using LispWorks CAPI](https://leanpub.com/read/lovinglisp/knowledge-graph-navigator-user-interface-using-lispworks-capi) — *Loving Common Lisp* (free to read online).
 
-From my book: purchase at: https://leanpub.com/lovinglisp or read for free on my web site: https://markwatson.com
+A simple graph layout and visualization library built on the LispWorks CAPI pinboard. It renders nodes as labeled ellipses connected by edges, using an automatic layout algorithm adapted from Gabriel Robbins' ISI-Grapher.
 
-Clone this repo into ~/quicklisp/local-projects
+This library is used by the Knowledge Graph Navigator CAPI UI (`kgn-capi-ui`) to display entity relationship graphs returned from DBpedia SPARQL queries.
 
-This code is simple, written for one simple application
+> **Note:** Requires LispWorks (commercial). Will not run on SBCL or other free implementations.
 
-# Algorithm from ISI-Grapher Manual (by Gabriel Robbins)
+## Algorithm
 
-Gabriel's original manul and paper on ISI-Grapher:
+The layout algorithm is based on the ISI-Grapher system by Gabriel Robbins. See the original manual:
 
-http://www.cs.virginia.edu/~robins/papers/The_ISI_Grapher_Manual.pdf
+[The ISI-Grapher Manual (PDF)](http://www.cs.virginia.edu/~robins/papers/The_ISI_Grapher_Manual.pdf)
 
-<img src="Algorithm from ISI-Grapher Manual.png?raw=true"/>
+## Usage
+
+```lisp
+(ql:quickload "lw-grapher")
+
+;; See g-test.lisp for example graph definitions
+```
+
+## Files
+
+| File | Description |
+|------|-------------|
+| `lw-grapher.lisp` | Core node drawing and CAPI pinboard objects |
+| `grapher.lisp` | Graph layout algorithm |
+| `text-node.lisp` | Text node rendering |
+| `info-pane-grapher.lisp` | Info pane integration |
+| `g-test.lisp` | Test/demo graph definitions |
+| `package.lisp` | Package definition |
