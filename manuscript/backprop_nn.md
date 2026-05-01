@@ -33,17 +33,17 @@ In the example program (in the file *backprop_neural_network.lisp*) we use the p
 
 The following three screen shots from running the function **test3** defined at the bottom of the file *backprop_neural_network.lisp* illustrate the process of starting with random weights, getting random outputs during initial training, and as delta weights are used to adjust the weights in a network, then the training examples are learned:
 
-{width: "80%"}
+{width: "40%"}
 ![At the start of the training run with random weights and large delta weights](images/output_plot_000000000000.png)
 
 In the last figure the initial weights are random so we get random mid-range values at the output neurons.
 
-{width: "80%"}
+{width: "40%"}
 ![The trained weights start to produce non-random output](images/output_plot_000000000400.png)
 
 As we start to train the network, adjusting the weights, we start to see variation in the output neurons as a function of what the inputs are.
 
-{width: "80%"}
+{width: "40%"}
 ![After training many cycles the training examples are learned, with only small output errors](images/output_plot_000000002400.png)
 
 In the last figure the network is trained sufficiently well to map inputs [0, 0, 0, 1] to output values that are approximately [0.8, 0.2, 0.2, 0.3] which is close to the expected value [1, 0, 0, 0].
