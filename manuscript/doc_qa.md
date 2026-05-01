@@ -133,6 +133,12 @@ The next listing shows of parts of **docs-qa.lisp** that contain code to use SqL
 
 ## Using Local Embeddings Vector Database With OpenAI GPT APIs
 
+
+The following diagram shows the high-level architecture of the document question answering system developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/doc_qa_architecture.png)
+
 The next listing showing of parts of **docs-qa.lisp** interfaces with the OpenAI APIs:
 
 ```lisp

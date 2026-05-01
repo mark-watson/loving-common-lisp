@@ -289,6 +289,12 @@ Returns (values text citations) where citations is a list of (title . url) pairs
 The claude.lisp backend differs from the Ollama backend in a few notable ways. First, the API key is read from the CLAUDE_API environment variable and passed as an x-api-key header alongside an anthropic-version header, both required by Anthropic's API. Second, because Claude's messages API wraps content in typed blocks, plain string input is converted into the structured message format {role: "user", content: [{type: "text", text: "..."}]} before serialization, while a pre-built message list is passed through unchanged, giving callers flexibility for multi-turn conversations.
 Tool schema rendering diverges from the Ollama format: Claude expects a top-level :input_schema key (rendered as :input--schema to satisfy cl-json's hyphen-to-double-hyphen convention) directly on the tool object rather than nesting under a :function key. The stop reason detection also differs — Claude signals tool use via a stop_reason field set to "tool_use" in the response, at which point the code filters the content array for blocks of type "tool_use", dispatches each to the corresponding function in *tools*, and concatenates the results.
 
+
+The following diagram shows the high-level architecture of the LLM library with tool support developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/llm_lib_architecture.png)
+
 ### ollama.lisp — Local Ollama Backend
 
 ```lisp

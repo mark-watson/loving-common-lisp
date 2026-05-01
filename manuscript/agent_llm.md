@@ -366,6 +366,12 @@ The following code listing provides a flexible framework for defining and using 
 ```
 
 
+
+The following diagram shows the high-level architecture of the LLM agent with tool use developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/agent_llm_architecture.png)
+
 ## Code Discusion
 
 These source files defines the core logic for creating and interacting with agents within the cl-llm-agent system. It includes mechanisms for managing agent contexts, defining agent types, handling conversations, and integrating with external tools (like those defined in tools.lisp). Here's a breakdown:

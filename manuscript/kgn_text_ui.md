@@ -154,6 +154,12 @@ The prompt on line 45 asks the user to enter the indices for the company DBPedia
 
 Lines 156-171 show the automatically generated SPARQL query to get information about Bill Gates. This information is printed on lines 174-189. I list more generated SPARQL queries and results (which we will not discuss further).
 
+
+The following diagram shows the high-level architecture of the Knowledge Graph Navigator text UI developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/kgn_text_ui_architecture.png)
+
 Lines 269-283 show discovered links found between the entities in the input text.
  
 In the LispWorks CAPI user interface developed in the next chapter I use two text output stream window panes, one for the generated SPARQL and one for the results.

@@ -185,6 +185,12 @@ The following function runs the Python script and is found in the file **main.li
 
 This listing shows **main.lisp**, the core of our hybrid Retrieval-Augmented Generation (RAG) system written in Common Lisp that also constructs a one-shot prompt for later input into a LLM.
 
+
+The following diagram shows the high-level architecture of the AutoContext system developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/autocontext_architecture.png)
+
 The **auto-context** class manages the entire lifecycle of loading, processing, and querying a local document collection. On instantiation, it scans a directory for text files, breaks them down into smaller, semantically coherent chunks, and then builds two parallel retrieval indices. The first is a classic BM25 sparse index for efficient keyword-based search, and the second is a dense index of vector embeddings for capturing semantic similarity. A key feature of this implementation is its pragmatic approach to interoperability; it generates embeddings by calling an external Python script that leverages the sentence-transformers library, communicating via standard I/O and JSON. The primary entry point for users is the **get-prompt** method, which takes a query, performs searches against both indices, merges the results into a unified context, and formats a complete prompt ready to be processed by a Large Language Model.
 
 ```lisp

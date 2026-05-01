@@ -308,6 +308,12 @@ kb:containsState rdfs:subPropertyOf kb:containsPlace .
 
 In the following examples, we will use the main method in the class **JenaApi** (developed in the next section) that allows us to load multiple RDF input files and then to interactively enter SPARQL queries.
 
+
+The following diagram shows the high-level architecture of the Semantic Web and Linked Data tools developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/semanticweb_architecture.png)
+
 We will start with a simple SPARQL query for subjects (news article URLs) and objects (matching countries) with the value for the predicate equal to **containsCountry**. Variables in queries start with a question mark character and can have any names:
 
 {lang="sparql",linenos=off}

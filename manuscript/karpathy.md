@@ -75,6 +75,12 @@ Common Lisp, with its unparalleled flexibility and expressive syntax, proves to 
 
 In the following section, you will find the complete source code for our dependency-free MicroGPT. Reading carefully through this program listing will help solidify the theoretical concepts discussed in this chapter and provide you with a robust, transparent foundation for further experimentation and exploration in the fascinating world of language modeling.
 
+
+The following diagram shows the high-level architecture of the MicroGPT implementation developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/karpathy_architecture.png)
+
 ## Complete Source Code Listing for `microgpt.lisp`
 
 ```lisp

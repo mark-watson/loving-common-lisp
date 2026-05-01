@@ -127,6 +127,12 @@ Walkthrough:
 4. `nreverse` reverses in-place for correct order
 5. `loop` (without keywords) is the simple "infinite loop with return" form
 
+
+The following diagram shows the high-level architecture of the Lightpanda browser client developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/lightpanda_architecture.png)
+
 The `let*` (not `let`) allows `end` to reference `start`. The `loop` form returns when `found` is `nil`.
 
 ## The Main API Function

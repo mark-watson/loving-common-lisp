@@ -32,6 +32,12 @@ The source code for this Tavily client library is in my GitHub repository [https
 
 ### tavily.lisp
 
+
+The following diagram shows the high-level architecture of the Tavily web search API client library developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/tavily_architecture.png)
+
 The following code defines a package **:tavily** that interacts with the Tavily Search API. It declares two global variables: ***tavily-api-key***, which retrieves the API key from the environment variable TAVILY_API_KEY, and ***tavily-api-url***, set to the API’s base URL. The **parse-json** function utilizes the **cl-json** library to convert JSON strings into Lisp data structures, ensuring lists are returned as property lists. The **convert-bytes-to-string** function transforms byte arrays into UTF-8 encoded strings using the **babel** libray’s **octets-to-string** function. To construct the JSON payload for API requests, the function **make-tavily-json-payload** creates a JSON string containing the API key, search query, and a maximum result limit of five, employing **jonathan:to-json** for encoding. The **filter-tavily-response-item** function extracts specific elements from each API response item, returning a list of data. The primary function, **websearch**, accepts a search query and an optional API key. It sends a POST request to the Tavily API using **dex:post** from the **dexador** library. Upon receiving a response, it parses the JSON, checks for errors, and processes the results by mapping **filter-tavily-response-item** over the response data. Finally, it concatenates the content fields of the filtered results into a single string, separated by newlines, and returns this string.
 
 ```lisp

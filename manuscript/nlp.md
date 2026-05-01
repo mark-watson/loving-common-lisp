@@ -261,6 +261,12 @@ You can find the lexicon data in the file **src/linguistic_data/FastTagData.lisp
 I generated this file automatically from lexicon data using a small Ruby script. Notice that words can have more than one possible part of speech. The most common part of speech for a word is the first entry in the lexicon.
 
 
+The following diagram shows the high-level architecture of the NLP library developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/nlp_architecture.png)
+
+
 ## Categorizing Text
 
 The code to categorize text is fairly simple using a technique often called "bag of words." I collected sample text in several different categories and for each category (like politics, sports, etc.) I calculated the evidence or weight that words contribute to supporting a category. For example, the word "president" has a strong weight for the category "politics" but not for the category "sports." The reason is that the word "president" occurs frequently in articles and books about politics. The data file that contains the word weightings for each category is **src/data/cat-data-tables.lisp**. You can look at this file; here is a very small part of it:

@@ -406,6 +406,12 @@ The code using **loop** at the end of the last repl listing that prints keys and
 
 ## Developing Low-Level SPARQL Utilities
 
+
+The following diagram shows the high-level architecture of the Knowledge Graph Navigator common library developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/kgn_common_architecture.png)
+
 I use the standard command line **curl** utility program with the Common Lisp package **uiop** to make HTML GET requests to the DBPedia public Knowledge Graph and the package **drakma** to url-encode parts of a query. The source code is in a separate Quicklisp library located in **src/sparql-cache/sparql.lisp**. A non-caching library is also available in **src/sparql/sparql.lisp**.
 
 In the following listing of **src/sparql-cache/sparql.lisp**, lines 8, 24, 39, and 55 I use some caching code that we will look at later. The nested **replace-all** statements in lines 12-13 are a kluge to remove Unicode characters that occasionally caused runtime errors in the KGN application.

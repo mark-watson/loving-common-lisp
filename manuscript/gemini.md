@@ -344,6 +344,12 @@ nil
 
 ## Mixing Local Tools with Google Platform Tools Using the Interactions APIs.
 
+
+The following diagram shows the high-level architecture of the Google Gemini API client library developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/gemini_architecture.png)
+
 The Google Interactions APIs, as of March 2026, are in beta and may change. You can find the documentation here [https://ai.google.dev/gemini-api/docs/interactions](https://ai.google.dev/gemini-api/docs/interactions?ua=chat).
 
 **Note: As of March 23 2026, I am still working on the Interactions example code. Latest code will be in GitHub repository in **loving-common-lisp/src/gemini/gemini_interactions_api.lisp**.

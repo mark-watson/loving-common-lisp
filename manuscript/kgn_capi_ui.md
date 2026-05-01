@@ -408,6 +408,12 @@ select ?s ?p where {
 ~~~~~~~~
 
 
+
+The following diagram shows the high-level architecture of the Knowledge Graph Navigator CAPI UI developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/kgn_capi_ui_architecture.png)
+
 ## User Interface Utilites File user-interface.lisp
 
 In the previous chapter, the function **prompt-selection-list** was defined in the file **kgn-text-ui/kgn-text-ui.lisp** for text based (console) UIs. Here it is implemented in a separate file **user-interface.lisp** in the project directory **kgn-capi-ui**.

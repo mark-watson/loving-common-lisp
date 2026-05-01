@@ -95,6 +95,12 @@ is replaced with replacement."
 
 I am only capturing the attributes for DBPedia URI, label and description in this example code. If you uncomment line 41 and look at the entire response body from the call to DBPedia Lookup, you can see other attributes that you might want to capture in your applications.
 
+
+The following diagram shows the high-level architecture of the information gathering tools developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/information_gathering_architecture.png)
+
 Here is a sample call to the function **dbpedia:dbpedia-lookup** (only some of the returned data is shown):
 
 ~~~~~~~~

@@ -281,6 +281,12 @@ The system's extensibility is handled by the **def-tool** macro that creates a s
 
 This agent example is a work in progress and currently running the agent results in hundreds of lines of debug printout.
 
+
+The following diagram shows the high-level architecture of the Grok and Perplexity agent system developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/agent_part2_architecture.png)
+
 File **agent_grok_perplexity.lisp**:
 
 ```lisp

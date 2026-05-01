@@ -37,6 +37,12 @@ Other LLM web-based services like OpenAI’s web interface or App using ChatGPT 
 
 ## Library Implementation
 
+
+The following diagram shows the high-level architecture of the Perplexity Sonar API client library developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/perplexity_architecture.png)
+
 You need to register to get a Perplexity API key and set the environment variable **PERPLEXITY_API_KEY**.
 
 ```lisp

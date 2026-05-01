@@ -143,6 +143,12 @@ This is SBCL 2.5.3, an implementation of ANSI Common Lisp.
 
 ## A More Complicated Example With Tool Use
 
+
+The following diagram shows the high-level architecture of the Moonshot Kimi K2 API client developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/moonshot_architecture.png)
+
 The Common Lisp code in the file **tool_use.lisp** provides a client for interacting with the Moonshot AI chat completions API. It's designed to send prompts to a specific AI model and process the responses. A key feature is its implementation of tool calling (also known as function calling), which allows the AI model to request the execution of local Lisp functions, such as **get_weather**, to obtain information and incorporate it into its response.
 
 ```lisp

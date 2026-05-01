@@ -17,6 +17,12 @@ The GitHub repository for this Quicklisp compatible library can be found here:
 https://github.com/mark-watson/huggingface
 
 
+The following diagram shows the high-level architecture of the Hugging Face API client library developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/huggingface_architecture.png)
+
+
 ```lisp
 (in-package #:huggingface)
 

@@ -410,6 +410,12 @@ The differentiation package lives in `differentiation.lisp` and declares itself 
 
 ### The Power Rule on a Single Term
 
+
+The following diagram shows the high-level architecture of the symbolic mathematics system developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/symbolic_math_architecture.png)
+
 The power rule states that `d/dx(c · xⁿ) = n·c · x^(n−1)` for `n ≥ 1`, and that the derivative of a constant is zero. The `differentiate-term` function encodes this directly.
 
 ```lisp

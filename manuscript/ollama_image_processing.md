@@ -186,6 +186,12 @@ This Common Lisp module acts as a lightweight client for the Ollama vision API b
 
 This lightweight module serves as an excellent foundation for embedding local, privacy-preserving vision capabilities into larger architectures. You could use it to automate the annotation and curation of proprietary training datasets by running bulk inference on unlabelled image directories, integrate it into a CI/CD pipeline for intelligent visual regression testing to compare "before and after" graphical states, or deploy it as the ingestion layer for an expert system that extracts structured semantic data from scanned technical diagrams and legacy documents without relying on external cloud APIs.
 
+
+The following diagram shows the high-level architecture of the Ollama image processing module developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/ollama_images_architecture.png)
+
 ## Example Program Output
 
 Here is a sample run:

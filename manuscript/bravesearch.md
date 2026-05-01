@@ -16,6 +16,12 @@ export BRAVE_SEARCH_API_KEY=BSGhQ-Nd-......
 
 That is not my real subscription key!
 
+The following diagram shows the high-level architecture of the Brave Search API client library developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/brave_search_architecture.png)
+
+
 
 ## Example Search Script
 

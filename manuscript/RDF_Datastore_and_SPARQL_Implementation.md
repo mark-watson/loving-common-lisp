@@ -184,6 +184,12 @@ Subject Matching in function **triple-to-binding**:
 
 This might generate a binding like **(?name . "Alice”)** if Alice is the subject in a matching triple.
 
+
+The following diagram shows the high-level architecture of the RDF datastore and SPARQL implementation developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/rdf_sparql_architecture.png)
+
 Predicate Matching:
 
 - Similarly, the second when clause in function **triple-to-binding** checks if the predicate in the pattern is a variable.

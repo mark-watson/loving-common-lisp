@@ -205,6 +205,12 @@ Note that the OpenAI API models are stochastic. When generating output words (or
 
 The model would *emit* the word **the** 90% of the time, the word **that** 10% of the time, or the word **a** 10% of the time. As a result, the model can generate different completion text for the same text prompt. Let's look at some examples. We request 22 output tokens (words or punctuation) in the first two examples and 100 tokens in the third example:
 
+
+The following diagram shows the high-level architecture of the OpenAI and Mistral API client library developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/openai_architecture.png)
+
 {lang="lisp",linenos=on}
 ~~~~~~~~
 cl-user> (openai:completions "The President went to Congress")

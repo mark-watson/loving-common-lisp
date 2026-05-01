@@ -177,6 +177,12 @@ The main API function constructs requests and parses responses:
 
 **API Structure Notes**:
 
+
+The following diagram shows the high-level architecture of the Knowledge Base Navigator system developed in this chapter:
+
+{width: "80%"}
+![Architecture diagram](images/knowledge_navigator_architecture.png)
+
 - Backquote (`) is used for template construction, with comma (,) for evaluation
 - Gemini expects a nested JSON structure: contents -> parts -> text
 - `json:encode-json-to-string` converts Lisp data to JSON
