@@ -290,14 +290,6 @@ The core of this implementation lies in the **completions** function, which mana
 
 The program also showcases the extensibility of the base completion logic through the summarize and answer-question helper functions. These functions act as specialized wrappers that prepend task-specific instructions to the user input, effectively demonstrating "prompt engineering" within a programmatic context. By delegating the heavy lifting to the **ollama-helper** and the external **curl** command, the code remains focused on message preparation and providing a clean, functional interface for Lisp-based AI applications.
 
-Sample output:
-
-```lisp
-
-```
-
-
-
 
 ## Implementation of Tool Use/Function Calling Generative AI Functionality
 
@@ -450,7 +442,7 @@ The core of this system lies in the decoupling of tool definitions from their ex
 
 One particularly noteworthy aspect of this implementation is its handling of Lisp's unique syntax and data types during the JSON conversion process. Because standard Lisp libraries often encode nil as null, the code performs a string substitution to ensure the API receives false, which is mandatory for the :stream parameter in the Ollama schema. Additionally, the calculate tool demonstrates the power of this integration by using read-from-string and eval, allowing the LLM to effectively execute dynamic mathematical expressions directly within a Common Lisp REPL or program.
 
-Sample output (I include a lot of debug printout):
+Sample output (I include debug printout but tool call debug removed for brevity):
 
 ```lisp
 * (ql:quickload :ollama)
@@ -468,22 +460,6 @@ nil
 curl http://localhost:11434/api/chat -d "{\"model\":\"qwen3:1.7b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Use the get_weather tool for: What's the weather like in New York?\"}],\"tools\":[{\"name\":\"get_weather\",\"description\":\"Get current weather for a location\",\"parameters\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\",\"description\":\"The city name\"}},\"required\":[\"location\"]}},{\"name\":\"calculate\",\"description\":\"Perform a mathematical calculation\",\"parameters\":{\"type\":\"object\",\"properties\":{\"expression\":{\"type\":\"string\",\"description\":\"Math expression like 2 + 2\"}},\"required\":[\"expression\"]}}]}"
 Raw response: {"model":"qwen3:1.7b","created_at":"2025-12-28T18:01:28.789187Z","message":{"role":"assistant","content":"","thinking":"Okay, the user is asking about the weather in New York. Let me check the available tools. There's a get_weather tool, which I think is meant to fetch weather information. The function name is probably \"get_weather\" and it takes a parameter, maybe the location. The user specified \"New York,\" so I need to call the get_weather function with \"New York\" as the argument. Let me make sure the parameters are correct. The tool's parameters are described as having a type \"properties\" but no specific details. Since the user provided the location, I'll pass that directly. I should structure the tool call with the name and arguments as a JSON object. Alright, that's it. Just call get_weather with \"New York\" as the argument.\n","tool_calls":[{"id":"call_fadz9if9","function":{"index":0,"name":"","arguments":{"location":"New York"}}}]},"done":true,"done_reason":"stop","total_duration":2964277542,"load_duration":79982833,"prompt_eval_count":150,"prompt_eval_duration":111485791,"eval_count":181,"eval_duration":2745854365}
 
-DEBUG handle-tool-function-call: ((index . 0) (name . )
-                                  (arguments (location . New York)))
-DEBUG raw-name= inferred-name=get_weather args=((location . New York)) func=#S(ollama-function
-                                                                               :name get_weather
-                                                                               :description Get current weather for a location
-                                                                               :parameters ((type
-                                                                                             . object)
-                                                                                            (properties
-                                                                                             (location
-                                                                                              (type
-                                                                                               . string)
-                                                                                              (description
-                                                                                               . The city name)))
-                                                                                            (required
-                                                                                             location))
-                                                                               :handler #<function ollama::get_weather>)
 get_weather called with args: ((location . New York))
 "Weather in New York: Sunny, 72°F"
 * 
