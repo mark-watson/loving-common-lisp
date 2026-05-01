@@ -19,7 +19,7 @@ There are several very good semantic web toolkits for the Java language and plat
 The following figure shows a layered hierarchy of data models that are used to implement semantic web applications. To design and implement these applications we need to think in terms of physical models (storage and access of RDF, RDFS, and perhaps OWL data), logical models (how we use RDF and RDFS to define relationships between data represented as unique URIs and string literals and how we logically combine data from different sources) and conceptual modeling (higher level knowledge representation and reasoning using OWL). Originally RDF data was serialized as XML data but other formats have become much more popular because they are easier to read and manually create. The top three layers in the figure might be represented as XML, or as LD-JSON (linked data JSON) or formats like N-Triples and N3 that we will use later.
 
 {#semantic-web-data-models}
-{width: "80%"}
+{width: "50%"}
 ![Semantic Web Data Models](images/semantic_web_data.png)
 
 ## Resource Description Framework (RDF) Data Model
