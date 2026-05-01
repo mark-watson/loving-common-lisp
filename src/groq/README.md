@@ -30,3 +30,7 @@ A Common Lisp client for the [Groq](https://groq.com/) cloud LLM inference servi
 - `(groq:groq-completion content)` — Send a prompt and return the API response.
 - `(groq:groq-extract-content response)` — Extract text content from a response.
 - `(groq:user-input)` — Interactive REPL loop.
+
+## Architecture
+
+![Generated image](architecture.png)

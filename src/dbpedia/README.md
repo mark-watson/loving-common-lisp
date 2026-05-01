@@ -33,3 +33,7 @@ DBpedia is a project that extracts structured data from Wikipedia and makes it a
 ## Available Functions
 
 - `(dbpedia:dbpedia-lookup search-string)` — Search DBpedia and return a list of `dbpedia-data` structs with `:uri`, `:label`, and `:description` slots.
+
+## Architecture
+
+![Generated image](architecture.png)

@@ -31,3 +31,7 @@ A lightweight Common Lisp client for the Microsoft Bing Web Search v7 API. It re
 
 - `(bing:websearch query)` — Perform a web search and return structured results.
 - `(bing:get-wikidata-uri query)` — Search for a Wikidata entity URI via Bing.
+
+## Architecture
+
+![Generated image](architecture.png)

@@ -40,3 +40,7 @@ Also, this example is set up for people and companies. I may expand it in the fu
 I wrote this to pull small "mini Knowledge Graphs" from DBPedia. It runs O(N^2) where N is the number of input URIs so be carefull if seeding **create-sample-KG** with a large number of entity URIs.
 
 
+
+## Architecture
+
+![Generated image](architecture.png)

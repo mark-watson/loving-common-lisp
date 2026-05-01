@@ -45,3 +45,7 @@ To stop server on VPS:
 Remote CURL:
 
 curl "http://127.0.0.1:10035/repositories/news/statements"
+
+## Architecture
+
+![Generated image](architecture.png)

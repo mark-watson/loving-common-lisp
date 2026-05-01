@@ -47,3 +47,7 @@ Or pass a model per call:
 - `(mistral:completions text &optional max-tokens model)` — Generate a completion.
 - `(mistral:summarize text &optional max-tokens model)` — Summarize text.
 - `(mistral:answer-question question &optional max-tokens model)` — Answer a question.
+
+## Architecture
+
+![Generated image](architecture.png)

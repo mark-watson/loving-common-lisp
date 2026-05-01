@@ -25,3 +25,7 @@ Enter a natural-language query at the prompt. The system will:
 2. Present numbered selection menus for each entity category (people, places, etc.)
 3. Query DBpedia for the selected entities
 4. Display the results in the terminal
+
+## Architecture
+
+![Generated image](architecture.png)

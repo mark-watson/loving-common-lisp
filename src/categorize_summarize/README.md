@@ -42,3 +42,7 @@ week feel like a rerun of the euro crisis.")
 ## Data Files
 
 The `linguistic_data/` subdirectory contains the category-scoring data tables loaded at initialization time.
+
+## Architecture
+
+![Generated image](architecture.png)

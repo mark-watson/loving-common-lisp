@@ -44,3 +44,7 @@ $ sbcl
 ## Data Files
 
 The `linguistic_data/` subdirectory contains name lists, category tables, and other data loaded at initialization.
+
+## Architecture
+
+![Generated image](architecture.png)

@@ -142,3 +142,7 @@ When Claude emits a `tool_use` block with `"name": "current_time"`, run:
 and return the captured output in a `tool_result` content block. Claude Code's
 `/tool` slash-command can also point directly at the binary by setting the
 `command` field to the absolute path of `./bin/current-time`.
+
+## Architecture
+
+![Generated image](architecture.png)

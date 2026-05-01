@@ -36,3 +36,7 @@ try:
 
 (spacy-py4cl:nlp "My sister has a dog Henry. She loves him.")
 (spacy-py4cl:nlp "President Bill Clinton went to Congress. He gave a speech on taxes and Mexico.")
+
+## Architecture
+
+![Generated image](architecture.png)

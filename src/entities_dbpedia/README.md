@@ -39,3 +39,7 @@ The `data/` subdirectory contains tab-separated files mapping entity names to DB
 
 - `(entities_dbpedia:find-entities-in-text text)` — Scan text for entities and return a hash table mapping entity names to DBpedia URIs.
 - `(entities_dbpedia:entity-iterator fn hash)` — Iterate over entity results, calling `fn` with each key-value pair.
+
+## Architecture
+
+![Generated image](architecture.png)

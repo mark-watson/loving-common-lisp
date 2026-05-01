@@ -33,3 +33,7 @@ The unique barcodes on this ticket allow only one entry to the event. If multipl
 * 
 ```
 
+
+## Architecture
+
+![Generated image](architecture.png)

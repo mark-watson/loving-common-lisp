@@ -38,3 +38,7 @@ The `linguistic_data/` subdirectory contains the POS lexicon data (`FastTagData`
 ## Available Functions
 
 - `(fasttag:part-of-speech-tagger text)` — Tag each word in the input text (string or array of strings) with its part-of-speech. Returns an array of POS tag strings.
+
+## Architecture
+
+![Generated image](architecture.png)

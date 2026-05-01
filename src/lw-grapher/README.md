@@ -32,3 +32,7 @@ The layout algorithm is based on the ISI-Grapher system by Gabriel Robbins. See 
 | `info-pane-grapher.lisp` | Info pane integration |
 | `g-test.lisp` | Test/demo graph definitions |
 | `package.lisp` | Package definition |
+
+## Architecture
+
+![Generated image](architecture.png)

@@ -26,3 +26,7 @@ A Common Lisp client for the [Tavily](https://tavily.com/) Search API. Tavily is
 ## Available Functions
 
 - `(tavily:websearch query)` — Search the web via Tavily and return a list of `(url title content)` results (up to 5 by default).
+
+## Architecture
+
+![Generated image](architecture.png)

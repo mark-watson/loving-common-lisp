@@ -4,3 +4,6 @@ try:
 
 (ql:quickload "myutils")
 (in-package #:myutils)
+## Architecture
+
+![Generated image](architecture.png)

@@ -90,3 +90,7 @@ The `tool_use.lisp` includes a sample weather function:
 ---
 
 This code is provided as-is for educational and demonstration purposes.
+
+## Architecture
+
+![Generated image](architecture.png)

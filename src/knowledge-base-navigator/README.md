@@ -87,3 +87,7 @@ Enter the numbers of the entities you want detailed information for (space separ
 ```
 
 The system will retrieve detailed attributes about the distinct entities you chose, followed by a dynamically generated factual summary regarding how they relate to each other.
+
+## Architecture
+
+![Generated image](architecture.png)

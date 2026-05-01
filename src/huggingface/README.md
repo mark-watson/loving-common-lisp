@@ -37,3 +37,7 @@ See my book for examples and example output.
 - `huggingface:summarize` takes an input string and a maximum token count, calls Hugging Face's `facebook/bart-large-cnn` model, and returns the summary text extracted from the JSON response. The function requires the `HF_API_TOKEN` environment variable to be set so the generated `curl` request can authenticate.
 - `huggingface:answer-question` accepts a question and supporting context, invokes the `deepset/roberta-base-squad2` question-answering model, and returns the highest-confidence answer string from the API response.
 - `huggingface::huggingface-helper` is an internal utility that executes an arbitrary `curl` command via `uiop:run-program` and decodes the JSON response into a Common Lisp data structure; both public entry points rely on this helper.
+
+## Architecture
+
+![Generated image](architecture.png)

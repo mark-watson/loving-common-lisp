@@ -30,3 +30,7 @@ A Common Lisp client for the [ConceptNet](https://conceptnet.io/) commonsense kn
 ## Available Functions
 
 - `(conceptnet:conceptnet query)` — Query ConceptNet for a concept and return a list of surface-text descriptions.
+
+## Architecture
+
+![Generated image](architecture.png)

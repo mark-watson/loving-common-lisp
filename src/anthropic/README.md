@@ -28,3 +28,7 @@ A Common Lisp client for the [Anthropic](https://www.anthropic.com/) Claude API.
 ## Available Functions
 
 - `(anthropic:completions text max-tokens)` — Send a prompt to the Anthropic API and return the text response. The `max-tokens` parameter controls the maximum length of the response.
+
+## Architecture
+
+![Generated image](architecture.png)

@@ -41,3 +41,7 @@ Shared library used by both the CAPI (GUI) and text-based front-ends of the Know
 ## Data Files
 
 The `data/` subdirectory contains stop-word lists used for text filtering.
+
+## Architecture
+
+![Generated image](architecture.png)

@@ -55,3 +55,7 @@ To load "docs-qa":
 ** query: What are the advantages of engainging in sports?
 ** answer: The advantages of engaging in sports are:n1. It helps to develop the body and mind.n2. It helps to develop the character.n3. It helps to develop the personality.
 ```
+
+## Architecture
+
+![Generated image](architecture.png)

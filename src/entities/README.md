@@ -37,3 +37,7 @@ The `linguistic_data/` subdirectory contains lists of known entity names (one pe
 
 - `(entities:make-entities-object text)` — Analyze text and return an `entities` struct with categorized entity names.
 - `(entities:text->entities text)` — Lower-level function that returns extracted entities from text.
+
+## Architecture
+
+![Generated image](architecture.png)

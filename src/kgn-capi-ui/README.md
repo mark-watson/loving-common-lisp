@@ -34,3 +34,7 @@ This launches the GUI. Enter a natural-language query; the system extracts entit
 | `option-pane.lisp` | Custom option-pane widgets |
 | `colorize.lisp` | SPARQL syntax highlighting for display |
 | `package.lisp` | Package definition |
+
+## Architecture
+
+![Generated image](architecture.png)

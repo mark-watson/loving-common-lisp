@@ -48,3 +48,7 @@ echo "some text" | uv run generate_embeddings.py
 | `bm25.lisp` | BM25 keyword relevance scoring |
 | `generate_embeddings.py` | Python helper for sentence embeddings |
 | `package.lisp` | Package definition |
+
+## Architecture
+
+![Generated image](architecture.png)

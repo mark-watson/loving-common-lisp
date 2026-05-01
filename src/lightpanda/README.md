@@ -58,3 +58,7 @@ export LIGHTPANDA_DISABLE_TELEMETRY=true
 ## License
 
 Apache-2.0
+
+## Architecture
+
+![Generated image](architecture.png)

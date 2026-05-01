@@ -262,3 +262,7 @@ Known topics: sports, health, chemistry, economy, politics
 Topic: sports
 ```
 
+
+## Architecture
+
+![Generated image](architecture.png)

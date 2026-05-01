@@ -38,3 +38,7 @@ The `data/` subdirectory contains tab-separated files mapping entity names to DB
 
 - `(entity-uris:pp-entities text)` — Find entities in text and pretty-print them with their DBpedia URIs.
 - `(entity-uris:ensure-uri-brackets uri)` — Normalize a URI string so it is wrapped in angle brackets.
+
+## Architecture
+
+![Generated image](architecture.png)

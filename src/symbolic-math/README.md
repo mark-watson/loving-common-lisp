@@ -273,3 +273,7 @@ pi-int    : ∫[0,pi](3x^2 + -1x^1 + 5) dx
 - **Single-variable polynomials** — multi-variable support is future work; `differentiation.lisp` and `integration.lisp` build directly on these structures.
 - **Automatic normalisation** — `make-polynomial` combines like terms and sorts on every call, so the representation is always canonical.
 - **Bound flexibility** — integral bounds accept plain numbers or `sym-constant` structs, making it straightforward to express bounds like *π* or *e* symbolically.
+
+## Architecture
+
+![Generated image](architecture.png)

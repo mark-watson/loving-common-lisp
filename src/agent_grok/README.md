@@ -44,3 +44,7 @@ The agent sends a user query to the Grok API using an OpenAI-compatible chat com
 |------|-------------|
 | `agent.lisp` | Core agent with tool-calling support via Grok |
 | `agent_grok_perplexity.lisp` | Extended agent that adds a Perplexity web-search tool |
+
+## Architecture
+
+![Generated image](architecture.png)

@@ -26,3 +26,7 @@ A Common Lisp client for the Brave Search API. It performs web searches and retu
 ## Available Functions
 
 - `(brave_search:websearch query)` — Search the web and return a list of `(url title description)` results.
+
+## Architecture
+
+![Generated image](architecture.png)

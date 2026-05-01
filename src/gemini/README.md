@@ -56,3 +56,7 @@ To count the number of tokens a prompt will consume for a specific model:
 ## Original Project Information
 
 The original project from which this was adapted can be found in the repository https://github.com/mark-watson/loving-common-lisp. The `Makefile` mentioned in the original README for fetching library examples is specific to that book's comprehensive collection of projects. This current library is a focused adaptation for Gemini.
+
+## Architecture
+
+![Generated image](architecture.png)

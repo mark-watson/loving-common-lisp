@@ -44,3 +44,7 @@ None (pure Common Lisp).
 - `(print-all-triples)` — Print every triple in the store.
 - `(execute-sparql-query query-string)` — Parse and execute a `SELECT … WHERE` query, returning bindings.
 - `(test)` — Run built-in smoke tests.
+
+## Architecture
+
+![Generated image](architecture.png)

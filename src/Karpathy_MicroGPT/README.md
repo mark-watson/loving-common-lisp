@@ -105,3 +105,7 @@ Initialise the model,
 Train for the default 1000 steps (adjust steps inside run-training if desired),
 Output a handful of generated names.
 
+
+## Architecture
+
+![Generated image](architecture.png)

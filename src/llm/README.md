@@ -157,3 +157,7 @@ All tools are stored in `simple-tools:*tools*` (a hash table keyed by name strin
 | `openai.lisp` | `openai` | OpenAI API client |
 | `ollama.lisp` | `ollama` | Ollama local model client |
 | `project.lisp` | — | Convenience loader script |
+
+## Architecture
+
+![Generated image](architecture.png)

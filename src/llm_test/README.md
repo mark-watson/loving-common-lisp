@@ -70,3 +70,7 @@ All provider test files use `simple-tools:define-tool` to register tools:
 ```
 
 The tool registry (`simple-tools:*tools*`) is shared across packages, so tools defined in one test file are visible to any backend that looks them up by name.
+
+## Architecture
+
+![Generated image](architecture.png)

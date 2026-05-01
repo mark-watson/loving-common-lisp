@@ -41,3 +41,7 @@ Run in your Lisp REPL:
   (ql:quickload :cl-llm-agent)
   (asdf:test-system :cl-llm-agent)
 ```
+
+## Architecture
+
+![Generated image](architecture.png)
