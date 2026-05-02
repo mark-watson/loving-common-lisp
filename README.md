@@ -4,6 +4,8 @@ If you would like to support my work please consider purchasing my books on [Lea
 
 This repo is for the latest edition of my book that was released March 2026.
 
+![Book Cover](manuscript/resources/images/title_page.jpg)
+
 Open source examples in this repository are examples in my book "Loving Common Lisp, or the Savvy Programmer's Secret Weapon" that is available at https://leanpub.com/lovinglisp My book is available to read free online and the PDF for the book is licensed with Creative Common share with no modifications or commercial reuse: this means that you are encouraged to share copies (up to date copies only, please) of the PDF with friends and co-workers. New editions of the book are free if you have purchased the book before. Many thanks to the people who support my writing by purchasing the book!
 
 The source code in this repository may be used either under the Apache 2 or the LGPL version 3 licenses. Use whichever license that works best for you.
