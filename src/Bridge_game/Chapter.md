@@ -22,6 +22,8 @@ Our bidding AI implements a simplified Standard American system — the most wid
 
 ### Architecture
 
+![Overview of architecture](FIG_bridge.jpg)
+
 The bidding module is organized around three core functions that reflect the natural flow of a bridge auction:
 
 1. **`ai-opening-bid`** — Called when no one has yet made a suit bid. Evaluates HCP and shape to select an opening.
