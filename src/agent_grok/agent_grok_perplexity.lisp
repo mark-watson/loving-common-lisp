@@ -148,7 +148,7 @@
                                          "description" desc
                                          "parameters" params)))))
 
-(defun call-grok-chat (messages &key (model "grok-4") tools)
+(defun call-grok-chat (messages &key (model "grok-4.20-non-reasoning") tools)
   (let ((body (hash "model"     model
                     "messages"  messages
                     "stream"    yason:false)))
@@ -217,7 +217,7 @@
             (funcall fn args))
           (error "Unknown tool: ~s" name)))))
 
-(defun run-agent (query &key (model "grok-4") (system-prompt "You are a helpful agent that can use tools to answer questions."))
+(defun run-agent (query &key (model "grok-4.20-non-reasoning") (system-prompt "You are a helpful agent that can use tools to answer questions."))
   "Run the agent loop for a query."
   (let ((messages (if system-prompt
                       (list (hash "role" "system" "content" system-prompt)

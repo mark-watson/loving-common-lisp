@@ -113,7 +113,7 @@ File **agent.lisp**:
                                          "description" desc
                                          "parameters" params)))))
 
-(defun call-grok-chat (messages &key (model "grok-4") tools)
+(defun call-grok-chat (messages &key (model "grok-4.20-non-reasoning") tools)
   (let ((body (hash "model"     model
                     "messages"  messages
                     "stream"    yason:false)))
@@ -181,7 +181,7 @@ File **agent.lisp**:
             (funcall fn args))
           (error "Unknown tool: ~s" name)))))
 
-(defun run-agent (query &key (model "grok-4") (system-prompt "You are a helpful agent that can use tools to answer questions."))
+(defun run-agent (query &key (model "grok-4.20-non-reasoning") (system-prompt "You are a helpful agent that can use tools to answer questions."))
   "Run the agent loop for a query."
   (let ((messages (if system-prompt
                       (list (hash "role" "system" "content" system-prompt)
@@ -240,7 +240,7 @@ CL-USER 2 > (run-agent "what is 1 + 12?")
   << VALUE-0 : (#<EQUAL Hash Table{2} 801002623B>)
 0 CALL-GROK-CHAT > ...
   >> MESSAGES : (#<EQUAL Hash Table{2} 8010017C03> #<EQUAL Hash Table{2} 801001A013>)
-  >> MODEL    : "grok-4"
+  >> MODEL    : "grok-4.20-non-reasoning"
   >> TOOLS    : (#<EQUAL Hash Table{2} 801002623B>)
 0 CALL-GROK-CHAT < ...
   << VALUE-0 : #<EQUAL Hash Table{7} 801009F0E3>
@@ -253,7 +253,7 @@ CL-USER 3 > (run-agent "Consultant Mark Watson has written books on AI, Lisp, an
   << VALUE-0 : (#<EQUAL Hash Table{2} 80100AF723>)
 0 CALL-GROK-CHAT > ...
   >> MESSAGES : (#<EQUAL Hash Table{2} 80100A23CB> #<EQUAL Hash Table{2} 80100A4763>)
-  >> MODEL    : "grok-4"
+  >> MODEL    : "grok-4.20-non-reasoning"
   >> TOOLS    : (#<EQUAL Hash Table{2} 80100AF723>)
 0 CALL-GROK-CHAT < ...
   << VALUE-0 : #<EQUAL Hash Table{7} 80100CFF4B>
@@ -440,7 +440,7 @@ File **agent_grok_perplexity.lisp**:
                                          "description" desc
                                          "parameters" params)))))
 
-(defun call-grok-chat (messages &key (model "grok-4") tools)
+(defun call-grok-chat (messages &key (model "grok-4.20-non-reasoning") tools)
   (let ((body (hash "model"     model
                     "messages"  messages
                     "stream"    yason:false)))
@@ -509,7 +509,7 @@ File **agent_grok_perplexity.lisp**:
             (funcall fn args))
           (error "Unknown tool: ~s" name)))))
 
-(defun run-agent (query &key (model "grok-4") (system-prompt "You are a helpful agent that can use tools to answer questions."))
+(defun run-agent (query &key (model "grok-4.20-non-reasoning") (system-prompt "You are a helpful agent that can use tools to answer questions."))
   "Run the agent loop for a query."
   (let ((messages (if system-prompt
                       (list (hash "role" "system" "content" system-prompt)
@@ -566,7 +566,7 @@ CL-USER 3 > (run-agent "Consultant Mark Watson has written books on AI, Lisp, an
   << VALUE-0 : (#<EQUAL Hash Table{2} 801002345B> #<EQUAL Hash Table{2} 801002A9DB>)
 0 CALL-GROK-CHAT > ...
   >> MESSAGES : (#<EQUAL Hash Table{2} 8010015043> #<EQUAL Hash Table{2} 80100173DB>)
-  >> MODEL    : "grok-4"
+  >> MODEL    : "grok-4.20-non-reasoning"
   >> TOOLS    : (#<EQUAL Hash Table{2} 801002345B> #<EQUAL Hash Table{2} 801002A9DB>)
 0 CALL-GROK-CHAT < ...
   << VALUE-0 : #<EQUAL Hash Table{7} 80100A46EB>
@@ -613,7 +613,7 @@ In summary:
 This information is based on Mark Watson's personal website, books, and profiles[1][2][5][6]."
 0 CALL-GROK-CHAT > ...
   >> MESSAGES : (#<EQUAL Hash Table{4} 80100DE1A3> #<EQUAL Hash Table{4} 80100A5F73> #<EQUAL Hash Table{2} 8010015043> #<EQUAL Hash Table{2} 80100173DB>)
-  >> MODEL    : "grok-4"
+  >> MODEL    : "grok-4.20-non-reasoning"
   >> TOOLS    : (#<EQUAL Hash Table{2} 801002345B> #<EQUAL Hash Table{2} 801002A9DB>)
 0 CALL-GROK-CHAT < ...
   << VALUE-0 : #<EQUAL Hash Table{7} 80100EA7C3>
