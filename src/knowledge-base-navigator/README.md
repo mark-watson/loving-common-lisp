@@ -5,7 +5,7 @@
 
 Welcome to the **Knowledge Base Navigator**, an AI-powered text interface designed to extract, disambiguate, and retrieve encyclopedic data on entities from natural language input.
 
-This project is a modern evolution of the legacy Knowledge Graph Navigator (KGN) system. It completely shifts the backend from NLP/DBPedia/SPARQL queries to a highly efficient LLM pipeline powered by the Gemini 3 Flash API.
+This project is a modern evolution of the legacy Knowledge Graph Navigator (KGN) system. It completely shifts the backend from NLP/DBPedia/SPARQL queries to a highly efficient LLM pipeline powered by the Gemini **Interactions API** (`v1beta/interactions`) using the new `steps` response schema (Api-Revision: 2026-05-20).
 
 ## Program Design
 

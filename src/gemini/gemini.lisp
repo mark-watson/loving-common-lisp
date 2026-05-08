@@ -2,8 +2,8 @@
 
 (defvar *google-api-key* (uiop:getenv "GOOGLE_API_KEY"))
 (defvar
-  *gemini-api-base-url*
-  "https://generativelanguage.googleapis.com/v1beta/models/")
+  *interactions-api-url*
+  "https://generativelanguage.googleapis.com/v1beta/interactions")
 
 (defvar *model* "gemini-3-flash-preview") ;; model used in this file.
 
@@ -25,42 +25,39 @@
         output
         (error "Curl command failed: ~A~%Error: ~A" curl-command error-output))))
 
+;;; ---- Interactions API helpers ----
+
+(defun %interactions-curl-cmd (payload)
+  "Build a curl command for the Interactions API with the new steps schema."
+  (let* ((data (cl-json:encode-json-to-string payload))
+         (escaped-json (escape-json data)))
+    (format nil
+      "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -H \"Api-Revision: 2026-05-20\" -d \"~A\""
+      *interactions-api-url* *google-api-key* escaped-json)))
+
+(defun %extract-text-from-steps (decoded-response)
+  "Extract the text from the last model_output step in an Interactions API response.
+   Response format: {\"steps\": [{\"type\": \"model_output\", \"content\": [{\"type\": \"text\", \"text\": \"...\"}]}]}"
+  (let* ((steps (cdr (assoc :STEPS decoded-response))))
+    (loop for step in (reverse steps)
+          when (string-equal (cdr (assoc :TYPE step)) "model_output")
+          return (let* ((content (cdr (assoc :CONTENT step)))
+                        (first-content (first content)))
+                   (cdr (assoc :TEXT first-content))))))
+
 (defun generate (prompt &optional (model-id *model*))
-  "Generates text from a given prompt using the specified model.
+  "Generates text from a given prompt using the Interactions API.
    Uses *model* defined at the top of this file as default.
    PROMPT: The text prompt to generate content from.
    MODEL-ID: Optional. The ID of the model to use.
    Returns the generated text as a string."
   (let* ((payload (make-hash-table :test 'equal)))
-    (setf (gethash "contents" payload)
-          (list (let ((contents (make-hash-table :test 'equal)))
-                  (setf (gethash "parts" contents)
-                        (list (let ((part (make-hash-table :test 'equal)))
-                                (setf (gethash "text" part) prompt)
-                                part)))
-                  contents)))
-    (let* ((api-url (concatenate 'string *gemini-api-base-url*
-				 model-id ":generateContent"))
-           (data (cl-json:encode-json-to-string payload))
-           (escaped-json (escape-json data))
-           (curl-cmd
-	    (format
-	     nil
-	     "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
-             api-url *google-api-key* escaped-json))
+    (setf (gethash "model" payload) model-id
+          (gethash "input" payload) prompt)
+    (let* ((curl-cmd (%interactions-curl-cmd payload))
            (response-string (run-curl-command curl-cmd))
-           (decoded-response (cl-json:decode-json-from-string response-string))
-           (candidates-pair (assoc :CANDIDATES decoded-response))
-           (candidates (cdr candidates-pair))
-           (candidate (first candidates))
-           (content-pair (assoc :CONTENT candidate))
-           (content (cdr content-pair))
-           (parts-pair (assoc :PARTS content))
-           (parts (cdr parts-pair))
-           (first-part (first parts))
-           (text-pair (assoc :TEXT first-part))
-           (text (cdr text-pair)))
-       text)))
+           (decoded-response (cl-json:decode-json-from-string response-string)))
+       (%extract-text-from-steps decoded-response))))
   
 ;; (gemini:generate "In one sentence, explain how AI works to a child.")
 ;; (gemini:generate "Write a short, four-line poem about coding in Python.")
@@ -70,9 +67,11 @@
    Uses *model* defined at top of this file as default.
    PROMPT: The text prompt to count tokens for.
    MODEL-ID: Optional. The ID of the model to use.
-   Returns the total token count as an integer."
+   Returns the total token count as an integer.
+   NOTE: countTokens still uses the generateContent-style endpoint."
   (let* ((api-url (concatenate 'string
-			       *gemini-api-base-url* model-id ":countTokens"))
+                               "https://generativelanguage.googleapis.com/v1beta/models/"
+                               model-id ":countTokens"))
          (payload (make-hash-table :test 'equal)))
     ;; Construct payload similar to generate function
     (setf (gethash "contents" payload)
@@ -133,89 +132,53 @@
 ;; (gemini::chat)
 
 (defun generate-with-search (prompt &optional (model-id *model*))
+  "Generates text with Google Search grounding via the Interactions API."
   (let* ((payload (make-hash-table :test 'equal)))
-    (setf (gethash "contents" payload)
-          (list (let ((contents (make-hash-table :test 'equal)))
-                  (setf (gethash "parts" contents)
-                        (list (let ((part (make-hash-table :test 'equal)))
-                                (setf (gethash "text" part) prompt)
-                                part)))
-                  contents)))
-    (setf (gethash "tools" payload)
+    (setf (gethash "model" payload) model-id
+          (gethash "input" payload) prompt
+          (gethash "tools" payload)
           (list (let ((tool (make-hash-table :test 'equal)))
-                  (setf (gethash "google_search" tool)
-                        (make-hash-table :test 'equal))
+                  (setf (gethash "type" tool) "google_search")
                   tool)))
-    (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":generateContent"))
-           (data (cl-json:encode-json-to-string payload))
-           (escaped-json (escape-json data))
-           (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
-                             api-url *google-api-key* escaped-json))
+    (let* ((curl-cmd (%interactions-curl-cmd payload))
            (response-string (run-curl-command curl-cmd))
-           (decoded-response (cl-json:decode-json-from-string response-string))
-           (candidates-pair (assoc :CANDIDATES decoded-response))
-           (candidates (cdr candidates-pair))
-           (candidate (first candidates))
-           (content-pair (assoc :CONTENT candidate))
-           (content (cdr content-pair))
-           (parts-pair (assoc :PARTS content))
-           (parts (cdr parts-pair))
-           (first-part (first parts))
-           (text-pair (assoc :TEXT first-part))
-           (text (cdr text-pair)))
-      text)))
+           (decoded-response (cl-json:decode-json-from-string response-string)))
+      (%extract-text-from-steps decoded-response))))
 
 ;; (gemini:generate-with-search "Consultant Mark Watson has written Common Lisp, semantic web, Clojure, Java, and AI books. What musical instruments does he play?")
 ;; (gemini:generate-with-search "What sci-fi movies are playing at Harkins 16 in Flagstaff today?")
-;; (gemini:generate-with-search "What sci-fi movies are playing at Harkins 16 in Flagstaff today? Return data only as JSON with keys bein g movie titles and show times as a list of strings.")
+;; (gemini:generate-with-search "What sci-fi movies are playing at Harkins 16 in Flagstaff today? Return data only as JSON with keys being movie titles and show times as a list of strings.")
 
 
 (defun generate-with-search-and-citations (prompt &optional (model-id *model*))
+  "Generates text with Google Search grounding and returns citations via the Interactions API.
+   Returns two values: the response text and a list of (title . url) citation pairs."
   (let* ((payload (make-hash-table :test 'equal)))
-    ;; Payload construction same as previous example):
-    (setf (gethash "contents" payload)
-          (list (let ((contents (make-hash-table :test 'equal)))
-                  (setf (gethash "parts" contents)
-                        (list (let ((part (make-hash-table :test 'equal)))
-                                (setf (gethash "text" part) prompt)
-                                part)))
-                  contents)))
-    (setf (gethash "tools" payload)
+    (setf (gethash "model" payload) model-id
+          (gethash "input" payload) prompt
+          (gethash "tools" payload)
           (list (let ((tool (make-hash-table :test 'equal)))
-                  (setf (gethash "google_search" tool)
-                        (make-hash-table :test 'equal))
+                  (setf (gethash "type" tool) "google_search")
                   tool)))
-    
-    (let* ((api-url (concatenate 'string *gemini-api-base-url* model-id ":generateContent"))
-           (data (cl-json:encode-json-to-string payload))
-           (escaped-json (escape-json data))
-           (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
-                             api-url *google-api-key* escaped-json))
+    (let* ((curl-cmd (%interactions-curl-cmd payload))
            (response-string (run-curl-command curl-cmd))
            (decoded-response (cl-json:decode-json-from-string response-string))
-           (candidates-pair (assoc :CANDIDATES decoded-response))
-           (candidates (cdr candidates-pair))
-           (candidate (first candidates))
-           ;; 1. Extract Content Text
-           (content-pair (assoc :CONTENT candidate))
-           (content (cdr content-pair))
-           (parts-pair (assoc :PARTS content))
-           (parts (cdr parts-pair))
-           (first-part (first parts))
-           (text-pair (assoc :TEXT first-part))
-           (text (cdr text-pair))
-           ;; 2. Extract Grounding Metadata
-           (metadata-pair (assoc :GROUNDING-METADATA candidate))
-           (metadata (cdr metadata-pair))
-           (chunks-pair (assoc :GROUNDING-CHUNKS metadata))
-           (chunks (cdr chunks-pair))
-           ;; 3. Loop through chunks to find Web sources
-           (citations (loop for chunk in chunks
-                            for web-data-pair = (assoc :WEB chunk)
-                            for web-data = (cdr web-data-pair)
-                            when web-data
-                            collect (cons (cdr (assoc :TITLE web-data))
-                                          (cdr (assoc :URI web-data))))))
+           (steps (cdr (assoc :STEPS decoded-response)))
+           ;; Extract text from last model_output step
+           (text (loop for step in (reverse steps)
+                       when (string-equal (cdr (assoc :TYPE step)) "model_output")
+                       return (let* ((content (cdr (assoc :CONTENT step)))
+                                     (first-content (first content)))
+                                (cdr (assoc :TEXT first-content)))))
+           ;; Extract citations from url_citation annotations in model_output steps
+           (citations
+            (loop for step in steps
+                  when (string-equal (cdr (assoc :TYPE step)) "model_output")
+                  append (loop for content-item in (cdr (assoc :CONTENT step))
+                               append (loop for annotation in (cdr (assoc :ANNOTATIONS content-item))
+                                            when (string-equal (cdr (assoc :TYPE annotation)) "url_citation")
+                                            collect (cons (cdr (assoc :TITLE annotation))
+                                                          (cdr (assoc :URL annotation))))))))
       ;; Return both text and citations
       (values text citations))))
 

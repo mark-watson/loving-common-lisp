@@ -13,6 +13,7 @@ Copyright (C) 2026 Mark Watson — Apache 2 / MIT License
 - **Tool/function calling**: Define Lisp functions as LLM-callable tools with a simple macro
 - **Lightweight**: Uses `curl` for HTTP and `cl-json` for JSON — no heavy HTTP client dependencies
 - **Unified tool registry**: Tools defined once work across all providers
+- **Gemini Interactions API**: Uses the new v1beta Interactions API with `steps` schema (Api-Revision: 2026-05-20)
 
 ## Dependencies
 
@@ -50,6 +51,8 @@ Ollama requires no API key — it runs locally at `http://localhost:11434`.
 ## Usage
 
 ### Gemini
+
+The Gemini module uses the **Interactions API** (`v1beta/interactions`) with the new `steps` response schema.
 
 ```lisp
 (in-package :gemini)
@@ -132,7 +135,7 @@ Pass a list of tool symbols to any provider's `completions` or `generate` functi
 (ollama:completions "What's the weather in Tokyo?" '(get-weather))
 
 ;; With Gemini
-(gemini:generate "What's the weather in London?" '(get-weather))
+(gemini:generate "What's the weather in London?" :tools '("get-weather"))
 ```
 
 When the model decides to call a tool, the library dispatches the call automatically and returns the result.
@@ -153,7 +156,7 @@ All tools are stored in `simple-tools:*tools*` (a hash table keyed by name strin
 | `llm.asd` | — | ASDF system definition |
 | `llm.lisp` | `llm` | Shared utilities: `run-curl-command`, `escape-json`, `substitute-subseq` |
 | `simple-tools.lisp` | `simple-tools` | Tool registry and `define-tool` macro |
-| `gemini.lisp` | `gemini` | Google Gemini API client |
+| `gemini.lisp` | `gemini` | Google Gemini API client (Interactions API) |
 | `openai.lisp` | `openai` | OpenAI API client |
 | `ollama.lisp` | `ollama` | Ollama local model client |
 | `project.lisp` | — | Convenience loader script |

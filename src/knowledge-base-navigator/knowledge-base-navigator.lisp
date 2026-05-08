@@ -41,36 +41,48 @@
       response-body)))
 
 (defun get-gemini-chat-completion (user-prompt)
-  "Sends a prompt to the Gemini API and returns the content of the response."
+  "Sends a prompt to the Gemini Interactions API and returns the content of the response."
   (let* ((api-key (uiop:getenv "GEMINI_API_KEY"))
-         ;; Leveraging the specific gemini-3-flash LLM model requested
-         (model-name "models/gemini-3-flash-preview")
-         (base-url (format nil "https://generativelanguage.googleapis.com/v1beta/~A:generateContent?key=~A" model-name api-key))
+         (model-name "gemini-3-flash-preview")
+         (base-url "https://generativelanguage.googleapis.com/v1beta/interactions")
          (payload
-           `((:contents . ,(vector
-                            `((:parts . ,(vector `((:text . ,user-prompt)))))))))
+           `((:model . ,model-name)
+             (:input . ,user-prompt)))
          (json-payload (json:encode-json-to-string payload)))
     
     (unless (and api-key (not (string= api-key "")))
       (error "GEMINI_API_KEY environment variable is not set."))
 
     (handler-case
-        (let* ((response-body (run-curl-command-with-json base-url json-payload))
-               (parsed-response (json:decode-json-from-string response-body))
-               (candidates (cdr (assoc :candidates parsed-response))))
-          (if candidates
-              (let* ((first-candidate (first candidates))
-                     (content (cdr (assoc :content first-candidate)))
-                     (parts (cdr (assoc :parts content)))
-                     (first-part (first parts))
-                     (text (cdr (assoc :text first-part))))
-                text)
-              (progn
-                (format *error-output* "~%[Error] Gemini API response did not contain candidates: ~A~%" parsed-response)
-                nil)))
+        (let* ((temp-file (uiop:run-program "mktemp" :output :string)))
+          (setf temp-file (string-trim #(#\Space #\Tab #\Newline #\Return) temp-file))
+          (with-open-file (stream temp-file :direction :output :if-exists :supersede)
+            (write-string json-payload stream))
+          (let* ((curl-cmd
+                  (format nil "curl -s -X POST \"~A?key=~A\" -H \"Content-Type: application/json\" -H \"Api-Revision: 2026-05-20\" -d @~A"
+                          base-url api-key temp-file))
+                 (response-body
+                  (multiple-value-bind (output error-output exit-code)
+                      (uiop:run-program curl-cmd :output :string :error-output :string :ignore-error-status t)
+                    (declare (ignore exit-code error-output))
+                    output)))
+            (uiop:run-program (format nil "rm -f ~A" temp-file) :ignore-error-status t)
+            (let* ((parsed-response (json:decode-json-from-string response-body))
+                   (steps (cdr (assoc :steps parsed-response))))
+              (if steps
+                  ;; Find the last model_output step and extract its text
+                  (loop for step in (reverse steps)
+                        when (string-equal (cdr (assoc :type step)) "model_output")
+                        return (let* ((content (cdr (assoc :content step)))
+                                      (first-content (first content)))
+                                 (cdr (assoc :text first-content))))
+                  (progn
+                    (format *error-output* "~%[Error] Gemini Interactions API response did not contain steps: ~A~%" parsed-response)
+                    nil)))))
       (error (e)
         (format *error-output* "An unexpected error occurred: ~A~%" e)
         nil))))
+
 
 (defun kbn-ui ()
   "Main user interface loop for Knowledge Base Navigator powered by Gemini."
