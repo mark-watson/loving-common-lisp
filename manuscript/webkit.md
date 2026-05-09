@@ -2,7 +2,9 @@
 
 In this chapter we build native macOS desktop applications using Common Lisp and WebKit. The **webkit-cl** library lets you create windows with embedded *WKWebView* panels, load HTML/CSS/JavaScript UIs, and communicate between Lisp and JavaScript through a bidirectional bridge. This approach gives you the full power of Common Lisp for application logic while using modern web technologies for the user interface.
 
-**Note: This library works only on macOS. It requires SBCL, CFFI, and cl-json.**
+**Note 1: This library works only on macOS. It requires SBCL, CFFI, and cl-json.**
+
+**Note 1: This example was vibe coded with AntiGravity and Claude Opus 4.6.**
 
 ## Architecture Overview
 
