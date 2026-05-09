@@ -1,6 +1,6 @@
 # WebKit Applications - macOS Only
 
-In this chapter we build native macOS desktop applications using Common Lisp and WebKit. The **webkit-cl** library lets you create windows with embedded WKWebView panels, load HTML/CSS/JavaScript UIs, and communicate between Lisp and JavaScript through a bidirectional bridge. This approach gives you the full power of Common Lisp for application logic while using modern web technologies for the user interface.
+In this chapter we build native macOS desktop applications using Common Lisp and WebKit. The **webkit-cl** library lets you create windows with embedded *WKWebView* panels, load HTML/CSS/JavaScript UIs, and communicate between Lisp and JavaScript through a bidirectional bridge. This approach gives you the full power of Common Lisp for application logic while using modern web technologies for the user interface.
 
 **Note: This library works only on macOS. It requires SBCL, CFFI, and cl-json.**
 
@@ -8,12 +8,12 @@ In this chapter we build native macOS desktop applications using Common Lisp and
 
 The webkit-cl framework is organized in four layers:
 
-1. **Objective-C shim** (`webkit_cl.m`) — Bridges macOS Cocoa and WebKit APIs to a flat C interface
-2. **CFFI bindings** (`webkit-cl-ffi.lisp`) — Exposes the C functions to Common Lisp
-3. **Bridge** (`bridge.lisp`) — Manages JS ↔ Lisp command dispatch and JSON serialization
-4. **High-level API** (`webkit-cl.lisp`) — Idiomatic Lisp functions: `with-app`, `load-html`, `register-handler`, etc.
+1. **Objective-C shim** (`webkit_cl.m`):  Bridges macOS Cocoa and WebKit APIs to a flat C interface
+2. **CFFI bindings** (`webkit-cl-ffi.lisp`): Exposes the C functions to Common Lisp
+3. **Bridge** (`bridge.lisp`): Manages JS <--> Lisp command dispatch and JSON serialization
+4. **High-level API** (`webkit-cl.lisp`): Idiomatic Lisp functions: `with-app`, `load-html`, `register-handler`, etc.
 
-When JavaScript calls `window.webkit_cl.invoke("command", payload)`, the message travels through WKWebView's script message handler into the C shim, through CFFI into Lisp, where a registered handler processes it and returns a JSON response. The response flows back to JavaScript via a Promise.
+When JavaScript calls `window.webkit_cl.invoke("command", payload)`, the message travels through *WKWebView's* script message handler into the C shim, through CFFI into Lisp, where a registered handler processes it and returns a JSON response. The response flows back to JavaScript via a Promise.
 
 ## Prerequisites and Building
 
@@ -201,7 +201,7 @@ The bridge callback is defined with `cffi:defcallback`. It dispatches to the Lis
 
 Note that the callback returns a `cffi:foreign-string-alloc`'d pointer — the C side will `free()` it after use.
 
-## The Bridge: JS ↔ Lisp Communication
+## The Bridge: JS <--> Lisp Communication
 
 The bridge module maintains a hash table of named command handlers:
 
