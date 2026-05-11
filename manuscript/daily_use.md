@@ -1,14 +1,12 @@
 # A Daily-Use Gemini REPL with Search Grounding and Persistent Cache
 
-In this chapter we build an interactive command-line tool that combines Google's Gemini API with Google Search grounding and a persistent SQLite cache. The result is a practical daily-driver REPL: you can ask Gemini questions, ground answers in live web search results, and selectively cache useful responses so they become context for future queries. This project ties together two libraries developed earlier in the book — the **gemini** client library and the **cache-engine** SQLite wrapper — into a polished readline-enabled command-line application.
-
-**Note: This example was vibe coded with AntiGravity and Claude Opus 4.6.**
+In this chapter we build an interactive command-line tool that combines Google's Gemini API with optional search grounding and a persistent SQLite cache. The result is a practical daily-driver REPL: you can ask Gemini questions, ground answers in live web search results, and selectively cache useful responses so they become context for future queries. This project ties together two libraries developed earlier in the book — the **gemini** client library and the **cache-engine** SQLite wrapper — into a polished `readline-enabled` command-line application.
 
 ## How It Works
 
 The daily-use REPL implements a simple but effective workflow:
 
-1. **Ask a question** — Type a natural language query and Gemini responds using its training data plus any relevant cached context.
+1. **Ask a question** — Type a natural language query and Gemini responds using its training data, optional grounding web search, plus any relevant cached context.
 2. **Ask with search** — Prefix your query with `!` to enable Google Search grounding, useful for current events or factual lookups.
 3. **Cache useful answers** — Type `>` to save the last answer to a persistent SQLite database. When you ask a new question, the tool extracts keywords from your query and retrieves only cached entries that share keyword overlap — so only relevant context is included.
 4. **Manage the cache** — Type `!` alone to clear cache entries older than one week.
@@ -155,7 +153,7 @@ Before looking at the cache builder, we need a way to extract meaningful keyword
                cleaned)))
 ```
 
-For example, the query `"what sci-fi movies are playing today in Flagstaff AZ?"` produces the keyword list `("sci-fi" "movies" "playing" "today" "flagstaff" "az")`. Words shorter than three characters, punctuation, and common stop words are all filtered out.
+For example, the query `"what sci-fi movies are playing today in Flagstaff AZ?"` produces the keyword list `("sci-fi" "movies" "playing" "today" "flagstaff")`. Words shorter than three characters, punctuation, and common stop words are all filtered out.
 
 The `build-context-from-cache` function uses these keywords to retrieve only relevant cached entries:
 
