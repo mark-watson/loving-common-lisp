@@ -35,7 +35,7 @@ make run
 
 ## How It Works
 
-- **Cache as context**: All cached entries are prepended to each prompt, giving Gemini relevant context from previous conversations.
+- **Cache as context**: Cached entries relevant to your current query (matched by bag-of-words keyword overlap) are prepended to each prompt, giving Gemini targeted context from previous conversations.
 - **Search grounding**: Prefix a query with `!` to enable Google Search, useful for current events or factual lookups.
 - **Line editing**: Full GNU readline support — arrow keys, history, Ctrl-R search, etc.
 

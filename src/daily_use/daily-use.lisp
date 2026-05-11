@@ -28,11 +28,44 @@
 (defvar *last-answer* nil
   "The last answer returned by Gemini, available for caching with '>'.")
 
+;;; ---- Keyword extraction ----
+
+(defvar *stop-words*
+  '("a" "an" "the" "is" "are" "was" "were" "be" "been" "being"
+    "have" "has" "had" "do" "does" "did" "will" "would" "shall" "should"
+    "may" "might" "must" "can" "could" "am" "it" "its"
+    "in" "on" "at" "to" "for" "of" "with" "by" "from" "as"
+    "and" "or" "but" "not" "no" "nor" "so" "yet"
+    "this" "that" "these" "those" "what" "which" "who" "whom"
+    "i" "me" "my" "we" "our" "you" "your" "he" "she" "they" "them"
+    "how" "when" "where" "why" "if" "then" "than" "about")
+  "Common English stop words to filter from search queries.")
+
+(defun extract-keywords (text)
+  "Extracts meaningful keywords from TEXT by splitting on whitespace,
+   downcasing, removing punctuation, and filtering stop words and short words."
+  (let* ((downcased (string-downcase text))
+         (words (uiop:split-string downcased
+                                   :separator '(#\Space #\Tab #\Newline)))
+         (cleaned (mapcar (lambda (w)
+                            (string-trim '(#\? #\! #\. #\, #\; #\: #\" #\' #\( #\))
+                                         w))
+                          words)))
+    (remove-if (lambda (w)
+                 (or (<= (length w) 2)
+                     (member w *stop-words* :test #'string=)))
+               cleaned)))
+
 ;;; ---- Cache context builder ----
 
-(defun build-context-from-cache ()
-  "Retrieves all cached items and builds a context string for the LLM prompt."
-  (let ((items (cache-engine:lookup *cache* nil :limit 50)))
+(defun build-context-from-cache (query)
+  "Retrieves cached items relevant to QUERY and builds a context string.
+   Uses bag-of-words matching: extracts keywords from the query and finds
+   cached entries containing any of those keywords."
+  (let* ((keywords (extract-keywords query))
+         (items (when keywords
+                  (cache-engine:lookup *cache* keywords
+                                       :limit 10 :match-any t))))
     (if items
         (format nil "Use the following context from previous conversations when answering:~%~%~{- ~A~%~}~%---~%~%"
                 items)
@@ -42,8 +75,8 @@
 
 (defun ask-gemini (prompt &key search-p)
   "Sends PROMPT to Gemini, optionally with Google Search grounding.
-   Prepends cached context to the prompt."
-  (let* ((context (build-context-from-cache))
+   Prepends relevant cached context to the prompt."
+  (let* ((context (build-context-from-cache prompt))
          (full-prompt (concatenate 'string context prompt)))
     (handler-case
         (if search-p

@@ -27,16 +27,19 @@
    "INSERT INTO cache (content) VALUES (?)"
    text))
 
-(defmethod lookup ((self cache-engine) search-terms &key (limit 3))
-  "Returns matching cached strings (default limit 3)."
+(defmethod lookup ((self cache-engine) search-terms &key (limit 3) match-any)
+  "Returns matching cached strings (default limit 3).
+   When MATCH-ANY is T, uses OR instead of AND for multiple search terms,
+   enabling bag-of-words style matching."
   (if (null search-terms)
       (mapcar #'car (sqlite:execute-to-list (db-conn self)
                                             (format nil "SELECT content FROM cache LIMIT ~D" limit)))
       (let ((query "SELECT content FROM cache WHERE ")
+            (connector (if match-any " OR " " AND "))
             (params '()))
         (loop for term in search-terms
               for i from 0
-              do (setf query (concatenate 'string query (if (> i 0) " AND " "") "content LIKE ?"))
+              do (setf query (concatenate 'string query (if (> i 0) connector "") "content LIKE ?"))
                  (push (format nil "%~A%" term) params))
         (setf query (concatenate 'string query (format nil " LIMIT ~D" limit)))
         (mapcar #'car (apply #'sqlite:execute-to-list (db-conn self) query (nreverse params))))))

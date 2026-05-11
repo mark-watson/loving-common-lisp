@@ -48,4 +48,5 @@ llm_lib.md
 wolfram.md
 symbolic-math.md
 webkit.md
+daily_use.md
 book_wrapup.md
