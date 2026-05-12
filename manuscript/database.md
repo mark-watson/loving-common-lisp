@@ -2,7 +2,7 @@
 
 There are good options for accessing relational databases from Common Lisp. Personally I almost always use Postgres and in the past I used either native foreign client libraries or the socket interface to Postgres. Recently, I decided to switch to [CLSQL](http://clsql.b9.com/)  which provides a common interface for accessing Postgres, MySQL, SQLite, and Oracle databases. There are also several recent forks of CLSQL on github. We will use CLSQL in examples in this book. Hopefully while reading the [Chapter on Quicklisp](#quicklisp) you installed CLSQL and the back end for one or more databases that you use for your projects. 
 
-For some database applications when I know that I will always use the embedded SQLite database (i.e., that I will never want to switch to Postgres of another database) I will just use the **sqlite** library as I do in chapter [Knowledge Graph Navigator](#kgn).
+For some database applications when I know that I will always use the embedded SQLite database (i.e., that I will never want to switch to Postgres of another database) I will just use the **sqlite** library as I do in chapter **Knowledge Graph Navigator**.
 
 If you have not installed CLSQL yet, then please install it now:
 

@@ -2,7 +2,7 @@
 
 We will see that the input and output of Lisp data is handled using streams. Streams are powerful abstractions that support common libraries of functions for writing to the terminal, files, sockets, and to strings.
 
-In all cases, if an input or output function is called without specifying a stream, the default for input stream is **\*standard-input\*** and the default for output stream is **\*standard-output\***. These default streams are connected to the Lisp listener that we discussed in Chapter 2. In the later chapter [Knowledge Graph Navigator](#kgn) that supports a user interface, we will again use output streams bound to different scrolling output areas of the application window to write color-hilighted text. The stream formalism is general purpose, covering many common I/O use cases.
+In all cases, if an input or output function is called without specifying a stream, the default for input stream is **\*standard-input\*** and the default for output stream is **\*standard-output\***. These default streams are connected to the Lisp listener that we discussed in Chapter 2. In the later chapter **Knowledge Graph Navigator** that supports a user interface, we will again use output streams bound to different scrolling output areas of the application window to write color-hilighted text. The stream formalism is general purpose, covering many common I/O use cases.
 
 ## The Lisp read and read-line Functions
 

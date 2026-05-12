@@ -333,7 +333,7 @@ CL-USER 3 > (kgn:kgn)
 #<KGN::KGN-INTERFACE "Knowledge Graph Navigator" 40201E91DB>
 ~~~~~~~~
 
-Please note that I assume that you have configured all of the examples for this book for discoverability by Quicklisp as per the section [Setup for Local Quicklisp Projects](#qlconfig) in Appendix A.
+Please note that I assume that you have configured all of the examples for this book for discoverability by Quicklisp as per the section [Setup for Local Quicklisp Projects] in Appendix A.
 
 When the KGN application starts a sample query is randomly chosen. Queries with many entities can take a while to process, especially when you first start using this application. Every time KGN makes a web service call to DBPedia the query and response are cached in a SQLite database in **~/.kgn_cache.db** which can greatly speed up the program, especially in development mode when testing a set of queries. This caching also takes some load off of the public DBPedia endpoint, which is a polite thing to do.
 

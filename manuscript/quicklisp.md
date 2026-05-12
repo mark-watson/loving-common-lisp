@@ -75,7 +75,7 @@ As long as you are thinking about the new tool Quicklisp that is now in your too
 (ql:quickload "sqlite")
 ~~~~~~~~
 
-You need to have the Postgres and MySQL client developer libraries installed on your system for the **clsql-postgresql** and **clsql-mysql** installations to work. If you are unlikely to use relational databases with Common Lisp then you might skip the effort of installing Postgres and MySQL. The example in the [Chapter on the Knowledge Graph Navigator](#kgn) uses the SQLite database for caching. You don't need any extra dependencies for the **sqlite** package.
+You need to have the Postgres and MySQL client developer libraries installed on your system for the **clsql-postgresql** and **clsql-mysql** installations to work. If you are unlikely to use relational databases with Common Lisp then you might skip the effort of installing Postgres and MySQL. The example in the **Chapter on the Knowledge Graph Navigator** uses the SQLite database for caching. You don't need any extra dependencies for the **sqlite** package.
 
 
 ## Using Quicklisp to Configure Emacs and Slime

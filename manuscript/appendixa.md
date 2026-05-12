@@ -2,7 +2,7 @@
 
 I spend some effort getting my Common Lisp development system setup for my tastes. Hopefully you will find some good ideas here that will help you customize your development system.
 
-## Setup for Local Quicklisp Projects {#qlconfig}
+## Setup for Local Quicklisp Projects
 
 I created my setup from a [blog article written by Zach Beane](https://xach.livejournal.com/278047.html). Please read Zach's blog article before continuing to read my setup notes here.
 
