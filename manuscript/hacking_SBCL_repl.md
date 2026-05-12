@@ -144,3 +144,234 @@ $ sbcl
 ```
 
 Notice that normal Lisp expressions still work exactly as before. The `#!` macro only activates when `#!` appears in the input. You can freely alternate between shell commands and Lisp expressions within the same REPL session.
+
+## AI Coding Agent Integration
+
+The `#!` reader macro from the previous section gave us shell access from the REPL. In this section we go further — integrating an AI coding agent directly into the REPL so we can ask questions, diagnose errors, and generate code without leaving SBCL.
+
+The `cl-ai-coding-agent` package (developed in the Agent chapter) provides a function `coding-agent-query` that takes a string prompt and returns the agent's response. The agent can autonomously list directories, read files, write new files, and diagnose stacktraces using Gemini's function-calling API. But calling it directly requires quoting strings:
+
+```lisp
+(cl-ai-coding-agent:coding-agent-query
+  "Write a function that sorts a list of strings")
+```
+
+This syntactic friction slows down the interactive workflow. We want three levels of integration:
+
+1. **An `ai` macro** — eliminates string quoting by stringifying unevaluated symbols, so we can type natural language as Lisp forms.
+2. **A `#?` reader macro** — captures an entire line as a prompt, matching the `#!` pattern from the shell integration.
+3. **Automatic error interception** — hooks into SBCL's debugger to automatically feed unhandled errors to the agent.
+
+### The Code
+
+Add the following code to your `~/.sbclrc` file, after the shell integration code from the previous section. It assumes `cl-ai-coding-agent` is installed in your Quicklisp local-projects directory:
+
+```lisp
+;;; ---- AI Coding Agent REPL Integration ----
+
+;; Load the agent on startup
+(ql:quickload :cl-ai-coding-agent :silent t)
+
+;; 1. The AI macro -- type natural language without quotes
+(defmacro ai (&rest words)
+  "Ask the AI coding agent a question using natural
+   language without string quotes.
+   Usage: (ai write a function that sorts strings)"
+  (let ((prompt (format nil "~{~A~^ ~}" words)))
+    `(progn
+       (format t "~&~A~%"
+               (cl-ai-coding-agent:coding-agent-query
+                ,prompt))
+       (values))))
+
+;; 2. The #? reader macro -- one-line AI queries
+(defun ai-query-reader (stream disp-char sub-char)
+  "Dispatch reader macro for #? -- sends the rest
+   of the line to the AI coding agent."
+  (declare (ignore disp-char sub-char))
+  (let ((line (with-output-to-string (out)
+                (loop for c = (peek-char nil stream
+                                         nil nil)
+                      while (and c
+                                 (char/= c #\Newline)
+                                 (char/= c #\Return))
+                      do (write-char
+                          (read-char stream) out)))))
+    `(progn
+       (format t "~&~A~%"
+               (cl-ai-coding-agent:coding-agent-query
+                ,(string-trim " " line)))
+       (values))))
+
+(set-dispatch-macro-character #\# #\? #'ai-query-reader)
+
+;; 3. Automatic error interception
+(defun ai-diagnose-error (condition)
+  "Format a condition into a diagnostic prompt and
+   send it to the AI coding agent."
+  (let* ((text (format nil "~A" condition))
+         (response
+          (cl-ai-coding-agent:coding-agent-query
+           text)))
+    (format t "~&~%--- AI Diagnosis ---~%~A~%~
+               --- End Diagnosis ---~%"
+            response)))
+```
+
+### How It Works
+
+#### The `ai` Macro
+
+The `ai` macro accepts unquoted natural language tokens and concatenates them into a prompt string at macro-expansion time:
+
+```lisp
+(ai write a quicksort function)
+```
+
+expands to:
+
+```lisp
+(progn
+  (format t "~&~A~%"
+    (cl-ai-coding-agent:coding-agent-query
+      "write a quicksort function"))
+  (values))
+```
+
+The `(values)` suppresses the return value to keep the REPL output clean — we only want to see the agent's printed response, not a redundant return string. Because the macro stringifies symbols, any valid Lisp identifier characters work: letters, digits, hyphens. However, characters that the Lisp reader treats specially — parentheses, commas, quotes, semicolons — will cause read errors. For prompts that need those characters, use `coding-agent-query` with an explicit string, or the `#?` reader macro.
+
+#### The `#?` Reader Macro
+
+The `#?` dispatch macro works identically to `#!` but routes to the AI agent instead of the shell:
+
+```lisp
+* #? what does the function merge-pathnames do?
+```
+
+Like `#!`, it consumes the rest of the input line as a raw string, bypassing the Lisp reader entirely. This means any characters — including parentheses, quotes, and semicolons — are treated as plain text. This makes `#?` ideal for pasting error messages or asking questions that contain Lisp syntax.
+
+#### Automatic Error Interception
+
+The `ai-diagnose-error` function formats any Common Lisp condition object into a string and sends it to the agent. You can call it manually from the debugger:
+
+```lisp
+;; From within SBCL's debugger, after an error:
+(ai-diagnose-error *)
+```
+
+Or, for a fully automatic workflow, you can hook it into SBCL's debugger hook. Add the following **optional** line if you want every unhandled error to be automatically diagnosed:
+
+```lisp
+;; Optional: auto-diagnose all unhandled errors
+(setf *debugger-hook*
+      (lambda (condition hook)
+        (declare (ignore hook))
+        (ai-diagnose-error condition)
+        ;; Drop into the normal debugger afterward
+        (invoke-debugger condition)))
+```
+
+With this hook active, any unhandled error will first print the AI's diagnosis and then drop into the normal SBCL debugger. Remove this line if the automatic diagnosis becomes too chatty during normal development.
+
+#### Diagnosing Stacktraces from Files
+
+Stacktraces often contain double-quote characters and span multiple lines, making them awkward to paste into a Lisp string literal. The `coding-agent-query-file` function reads the contents of a file and sends them as the prompt:
+
+```lisp
+;; Save a stacktrace to a file (e.g., from terminal):
+;;   pbpaste > /tmp/error.txt
+;;
+;; Then in the REPL:
+(cl-ai-coding-agent:coding-agent-query-file
+  "/tmp/error.txt")
+
+;; With an optional context prefix:
+(cl-ai-coding-agent:coding-agent-query-file
+  "/tmp/error.txt"
+  "Fix this error in my web scraper project:")
+```
+
+### Example Session
+
+After adding the integration code to `~/.sbclrc` and restarting SBCL:
+
+```text
+$ sbcl
+* (ai what is a hash table in common lisp)
+A hash table in Common Lisp is a data structure that maps
+keys to values using a hash function for fast lookups.
+You create one with MAKE-HASH-TABLE and access entries
+with GETHASH:
+
+  (defvar *ht* (make-hash-table))
+  (setf (gethash :name *ht*) "Alice")
+  (gethash :name *ht*)  ; => "Alice"
+
+* #? list the .lisp files in this directory and describe them
+The current directory contains:
+- agent.lisp: Core agent logic with the tool-use loop
+- package.lisp: Package definition and exports
+- tools.lisp: File-system tool implementations
+- cl-ai-coding-agent.asd: ASDF system definition
+
+* #! ls *.lisp
+agent.lisp    package.lisp  tools.lisp
+
+* (+ 1 2)
+3
+
+* (/ 1 0)
+--- AI Diagnosis ---
+This error occurs because Common Lisp does not allow
+division by zero. The expression (/ 1 0) attempts to
+divide the integer 1 by 0, which is mathematically
+undefined.
+
+Fix: Add a guard before dividing:
+
+  (let ((divisor 0))
+    (if (zerop divisor)
+        (error "Cannot divide by zero")
+        (/ 1 divisor)))
+--- End Diagnosis ---
+
+debugger invoked on DIVISION-BY-ZERO ...
+
+
+* #? write a file test.lisp to run a simple test of groq.lisp
+I have created a file named `test.lisp` in the current directory to test the `groq` library. This script loads the system using ASDF and performs a simple completion request.
+
+The contents of `test.lisp` are as follows:
+
+``lisp
+;;;; test.lisp
+;;;; Simple test for the groq library
+
+(require :asdf)
+(asdf:load-asd (truename "groq.asd"))
+(asdf:load-system :groq)
+
+(defun run-groq-test ()
+  (format t "Starting Groq API test...~%")
+  (unless (uiop:getenv "GROQ_API_KEY")
+    (format t "Warning: GROQ_API_KEY environment variable is not set.~%")
+    (return-from run-groq-test))
+
+  (let* ((prompt "Say 'Hello, World!' in Common Lisp.")
+         (response (groq:groq-completion prompt))
+         (content (groq:groq-extract-content response)))
+    (format t "Prompt: ~A~%" prompt)
+    (format t "Extracted Content:~%~A~%" content)))
+
+(run-groq-test)
+```
+
+To run this test, ensure you have your `GROQ_API_KEY` environment variable set, then execute:
+```bash
+sbcl --load test.lisp --quit
+``
+* 
+
+```
+
+Notice how all three integration levels coexist. The `ai` macro handles simple natural-language queries, `#?` handles anything with special characters, `#!` still works for shell commands, and the error hook provides automatic diagnosis before dropping into the debugger. Standard Lisp expressions continue to work normally.

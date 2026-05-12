@@ -7,33 +7,51 @@
 
 (defvar *model* "gemini-3-flash-preview") ;; model used in this file.
 
-(defun escape-json (json-string)
-  (with-output-to-string (s)
-    (loop for char across json-string
-          do (case char
-               (#\" (write-string "\\\"" s))
-               (#\\ (write-string "\\\\" s))
-               (t (write-char char s))))))
-
-(defun run-curl-command (curl-command)
-  (multiple-value-bind (output error-output exit-code)
-      (uiop:run-program curl-command
-                        :output :string
-                        :error-output :string
-                        :ignore-error-status t)
-    (if (zerop exit-code)
-        output
-        (error "Curl command failed: ~A~%Error: ~A" curl-command error-output))))
+(defun run-curl-command (curl-command
+                         &optional temp-file)
+  "Run CURL-COMMAND via uiop, cleaning up TEMP-FILE
+   (if any) afterward."
+  (unwind-protect
+    (multiple-value-bind (output error-output exit-code)
+        (uiop:run-program curl-command
+                          :output :string
+                          :error-output :string
+                          :ignore-error-status t)
+      (if (zerop exit-code)
+          output
+          (error "Curl command failed: ~A~%Error: ~A"
+                 curl-command error-output)))
+    (when (and temp-file (probe-file temp-file))
+      (delete-file temp-file))))
 
 ;;; ---- Interactions API helpers ----
 
 (defun %interactions-curl-cmd (payload)
-  "Build a curl command for the Interactions API with the new steps schema."
+  "Build a curl command for the Interactions API.
+   Writes the JSON payload to a temp file and uses
+   curl -d @file to avoid all shell quoting issues.
+   Returns (VALUES curl-command temp-file-path)."
   (let* ((data (cl-json:encode-json-to-string payload))
-         (escaped-json (escape-json data)))
-    (format nil
-      "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -H \"Api-Revision: 2026-05-20\" -d \"~A\""
-      *interactions-api-url* *google-api-key* escaped-json)))
+         (temp-file (uiop:tmpize-pathname
+                     (merge-pathnames
+                      "gemini-payload.json"
+                      (uiop:temporary-directory))))
+         (temp-path (namestring temp-file)))
+    (with-open-file (out temp-file
+                     :direction :output
+                     :if-exists :supersede)
+      (write-string data out))
+    (values
+     (format nil
+       "curl -s -X POST ~A ~
+        -H \"Content-Type: application/json\" ~
+        -H \"x-goog-api-key: ~A\" ~
+        -H \"Api-Revision: 2026-05-20\" ~
+        -d @~A"
+       *interactions-api-url*
+       *google-api-key*
+       temp-path)
+     temp-path)))
 
 (defun %extract-text-from-steps (decoded-response)
   "Extract the text from the last model_output step in an Interactions API response.
@@ -54,10 +72,11 @@
   (let* ((payload (make-hash-table :test 'equal)))
     (setf (gethash "model" payload) model-id
           (gethash "input" payload) prompt)
-    (let* ((curl-cmd (%interactions-curl-cmd payload))
-           (response-string (run-curl-command curl-cmd))
-           (decoded-response (cl-json:decode-json-from-string response-string)))
-       (%extract-text-from-steps decoded-response))))
+    (multiple-value-bind (curl-cmd temp-file)
+        (%interactions-curl-cmd payload)
+      (let* ((response-string (run-curl-command curl-cmd temp-file))
+             (decoded-response (cl-json:decode-json-from-string response-string)))
+        (%extract-text-from-steps decoded-response)))))
   
 ;; (gemini:generate "In one sentence, explain how AI works to a child.")
 ;; (gemini:generate "Write a short, four-line poem about coding in Python.")
@@ -82,21 +101,35 @@
                                 part)))
                   contents)))
     (let* ((data (cl-json:encode-json-to-string payload))
-           (escaped-json (escape-json data))
-           (curl-cmd
-	    (format
-	     nil
-	     "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
-             api-url *google-api-key* escaped-json))
-           (response-string (run-curl-command curl-cmd))
-           (decoded-response (cl-json:decode-json-from-string response-string))
-           ;; cl-json by default uses :UPCASE for keys,
-	   ;; so :TOTAL-TOKENS should be correct
-           (total-tokens-pair (assoc :TOTAL-TOKENS decoded-response)))
-      (if total-tokens-pair
-          (cdr total-tokens-pair)
-          (error "Could not retrieve token count from API response: ~S"
-		 decoded-response)))))
+           (temp-file (uiop:tmpize-pathname
+                       (merge-pathnames
+                        "gemini-count-tokens.json"
+                        (uiop:temporary-directory))))
+           (temp-path (namestring temp-file)))
+      (with-open-file (out temp-file
+                       :direction :output
+                       :if-exists :supersede)
+        (write-string data out))
+      (let* ((curl-cmd
+              (format nil
+               "curl -s -X POST ~A ~
+                -H \"Content-Type: application/json\" ~
+                -H \"x-goog-api-key: ~A\" ~
+                -d @~A"
+               api-url *google-api-key* temp-path))
+             (response-string (run-curl-command curl-cmd
+                                                temp-file))
+             (decoded-response
+              (cl-json:decode-json-from-string
+               response-string))
+             (total-tokens-pair
+              (assoc :TOTAL-TOKENS decoded-response)))
+        (if total-tokens-pair
+            (cdr total-tokens-pair)
+            (error
+             "Could not retrieve token count ~
+              from API response: ~S"
+             decoded-response))))))
 
 ;; (gemini:count-tokens "In one sentence, explain how AI works to a child.")
 
@@ -140,10 +173,11 @@
           (list (let ((tool (make-hash-table :test 'equal)))
                   (setf (gethash "type" tool) "google_search")
                   tool)))
-    (let* ((curl-cmd (%interactions-curl-cmd payload))
-           (response-string (run-curl-command curl-cmd))
-           (decoded-response (cl-json:decode-json-from-string response-string)))
-      (%extract-text-from-steps decoded-response))))
+    (multiple-value-bind (curl-cmd temp-file)
+        (%interactions-curl-cmd payload)
+      (let* ((response-string (run-curl-command curl-cmd temp-file))
+             (decoded-response (cl-json:decode-json-from-string response-string)))
+        (%extract-text-from-steps decoded-response)))))
 
 ;; (gemini:generate-with-search "Consultant Mark Watson has written Common Lisp, semantic web, Clojure, Java, and AI books. What musical instruments does he play?")
 ;; (gemini:generate-with-search "What sci-fi movies are playing at Harkins 16 in Flagstaff today?")
@@ -160,9 +194,10 @@
           (list (let ((tool (make-hash-table :test 'equal)))
                   (setf (gethash "type" tool) "google_search")
                   tool)))
-    (let* ((curl-cmd (%interactions-curl-cmd payload))
-           (response-string (run-curl-command curl-cmd))
-           (decoded-response (cl-json:decode-json-from-string response-string))
+    (multiple-value-bind (curl-cmd temp-file)
+        (%interactions-curl-cmd payload)
+      (let* ((response-string (run-curl-command curl-cmd temp-file))
+             (decoded-response (cl-json:decode-json-from-string response-string))
            (steps (cdr (assoc :STEPS decoded-response)))
            ;; Extract text from last model_output step
            (text (loop for step in (reverse steps)
@@ -180,7 +215,7 @@
                                             collect (cons (cdr (assoc :TITLE annotation))
                                                           (cdr (assoc :URL annotation))))))))
       ;; Return both text and citations
-      (values text citations))))
+      (values text citations)))))
 
 #|
 (multiple-value-bind (response sources)

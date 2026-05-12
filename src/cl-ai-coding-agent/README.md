@@ -61,6 +61,28 @@ In your Lisp REPL:
 ;; > quit
 ```
 
+### Diagnose a stacktrace from a file
+
+Stacktraces often contain quote characters and span
+multiple lines, making them awkward to paste into a
+Lisp string.  Save the error output to a file instead:
+
+```bash
+# In your terminal, copy the stacktrace to a file:
+pbpaste > /tmp/error.txt
+```
+
+```lisp
+;; Then in SBCL:
+(cl-ai-coding-agent:coding-agent-query-file
+  "/tmp/error.txt")
+
+;; Or with a prefix prompt:
+(cl-ai-coding-agent:coding-agent-query-file
+  "/tmp/error.txt"
+  "Fix this error in my project:")
+```
+
 ### Debug mode
 
 ```lisp
@@ -73,8 +95,9 @@ In your Lisp REPL:
 
 | Symbol | Type | Description |
 |--------|------|-------------|
-| `coding-agent-query` | Function | `(prompt) → string` — one-shot agent query |
-| `coding-agent-repl` | Function | `() → nil` — interactive REPL loop |
+| `coding-agent-query` | Function | `(prompt) -> string` -- one-shot agent query |
+| `coding-agent-query-file` | Function | `(path &optional prefix) -> string` -- query from file |
+| `coding-agent-repl` | Function | `() -> nil` -- interactive REPL loop |
 | `*verbose*` | Variable | When non-NIL, prints debug info |
 
 ## Architecture

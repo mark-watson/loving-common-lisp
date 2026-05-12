@@ -109,14 +109,15 @@
     (setf (gethash "model" payload) model-id
           (gethash "input" payload) prompt
           (gethash "tools" payload) (%make-tools-list function-declarations google-search-p))
-    (let* ((curl-cmd       (%interactions-curl-cmd payload))
-           (response-string  (run-curl-command curl-cmd))
-           (decoded-response (cl-json:decode-json-from-string response-string))
-           (steps            (cdr (assoc :STEPS decoded-response)))
-           (interaction-id   (cdr (assoc :ID decoded-response)))
-           (text             (%get-text-from-steps steps))
-           (function-calls   (%extract-function-calls-from-steps steps)))
-      (values text function-calls interaction-id))))
+    (multiple-value-bind (curl-cmd temp-file)
+        (%interactions-curl-cmd payload)
+      (let* ((response-string  (run-curl-command curl-cmd temp-file))
+             (decoded-response (cl-json:decode-json-from-string response-string))
+             (steps            (cdr (assoc :STEPS decoded-response)))
+             (interaction-id   (cdr (assoc :ID decoded-response)))
+             (text             (%get-text-from-steps steps))
+             (function-calls   (%extract-function-calls-from-steps steps)))
+        (values text function-calls interaction-id)))))
 
 (defun continue-with-function-responses (interaction-id
                                          function-responses function-declarations
@@ -148,14 +149,15 @@
           (gethash "previous_interaction_id" payload) interaction-id
           (gethash "input" payload) fn-results
           (gethash "tools" payload) (%make-tools-list function-declarations google-search-p))
-    (let* ((curl-cmd       (%interactions-curl-cmd payload))
-           (response-string  (run-curl-command curl-cmd))
-           (decoded-response (cl-json:decode-json-from-string response-string))
-           (steps            (cdr (assoc :STEPS decoded-response)))
-           (new-interaction-id (cdr (assoc :ID decoded-response)))
-           (text             (%get-text-from-steps steps))
-           (function-calls   (%extract-function-calls-from-steps steps)))
-      (values text function-calls new-interaction-id))))
+    (multiple-value-bind (curl-cmd temp-file)
+        (%interactions-curl-cmd payload)
+      (let* ((response-string  (run-curl-command curl-cmd temp-file))
+             (decoded-response (cl-json:decode-json-from-string response-string))
+             (steps            (cdr (assoc :STEPS decoded-response)))
+             (new-interaction-id (cdr (assoc :ID decoded-response)))
+             (text             (%get-text-from-steps steps))
+             (function-calls   (%extract-function-calls-from-steps steps)))
+        (values text function-calls new-interaction-id)))))
 
 #|
 ;;; ---- Usage example ----

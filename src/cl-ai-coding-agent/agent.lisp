@@ -85,7 +85,7 @@ use write_file — do NOT just print the code.
     (when *verbose*
       (format t "~&[coding-agent] prompt:~%~A~%"
               full-prompt))
-    ;; Turn 1 — send prompt with tools
+    ;; Turn 1 -- send prompt with tools
     (multiple-value-bind (text calls interaction-id)
         (gemini:generate-with-tools
          full-prompt declarations)
@@ -109,7 +109,7 @@ use write_file — do NOT just print the code.
                           (dispatch-tool-call fc)))
                      (when *verbose*
                        (format t
-                        "[coding-agent] tool ~A → ~A~%"
+                        "[coding-agent] tool ~A -> ~A~%"
                         (getf fc :name)
                         (subseq result 0
                          (min 200
@@ -138,6 +138,24 @@ use write_file — do NOT just print the code.
          (return
           (or text
               "(agent exhausted tool rounds)"))))))
+
+;;; ---- File-based query ----
+
+(defun coding-agent-query-file (path
+                                &optional prefix)
+  "Read the contents of PATH and send them as a
+   prompt to the coding agent.  This is the easiest
+   way to diagnose multi-line stacktraces that may
+   contain quote characters -- just save the error
+   output to a file and pass the path here.
+   PREFIX is an optional string prepended to the
+   file contents (e.g. \"Fix this error:\")."
+  (let* ((content (uiop:read-file-string path))
+         (prompt (if prefix
+                     (format nil "~A~%~A"
+                             prefix content)
+                     content)))
+    (coding-agent-query prompt)))
 
 ;;; ---- Interactive REPL ----
 
