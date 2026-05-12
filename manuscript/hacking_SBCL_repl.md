@@ -10,11 +10,13 @@ To achieve seamless, shell-like command execution in the SBCL REPL without requi
 
 Instead of hacking the REPL's top-level evaluation loop directly, we modify the readtable so that the reader itself intercepts special characters. Here is how the pieces fit together:
 
-1. **Interception** — By binding `!` as a macro character, the Lisp reader hands control to a custom function the moment it encounters `!`.
+1. **Interception** — By binding `#!` as a dispatch macro character, the Lisp reader hands control to a custom function the moment it encounters the `#!` sequence.
 2. **Consumption** — The macro function consumes the rest of the input line as a raw string, completely bypassing the standard Lisp parser for that line.
 3. **Evaluation** — The macro returns a valid Lisp form (a function call) containing the parsed string. The REPL naturally evaluates this form.
 4. **Process Management** — Shell commands like `ls` or `grep` are passed directly to the underlying OS shell using `uiop:run-program`.
 5. **State Mutation** — Process-level state changes, specifically `cd`, cannot be delegated to a subshell because the subshell's environment terminates immediately. The macro must trap `cd`, execute it internally using `uiop:chdir`, and update Lisp's `*default-pathname-defaults*` to keep the Lisp environment in sync with the OS-level working directory.
+
+> **Why `#!` instead of bare `!`?** The exclamation mark is a valid constituent character in Common Lisp symbols. Libraries like `cl-json` use symbols such as `run!` internally. A bare `!` reader macro hijacks this character globally — when SBCL loads any `.asd` file or source file containing `!` in a symbol name, the reader macro fires, consumes the rest of the line as a shell command, and leaves the reader with unbalanced parentheses. Using `#!` (a dispatch macro on `#`) avoids this entirely because `#` is already reserved as a dispatching macro character and never appears as part of a symbol name.
 
 ### Adding the Code to ~/.sbclrc
 
@@ -60,9 +62,9 @@ Add the following code to the end of your `~/.sbclrc` file. It requires ASDF (wh
              (force-output)
              (values)))))))
 
-(defun bang-reader (stream char)
-  "Reader macro for ! that leaves the newline in the stream."
-  (declare (ignore char))
+(defun bang-reader (stream disp-char sub-char)
+  "Dispatch reader macro for #! — executes a shell command."
+  (declare (ignore disp-char sub-char))
   (let ((line (with-output-to-string (out)
                 ;; Peek at the next character. If it's not a newline
                 ;; or EOF, read it.
@@ -73,15 +75,15 @@ Add the following code to the end of your `~/.sbclrc` file. It requires ASDF (wh
                       do (write-char (read-char stream) out)))))
     `(run-shell-command ,(string-trim " " line))))
 
-;; Bind the '!' character
-(set-macro-character #\! #'bang-reader)
+;; Bind #! as a dispatch macro character
+(set-dispatch-macro-character #\# #\! #'bang-reader)
 ```
 
 ### How It Works
 
 #### The `run-shell-command` Function
 
-The `run-shell-command` function is the workhorse. It takes a single string argument — the raw text after the `!` character — and dispatches it:
+The `run-shell-command` function is the workhorse. It takes a single string argument — the raw text after the `#!` sequence — and dispatches it:
 
 - **Empty input** — returns immediately with no values.
 - **`cd` command** — handled internally. A `cd` executed in a subshell would change that subshell's directory, then immediately exit — leaving the parent Lisp process unchanged. Instead, we call `uiop:chdir` to change the OS-level working directory and update `*default-pathname-defaults*` so that subsequent Lisp file operations (like `(load "foo.lisp")`) resolve relative to the new directory.
@@ -89,9 +91,9 @@ The `run-shell-command` function is the workhorse. It takes a single string argu
 
 The `:ignore-error-status t` argument prevents `uiop:run-program` from signaling a condition on non-zero exit codes — important for commands like `grep` that return exit code 1 when no matches are found.
 
-#### The `bang-reader` Macro Function
+#### The `bang-reader` Dispatch Macro Function
 
-The `bang-reader` function is installed as a reader macro for the `!` character. When the Lisp reader encounters `!`, it calls this function with the input stream and the triggering character.
+The `bang-reader` function is installed as a dispatch reader macro for the `#!` character sequence. When the Lisp reader encounters `#!`, it calls this function with three arguments: the input stream, the dispatch character (`#`), and the sub-character (`!`). We declare both character arguments as ignored since we only need the stream.
 
 Rather than using `read-line` (which would consume the newline and potentially confuse the REPL's line tracking), the function uses `peek-char` in a loop to read characters one at a time until it hits a newline or end-of-file. This leaves the newline in the stream for the REPL to consume normally.
 
@@ -103,15 +105,15 @@ The function returns a backquoted form:
 
 This is a valid Lisp form that the REPL's evaluator processes normally — calling `run-shell-command` with the captured string as its argument.
 
-#### The `set-macro-character` Binding
+#### The `set-dispatch-macro-character` Binding
 
-The final line installs the reader macro:
+The final line installs the dispatch macro:
 
 ```lisp
-(set-macro-character #\! #'bang-reader)
+(set-dispatch-macro-character #\# #\! #'bang-reader)
 ```
 
-After this executes (at SBCL startup, via `~/.sbclrc`), any line beginning with `!` at the REPL is intercepted before the standard Lisp reader ever sees it.
+After this executes (at SBCL startup, via `~/.sbclrc`), any `#!` sequence at the REPL is intercepted before the standard Lisp reader ever sees the rest of the line. Unlike a bare `!` reader macro, this approach is safe — it cannot interfere with symbol names containing exclamation marks, because `#` is already reserved as a non-constituent dispatching prefix.
 
 ### Example Session
 
@@ -119,21 +121,21 @@ After adding this code to `~/.sbclrc` and restarting SBCL:
 
 ```text
 $ sbcl
-* !ls -la *.lisp
+* #! ls -la *.lisp
 -rw-r--r--  1 mark  staff  1234 May 11 16:30 example.lisp
 -rw-r--r--  1 mark  staff   567 May 11 15:00 utils.lisp
 
-* !pwd
+* #! pwd
 /Users/mark/projects
 
-* !cd /tmp
+* #! cd /tmp
 
 /private/tmp/
 
-* !pwd
+* #! pwd
 /private/tmp/
 
-* !cd
+* #! cd
 
 /Users/mark/
 
@@ -141,4 +143,4 @@ $ sbcl
 3
 ```
 
-Notice that normal Lisp expressions still work exactly as before. The `!` macro only activates when `!` is the first character on the line. You can freely alternate between shell commands and Lisp expressions within the same REPL session.
+Notice that normal Lisp expressions still work exactly as before. The `#!` macro only activates when `#!` appears in the input. You can freely alternate between shell commands and Lisp expressions within the same REPL session.

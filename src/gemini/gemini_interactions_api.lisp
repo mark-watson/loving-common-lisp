@@ -134,21 +134,28 @@
    Returns the model's final text response string."
   (let* ((payload (make-hash-table :test 'equal))
          (fn-results (mapcar (lambda (fr)
-                               (let ((result-ht (make-hash-table :test 'equal)))
+                               (let ((result-ht (make-hash-table :test 'equal))
+                                     (text-block (make-hash-table :test 'equal)))
+                                 (setf (gethash "type" text-block) "text"
+                                       (gethash "text" text-block) (getf fr :response))
                                  (setf (gethash "type" result-ht) "function_result"
+                                       (gethash "name" result-ht) (getf fr :name)
                                        (gethash "call_id" result-ht) (getf fr :id)
-                                       (gethash "result" result-ht) (getf fr :response))
+                                       (gethash "result" result-ht) (list text-block))
                                  result-ht))
                              function-responses)))
     (setf (gethash "model" payload) model-id
-          (gethash "interaction_id" payload) interaction-id
+          (gethash "previous_interaction_id" payload) interaction-id
           (gethash "input" payload) fn-results
           (gethash "tools" payload) (%make-tools-list function-declarations google-search-p))
     (let* ((curl-cmd       (%interactions-curl-cmd payload))
            (response-string  (run-curl-command curl-cmd))
            (decoded-response (cl-json:decode-json-from-string response-string))
-           (steps            (cdr (assoc :STEPS decoded-response))))
-      (%get-text-from-steps steps))))
+           (steps            (cdr (assoc :STEPS decoded-response)))
+           (new-interaction-id (cdr (assoc :ID decoded-response)))
+           (text             (%get-text-from-steps steps))
+           (function-calls   (%extract-function-calls-from-steps steps)))
+      (values text function-calls new-interaction-id))))
 
 #|
 ;;; ---- Usage example ----
