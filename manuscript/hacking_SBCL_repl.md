@@ -2,7 +2,10 @@
 
 > **Note to readers:** This chapter is a work in progress. Additional topics will be added in future updates.
 
-The SBCL REPL is already a powerful environment for interactive development, but Common Lisp's extensibility lets us reshape it into something more. In this chapter we explore how to customize the SBCL REPL by modifying the `~/.sbclrc` startup file — adding shell command execution, custom reader macros, and quality-of-life improvements that blur the line between a Lisp REPL and a Unix shell.
+The SBCL REPL is already a powerful environment for interactive development, but Common Lisp's extensibility lets us reshape it into something more. In this chapter we explore how to customize the SBCL REPL by modifying the `~/.sbclrc` startup file, adding shell command execution, custom reader macros, and quality-of-life improvements that blur the line between a Lisp REPL and a Unix shell. The two customizations we implement are:
+
+- Using `#!` to execute shell commands.
+- Adding an AI coding agent that is always available in the REPL and instantiated with `#?`.
 
 ## Shell Access via a Reader Macro
 
@@ -147,9 +150,9 @@ Notice that normal Lisp expressions still work exactly as before. The `#!` macro
 
 ## AI Coding Agent Integration
 
-The `#!` reader macro from the previous section gave us shell access from the REPL. In this section we go further — integrating an AI coding agent directly into the REPL so we can ask questions, diagnose errors, and generate code without leaving SBCL.
+The `#!` reader macro from the previous section gave us shell access from the REPL. In this section we go further by integrating an AI coding agent directly into the REPL so we can ask questions, diagnose errors, and generate code without leaving SBCL.
 
-The `cl-ai-coding-agent` package (developed in the Agent chapter) provides a function `coding-agent-query` that takes a string prompt and returns the agent's response. The agent can autonomously list directories, read files, write new files, and diagnose stacktraces using Gemini's function-calling API. But calling it directly requires quoting strings:
+The `cl-ai-coding-agent` package (developed in the "Building an AI Coding Assistant for Common Lisp") provides a function `coding-agent-query` that takes a string prompt and returns the agent's response. The agent can autonomously list directories, read files, write new files, and diagnose stacktraces using Gemini's function-calling API. But calling it directly requires quoting strings:
 
 ```lisp
 (cl-ai-coding-agent:coding-agent-query
