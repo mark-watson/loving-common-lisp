@@ -49,5 +49,5 @@ wolfram.md
 symbolic-math.md
 webkit.md
 daily_use.md
-book_wrapup.md
 hacking_SBCL_repl.md
+book_wrapup.md
