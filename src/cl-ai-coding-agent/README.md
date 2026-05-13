@@ -135,3 +135,22 @@ Or, for a fully automatic workflow, you can hook it into SBCL's debugger hook. A
 ```
 
 With this hook active, any unhandled error will first print the AI's diagnosis and then drop into the normal SBCL debugger. Remove this line if the automatic diagnosis becomes too chatty during normal development.
+
+
+
+* (/ 1 0)
+--- AI Diagnosis ---
+This error occurs because Common Lisp does not allow
+division by zero. The expression (/ 1 0) attempts to
+divide the integer 1 by 0, which is mathematically
+undefined.
+
+Fix: Add a guard before dividing:
+
+  (let ((divisor 0))
+    (if (zerop divisor)
+        (error "Cannot divide by zero")
+        (/ 1 divisor)))
+--- End Diagnosis ---
+
+debugger invoked on DIVISION-BY-ZERO ...

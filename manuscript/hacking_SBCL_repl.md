@@ -163,7 +163,7 @@ This syntactic friction slows down the interactive workflow. We want three level
 
 1. **An `ai` macro** — eliminates string quoting by stringifying unevaluated symbols, so we can type natural language as Lisp forms.
 2. **A `#?` reader macro** — captures an entire line as a prompt, matching the `#!` pattern from the shell integration.
-3. **Automatic error interception** — hooks into SBCL's debugger to automatically feed unhandled errors to the agent.
+
 
 ### The Code
 
@@ -342,24 +342,6 @@ agent.lisp    package.lisp  tools.lisp
 * (+ 1 2)
 3
 
-* (/ 1 0)
---- AI Diagnosis ---
-This error occurs because Common Lisp does not allow
-division by zero. The expression (/ 1 0) attempts to
-divide the integer 1 by 0, which is mathematically
-undefined.
-
-Fix: Add a guard before dividing:
-
-  (let ((divisor 0))
-    (if (zerop divisor)
-        (error "Cannot divide by zero")
-        (/ 1 divisor)))
---- End Diagnosis ---
-
-debugger invoked on DIVISION-BY-ZERO ...
-
-
 * #? write a file test.lisp to run a simple test of groq.lisp
 I have created a file named `test.lisp` in the current directory to test the `groq` library. This script loads the system using ASDF and performs a simple completion request.
 
@@ -386,14 +368,14 @@ The contents of `test.lisp` are as follows:
     (format t "Extracted Content:~%~A~%" content)))
 
 (run-groq-test)
-```
+``
 
 To run this test, ensure you have your `GROQ_API_KEY` environment variable set, then execute:
-```bash
+``bash
 sbcl --load test.lisp --quit
 ``
 * 
 
 ```
 
-Notice how all three integration levels coexist. The `ai` macro handles simple natural-language queries, `#?` handles anything with special characters, `#!` still works for shell commands, and the error hook provides automatic diagnosis before dropping into the debugger. Standard Lisp expressions continue to work normally.
+Notice how all integration levels coexist. The `ai` macro handles simple natural-language queries, `#?` handles anything with special characters, `#!` still works for shell commands, and Standard Lisp expressions continue to work normally.
