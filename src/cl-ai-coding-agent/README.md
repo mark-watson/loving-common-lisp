@@ -108,3 +108,30 @@ The agent uses Gemini's Interactions API with function calling:
 2. Gemini may request tool calls (`list_directory`, `read_file`, `write_file`)
 3. The agent executes tools locally and sends results back
 4. This loop repeats (up to 10 rounds) until Gemini responds with text
+
+
+## WORK in Progress: Doesn't yet work:
+
+
+#### Automatic Error Interception
+
+The `ai-diagnose-error` function formats any Common Lisp condition object into a string and sends it to the agent. You can call it manually from the debugger:
+
+```lisp
+;; From within SBCL's debugger, after an error:
+(ai-diagnose-error *)
+```
+
+Or, for a fully automatic workflow, you can hook it into SBCL's debugger hook. Add the following **optional** line if you want every unhandled error to be automatically diagnosed:
+
+```lisp
+;; Optional: auto-diagnose all unhandled errors
+(setf *debugger-hook*
+      (lambda (condition hook)
+        (declare (ignore hook))
+        (ai-diagnose-error condition)
+        ;; Drop into the normal debugger afterward
+        (invoke-debugger condition)))
+```
+
+With this hook active, any unhandled error will first print the AI's diagnosis and then drop into the normal SBCL debugger. Remove this line if the automatic diagnosis becomes too chatty during normal development.

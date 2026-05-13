@@ -196,6 +196,6 @@
               interaction-id
               fn-responses
               (list *get-weather-fn*)
-              :google-search-p t)))
+              :google-search-p nil)))
         (format t "~%Final answer: ~A~%" final-answer)))))
 |#

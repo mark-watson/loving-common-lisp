@@ -248,33 +248,17 @@ The `(values)` suppresses the return value to keep the REPL output clean — we 
 The `#?` dispatch macro works identically to `#!` but routes to the AI agent instead of the shell:
 
 ```lisp
-* #? what does the function merge-pathnames do?
+* #? write the common list file test.lisp that prints numbers form 1 to 10
+
+I have created the file `test.lisp` with the following Common Lisp code:
+
+``lisp
+(loop for i from 1 to 10
+      do (format t "~D~%" i))
+``
 ```
 
 Like `#!`, it consumes the rest of the input line as a raw string, bypassing the Lisp reader entirely. This means any characters — including parentheses, quotes, and semicolons — are treated as plain text. This makes `#?` ideal for pasting error messages or asking questions that contain Lisp syntax.
-
-#### Automatic Error Interception
-
-The `ai-diagnose-error` function formats any Common Lisp condition object into a string and sends it to the agent. You can call it manually from the debugger:
-
-```lisp
-;; From within SBCL's debugger, after an error:
-(ai-diagnose-error *)
-```
-
-Or, for a fully automatic workflow, you can hook it into SBCL's debugger hook. Add the following **optional** line if you want every unhandled error to be automatically diagnosed:
-
-```lisp
-;; Optional: auto-diagnose all unhandled errors
-(setf *debugger-hook*
-      (lambda (condition hook)
-        (declare (ignore hook))
-        (ai-diagnose-error condition)
-        ;; Drop into the normal debugger afterward
-        (invoke-debugger condition)))
-```
-
-With this hook active, any unhandled error will first print the AI's diagnosis and then drop into the normal SBCL debugger. Remove this line if the automatic diagnosis becomes too chatty during normal development.
 
 #### Diagnosing Stacktraces from Files
 
@@ -288,10 +272,45 @@ Stacktraces often contain double-quote characters and span multiple lines, makin
 (cl-ai-coding-agent:coding-agent-query-file
   "/tmp/error.txt")
 
-;; With an optional context prefix:
-(cl-ai-coding-agent:coding-agent-query-file
-  "/tmp/error.txt"
-  "Fix this error in my web scraper project:")
+"### Error Analysis: DIVISION-BY-ZERO
+
+**1. Root Cause**
+The error was caused by the expression `(/ 10 0)`, which attempts to perform an integer division where the divisor is zero.
+
+**2. What Went Wrong**
+In Common Lisp (and most programming languages), division by zero is an undefined operation. When the SBCL kernel's `INTEGER-/-INTEGER` function encountered `0` as the denominator, it signaled a `DIVISION-BY-ZERO` condition. This halted execution and invoked the debugger.
+
+**3. Concrete Fix**
+To prevent this error, you should validate that the divisor is not zero before performing the division. Depending on your use case, you can use a conditional check or handle the condition.
+
+#### Option A: Conditional Check (Recommended)
+Before dividing, check if the denominator is zero using `zerop`.
+
+``lisp
+(let ((numerator 10)
+      (denominator 0))
+  (if (zerop denominator)
+      (format t \"Error: Cannot divide by zero.\")
+      (/ numerator denominator)))
+``
+
+#### Option B: Using `handler-case`
+If the division is part of a larger computation and you want to catch the error gracefully:
+
+``lisp
+(handler-case (/ 10 0)
+  (division-by-zero ()
+    (format t \"Caught division by zero! Returning NIL.\")
+    nil))
+``
+
+#### Option C: Using `ignore-errors`
+If you simply want the expression to return `NIL` instead of crashing:
+
+``lisp
+(ignore-errors (/ 10 0)) ; Returns NIL and the condition object as a second value
+``"
+
 ```
 
 ### Example Session

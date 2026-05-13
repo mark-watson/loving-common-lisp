@@ -439,20 +439,6 @@ The `handler-case` around `coding-agent-query` ensures that API errors, network 
 
 ## Installation
 
-Clone or symlink the project into your Quicklisp local-projects directory:
-
-```bash
-# From the book's repository
-ln -s $(pwd)/src/cl-ai-coding-agent \
-      ~/quicklisp/local-projects/cl-ai-coding-agent
-
-# Also need the gemini library
-ln -s $(pwd)/src/gemini \
-      ~/quicklisp/local-projects/gemini
-```
-
-Then in SBCL:
-
 ```lisp
 (ql:quickload :cl-ai-coding-agent)
 ```
