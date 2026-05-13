@@ -19,6 +19,7 @@ information_gathering.md
 machine_learning.md
 backprop_nn.md
 hopfield_nn.md
+anomaly_detection.md
 python_interop.md
 py4cl.md
 semanticweb.md
