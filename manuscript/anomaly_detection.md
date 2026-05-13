@@ -1,6 +1,6 @@
 # Anomaly Detection
 
-Anomaly detection is a technique for finding data points that don't fit the normal pattern. Unlike standard classification — where we have roughly equal numbers of examples for each class — anomaly detection is designed for problems where "normal" examples vastly outnumber "abnormal" ones. Think of credit card fraud (millions of legitimate transactions vs. a handful of fraudulent ones), network intrusion detection, manufacturing defect spotting, or medical diagnosis.
+Anomaly detection is a technique for finding data points that don't fit the normal pattern. Unlike standard classification where we have roughly equal numbers of examples for each class, anomaly detection is designed for problems where "normal" examples vastly outnumber "abnormal" ones. Think of credit card fraud (millions of legitimate transactions vs. a handful of fraudulent ones), network intrusion detection, manufacturing defect spotting, or medical diagnosis.
 
 The core idea is simple: learn what "normal" looks like, then flag anything that deviates too far from that model.
 
@@ -27,7 +27,7 @@ If we compute `p(x)` and get a high number, the value `x` fits well with our mod
 
 Our detector works in four steps:
 
-1. **Split the data** into three groups: training (~60%), cross-validation (~28%), and test (~12%). The training set is mostly normal examples. This mirrors how you would use the system in practice: train on data you believe to be normal, then test on new data.
+1. **Split the data** into three groups: training (60%), cross-validation (28%), and test (12%). The training set is mostly normal examples. This mirrors how you would use the system in practice: train on data you believe to be normal, then test on new data.
 
 2. **Fit a Gaussian model** to the training data. For each feature (measurement), we compute the mean μ and variance σ². This tells us what "normal" looks like for each feature independently.
 
@@ -97,7 +97,7 @@ The `compute-mu` function calculates the average value of each feature across al
 
 This is straightforward: sum all values for each feature, then divide by the number of examples. The inner `loop` iterates over features and accumulates into the `mu` array.
 
-The `compute-sigma-sq` function calculates the variance — how much each feature's values deviate from the mean:
+The `compute-sigma-sq` function calculates the variance that is how much each feature's values deviate from the mean:
 
 {lang="lisp",linenos=off}
 ~~~~~~~~
