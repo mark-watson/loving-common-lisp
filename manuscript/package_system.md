@@ -1,6 +1,6 @@
 # Common Lisp Package System  {#package_system}
 
-In later chapters we will see two complete applications that are defined as Quicklisp projects: the [chapter on the Knowledge Graph Creator](#kgcreator) and the [chapter on the Knowledge Graph Navigator](#kgn). Another example for setting up a Quicklib project can be seen in the chapter [Plotting Data](#plotlib).
+In later chapters we will see two complete applications that are defined as Quicklisp projects: the [chapter on the Knowledge Graph Creator](#kgcreator) and the [chapter on the Knowledge Graph Navigator](#kgn). Another example for setting up a Quicklib project can be seen in the chapter **Plotting Data**.
 
 While these later chapters provide practical examples for bundling up your own projects in packages, the material here will give you general background information that you should know.
 
