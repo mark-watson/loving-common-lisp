@@ -122,6 +122,38 @@ sbcl --load probability.asd \
      --quit
 ~~~~~~~~
 
+```
+=== Bayesian Analysis: Medical Screening Test ===
+Prior probabilities:
+  P(disease) = 0.0010
+  P(healthy) = 0.9990
+
+After a POSITIVE test result:
+  P(disease | positive) = 0.0194  (1.94 %)
+  P(healthy | positive) = 0.9806  (98.06 %)
+
+MAP hypothesis: healthy
+
+Key insight: despite 99% sensitivity, a positive test
+only yields about 1.9% probability of disease because the
+disease is so rare (0.1% prevalence).  This is exactly
+the kind of counter-intuitive result Bayes' Theorem reveals.
+
+=== Correlation Analysis (N = 100000) ===
+Pearson r(test-result, disease) = 0.1283
+
+This positive correlation is real but modest.  It shows
+that the test result and disease status are associated,
+but the correlation coefficient alone cannot tell you the
+probability that any *individual* patient is sick — that
+requires Bayesian reasoning with the base rate (prevalence).
+
+Correlation ≠ causation, and here, even correlation ≠
+reliable individual prediction.
+
+=== Done. ===
+```
+
 ## Walking Through the Bayesian Code
 
 ### The Bayes Model
@@ -364,6 +396,53 @@ sbcl --load probability.asd \
      --eval '(probability:run-frequentist-demo)' \
      --quit
 ~~~~~~~~
+
+```
+================================================================
+  FREQUENTIST ANALYSIS: Medical Screening Test
+================================================================
+
+--- 1. Simulated Clinical Trial (N = 100,000) ---
+  True  Positives (TP):    102
+  False Positives (FP):   5080
+  True  Negatives (TN):  94818
+  False Negatives (FN):      0
+
+--- 2. Chi-Squared Test of Independence ---
+  chi-squared = 1868.26   df = 3   p-value < 1e-15 (essentially zero)
+
+  Interpretation: the test result and disease status
+  are NOT independent (we reject H0).  But this only
+  means the *association exists* — it says nothing about
+  how strong it is or what it means for one patient.
+
+--- 3. Positive Predictive Value (PPV) ---
+  PPV = TP / (TP + FP) = 102 / 5182 = 0.0197  (1.97 %)
+  95% Wilson CI for PPV: [0.0162, 0.0238]  (1.62% – 2.38%)
+
+--- 4. Z-Test: Positive Rate vs. Prevalence ---
+  Observed positive rate: 5.1820%
+  Hypothesised rate (prevalence): 0.1000%
+  z = 508.4543   p-value < 1e-15
+
+  The positive rate far exceeds the disease prevalence
+  because of the 5% false-positive rate — most positives
+  are healthy people.
+
+--- 5. Bayesian vs. Frequentist Side-by-Side ---
+  Bayesian posterior P(disease | positive test) = 0.0194  (1.94%)
+  Frequentist PPV from simulation             = 0.0197  (1.97%)
+
+  Both frameworks agree: a positive test on a rare disease
+  gives only about 2% probability of actual illness.
+  The chi-squared test's tiny p-value is real but misleading
+  if taken as evidence that the test is *useful* for diagnosis.
+
+================================================================
+  Key lesson: statistical significance (small p-value) and
+  practical significance (high PPV) are different things.
+================================================================
+```
 
 ### Key output from the frequentist demo
 
