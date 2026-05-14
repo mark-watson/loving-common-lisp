@@ -1,2 +1,1 @@
-anomaly_detection.md
-hacking_SBCL_repl.md
+probability.md
