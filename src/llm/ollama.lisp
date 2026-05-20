@@ -2,7 +2,7 @@
 ;;; Apache 2 License
 
 (defpackage #:ollama
-  (:use #:cl #:llm)
+  (:use #:cl)
   (:export #:ollama-llm
            #:completions
            #:summarize
@@ -26,36 +26,33 @@
          (message (list (cons :|role| "user")
                         (cons :|content| starter-text)))
          (data (list (cons :|model| model-id)
-                     (cons :|stream| nil)
-                     (cons :|think| think)
-                     (cons :|messages| (list message))))
+                      (cons :|stream| nil)
+                      (cons :|think| think)
+                      (cons :|messages| (list message))))
          (data-with-tools (if tools-rendered
                               (append data (list (cons :|tools| tools-rendered)))
                               data))
          (json-data (cl-json:encode-json-to-string data-with-tools))
          (fixed-json-data
           (llm:substitute-subseq json-data ":null" ":false" :test #'string=))
-         (escaped-json (llm:escape-json fixed-json-data))
-         (curl-command (format nil "curl ~a -d \"~A\""
-                               *ollama-endpoint*
-                               escaped-json)))
-    (let ((response (llm:run-curl-command curl-command)))
-      (with-input-from-string (s response)
-        (let* ((json-as-list (cl-json:decode-json s))
-               (message-resp (cdr (assoc :message json-as-list)))
-               (tool-calls (cdr (assoc :tool--calls message-resp)))
-               (content (cdr (assoc :content message-resp))))
-          (if tool-calls
-              (let ((results
-                     (loop for call in tool-calls
-                           collect (let* ((func (cdr (assoc :function call)))
-                                         (name (cdr (assoc :name func)))
-                                         (args (cdr (assoc :arguments func)))
-                                         (tool (gethash name simple-tools:*tools*))
-                                         (mapped-args (simple-tools:map-args-to-parameters tool args)))
-                                     (apply (simple-tools:tool-fn tool) mapped-args)))))
-                (format nil "~{~A~^~%~}" results))
-              (or content "No response content")))))))
+         (headers '(("Content-Type" . "application/json")))
+         (response (dex:post *ollama-endpoint* :headers headers :content fixed-json-data)))
+    (with-input-from-string (s response)
+      (let* ((json-as-list (cl-json:decode-json s))
+             (message-resp (cdr (assoc :message json-as-list)))
+             (tool-calls (cdr (assoc :tool--calls message-resp)))
+             (content (cdr (assoc :content message-resp))))
+        (if tool-calls
+            (let ((results
+                   (loop for call in tool-calls
+                         collect (let* ((func (cdr (assoc :function call)))
+                                       (name (cdr (assoc :name func)))
+                                       (args (cdr (assoc :arguments func)))
+                                       (tool (gethash name simple-tools:*tools*))
+                                       (mapped-args (simple-tools:map-args-to-parameters tool args)))
+                                   (apply (simple-tools:tool-fn tool) mapped-args)))))
+              (format nil "~{~A~^~%~}" results))
+            (or content "No response content"))))))
 
 (defun summarize (some-text)
   (completions (concatenate 'string "Summarize: " some-text)))

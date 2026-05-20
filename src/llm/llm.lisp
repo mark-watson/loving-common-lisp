@@ -5,7 +5,8 @@
   (:use #:cl)
   (:export #:run-curl-command
            #:escape-json
-           #:substitute-subseq))
+           #:substitute-subseq
+           #:post-json))
 
 (in-package #:llm)
 
@@ -36,3 +37,8 @@
                      new
                      (subseq string (+ pos (length old))))
         string)))
+
+(defun post-json (url headers payload-hash)
+  "Perform an HTTP POST request with JSON payload using Dexador."
+  (let ((payload-json (cl-json:encode-json-to-string payload-hash)))
+    (dex:post url :headers headers :content payload-json)))

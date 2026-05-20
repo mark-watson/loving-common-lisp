@@ -2,8 +2,6 @@
 
 ;; Copyright 2023-2025 Mark Watson. All Rights Reserved. Apache 2 License
 
-(ql:quickload :sqlite)
-(use-package :sqlite)
 
 ;; define the environment variable "OPENAI_KEY" with the value of your OpenAI API key
 
@@ -104,7 +102,7 @@
 ;;(defvar docs (all-documents))
 ;;(pprint docs)
 
-(defun semantic-match (query custom-context &optional (cutoff 0.7))
+(defun semantic-match (query custom-context &optional (cutoff 0.3))
   (let ((emb (openai::embeddings query))
         (ret))
     (dolist (doc (all-documents))

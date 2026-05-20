@@ -2,7 +2,7 @@
 (in-package :cl-llm-agent)
 
 ;; Default model used when none is provided explicitly.
-(defparameter *default-gemini-model-id* "gemini-pro"
+(defparameter *default-gemini-model-id* "gemini-3.5-flash"
   "Fallback Gemini model identifier used by the agent.")
 
 (defun normalize-gemini-model-id (model-id)
@@ -26,5 +26,5 @@
 
 (defmethod agent-llm-call ((agent gemini-agent) prompt)
   "Perform an LLM call for GEMINI-AGENT using gemini:generate."
-  (gemini:generate (normalize-gemini-model-id (gemini-agent-model-id agent))
-                   prompt))
+  (gemini:generate prompt
+                   (normalize-gemini-model-id (gemini-agent-model-id agent))))

@@ -2,5 +2,7 @@
 
 (defpackage #:entities
   (:use #:cl #:myutils)
-  (:export #:entity #:text->entities #:entities-cities #:entities-companies #:entities-countries #:entities-cities #:entities-people #:entities-products #:entities-universities))
+  (:export #:entity #:entities #:make-entities #:make-entities-object #:text->entities
+           #:entities-cities #:entities-companies #:entities-countries
+           #:entities-people #:entities-products #:entities-universities))
 

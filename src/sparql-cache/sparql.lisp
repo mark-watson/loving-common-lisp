@@ -1,4 +1,4 @@
-;; Compyright 2021-2022 Mark Watson All Rights Reserved.
+;; Copyright 2021-2022 Mark Watson All Rights Reserved.
 ;; License: Apache 2
 
 (in-package #:sparql-cache)
@@ -6,8 +6,6 @@
 ;; caching code:
 
 ;; one time only: create empty cache database: sqlite3 ~/.kgn_cache.db
-
-(ql:quickload "sqlite")
 
 ;;; command line arguments:
 

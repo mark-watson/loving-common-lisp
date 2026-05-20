@@ -1,5 +1,5 @@
 (in-package :lw-grapher)
-;; Compyright 2021-2022 Mark Watson All Rights Reserved.
+;; Copyright 2021-2022 Mark Watson All Rights Reserved.
 ;; License: Apache 2
 
 ;; A simple Grapher using the layout algorithm from the ISI-Grapher user guide
@@ -179,8 +179,8 @@
                 :layout-function 'graph-layout
                 :children-function 'node-children
                 :node-pinboard-class 'text-node
-                :input-model `(((:button-1 :release) ;; :press)
+                :input-model `(((:button-1 :release)
                                 ,#'(lambda (pane x y)
                                      (handle-mouse-click-on-pane pane x y))))
-                :node-pane-function 'make-text-node))
+                :node-pane-function 'make-node))
  |#

@@ -129,13 +129,13 @@ Pass a list of tool symbols to any provider's `completions` or `generate` functi
 
 ```lisp
 ;; With OpenAI
-(openai:completions "What's the weather in Paris?" '(get-weather))
+(openai:completions "What's the weather in Paris?" :tools '(get-weather))
 
 ;; With Ollama
-(ollama:completions "What's the weather in Tokyo?" '(get-weather))
+(ollama:completions "What's the weather in Tokyo?" :tools '(get-weather))
 
 ;; With Gemini
-(gemini:generate "What's the weather in London?" :tools '("get-weather"))
+(gemini:generate "What's the weather in London?" :tools '(get-weather))
 ```
 
 When the model decides to call a tool, the library dispatches the call automatically and returns the result.

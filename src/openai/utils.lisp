@@ -2,31 +2,24 @@
 
 
 (defun summarize (some-text)
-  (let ((curl-command
-         (concatenate 'string
-                      "curl " *model-host*
-                      " -H \"Content-Type: application/json\""
-                      " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" "
-                      " -d '{\"messages\": [{\"role\": \"user\", \"content\": \"Summarize: " some-text 
-                      "\"}], \"model\": \"gpt-5-nano\"}'")))
-    (openai-helper curl-command)))
+  (let* ((data `((messages . (((role . "user") (content . ,(concatenate 'string "Summarize: " some-text)))))
+                 (model . "gpt-5-nano")))
+         (response-str (openai-post *model-host* data)))
+    (openai-helper response-str)))
 
 (defun answer-question (question)
   (completions (concatenate 'string "Concisely answer the question: " question)))
 
 (defun embeddings (text)
   "Get embeddings using text-embedding-3-small model (1536 dimensions)"
-  (let* ((curl-command
-          (concatenate 'string
-                       "curl https://api.openai.com/v1/embeddings "
-                       " -H \"Content-Type: application/json\""
-                       " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" "
-                       " -d '{\"input\": \"" text 
-                       "\", \"model\": \"text-embedding-3-small\"}'"))
-         (response (uiop:run-program curl-command :output :string)))
-    (with-input-from-string (s response)
-      (let ((json-as-list (json:decode-json s)))
-        (cdr (nth 2 (cadr (cadr json-as-list))))))))
+  (let* ((payload `((input . ,text)
+                    (model . "text-embedding-3-small")))
+         (response-str (openai-post "https://api.openai.com/v1/embeddings" payload))
+         (json-as-list (cl-json:decode-json-from-string response-str))
+         (data (cdr (assoc :data json-as-list)))
+         (first-item (car data))
+         (emb (cdr (assoc :embedding first-item))))
+    emb))
 
 (defun dot-product-recursive (a b)
   "Calculate dot product recursively"

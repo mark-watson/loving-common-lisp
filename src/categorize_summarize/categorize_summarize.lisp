@@ -31,10 +31,9 @@
 (print "Starting to load data....")
 
 (defvar *base-pathname-cs* #.(or *compile-file-truename* *load-truename*))
-(defvar a1-cs (write-to-string *base-pathname-cs*))
-(defvar *current-directory-cs* (subseq a1-cs 3 (- (length a1-cs) 26)))
+(defvar *current-directory-cs* (uiop:pathname-directory-pathname *base-pathname-cs*))
 
-(load (concatenate 'string *current-directory-cs* "/linguistic_data/cat-data-tables"))
+(load (uiop:merge-pathnames* "linguistic_data/cat-data-tables" *current-directory-cs*))
 
 (print "....done loading data.")
 

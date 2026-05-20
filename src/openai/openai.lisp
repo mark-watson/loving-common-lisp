@@ -34,26 +34,28 @@
 ;                            (description . The city name)))
 ;                 (required location)))
 
-(defun lisp-to-json-string (data)
-  (with-output-to-string (s)
-    (json:encode-json data s)))
-
-(defun substitute-subseq (string old new &key (test #'eql))
-  (let ((pos (search old string :test test)))
-    (if pos
-        (concatenate 'string
-                     (subseq string 0 pos)
-                     new
-                     (subseq string (+ pos (length old))))
-        string)))
-
-(defun escape-json (str)
-  (with-output-to-string (out)
-    (loop for ch across str do
-         (if (char= ch #\")
-             (write-string "\\\"" out)
-             (write-char ch out)))))
-
+(defun openai-post (url data)
+  (let ((api-key (uiop:getenv "OPENAI_KEY")))
+    (unless api-key
+      (error "OPENAI_KEY environment variable is not set"))
+    (multiple-value-bind (response-body response-status)
+        (drakma:http-request
+         url
+         :method :post
+         :content-type "application/json"
+         :additional-headers `(("Authorization" . ,(concatenate 'string "Bearer " api-key)))
+         :content (cl-json:encode-json-to-string data))
+      (unless (= response-status 200)
+        (error "OpenAI request failed with status ~A: ~A"
+               response-status
+               (typecase response-body
+                 (string response-body)
+                 (vector (babel:octets-to-string response-body))
+                 (t ""))))
+      (typecase response-body
+        (string response-body)
+        (vector (babel:octets-to-string response-body))
+        (t (error "Invalid response body type from OpenAI"))))))
 
 (defun handle-function-call (function-call)
   ;; function-call looks like: ((:name . "get_weather") (:arguments . "{\"location\":\"New York\"}"))
@@ -62,10 +64,6 @@
          (args-string (cdr (assoc :arguments function-call)))
          (args (and args-string (cl-json:decode-json-from-string args-string)))
          (func (openai-function-func (gethash name *available-functions*))))
-    ;;(format t "~% handle-function-call name: ~A" name)
-    ;;(format t "~% handle-function-call args-string: ~A" args-string)
-    ;;(format t "~% handle-function-call args: ~A" args)
-    ;;(format t "~% handle-function-call func: ~A" func)
     (if (not (null func))
 	(let ()
           (format t "~%Calling function ~a called with args: ~a~%" name args)
@@ -74,33 +72,16 @@
 	    f-val))
         (error "Unknown function: ~a" name))))
 
-(defun openai-helper (curl-command)
-  ;;(terpri)
-  ;;(princ curl-command)
-  ;;(terpri)
-  (let ((response (uiop:run-program curl-command
-                                    :output :string
-                                    :error-output :string)))
-    (terpri)
-    ;;(princ response)
-    (terpri)
-    (with-input-from-string (s response)
-      (let* ((json-as-list (json:decode-json s))
-             (choices (cdr (assoc :choices json-as-list)))
-             (first-choice (car choices))
-             (message (cdr (assoc :message first-choice)))
-             (function-call (cdr (assoc :function--call message)))
-             (content (cdr (assoc :content message))))
-	;;(format t "~% json-as-list: ~A~%" json-as-list)
-	;;(format t "~% choices: ~A~%" choices)
-	;;(format t "~% first-choice: ~A~%" first-choice)
-	;;(format t "~% message: ~A~%" message)
-	;;(format t "~% function-call: ~A~%" function-call)
-	;;(format t "~% content: ~A~%" content)
-        (if function-call
-            (handle-function-call function-call)
-            (or content "No response content"))))))
-
+(defun openai-helper (response-str)
+  (let* ((json-as-list (json:decode-json-from-string response-str))
+         (choices (cdr (assoc :choices json-as-list)))
+         (first-choice (car choices))
+         (message (cdr (assoc :message first-choice)))
+         (function-call (cdr (assoc :function--call message)))
+         (content (cdr (assoc :content message))))
+    (if function-call
+        (handle-function-call function-call)
+        (or content "No response content"))))
 
 (defun completions (starter-text &optional functions)
   (let* ((function-defs (when functions
@@ -117,15 +98,8 @@
          (data (if function-defs
                    (append base-data (list (cons :functions function-defs)))
                    base-data))
-         (request-body (cl-json:encode-json-to-string data))
-         (fixed-json-data (substitute-subseq request-body ":null" ":false" :test #'string=))
-         (escaped-json (escape-json fixed-json-data))
-         (curl-command
-          (format nil "curl ~A -H \"Content-Type: application/json\" -H \"Authorization: Bearer ~A\" -d \"~A\""
-                  *model-host*
-                  (uiop:getenv "OPENAI_KEY")
-                  escaped-json)))
-    (openai-helper curl-command)))
+         (response-str (openai-post *model-host* data)))
+    (openai-helper response-str)))
 
 (defun answer-question (question)
   (completions (concatenate 'string "Concisely answer the question: " question)))

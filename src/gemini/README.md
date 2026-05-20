@@ -66,15 +66,18 @@ To generate text from a prompt:
 ;; 2. Turn 1 — send query with tools
 (multiple-value-bind (text function-calls interaction-id)
     (gemini:generate-with-tools "What's the weather in Barrow, AK?" (list *get-weather-fn*))
-  ;; 3. Handle function calls and continue
-  (when function-calls
-    (let ((final (gemini:continue-with-function-responses
-                  interaction-id
-                  (list (list :name (getf (first function-calls) :name)
-                              :id   (getf (first function-calls) :id)
-                              :response "Very cold. 22°F."))
-                  (list *get-weather-fn*))))
-      (format t "Final: ~a~%" final))))
+  (cond
+    (function-calls
+     ;; 3. Handle function calls and continue
+     (let ((final (gemini:continue-with-function-responses
+                   interaction-id
+                   (list (list :name (getf (first function-calls) :name)
+                               :id   (getf (first function-calls) :id)
+                               :response "Very cold. 22°F."))
+                   (list *get-weather-fn*))))
+       (format t "Final: ~a~%" final)))
+    (text
+     (format t "Response: ~a~%" text))))
 ```
 
 ### Counting Tokens

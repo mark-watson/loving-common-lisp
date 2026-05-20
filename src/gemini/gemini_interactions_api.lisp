@@ -109,15 +109,16 @@
     (setf (gethash "model" payload) model-id
           (gethash "input" payload) prompt
           (gethash "tools" payload) (%make-tools-list function-declarations google-search-p))
-    (multiple-value-bind (curl-cmd temp-file)
-        (%interactions-curl-cmd payload)
-      (let* ((response-string  (run-curl-command curl-cmd temp-file))
-             (decoded-response (cl-json:decode-json-from-string response-string))
-             (steps            (cdr (assoc :STEPS decoded-response)))
-             (interaction-id   (cdr (assoc :ID decoded-response)))
-             (text             (%get-text-from-steps steps))
-             (function-calls   (%extract-function-calls-from-steps steps)))
-        (values text function-calls interaction-id)))))
+    (let* ((headers (list '("Content-Type" . "application/json")
+                          (cons "x-goog-api-key" *google-api-key*)
+                          '("Api-Revision" . "2026-05-20")))
+           (response-string  (%post-json *interactions-api-url* headers payload))
+           (decoded-response (cl-json:decode-json-from-string response-string))
+           (steps            (cdr (assoc :STEPS decoded-response)))
+           (interaction-id   (cdr (assoc :ID decoded-response)))
+           (text             (%get-text-from-steps steps))
+           (function-calls   (%extract-function-calls-from-steps steps)))
+      (values text function-calls interaction-id))))
 
 (defun continue-with-function-responses (interaction-id
                                          function-responses function-declarations
@@ -149,15 +150,16 @@
           (gethash "previous_interaction_id" payload) interaction-id
           (gethash "input" payload) fn-results
           (gethash "tools" payload) (%make-tools-list function-declarations google-search-p))
-    (multiple-value-bind (curl-cmd temp-file)
-        (%interactions-curl-cmd payload)
-      (let* ((response-string  (run-curl-command curl-cmd temp-file))
-             (decoded-response (cl-json:decode-json-from-string response-string))
-             (steps            (cdr (assoc :STEPS decoded-response)))
-             (new-interaction-id (cdr (assoc :ID decoded-response)))
-             (text             (%get-text-from-steps steps))
-             (function-calls   (%extract-function-calls-from-steps steps)))
-        (values text function-calls new-interaction-id)))))
+    (let* ((headers (list '("Content-Type" . "application/json")
+                          (cons "x-goog-api-key" *google-api-key*)
+                          '("Api-Revision" . "2026-05-20")))
+           (response-string  (%post-json *interactions-api-url* headers payload))
+           (decoded-response (cl-json:decode-json-from-string response-string))
+           (steps            (cdr (assoc :STEPS decoded-response)))
+           (new-interaction-id (cdr (assoc :ID decoded-response)))
+           (text             (%get-text-from-steps steps))
+           (function-calls   (%extract-function-calls-from-steps steps)))
+      (values text function-calls new-interaction-id))))
 
 #|
 ;;; ---- Usage example ----

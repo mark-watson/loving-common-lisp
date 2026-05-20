@@ -26,12 +26,11 @@ Priors are automatically normalised so they sum to 1."
 EVIDENCE is an arbitrary datum passed to LIKELIHOOD-FN.
 LIKELIHOOD-FN is a function of two arguments (HYPOTHESIS EVIDENCE)
 that returns P(evidence | hypothesis)."
-  (declare (ignore evidence))
   ;; Compute unnormalised posteriors.
   (let* ((unnormalised
            (mapcar (lambda (pair)
                      (cons (car pair)
-                           (* (funcall likelihood-fn (car pair))
+                           (* (funcall likelihood-fn (car pair) evidence)
                               (cdr pair))))
                    model))
          (marginal (reduce #'+ unnormalised :key #'cdr)))

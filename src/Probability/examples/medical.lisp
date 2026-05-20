@@ -26,8 +26,9 @@
 
 ;;; ---------- Bayesian analysis --------------------------------------------
 
-(defun medical-likelihood (hypothesis)
-  "Return P(positive-test | HYPOTHESIS)."
+(defun medical-likelihood (hypothesis evidence)
+  "Return P(evidence | HYPOTHESIS)."
+  (declare (ignore evidence))
   (ecase hypothesis
     (:disease *sensitivity*)
     (:healthy *false-positive-rate*)))

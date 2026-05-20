@@ -43,13 +43,14 @@
 ;;; Predefined helper functions
 (defun helper-read-directory (dir)
   "List files in DIR excluding hidden or backup files."
-  (let ((path (truename (or dir "."))))
-    (if (probe-file path)
-        (remove-if (lambda (n)
-                     (or (char= (char n 0) #\#)
-                         (char= (char (aref n (1- (length n))) #\~)))
+  (let ((path (uiop:directory-exists-p (or dir "."))))
+    (if path
+        (remove-if (lambda (p)
+                     (let ((name (file-namestring p)))
+                       (or (and (> (length name) 0) (char= (char name 0) #\#))
+                           (and (> (length name) 0) (char= (char name (1- (length name))) #\~)))))
                    (uiop:directory-files path))
-        (error "Directory not found: ~A" path)))))
+        (error "Directory not found: ~A" dir))))
 
 (register-tool "tool-read-directory"
                :description "Reads the contents of a directory."
@@ -59,12 +60,13 @@
 
 (defun helper-read-file (file)
   "Return the contents of FILE as a string, or error if missing."
-  (if (probe-file file)
-      (with-open-file (in file :direction :input)
-        (with-output-to-string (out)
-          (loop for line = (read-line in nil)
-                while line do (write-line line out))))
-      (error "File not found: ~A" file)))
+  (let ((path (uiop:file-exists-p file)))
+    (if path
+        (with-open-file (in path :direction :input)
+          (with-output-to-string (out)
+            (loop for line = (read-line in nil)
+                  while line do (write-line line out))))
+        (error "File not found: ~A" file))))
 
 (register-tool "tool-read-file"
                :description "Reads the contents of a file."
@@ -81,7 +83,7 @@
 (defun helper-summarize (text)
   "Summarize TEXT using Gemini LLM backend."
   (let ((prompt (format nil "Summarize the following text:~%~A~%" text)))
-    (gemini:generate (default-gemini-model-id) prompt)))
+    (gemini:generate prompt (default-gemini-model-id))))
 
 (register-tool "tool-summarize"
                :description "Summarize text using Gemini."

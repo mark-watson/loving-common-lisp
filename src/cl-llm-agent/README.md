@@ -28,11 +28,11 @@ Define Gemini model to use:
 ## Usage
 Define tools and agents, then interact:
 ```lisp
-  (defparameter *ctx* (cl-llm-agent:make-context))
-  (cl-llm-agent:context-set *ctx* "task" "summarize text")
-  (defparameter *agent*
-    (cl-llm-agent:make-agent 'cl-llm-agent::gemini-agent :context *ctx*))
-  (cl-llm-agent:agent-converse *agent* "Summarize the project README.")
+(defparameter *ctx* (cl-llm-agent:make-context))
+(cl-llm-agent:context-set *ctx* "task" "summarize text")
+(defparameter *agent*
+  (cl-llm-agent:make-agent 'cl-llm-agent::gemini-agent :context *ctx*))
+(cl-llm-agent:agent-converse *agent* "Summarize the file README.md")
 ```
 
 ## Testing

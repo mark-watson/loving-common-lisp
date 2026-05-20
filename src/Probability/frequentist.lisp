@@ -100,12 +100,12 @@ Returns three values: CHI-SQUARED statistic, DF, and P-VALUE.
 H₀: observed counts follow the expected distribution."
   (assert (= (length observed) (length expected)) ()
           "OBSERVED and EXPECTED must have the same length.")
-  (let* ((chi2 (reduce #'+ (mapcar (lambda (o e)
-                                      (let ((o (float o 1.0d0))
-                                            (e (float e 1.0d0)))
-                                        (if (zerop e) 0.0d0
-                                            (/ (expt (- o e) 2) e))))
-                                    observed expected)))
+  (let* ((chi2 (loop for o in observed
+                     for e in expected
+                     sum (let ((o-f (float o 1.0d0))
+                               (e-f (float e 1.0d0)))
+                           (if (zerop e-f) 0.0d0
+                               (/ (expt (- o-f e-f) 2) e-f)))))
          (df   (1- (length observed)))
          (p-val (- 1.0d0 (chi-squared-cdf chi2 df))))
     (values chi2 df (max p-val 0.0d0))))

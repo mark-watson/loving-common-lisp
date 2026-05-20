@@ -27,7 +27,7 @@
   countries    ;; list of matched country names
   people       ;; list of matched person names
   products     ;; list of matched product names
-  universities ;; list of matched university names
+  universities) ;; list of matched university names
 
 (print "Starting to load data....")
 
@@ -46,13 +46,7 @@
 ;; source.
 
 (defvar *base-pathname* #.(or *compile-file-truename* *load-truename*))
-
-;; Derive the current directory string from *base-pathname*.
-;; The subseq strips the leading "#P" prefix and the trailing "entities.lisp"
-;; filename (14 characters) to get just the directory path.
-
-(defvar a1 (write-to-string *base-pathname*))
-(setf *current-directory* (subseq a1 3 (- (length a1) 14)))
+(defvar *current-directory* (uiop:pathname-directory-pathname *base-pathname*))
 
 ;; ============================================================================
 ;; Data Loading
@@ -66,7 +60,8 @@
 (defun load-l-file (entity-type entity-type-symbol)
   (let (line)
     (with-open-file
-        (in (concatenate 'string *current-directory* "linguistic_data/names." entity-type))
+        (in (uiop:merge-pathnames* (concatenate 'string "linguistic_data/names." entity-type)
+                                   *current-directory*))
       (dotimes (i 50000) ;; read up to 50000 lines per file
         (setq line (read-line in nil nil))
         (if (null line) (return)) ;; stop at EOF
@@ -165,3 +160,8 @@
               (:products (setf (entities-products eo) (cons words (entities-products eo))))
               (:universities (setf (entities-universities eo) (cons words (entities-universities eo))))))))
     eo))
+
+(defun make-entities-object (text)
+  "Analyze text and return an entities struct with categorized entity names.
+This is an alias for text->entities as documented in the library's README."
+  (text->entities text))

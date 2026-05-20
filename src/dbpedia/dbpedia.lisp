@@ -5,9 +5,6 @@
 
 (in-package #:dbpedia)
 
-(ql:quickload :drakma)
-(ql:quickload :babel)
-(ql:quickload :s-xml)
 
 ;; utility from http://cl-cookbook.sourceforge.net/strings.html#manip:
 (defun replace-all (string part replacement &key (test #'char=))
@@ -32,7 +29,7 @@ is replaced with replacement."
          (s-uri
           (concatenate
            'string
-           "http://lookup.dbpedia.org/api/search.asmx/KeywordSearch?QueryString="
+           "https://lookup.dbpedia.org/api/search?query="
            s-str))
          (response-body nil)
          (response-status nil)
@@ -45,24 +42,29 @@ is replaced with replacement."
        s-uri
        :method :get
        :accept "application/xml"))
-    ;;(print (list ("status:" response-status "headers:" response-headers)))
-    (setf xml
-          (s-xml:parse-xml-string
-           (babel:octets-to-string response-body)))
+    (unless (= response-status 200)
+      (error "DBpedia lookup failed with status ~A" response-status))
+    (let ((xml-str (typecase response-body
+                     (string response-body)
+                     (vector (babel:octets-to-string response-body))
+                     (t (error "Invalid or empty response body from DBpedia")))))
+      (setf xml (s-xml:parse-xml-string xml-str)))
     (dolist (r (cdr xml))
-      ;; assumption: data is returned in the order:
-      ;;   1. label
-      ;;   2. DBPedia URI for more information
-      ;;   3. description
-      (push
-       (make-dbpedia-data
-        :uri (cadr (nth 2 r))
-        :label (cadr (nth 1 r))
-        :description
-        (string-trim
-         '(#\Space #\NewLine #\Tab)
-         (cadr (nth 3 r))))
-       ret))
+      (let ((uri (cadr (find "uri" (cdr r)
+                             :key (lambda (el) (and (consp el) (symbol-name (first el))))
+                             :test #'string-equal)))
+            (label (cadr (find "Label" (cdr r)
+                               :key (lambda (el) (and (consp el) (symbol-name (first el))))
+                               :test #'string-equal)))
+            (desc (cadr (find "Description" (cdr r)
+                              :key (lambda (el) (and (consp el) (symbol-name (first el))))
+                              :test #'string-equal))))
+        (push
+         (make-dbpedia-data
+          :uri uri
+          :label label
+          :description (and desc (string-trim '(#\Space #\NewLine #\Tab) desc)))
+         ret)))
     (reverse ret)))
 
 ;; (dbpedia:dbpedia-lookup "berlin")

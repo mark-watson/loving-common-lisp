@@ -60,7 +60,9 @@ WARNING: measures linear association only — not causation."
          (sy  (std-dev ys)))
     (when (or (zerop sx) (zerop sy))
       (return-from pearson-r 0.0d0))   ; constant variable ⇒ no correlation
-    (/ (reduce #'+ (mapcar (lambda (x y) (* (- x mx) (- y my))) xs ys))
+    (/ (loop for x in xs
+             for y in ys
+             sum (* (- x mx) (- y my)))
        (* n sx sy))))
 
 ;;; ---------- Spearman ρ ----------------------------------------------------

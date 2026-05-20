@@ -1,11 +1,8 @@
 (require "asdf")
-(asdf:load-asd (merge-pathnames "simple_llms.asd" (uiop:getcwd)))
-(asdf:load-system :simple_llms)
-(load "llm.asd")
-(load "llm.lisp")
-(ql:quickload :cl-json)
-(load "gemini.lisp")
-(load "ollama.lisp")
-(load "openai.lisp")
 
-(format t "~%--- simple_llms project loaded ---~%")
+(let ((asd-path (make-pathname :name "llm" :type "asd" :defaults *load-pathname*)))
+  (asdf:load-asd asd-path))
+
+(ql:quickload :llm)
+
+(format t "~%--- llm project loaded ---~%")

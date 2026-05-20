@@ -38,20 +38,19 @@
 (defvar *product-name-hash* (make-hash-table :test #'equal :size 400))
 
 (defvar *base-pathname* #.(or *compile-file-truename* *load-truename*))
-(defvar a1 (write-to-string *base-pathname*))
-(defvar *current-directory* (subseq a1 3 (- (length a1) 11)))
+(defvar *current-directory* (uiop:pathname-directory-pathname *base-pathname*))
 
-(load (concatenate 'string *current-directory* "linguistic_data/cat-data-tables"))
+(load (uiop:merge-pathnames* "linguistic_data/cat-data-tables" *current-directory*))
 
 (let (line)
   (with-open-file
-      (in (concatenate 'string *current-directory* "linguistic_data/names/names.male"))
+      (in (uiop:merge-pathnames* "linguistic_data/names/names.male" *current-directory*))
     (dotimes (i 50000)
       (setq line (read-line in nil nil))
       (if (null line) (return))
       (setf (gethash line *first-name-hash*) *male*)))
   (with-open-file
-      (in (concatenate 'string *current-directory* "linguistic_data/names/names.female"))
+      (in (uiop:merge-pathnames* "linguistic_data/names/names.female" *current-directory*))
     (dotimes (i 50000)
       (setq line (read-line in nil nil))
       (if (null line) (return))
@@ -61,7 +60,7 @@
 
 (let (line)
   (with-open-file
-      (in (concatenate 'string *current-directory* "linguistic_data/names/names.last"))
+      (in (uiop:merge-pathnames* "linguistic_data/names/names.last" *current-directory*))
     (dotimes (i 5000000)
       (setq line (read-line in nil nil))
       (if (null line) (return))
@@ -69,15 +68,15 @@
 
 (if (not (boundp 'place-hash))
     (progn
-      (load (concatenate 'string *current-directory* "linguistic_data/names/PlaceData.ldat"))))
+      (load (uiop:merge-pathnames* "linguistic_data/names/PlaceData.ldat" *current-directory*))))
 
 (if (not (boundp 'stop-word-hash))
     (progn
-      (load (concatenate 'string *current-directory* "linguistic_data/names/StopWords.ldat"))))
+      (load (uiop:merge-pathnames* "linguistic_data/names/StopWords.ldat" *current-directory*))))
 
 (let (line)
   (with-open-file
-      (in (concatenate 'string *current-directory* "linguistic_data/names/names.companies"))
+      (in (uiop:merge-pathnames* "linguistic_data/names/names.companies" *current-directory*))
     (dotimes (i 500000)
       (setq line (read-line in nil nil))
       (if (null line) (return))
@@ -85,7 +84,7 @@
 
 (let (line)
   (with-open-file
-      (in (concatenate 'string *current-directory* "linguistic_data/names/names.products"))
+      (in (uiop:merge-pathnames* "linguistic_data/names/names.products" *current-directory*))
     (dotimes (i 500000)
       (setq line (read-line in nil nil))
       (if (null line) (return))

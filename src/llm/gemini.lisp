@@ -2,7 +2,7 @@
 ;;; Apache 2 License
 
 (defpackage #:gemini
-  (:use #:cl #:llm)
+  (:use #:cl)
   (:export #:gemini-llm
            #:generate
            #:count-tokens
@@ -21,14 +21,6 @@
   (uiop:getenv "GOOGLE_API_KEY"))
 
 ;;; ---- Interactions API helpers ----
-
-(defun %interactions-curl-cmd (payload)
-  "Build a curl command for the Interactions API with the new steps schema."
-  (let* ((data (cl-json:encode-json-to-string payload))
-         (escaped-json (llm:escape-json data)))
-    (format nil
-      "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -H \"Api-Revision: 2026-05-20\" -d \"~A\""
-      *interactions-api-url* (get-google-api-key) escaped-json)))
 
 (defun %extract-text-from-steps (decoded-response)
   "Extract the text from the last model_output step in an Interactions API response."
@@ -51,7 +43,7 @@
                    collect (let ((tool (gethash (string tool-symbol) simple-tools:*tools*)))
                              (if tool
                                  (let ((rendered (cdr (assoc :function (simple-tools:render-tool tool))))
-                                       (fn-tool (make-hash-table :test 'equal)))
+                                        (fn-tool (make-hash-table :test 'equal)))
                                    (setf (gethash "type" fn-tool) "function"
                                          (gethash "name" fn-tool) (cdr (assoc :name rendered))
                                          (gethash "description" fn-tool) (cdr (assoc :description rendered))
@@ -60,8 +52,10 @@
                                  (error "Undefined tool function: ~A" tool-symbol))))))
         (setf (gethash "tools" payload) tool-list)))
     
-    (let* ((curl-cmd (%interactions-curl-cmd payload))
-           (response-string (llm:run-curl-command curl-cmd))
+    (let* ((headers (list '("Content-Type" . "application/json")
+                          (cons "x-goog-api-key" (get-google-api-key))
+                          '("Api-Revision" . "2026-05-20")))
+           (response-string (llm:post-json *interactions-api-url* headers payload))
            (decoded-response (cl-json:decode-json-from-string response-string))
            (steps (cdr (assoc :STEPS decoded-response))))
       ;; Check for function_call steps
@@ -90,11 +84,9 @@
                                 (setf (gethash "text" part) prompt)
                                 part)))
                   contents)))
-    (let* ((data (cl-json:encode-json-to-string payload))
-           (escaped-json (llm:escape-json data))
-           (curl-cmd (format nil "curl -s -X POST ~A -H \"Content-Type: application/json\" -H \"x-goog-api-key: ~A\" -d \"~A\""
-                             api-url (get-google-api-key) escaped-json))
-           (response-string (llm:run-curl-command curl-cmd))
+    (let* ((headers (list '("Content-Type" . "application/json")
+                          (cons "x-goog-api-key" (get-google-api-key))))
+           (response-string (llm:post-json api-url headers payload))
            (decoded-response (cl-json:decode-json-from-string response-string))
            (total-tokens-pair (assoc :TOTAL-TOKENS decoded-response)))
       (if total-tokens-pair
@@ -109,15 +101,15 @@
      (princ "Enter a prompt: ")
      (finish-output)
      (let ((user-prompt (read-line)))
-       (princ user-prompt)
-       (finish-output)
+       (when (member user-prompt '("exit" "quit") :test #'string-equal)
+         (return))
        (let ((gemini-response (generate
                 (concatenate 'string *chat-history* "\nUser: " user-prompt))))
-         (princ gemini-response)
+         (format t "~A~%" gemini-response)
          (finish-output)
          (setf *chat-history*
                (concatenate 'string "User: " user-prompt "\n" "Gemini: " gemini-response
-                                   "\n" *chat-history* "\n\n")))))))
+                                    "\n" *chat-history* "\n\n")))))))
 
 (defun generate-with-search (prompt &optional (model-id *gemini-model*))
   "Generates text with Google Search grounding via the Interactions API."
@@ -128,8 +120,10 @@
           (list (let ((tool (make-hash-table :test 'equal)))
                   (setf (gethash "type" tool) "google_search")
                   tool)))
-    (let* ((curl-cmd (%interactions-curl-cmd payload))
-           (response-string (llm:run-curl-command curl-cmd))
+    (let* ((headers (list '("Content-Type" . "application/json")
+                          (cons "x-goog-api-key" (get-google-api-key))
+                          '("Api-Revision" . "2026-05-20")))
+           (response-string (llm:post-json *interactions-api-url* headers payload))
            (decoded-response (cl-json:decode-json-from-string response-string)))
       (%extract-text-from-steps decoded-response))))
 
@@ -143,8 +137,10 @@
           (list (let ((tool (make-hash-table :test 'equal)))
                   (setf (gethash "type" tool) "google_search")
                   tool)))
-    (let* ((curl-cmd (%interactions-curl-cmd payload))
-           (response-string (llm:run-curl-command curl-cmd))
+    (let* ((headers (list '("Content-Type" . "application/json")
+                          (cons "x-goog-api-key" (get-google-api-key))
+                          '("Api-Revision" . "2026-05-20")))
+           (response-string (llm:post-json *interactions-api-url* headers payload))
            (decoded-response (cl-json:decode-json-from-string response-string))
            (steps (cdr (assoc :STEPS decoded-response)))
            ;; Extract text from last model_output step

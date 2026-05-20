@@ -29,14 +29,14 @@
 ;;; Internal helpers
 ;;; -------------------------------------------------------------------------
 
-(defun %run (command)
-  "Run a shell command string, return stdout as a string (or nil on error)."
+(defun %run (args)
+  "Run a command (list of strings), return stdout as a string (or nil on error)."
   (handler-case
-      (uiop:run-program command
+      (uiop:run-program args
                         :output :string
                         :error-output :string)
     (error (e)
-      (format t "Command error: ~a~%Command: ~a~%" e command)
+      (format t "Command error: ~a~%Command args: ~a~%" e args)
       nil)))
 
 (defun %extract-links (html)
@@ -76,9 +76,8 @@ No server process is required; lightpanda is invoked directly.
                               "--log_format" "pretty")))
          (args  (append (list *lightpanda-binary* "fetch")
                         extra
-                        (list url)))
-         (cmd   (format nil "~{~a~^ ~}" args)))
-    (%run cmd)))
+                        (list url))))
+    (%run args)))
 
 ;;; -------------------------------------------------------------------------
 ;;; Helpers
