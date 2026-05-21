@@ -79,7 +79,7 @@ The library is a single ASDF system (`probability`) providing four modules that 
 
 1. **Bayesian Inference (`bayes.lisp`)**
    - `make-bayes-model (prior-alist)` — create a model from an alist of `(hypothesis . prior-probability)` pairs. Priors are normalised automatically.
-   - `update (model evidence likelihood-fn)` — apply Bayes' Theorem. `likelihood-fn` is a function `(hypothesis) → P(evidence | hypothesis)`. Returns a new model with posterior probabilities.
+   - `update (model evidence likelihood-fn)` — apply Bayes' Theorem. `likelihood-fn` is a function `(hypothesis evidence) → P(evidence | hypothesis)`. Returns a new model with posterior probabilities.
    - `posterior (model hypothesis)` — look up the posterior for a single hypothesis.
    - `posteriors (model)` — return the full posterior alist.
    - `maximum-a-posteriori (model)` — return the hypothesis with the highest posterior.
@@ -181,18 +181,20 @@ The `update` function applies Bayes' Theorem. For each hypothesis it multiplies 
 ~~~~~~~~
 (defun update (model evidence likelihood-fn)
   "Return a new model with posteriors computed via Bayes' Theorem.
+EVIDENCE is an arbitrary datum passed to LIKELIHOOD-FN.
 LIKELIHOOD-FN is a function of two arguments (HYPOTHESIS EVIDENCE)
 that returns P(evidence | hypothesis)."
-  (declare (ignore evidence))
+  ;; Compute unnormalised posteriors.
   (let* ((unnormalised
            (mapcar (lambda (pair)
                      (cons (car pair)
-                           (* (funcall likelihood-fn (car pair))
+                           (* (funcall likelihood-fn (car pair) evidence)
                               (cdr pair))))
                    model))
          (marginal (reduce #'+ unnormalised :key #'cdr)))
     (when (zerop marginal)
       (error "Marginal likelihood is zero — evidence is impossible under all hypotheses."))
+    ;; Normalise.
     (mapcar (lambda (pair)
               (cons (car pair) (/ (cdr pair) marginal)))
             unnormalised)))
@@ -206,8 +208,9 @@ The worked example in `examples/medical.lisp` makes Bayes' Theorem concrete. A r
 
 {lang="lisp",linenos=off}
 ~~~~~~~~
-(defun medical-likelihood (hypothesis)
-  "Return P(positive-test | HYPOTHESIS)."
+(defun medical-likelihood (hypothesis evidence)
+  "Return P(evidence | HYPOTHESIS)."
+  (declare (ignore evidence))
   (ecase hypothesis
     (:disease *sensitivity*)
     (:healthy *false-positive-rate*)))
@@ -225,6 +228,11 @@ The worked example in `examples/medical.lisp` makes Bayes' Theorem concrete. A r
     (dolist (p (posteriors updated))
       (format t "  P(~A | positive) = ~,4F  (~,2F %)~%"
               (car p) (cdr p) (* 100.0d0 (cdr p))))
+    (format t "~%MAP hypothesis: ~A~%" (car (maximum-a-posteriori updated)))
+    (format t "~%Key insight: despite 99% sensitivity, a positive test~%")
+    (format t "only yields about 1.9% probability of disease because the~%")
+    (format t "disease is so rare (0.1% prevalence).  This is exactly~%")
+    (format t "the kind of counter-intuitive result Bayes' Theorem reveals.~%")
     updated))
 ~~~~~~~~
 

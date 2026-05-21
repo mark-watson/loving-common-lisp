@@ -81,14 +81,14 @@ Users can configure a new file path:
 Common Lisp doesn't have a built-in standard way to run subprocesses, but the UIOP (Universal Interface to OS Processes) library provides portable functions. UIOP comes bundled with ASDF, so it's universally available.
 
 ```lisp
-(defun %run (command)
-  "Run a shell command string, return stdout as a string (or nil on error)."
+(defun %run (args)
+  "Run a command (list of strings), return stdout as a string (or nil on error)."
   (handler-case
-      (uiop:run-program command
+      (uiop:run-program args
                         :output :string
                         :error-output :string)
     (error (e)
-      (format t "Command error: ~a~%Command: ~a~%" e command)
+      (format t "Command error: ~a~%Command args: ~a~%" e args)
       nil)))
 ```
 
@@ -97,7 +97,7 @@ Key UIOP features:
 - `:error-output :string` — Captures stderr separately
 - `handler-case` — Catches errors gracefully, returning `nil` on failure
 
-The `%run` name uses the Common Lisp convention: a leading `%` marks internal/private functions not meant for export.
+The `%run` name uses the Common Lisp convention: a leading `%` marks internal/private functions not meant for export. Passing a list of arguments directly to `uiop:run-program` bypasses the shell, avoiding shell-escaping issues and injection risks, which is a safer and cleaner practice.
 
 ## String Processing: Extracting Links
 
@@ -152,27 +152,20 @@ No server process is required; lightpanda is invoked directly.
   (lightpanda:fetch-url \"https://markwatson.com/\")
   (lightpanda:fetch-url \"https://markwatson.com/\" :dump \"markdown\")
 "
-  (let* ((extra (append (when obey-robots '(\"--obey_robots\"))
+  (let* ((extra (append (when obey-robots '("--obey_robots"))
                         (list "--dump" dump
                               "--log_level" log-level
                               "--log_format" "pretty")))
          (args  (append (list *lightpanda-binary* "fetch")
                         extra
-                        (list url)))
-         (cmd   (format nil "~{~a~^ ~}" args)))
-    (%run cmd)))
+                        (list url))))
+    (%run args)))
 ```
 
 Key techniques:
 - `&key` with default values: `(dump "html")` makes `:dump` optional
 - `when` returns `nil` or the provided list—clean conditional inclusion
-- `format nil "~{~a~^ ~}" args` — produces `"arg1 arg2 arg3"` from a list
-
-The `~{~a~^ ~}` format directive:
-- `~{` — iterate over a list
-- `~a` — aesthetic (human-readable) output
-- `~^` — exit iteration if no more elements (no trailing space)
-- `~}` — end iteration
+- Bypassing the shell entirely by passing the argument list directly to `uiop:run-program`, making the execution robust and platform-independent.
 
 ## Helper Functions
 

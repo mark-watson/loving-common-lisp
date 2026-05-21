@@ -11,19 +11,20 @@ OpenAI has been working on large language models (LLMs) since they were founded 
 
 ## Common Lisp Library for Using OpenAI APIs
 
-I recommend reading the online documentation for the [online documentation for the APIs](https://beta.openai.com/docs/introduction/key-concepts) to see all the capabilities of the beta OpenAI APIs.  Let's start by jumping into the example code. As seen in the **package.lisp** file we use the **UIOP** and **cl-json** libraries and we export three top level functions:
+I recommend reading the online documentation for the [online documentation for the APIs](https://beta.openai.com/docs/introduction/key-concepts) to see all the capabilities of the beta OpenAI APIs. Let's start by jumping into the example code. As seen in the **package.lisp** file, we use the **UIOP**, **cl-json**, and **Drakma** libraries:
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
 ;;;; package.lisp
 
 (defpackage #:openai
-  (:use #:cl #:uiop #:cl-json)
-  (:export #:completions #:summarize #:answer-question))
+  (:use #:cl #:uiop #:cl-json #:drakma)
+  (:shadow "PARAMETER-ERROR")
+  (:export #:completions #:summarize #:answer-question #:embeddings #:dot-product))
 ~~~~~~~~
 
 
-The library that I wrote for this chapter supports three functions that are exported from the package **openai**: for completing text, summarizing text, and answering general questions. The single OpenAI model that the beta OpenAI APIs use is fairly general purpose and can generate cooking directions when given an ingredient list, grammar correction, write an advertisement from a product description, generate spreadsheet data from data descriptions in English text, etc. 
+The library that I wrote for this chapter supports functions exported from the package **openai**: for completing text, summarizing text, answering general questions, and getting embeddings. The single OpenAI model that the beta OpenAI APIs use is fairly general purpose and can generate cooking directions when given an ingredient list, grammar correction, write an advertisement from a product description, generate spreadsheet data from data descriptions in English text, etc. 
 
 Given the examples from [https://beta.openai.com](https://beta.openai.com) and the Common Lisp examples here, you should be able to modify my example code to use any of the functionality that OpenAI documents.
 
@@ -35,9 +36,10 @@ Given the examples from [https://beta.openai.com](https://beta.openai.com) and t
   :description "Library for using the beta OpenAI APIs"
   :author "Mark Watson"
   :license "Apache 2"
-  :depends-on (#:uiop #:cl-json)
+  :depends-on (#:uiop #:cl-json #:drakma #:babel)
   :components ((:file "package")
-               (:file "openai")))
+               (:file "openai")
+               (:file "utils")))
 ~~~~~~~~
 
 
@@ -50,23 +52,18 @@ export OPENAI_KEY=sa-hdffds7&dhdhsdgffd
 
 to your **.profile** or other shell resource file.
 
-While I sometimes use pure Common Lisp libraries to make HTTP requests, I prefer running the **curl** utility as a separate process for these reasons:
+While shelling out to the **curl** command-line utility is a simple way to prototype, using a native Common Lisp HTTP library like **Drakma** is much more robust for library code. Drakma handles HTTP connections natively, manages headers cleanly, and returns responses as strings or vectors without the overhead and platform-dependency of running external subprocesses.
 
-- No problems with system specific dependencies.
-- Use the standard library UIOP to run a shell command and capture the output as a string.
-- I use **curl** from the command line when experimenting with web services. After I get working **curl** options, it is very easy to translate this into Common Lisp code.
+The OpenAI APIs expect JSON data sent via HTTP POST. For example, using Drakma to send a request looks like this conceptually:
 
-An example **curl** command line call to the beta OpenAI APIs is:
-
-{lang="bash",linenos=on}
-~~~~~~~~
-curl \
-  https://api.openai.com/v1/engines/davinci/completions \
-   -H "Content-Type: application/json"
-   -H "Authorization: Bearer sa-hdffds7&dhdhsdgffd" \
-   -d '{"prompt": "The President went to Congress", \
-        "max_tokens": 22}'
-~~~~~~~~
+```lisp
+(drakma:http-request
+  "https://api.openai.com/v1/chat/completions"
+  :method :post
+  :content-type "application/json"
+  :additional-headers '(("Authorization" . "Bearer YOUR_API_KEY"))
+  :content "{\"model\": \"gpt-5-nano\", \"messages\": [{\"role\": \"user\", \"content\": \"The President went to Congress\"}]}")
+```
 
 Here the API token "sa-hdffds7&dhdhsdgffd" on line 4 is made up - that is not my API token. All of the OpenAI APIs expect JSON data with query parameters. To use the completion API, we set values for **prompt** and **max_tokens**. The value of **max_tokens** is the requested number of returns words or tokens. We will look at several examples later.
 
@@ -90,84 +87,61 @@ Function call support was added to this library in April 2025. The following fun
          :description description
          :parameters parameters
 	 :func fn)))
- 
-(defun lisp-to-json-string (data)
-  (with-output-to-string (s)
-    (json:encode-json data s)))
 
-(defun substitute-subseq (string old new &key (test #'eql))
-  (let ((pos (search old string :test test)))
-    (if pos
-        (concatenate 'string
-                     (subseq string 0 pos)
-                     new
-                     (subseq string (+ pos (length old))))
-        string)))
-
-(defun escape-json (str)
-  (with-output-to-string (out)
-    (loop for ch across str do
-         (if (char= ch #\")
-             (write-string "\\\"" out)
-             (write-char ch out)))))
-
+(defun openai-post (url data)
+  (let ((api-key (uiop:getenv "OPENAI_KEY")))
+    (unless api-key
+      (error "OPENAI_KEY environment variable is not set"))
+    (multiple-value-bind (response-body response-status)
+        (drakma:http-request
+         url
+         :method :post
+         :content-type "application/json"
+         :additional-headers `(("Authorization" . ,(concatenate 'string "Bearer " api-key)))
+         :content (cl-json:encode-json-to-string data))
+      (unless (= response-status 200)
+        (error "OpenAI request failed with status ~A: ~A"
+               response-status
+               (typecase response-body
+                 (string response-body)
+                 (vector (babel:octets-to-string response-body))
+                 (t ""))))
+      (typecase response-body
+        (string response-body)
+        (vector (babel:octets-to-string response-body))
+        (t (error "Invalid response body type from OpenAI"))))))
 
 (defun handle-function-call (function-call)
-  ;; function-call looks like: ((:name . "get_weather") (:arguments . "{\"location\":\"New York\"}"))
-  (format t "~% ** handle-function-call (DUMMY) fucntion-call: ~A~%" function-call)
   (let* ((name (cdr (assoc :name function-call)))
          (args-string (cdr (assoc :arguments function-call)))
          (args (and args-string (cl-json:decode-json-from-string args-string)))
          (func (openai-function-func (gethash name *available-functions*))))
-    (format t "~% handle-function-call name: ~A" name)
-    (format t "~% handle-function-call args-string: ~A" args-string)
-    (format t "~% handle-function-call args: ~A" args)
-    (format t "~% handle-function-call func: ~A" func)
     (if (not (null func))
-	(let ()
+        (let ()
           (format t "~%Calling function ~a called with args: ~a~%" name args)
-	  (let ((f-val (apply func (mapcar #'cdr args))))
-	    (format t "~%Return value from func ~A is ~A~%" name f-val)
-	    f-val))
+          (let ((f-val (apply func (mapcar #'cdr args))))
+            (format t "~%Return value from func ~A is ~A~%" name f-val)
+            f-val))
         (error "Unknown function: ~a" name))))
 ```
 
-
-In the file **openai.lisp** we define a helper function **openai-helper** that takes a string with the OpenAI API call arguments encoded as a **curl** command, calls the service, and then extracts the results from the returned JSON data:
+In the file **openai.lisp** we define a helper function **openai-helper** that takes the JSON response string from the OpenAI API, parses it, and then extracts either the text content or handles a registered function call:
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
-(defun openai-helper (curl-command)
-  ;;(terpri)
-  ;;(princ curl-command)
-  ;;(terpri)
-  (let ((response (uiop:run-program curl-command
-                                    :output :string
-                                    :error-output :string)))
-    (terpri)
-    ;;(princ response)
-    (terpri)
-    (with-input-from-string (s response)
-      (let* ((json-as-list (json:decode-json s))
-             (choices (cdr (assoc :choices json-as-list)))
-             (first-choice (car choices))
-             (message (cdr (assoc :message first-choice)))
-             (function-call (cdr (assoc :function--call message)))
-             (content (cdr (assoc :content message))))
-	;;(format t "~% json-as-list: ~A~%" json-as-list)
-	;;(format t "~% choices: ~A~%" choices)
-	;;(format t "~% first-choice: ~A~%" first-choice)
-	;;(format t "~% message: ~A~%" message)
-	;;(format t "~% function-call: ~A~%" function-call)
-	;;(format t "~% content: ~A~%" content)
-        (if function-call
-            (handle-function-call function-call)
-            (or content "No response content"))))))
+(defun openai-helper (response-str)
+  (let* ((json-as-list (json:decode-json-from-string response-str))
+         (choices (cdr (assoc :choices json-as-list)))
+         (first-choice (car choices))
+         (message (cdr (assoc :message first-choice)))
+         (function-call (cdr (assoc :function--call message)))
+         (content (cdr (assoc :content message))))
+    (if function-call
+        (handle-function-call function-call)
+        (or content "No response content"))))
 ~~~~~~~~
 
-I convert JSON data to a Lisp list in line 12 and in line 14 I reach into the nested results list for the generated text string. You might want to add a debug printout statement to see the value of **json-as-list**.
-
-The three example functions all use this **openai-helper** function. The first example function **completions** sets the parameters to complete a text fragment. You have probably seen examples of the OpenAI GPT models writing stories, given a starting sentence. We are using the functionality here:
+The three main API functions all use this **openai-post** and **openai-helper** logic. The function **completions** sends the prompt to the API:
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
@@ -186,15 +160,8 @@ The three example functions all use this **openai-helper** function. The first e
          (data (if function-defs
                    (append base-data (list (cons :functions function-defs)))
                    base-data))
-         (request-body (cl-json:encode-json-to-string data))
-         (fixed-json-data (substitute-subseq request-body ":null" ":false" :test #'string=))
-         (escaped-json (escape-json fixed-json-data))
-         (curl-command
-          (format nil "curl ~A -H \"Content-Type: application/json\" -H \"Authorization: Bearer ~A\" -d \"~A\""
-                  *model-host*
-                  (uiop:getenv "OPENAI_KEY")
-                  escaped-json)))
-    (openai-helper curl-command))
+         (response-str (openai-post *model-host* data)))
+    (openai-helper response-str)))
 ~~~~~~~~
 
 Note that the OpenAI API models are stochastic. When generating output words (or tokens), the model assigns probabilities to possible words to generate and samples a word using these probabilities. As a simple example, suppose given prompt text "it fell and", then the model could only generate three words, with probabilities for each word based on this prompt text:
@@ -275,17 +242,14 @@ The function **embeddings** (defined in **utils.lisp**) is used to convert a chu
 ~~~~~~~~
 (defun embeddings (text)
   "Get embeddings using text-embedding-3-small model (1536 dimensions)"
-  (let* ((curl-command
-          (concatenate 'string
-                       "curl https://api.openai.com/v1/embeddings "
-                       " -H \"Content-Type: application/json\""
-                       " -H \"Authorization: Bearer " (uiop:getenv "OPENAI_KEY") "\" "
-                       " -d '{\"input\": \"" text 
-                       "\", \"model\": \"text-embedding-3-small\"}'"))
-         (response (uiop:run-program curl-command :output :string)))
-    (with-input-from-string (s response)
-      (let ((json-as-list (json:decode-json s)))
-        (cdr (nth 2 (cadr (cadr json-as-list))))))))
+  (let* ((payload `((input . ,text)
+                    (model . "text-embedding-3-small")))
+         (response-str (openai-post "https://api.openai.com/v1/embeddings" payload))
+         (json-as-list (cl-json:decode-json-from-string response-str))
+         (data (cdr (assoc :data json-as-list)))
+         (first-item (car data))
+         (emb (cdr (assoc :embedding first-item))))
+    emb))
 ~~~~~~~~
 
 The following output is edited for brevity:

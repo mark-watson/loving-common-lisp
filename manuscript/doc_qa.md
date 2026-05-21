@@ -21,7 +21,7 @@ At the end of this chapter we will extend our code for single queries with a con
 
 ## Implementing a Local Vector Database for Document Embeddings
 
-In the following listing of the file **docs-qa.lisp** we start in lines 6-31 with a few string utility functions we will need: **write-floats-to-string**, **read-file**, **concat-strings**, **truncate-string**, and **break-into-chunks**.
+In the following listing of the file **docs-qa.lisp** we start with a few string utility functions we will need: **write-floats-to-string**, **read-file**, **join-strings**, **truncate-string**, and **break-into-chunks**.
 
 The function **break-into-chunks** is a work in progress. For now we simply cut long input texts into specific chunk lengths, often cutting words in half. A future improvement will be detecting sentence boundaries and breaking text on sentences. The Python libraries LangChain and LlamaIndex have multiple chunking strategies.
 
@@ -29,8 +29,7 @@ In lines 33-37 function **decode-row** takes data from a SQL query to fetch a da
 
 
 ```lisp
-(ql:quickload :sqlite)
-(use-package :sqlite)
+(in-package #:docs-qa)
 
 ;; define the environment variable "OPENAI_KEY" with the value of your OpenAI API key
 
@@ -50,8 +49,10 @@ In lines 33-37 function **decode-row** takes data from a SQL query to fetch a da
         (read-sequence string instream)
         string))))
 
-(defun concat-strings (list)
-  (apply #'concatenate 'string list))
+(defun join-strings (separator list)
+  (if list
+    (reduce (lambda (a b) (concatenate 'string a separator b)) list)
+    " "))
 
 (defun truncate-string (string length)
   (subseq string 0 (min length (length string))))
@@ -142,11 +143,7 @@ The following diagram shows the high-level architecture of the document question
 The next listing showing of parts of **docs-qa.lisp** interfaces with the OpenAI APIs:
 
 ```lisp
-(defun qa (question)
-  (let ((answer (openai:answer-question question)))
-    (format t "~&~a~%" answer)))
-
-(defun semantic-match (query custom-context &optional (cutoff 0.7))
+(defun semantic-match (query custom-context &optional (cutoff 0.3))
   (let ((emb (openai::embeddings query))
         (ret))
     (dolist (doc (all-documents))

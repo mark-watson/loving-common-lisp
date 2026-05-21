@@ -19,8 +19,11 @@ The test code is in the directory **loving-common-lisp/src/llm_test**.
   (:use #:cl)
   (:export #:run-curl-command
            #:escape-json
-           #:substitute-subseq))
+           #:substitute-subseq
+           #:post-json))
+
 (in-package #:llm)
+
 (defun run-curl-command (curl-command)
   (multiple-value-bind (output error-output exit-code)
       (uiop:run-program curl-command
@@ -30,6 +33,7 @@ The test code is in the directory **loving-common-lisp/src/llm_test**.
     (if (zerop exit-code)
         output
         (error "Curl command failed: ~A~%Error: ~A" curl-command error-output))))
+
 (defun escape-json (str)
   (with-output-to-string (out)
     (loop for ch across str do
@@ -38,6 +42,7 @@ The test code is in the directory **loving-common-lisp/src/llm_test**.
               (if (char= ch #\\)
                   (write-string "\\\\" out)
                   (write-char ch out))))))
+
 (defun substitute-subseq (string old new &key (test #'eql))
   (let ((pos (search old string :test test)))
     (if pos
@@ -46,9 +51,14 @@ The test code is in the directory **loving-common-lisp/src/llm_test**.
                      new
                      (subseq string (+ pos (length old))))
         string)))
+
+(defun post-json (url headers payload-hash)
+  "Perform an HTTP POST request with JSON payload using Dexador."
+  (let ((payload-json (cl-json:encode-json-to-string payload-hash)))
+    (dex:post url :headers headers :content payload-json)))
 ```
 
-This utility package exports just three functions. Function *run-curl-command* shells out to curl via UIOP and returns the response body as a string, signaling an error if the exit code is non-zero. Function **escape-json** walks a string character by character and escapes double-quotes and backslashes so the JSON payload can be safely embedded inside a shell double-quoted string argument — a necessary workaround when building curl commands this way. Finally, function **substitute-subseq** does a single-pass string substitution; it is used to replace :null with :false in serialized JSON, which corrects a quirk in how library **cl-json** renders nil values that would otherwise confuse the LLM APIs.
+This utility package exports four functions. In addition to legacy utilities (`run-curl-command` and `escape-json` left for backward compatibility), the key helper for modern HTTP integration is `post-json`, which performs standard HTTP POST requests with a JSON payload via Dexador. The `substitute-subseq` function performs a single-pass string substitution, replacing `":null"` with `":false"` in serialized JSON to prevent the Common Lisp `cl-json` library from rendering `nil` in a way that would confuse the downstream LLM APIs.
 
 ### simple-tools.lisp — Provider-Agnostic Tool Registry
 
@@ -134,7 +144,7 @@ Function **map-args-to-parameters** handles the impedance mismatch between the *
 ;;; Apache 2 License
 
 (defpackage #:claude
-  (:use #:cl #:llm)
+  (:use #:cl)
   (:export #:claude-llm
            #:completions
            #:completions-with-search
@@ -190,32 +200,30 @@ Function **map-args-to-parameters** handles the impedance mismatch between the *
                    base-data))
          (request-body (cl-json:encode-json-to-string data))
          (fixed-json-data (llm:substitute-subseq request-body ":null" ":false" :test #'string=))
-         (escaped-json (llm:escape-json fixed-json-data))
-         (curl-command (format nil "curl ~A -H \"x-api-key: ~A\" -H \"anthropic-version: 2023-06-01\" -H \"content-type: application/json\" -d \"~A\""
-                               *claude-endpoint*
-                               (get-claude-api-key)
-                               escaped-json)))
+         (headers (list '("Content-Type" . "application/json")
+                        (cons "x-api-key" (get-claude-api-key))
+                        '("anthropic-version" . "2023-06-01")))
+         (response (dex:post *claude-endpoint* :headers headers :content fixed-json-data)))
     (format t "$$ data:~%~A~%" data)
-    (let ((response (llm:run-curl-command curl-command)))
-      (with-input-from-string (s response)
-        (let* ((json-as-list (cl-json:decode-json s))
-               (content (cdr (assoc :content json-as-list)))
-               (stop-reason (cdr (assoc :stop--reason json-as-list)))
-               (tool-use-blocks (when (string= stop-reason "tool_use")
-                                  (remove-if-not (lambda (block)
-                                                   (string= (cdr (assoc :type block)) "tool_use"))
-                                                 content))))
-          (if tool-use-blocks
-              (let ((results
-                     (loop for block in tool-use-blocks
-                           collect (let* ((name (cdr (assoc :name block)))
-                                         (input (cdr (assoc :input block)))
-                                         (tool (gethash name simple-tools:*tools*))
-                                         (mapped-args (simple-tools:map-args-to-parameters tool input)))
-                                     (apply (simple-tools:tool-fn tool) mapped-args)))))
-                (format nil "~{~A~^~%~}" results))
-              (let ((first-block (car content)))
-                (or (cdr (assoc :text first-block)) "No response content"))))))))
+    (with-input-from-string (s response)
+      (let* ((json-as-list (cl-json:decode-json s))
+             (content (cdr (assoc :content json-as-list)))
+             (stop-reason (cdr (assoc :stop--reason json-as-list)))
+             (tool-use-blocks (when (string= stop-reason "tool_use")
+                                (remove-if-not (lambda (block)
+                                                 (string= (cdr (assoc :type block)) "tool_use"))
+                                               content))))
+        (if tool-use-blocks
+            (let ((results
+                   (loop for block in tool-use-blocks
+                         collect (let* ((name (cdr (assoc :name block)))
+                                       (input (cdr (assoc :input block)))
+                                       (tool (gethash name simple-tools:*tools*))
+                                       (mapped-args (simple-tools:map-args-to-parameters tool input)))
+                                   (apply (simple-tools:tool-fn tool) mapped-args)))))
+              (format nil "~{~A~^~%~}" results))
+            (let ((first-block (car content)))
+              (or (cdr (assoc :text first-block)) "No response content")))))))
 
 (defun completions-with-search (prompt &optional (model-id *claude-model*))
   "Call Claude with the built-in web search tool enabled. Returns the text response."
@@ -229,12 +237,11 @@ Function **map-args-to-parameters** handles the impedance mismatch between the *
                  (:tools . (,search-tool))))
          (request-body (cl-json:encode-json-to-string data))
          (fixed-json-data (llm:substitute-subseq request-body ":null" ":false" :test #'string=))
-         (escaped-json (llm:escape-json fixed-json-data))
-         (curl-command (format nil "curl ~A -H \"x-api-key: ~A\" -H \"anthropic-version: 2023-06-01\" -H \"anthropic-beta: web-search-2025-03-05\" -H \"content-type: application/json\" -d \"~A\""
-                               *claude-endpoint*
-                               (get-claude-api-key)
-                               escaped-json))
-         (response (llm:run-curl-command curl-command)))
+         (headers (list '("Content-Type" . "application/json")
+                        (cons "x-api-key" (get-claude-api-key))
+                        '("anthropic-version" . "2023-06-01")
+                        '("anthropic-beta" . "web-search-2025-03-05")))
+         (response (dex:post *claude-endpoint* :headers headers :content fixed-json-data)))
     (with-input-from-string (s response)
       (let* ((json-as-list (cl-json:decode-json s))
              (content (cdr (assoc :content json-as-list)))
@@ -257,12 +264,11 @@ Returns (values text citations) where citations is a list of (title . url) pairs
                  (:tools . (,search-tool))))
          (request-body (cl-json:encode-json-to-string data))
          (fixed-json-data (llm:substitute-subseq request-body ":null" ":false" :test #'string=))
-         (escaped-json (llm:escape-json fixed-json-data))
-         (curl-command (format nil "curl ~A -H \"x-api-key: ~A\" -H \"anthropic-version: 2023-06-01\" -H \"anthropic-beta: web-search-2025-03-05\" -H \"content-type: application/json\" -d \"~A\""
-                               *claude-endpoint*
-                               (get-claude-api-key)
-                               escaped-json))
-         (response (llm:run-curl-command curl-command)))
+         (headers (list '("Content-Type" . "application/json")
+                        (cons "x-api-key" (get-claude-api-key))
+                        '("anthropic-version" . "2023-06-01")
+                        '("anthropic-beta" . "web-search-2025-03-05")))
+         (response (dex:post *claude-endpoint* :headers headers :content fixed-json-data)))
     (with-input-from-string (s response)
       (let* ((json-as-list (cl-json:decode-json s))
              (content (cdr (assoc :content json-as-list)))
@@ -302,7 +308,7 @@ The following diagram shows the high-level architecture of the LLM library with 
 ;;; Apache 2 License
 
 (defpackage #:ollama
-  (:use #:cl #:llm)
+  (:use #:cl)
   (:export #:ollama-llm
            #:completions
            #:summarize
@@ -319,46 +325,40 @@ The following diagram shows the high-level architecture of the LLM library with 
   (let* ((tools-rendered
           (when tools
             (loop for tool-symbol in tools
-                  collect (let ((tool (gethash (string tool-symbol)
-				                        simple-tools:*tools*)))
+                  collect (let ((tool (gethash (string tool-symbol) simple-tools:*tools*)))
                             (if tool
                                 (simple-tools:render-tool tool)
-                                (error "Undefined tool function: ~A"
-								  tool-symbol))))))
+                                (error "Undefined tool function: ~A" tool-symbol))))))
          (message (list (cons :|role| "user")
                         (cons :|content| starter-text)))
          (data (list (cons :|model| model-id)
-                     (cons :|stream| nil)
-                     (cons :|think| think)
-                     (cons :|messages| (list message))))
+                      (cons :|stream| nil)
+                      (cons :|think| think)
+                      (cons :|messages| (list message))))
          (data-with-tools (if tools-rendered
-                              (append data (list (cons :|tools| tools-rendered)))
-                              data))
+                               (append data (list (cons :|tools| tools-rendered)))
+                               data))
          (json-data (cl-json:encode-json-to-string data-with-tools))
          (fixed-json-data
           (llm:substitute-subseq json-data ":null" ":false" :test #'string=))
-         (escaped-json (llm:escape-json fixed-json-data))
-         (curl-command (format nil "curl ~a -d \"~A\""
-                               *ollama-endpoint*
-                               escaped-json)))
-    (let ((response (llm:run-curl-command curl-command)))
-      (with-input-from-string (s response)
-        (let* ((json-as-list (cl-json:decode-json s))
-               (message-resp (cdr (assoc :message json-as-list)))
-               (tool-calls (cdr (assoc :tool--calls message-resp)))
-               (content (cdr (assoc :content message-resp))))
-          (if tool-calls
-              (let ((results
-                     (loop for call in tool-calls
-                           collect (let* ((func (cdr (assoc :function call)))
-                                         (name (cdr (assoc :name func)))
-                                         (args (cdr (assoc :arguments func)))
-                                         (tool (gethash name simple-tools:*tools*))
-                                         (mapped-args
-										   (simple-tools:map-args-to-parameters tool args)))
-                                     (apply (simple-tools:tool-fn tool) mapped-args)))))
-                (format nil "~{~A~^~%~}" results))
-              (or content "No response content")))))))
+         (headers '(("Content-Type" . "application/json")))
+         (response (dex:post *ollama-endpoint* :headers headers :content fixed-json-data)))
+    (with-input-from-string (s response)
+      (let* ((json-as-list (cl-json:decode-json s))
+             (message-resp (cdr (assoc :message json-as-list)))
+             (tool-calls (cdr (assoc :tool--calls message-resp)))
+             (content (cdr (assoc :content message-resp))))
+        (if tool-calls
+            (let ((results
+                   (loop for call in tool-calls
+                         collect (let* ((func (cdr (assoc :function call)))
+                                       (name (cdr (assoc :name func)))
+                                       (args (cdr (assoc :arguments func)))
+                                       (tool (gethash name simple-tools:*tools*))
+                                       (mapped-args (simple-tools:map-args-to-parameters tool args)))
+                                   (apply (simple-tools:tool-fn tool) mapped-args)))))
+              (format nil "~{~A~^~%~}" results))
+            (or content "No response content"))))))
 
 (defun summarize (some-text)
   (completions (concatenate 'string "Summarize: " some-text)))
@@ -448,7 +448,7 @@ The test file loads the example tools first to populate *tools*, then exercises 
 
 ### Design Notes and Tradeoffs
 
-The decision to shell out to curl rather than using a native HTTP client library keeps the dependency footprint minimal. The tradeoff is that JSON must be escaped for shell embedding, which is what llm:escape-json handles. For production use you would likely want to replace the curl layer with dexador or usocket-based HTTP, but for experimentation and book examples the curl approach is refreshingly transparent — you can paste the printed curl command directly into a terminal to inspect the raw API interaction.
+Using a native HTTP client library like Dexador provides robust, platform-independent connection handling and avoids the overhead and security risks of spawning subprocesses to call curl. While the legacy `run-curl-command` and JSON-escaping helpers are retained in `llm.lisp` for backward compatibility or direct command-line debugging, the provider implementations (OpenAI, Claude, Gemini, and Ollama) communicate natively by calling Dexador. This is a much cleaner approach for any production or long-running context.
 One limitation of the current tool dispatch is that only a single round-trip is performed. If the model's tool call result should be fed back to the model for a follow-up response (the full agentic loop), the caller must manage that conversation state manually by building a message list and passing it as starter-text. The completions function's acceptance of either a plain string or a pre-built message list makes this possible, and it is a natural extension to explore in the next chapter when we look at multi-step agent loops.
 
 ## Example Program Output
@@ -575,11 +575,11 @@ The following sci-fi films have confirmed showtimes for today:
 
 ## Wrap Up
 
-In this chapter we built a small but complete multi-provider LLM library in Common Lisp from the ground up. Starting with the shared llm.lisp utility layer, we established a clean foundation of curl-based HTTP communication and JSON manipulation that both the Claude and Ollama backends depend on without duplicating. The simple-tools.lisp package gave us a provider-agnostic tool registry built around the define-tool macro, making it possible to define a tool once and have it immediately available to any backend that knows how to read from *tools*.
+Starting with the shared llm.lisp utility layer, we established a clean foundation of native HTTP communication using Dexador and JSON manipulation that the Claude, Gemini, OpenAI, and Ollama backends depend on without duplicating. The simple-tools.lisp package gave us a provider-agnostic tool registry built around the define-tool macro, making it possible to define a tool once and have it immediately available to any backend that knows how to read from *tools*.
 
 The two provider backends demonstrated how different APIs can be wrapped behind a consistent completions interface despite having meaningfully different request and response shapes. Claude's input_schema key, typed content blocks, and stop_reason-based tool detection contrast with Ollama's OpenAI-compatible function schema and tool_calls response structure — yet from the caller's perspective both are invoked the same way, with the same tool names, and return the same kind of string result.
 
 The example tools and test file showed the library working end to end: natural language queries being correctly routed to the right tool functions, arguments extracted from the model's JSON response and mapped to positional lambda parameters, and results returned as plain strings ready for further use or display.
 
-A few things are worth keeping in mind as you build on this foundation. The single-pass tool dispatch is intentional in its simplicity but will need to grow into a proper agentic loop if you want the model to reason over tool results and decide on follow-up actions. The curl-based HTTP layer is easy to inspect and debug but would benefit from replacement with a native HTTP client in any long-running or high-throughput context.
+A few things are worth keeping in mind as you build on this foundation. The single-pass tool dispatch is intentional in its simplicity but will need to grow into a proper agentic loop if you want the model to reason over tool results and decide on follow-up actions. The native Dexador HTTP client layer provides a clean, robust, and asynchronous-friendly solution for any long-running or high-throughput context.
 
