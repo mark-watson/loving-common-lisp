@@ -40,7 +40,8 @@ For working through this book, I will assume that you are using SBCL or CCL. For
 
 Many of the book examples require making web service calls. In general when I am writing Common Lisp applications that require making REST calls I prefer using 3rd party Common Lisp libraries like Drakma or Dexador. However it is sometimes a little tricky to set up Common Lisp on different operating systems and CPU architectures with **libopenssl**, **libcrypto**, etc. Because of this, in book examples I run the external **curl** program using **uiop:run-program** and collect the output as a string that is then parsed as JSON or CSV data. The overhead of starting an external process is very small compared to calling a web service so in your own applications you can either follow my example of using **curl** or use the Drakma or Dexador libraries. Using the Apple M1 processor on macOS can be particularly problematic with OpenSSL issues.
 
-I also use the excellent Common Lisp to Python bridge library **py4cl** in a few book examples. Usually **py4cl** installs without problems. 
+**Note: I removed the use of spawning `curl` May 20, 2026 in favor of using libraries like Drakma or Dexador. If you get runtime errors related to `libopenssl`, `libcrypto` copy the errors into Gemini, ChatGPT, or Claude to fix problems resolving system libraries.**
+
 
 ## How is Lisp Different from Languages like Java and C++?
 

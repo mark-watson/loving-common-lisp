@@ -12,13 +12,15 @@ If you would like to support my work please consider purchasing my books on [Lea
 
 # Preface
 
-This book has been a continual work in progress since 2011. This current edition is released March, 2026. I have used Common Lisp professionally since 1982 and I love the language!
+This book has been a continual work in progress since 2011. This current edition is released May, 2026. I have used Common Lisp professionally since 1982 and I love the language!
 
 I hope you have fun with this book and that you find the content useful for your own projects.
 
 ## How To Read This Book?
 
 I have been using Common Lisp professionally since 1982 and also use Common Lisp for my own experiments. This book contains many little ideas and many little bits of code. If you already know Common Lisp then I recommend looking at the table of contents and simply starting with the topics that interest you the most.
+
+I usually add new chapters at the end of the book.
 
 ## Requests from the Author
 
@@ -29,6 +31,8 @@ That said, I appreciate it when readers purchase my books because the income ena
 ### Hire the Author as a Consultant
 
 I am available for short consulting projects. Please see [https://markwatson.com](https://markwatson.com).
+
+I also offer free mentoring services.
 
 
 ## Why Use Common Lisp?
