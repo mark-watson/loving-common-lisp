@@ -1,10 +1,10 @@
 # New LLM Library With Tool Support
 
-Dear reader, as I write this chapter in March 2026 I already have six chapters in this book covering the use of LLMs from different providers. I experiment a lot rewriting code, and I have a new library included in the GitHub repository for this book called **llm** that is the result of spending the last week refactoring my older code and adding new functionality with the goal of having a small library that supports Ollama local models, Anthropic Claude APIs, and Google Gemini APIs with similar functionality except for adding support for Google's integrated web search and Gemini APIs.
+Dear reader, as I write this chapter in March 2026 I already have six chapters in this book covering the use of LLMs from different providers. I experiment a lot rewriting code, and I have a new library included in the GitHub repository for this book called **llm** that is the result of spending the last week refactoring my older code and adding new functionality with the goal of having a small library that supports Ollama local models, Anthropic Claude APIs, Google Gemini APIs, and Fireworks.ai APIs with similar functionality except for adding support for Google's integrated web search and Gemini APIs.
 
 ## Library Structure Overview
 
-The llm library is organized into three focused source files that work together: llm.lisp provides shared low-level utilities, simple-tools.lisp defines a provider-agnostic tool registry and schema system, and provider-specific files like **claude.lisp** and **ollama.lisp** implement the actual API calls. This separation of concerns makes it straightforward to add new providers without touching the tool infrastructure.
+The llm library is organized into three focused source files that work together: llm.lisp provides shared low-level utilities, simple-tools.lisp defines a provider-agnostic tool registry and schema system, and provider-specific files like **claude.lisp**, **ollama.lisp**, and **fireworks-ai.lisp** implement the actual API calls. This separation of concerns makes it straightforward to add new providers without touching the tool infrastructure.
 
 ## Source Code
 
@@ -133,7 +133,7 @@ ARGS is a list of (param-name type description) triples."
         collect (rest (assoc (intern (string-upcase param-name) :keyword) args))))
 ```
 
-The simple-tools package is the heart of the tool support system. Tools are defined with the **define-tool** macro which takes a name, a list of parameter triples of the form (param-name type description), a docstring description, and a body. Internally each tool is stored as a struct in the *tools* hash table, keyed by its lowercase string name. This means tools defined once are immediately available to all provider backends — you define a tool in one place and can pass it by name to claude:completions, ollama:completions, or any future Gemini wrapper without modification.
+The simple-tools package is the heart of the tool support system. Tools are defined with the **define-tool** macro which takes a name, a list of parameter triples of the form (param-name type description), a docstring description, and a body. Internally each tool is stored as a struct in the *tools* hash table, keyed by its lowercase string name. This means tools defined once are immediately available to all provider backends — you define a tool in one place and can pass it by name to claude:completions, ollama:completions, fireworks-ai:completions, or any future Gemini wrapper without modification.
 The render-tool function serializes a tool into the OpenAI-compatible JSON schema format used by Ollama. Claude's API uses a slightly different schema key (input_schema rather than parameters), so the claude.lisp file provides its own render-tool-for-claude function that produces the correct structure while still reading from the same *tools* registry.
 Function **map-args-to-parameters** handles the impedance mismatch between the **alist** of named arguments returned by the JSON parser and the positional argument list expected by the tool's underlying lambda. It walks the tool's declared parameter list in order and looks up each parameter by its keyword-interned name in the response **alist**, returning an ordered list of values ready for apply.
 
@@ -369,6 +369,213 @@ The following diagram shows the high-level architecture of the LLM library with 
 
 The Ollama backend targets a locally running Ollama server on localhost:11434 and defaults to mistral:v0.3, though any model name supported by your local Ollama installation can be passed as the optional third argument. Unlike the Claude backend, no authentication header is needed. The request format follows the OpenAI chat completions convention that Ollama implements, so simple-tools:render-tool (which produces the {type: "function", function: {...}} shape) is used directly without a custom renderer. Tool call detection reads from message.tool_calls in the response rather than from a top-level stop_reason, reflecting the structural difference between the two APIs. The package also exports convenience wrappers summarize and answer-question that prepend simple prompt prefixes.
 
+### fireworks-ai.lisp — Fireworks.ai Backend
+
+```lisp
+;;; Copyright (C) 2026 Mark Watson <markw@markwatson.com>
+;;; Apache 2 License
+
+(defpackage #:fireworks-ai
+  (:use #:cl)
+  (:export #:fireworks-llm
+           #:completions
+           #:answer-question
+           #:test-completions
+           #:test-tools))
+
+(in-package #:fireworks-ai)
+
+(defvar *fireworks-endpoint*
+  "https://api.fireworks.ai/inference/v1/chat/completions")
+(defvar *fireworks-model*
+  "accounts/fireworks/models/deepseek-v4-flash")
+
+(defun get-fireworks-api-key ()
+  (uiop:getenv "FIREWORKS_API_KEY"))
+
+(defun make-headers ()
+  "Build HTTP headers for Fireworks API requests."
+  (list '("Accept" . "application/json")
+        '("Content-Type" . "application/json")
+        (cons "Authorization"
+              (concatenate 'string "Bearer "
+                (get-fireworks-api-key)))))
+
+(defun completions (prompt &key tools
+                    (model-id *fireworks-model*)
+                    (max-tokens 4096)
+                    (temperature 0.6))
+  "Send a chat completion to Fireworks AI.
+PROMPT is a string. TOOLS is an optional list of
+tool name strings registered in simple-tools:*tools*.
+When the model invokes tools, a two-turn protocol
+executes them locally and sends results back for
+a final natural-language response."
+  (let* ((tools-rendered
+           (when tools
+             (loop for tname in tools
+                   collect
+                   (let ((tool (gethash
+                                 (string tname)
+                                 simple-tools:*tools*)))
+                     (if tool
+                         (simple-tools:render-tool tool)
+                         (error "Undefined tool: ~A"
+                                tname))))))
+         (messages
+           (list `((:role . "user")
+                   (:content . ,prompt))))
+         (base-data
+           `((:model . ,model-id)
+             (:max--tokens . ,max-tokens)
+             (:temperature . ,temperature)
+             (:messages . ,messages)))
+         (data (if tools-rendered
+                   (append base-data
+                     `((:tools . ,tools-rendered)
+                       (:tool--choice . "auto")))
+                   base-data))
+         (request-body
+           (cl-json:encode-json-to-string data))
+         (headers (make-headers))
+         (response
+           (dex:post *fireworks-endpoint*
+                     :headers headers
+                     :content request-body)))
+    (with-input-from-string (s response)
+      (let* ((json (cl-json:decode-json s))
+             (choices
+               (cdr (assoc :choices json)))
+             (first-choice (car choices))
+             (message
+               (cdr (assoc :message first-choice)))
+             (tool-calls
+               (cdr (assoc :tool--calls message)))
+             (content
+               (cdr (assoc :content message))))
+        (if tool-calls
+            (handle-tool-calls
+              prompt message tool-calls
+              tools-rendered headers
+              model-id max-tokens temperature)
+            (or content
+                "No response content"))))))
+
+(defun handle-tool-calls (original-prompt
+                          model-message tool-calls
+                          tools-rendered headers
+                          model-id max-tokens
+                          temperature)
+  "Execute tool calls locally and send results back
+to Fireworks for a final natural-language response.
+Implements the two-turn tool-calling protocol."
+  (let* ((tool-results
+           (loop for call in tool-calls
+                 collect
+                 (let* ((call-id
+                           (cdr (assoc :id call)))
+                        (func
+                           (cdr
+                             (assoc :function call)))
+                        (name
+                           (cdr (assoc :name func)))
+                        (args-json
+                           (cdr
+                             (assoc :arguments func)))
+                        (args
+                           (cl-json:decode-json-from-string
+                             args-json))
+                        (tool
+                           (gethash name
+                             simple-tools:*tools*))
+                        (mapped
+                           (simple-tools:map-args-to-parameters
+                             tool args))
+                        (result
+                           (apply
+                             (simple-tools:tool-fn tool)
+                             mapped)))
+                   (list call-id name
+                         (princ-to-string result)))))
+         ;; Build full conversation history:
+         ;; user prompt, assistant tool invocation,
+         ;; and tool result messages.
+         (messages
+           (append
+             (list `((:role . "user")
+                     (:content . ,original-prompt)))
+             (list model-message)
+             (loop for (id name result)
+                     in tool-results
+                   collect
+                   `((:role . "tool")
+                     (:tool--call--id . ,id)
+                     (:name . ,name)
+                     (:content . ,result)))))
+         (data
+           `((:model . ,model-id)
+             (:max--tokens . ,max-tokens)
+             (:temperature . ,temperature)
+             (:messages . ,messages)
+             (:tools . ,tools-rendered)
+             (:tool--choice . "auto")))
+         (request-body
+           (cl-json:encode-json-to-string data))
+         (response
+           (dex:post *fireworks-endpoint*
+                     :headers headers
+                     :content request-body)))
+    (with-input-from-string (s response)
+      (let* ((json (cl-json:decode-json s))
+             (choices
+               (cdr (assoc :choices json)))
+             (first-choice (car choices))
+             (message
+               (cdr (assoc :message first-choice)))
+             (content
+               (cdr (assoc :content message))))
+         (or content "No response content")))))
+
+(defun answer-question (question)
+  (completions
+    (concatenate 'string
+      "Concisely answer the question: " question)))
+
+;;; --- Test Functions ---
+
+(defun test-completions ()
+  "Test basic completion without tools."
+  (format t "~%=== Fireworks: Basic Completion ===~%")
+  (let ((result
+          (completions
+            "What is 2+2? Answer in one word.")))
+    (format t "Response: ~A~%" result)
+    result))
+
+(defun test-tools ()
+  "Test two-turn tool calling with a simulated
+weather tool."
+  (format t "~%=== Fireworks: Tool Calling ===~%")
+  (simple-tools:define-tool "get_weather"
+      (("location" "string" "City name"))
+    "Get the current weather for a location"
+    (format nil
+      "{\"location\": \"~A\", ~
+       \"temperature\": \"72F\", ~
+       \"condition\": \"Sunny\"}"
+      location))
+  (let ((result
+          (completions
+            "What is the weather like in Tokyo?"
+            :tools '("get_weather"))))
+    (format t "Response: ~A~%" result)
+    result))
+```
+
+The Fireworks.ai backend targets the Fireworks chat completions endpoint (`https://api.fireworks.ai/inference/v1/chat/completions`) and by default uses the `accounts/fireworks/models/deepseek-v4-flash` model. Like OpenAI and Claude, it requires an API key, which is read from the `FIREWORKS_API_KEY` environment variable and passed as a `Bearer` token in the `Authorization` header.
+
+Unlike the other backends presented so far, which only perform a single round-trip (executing the tool locally and returning the result directly as a string), `fireworks-ai.lisp` implements a full **two-turn tool-calling protocol** in `handle-tool-calls`. When the model decides to invoke tools, the code executes those tools locally, builds a complete conversation history containing the user's prompt, the model's tool call requests, and the tool execution responses (with role `"tool"` and the corresponding tool call IDs), and posts this entire history back to the Fireworks API for a final natural-language response.
+
 ## Defining Tools — example_tools.lisp
 
 ```lisp
@@ -448,7 +655,7 @@ The test file loads the example tools first to populate *tools*, then exercises 
 
 ### Design Notes and Tradeoffs
 
-Using a native HTTP client library like Dexador provides robust, platform-independent connection handling and avoids the overhead and security risks of spawning subprocesses to call curl. While the legacy `run-curl-command` and JSON-escaping helpers are retained in `llm.lisp` for backward compatibility or direct command-line debugging, the provider implementations (OpenAI, Claude, Gemini, and Ollama) communicate natively by calling Dexador. This is a much cleaner approach for any production or long-running context.
+Using a native HTTP client library like Dexador provides robust, platform-independent connection handling and avoids the overhead and security risks of spawning subprocesses to call curl. While the legacy `run-curl-command` and JSON-escaping helpers are retained in `llm.lisp` for backward compatibility or direct command-line debugging, the provider implementations (OpenAI, Claude, Gemini, Fireworks.ai, and Ollama) communicate natively by calling Dexador. This is a much cleaner approach for any production or long-running context.
 One limitation of the current tool dispatch is that only a single round-trip is performed. If the model's tool call result should be fed back to the model for a follow-up response (the full agentic loop), the caller must manage that conversation state manually by building a message list and passing it as starter-text. The completions function's acceptance of either a plain string or a pre-built message list makes this possible, and it is a natural extension to explore in the next chapter when we look at multi-step agent loops.
 
 ## Example Program Output
@@ -575,9 +782,9 @@ The following sci-fi films have confirmed showtimes for today:
 
 ## Wrap Up
 
-Starting with the shared llm.lisp utility layer, we established a clean foundation of native HTTP communication using Dexador and JSON manipulation that the Claude, Gemini, OpenAI, and Ollama backends depend on without duplicating. The simple-tools.lisp package gave us a provider-agnostic tool registry built around the define-tool macro, making it possible to define a tool once and have it immediately available to any backend that knows how to read from *tools*.
+Starting with the shared llm.lisp utility layer, we established a clean foundation of native HTTP communication using Dexador and JSON manipulation that the Claude, Gemini, OpenAI, Fireworks.ai, and Ollama backends depend on without duplicating. The simple-tools.lisp package gave us a provider-agnostic tool registry built around the define-tool macro, making it possible to define a tool once and have it immediately available to any backend that knows how to read from *tools*.
 
-The two provider backends demonstrated how different APIs can be wrapped behind a consistent completions interface despite having meaningfully different request and response shapes. Claude's input_schema key, typed content blocks, and stop_reason-based tool detection contrast with Ollama's OpenAI-compatible function schema and tool_calls response structure — yet from the caller's perspective both are invoked the same way, with the same tool names, and return the same kind of string result.
+The provider backends demonstrated how different APIs can be wrapped behind a consistent completions interface despite having meaningfully different request and response shapes. Claude's input_schema key, typed content blocks, and stop_reason-based tool detection contrast with Ollama's OpenAI-compatible function schema and tool_calls response structure, while Fireworks.ai extends this with an integrated two-turn tool calling loop. Yet, from the caller's perspective, all are invoked the same way, with the same tool names, and return the same kind of string result.
 
 The example tools and test file showed the library working end to end: natural language queries being correctly routed to the right tool functions, arguments extracted from the model's JSON response and mapped to positional lambda parameters, and results returned as plain strings ready for further use or display.
 
