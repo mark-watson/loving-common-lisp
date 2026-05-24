@@ -3,13 +3,13 @@
 **Book Chapter:** [New LLM Library With Tool Support](https://leanpub.com/read/lovinglisp/new-llm-library-with-tool-support) — *Loving Common Lisp* (free to read online).
 
 
-A Common Lisp library providing a unified interface for multiple LLM providers (Google Gemini, OpenAI, and Ollama) with tool/function-calling support.
+A Common Lisp library providing a unified interface for multiple LLM providers (Google Gemini, OpenAI, Ollama, and Fireworks AI) with tool/function-calling support.
 
 Copyright (C) 2026 Mark Watson — Apache 2 / MIT License
 
 ## Features
 
-- **Multi-provider support**: Google Gemini, OpenAI, and local Ollama models
+- **Multi-provider support**: Google Gemini, OpenAI, local Ollama models, and Fireworks AI
 - **Tool/function calling**: Define Lisp functions as LLM-callable tools with a simple macro
 - **Lightweight**: Uses `curl` for HTTP and `cl-json` for JSON — no heavy HTTP client dependencies
 - **Unified tool registry**: Tools defined once work across all providers
@@ -45,6 +45,7 @@ Set the following environment variables before use:
 |---|---|
 | `OPENAI_KEY` | OpenAI |
 | `GOOGLE_API_KEY` | Google Gemini |
+| `FIREWORKS_API_KEY` | Fireworks AI |
 
 Ollama requires no API key — it runs locally at `http://localhost:11434`.
 
@@ -108,6 +109,36 @@ Default model: `gpt-4o-mini`. Override by passing a model ID or setting `*openai
 
 Default model: `mistral:v0.3`. Override by passing a model ID or setting `*ollama-model*`.
 
+### Fireworks AI
+
+```lisp
+(in-package :fireworks-ai)
+
+;; Chat completion
+(completions "Explain quantum entanglement in one sentence.")
+
+;; Convenience wrapper
+(answer-question "What is the speed of light?")
+
+;; Completion with tool calling (two-turn protocol)
+(completions "What is the weather like in Tokyo?"
+             :tools '("get_weather"))
+```
+
+When tools are invoked, Fireworks AI uses a **two-turn protocol**: the model first returns tool calls, the library executes them locally via `simple-tools`, then sends results back for a final natural-language response.
+
+Default model: `accounts/fireworks/models/deepseek-v4-flash`. Override with `:model-id` or set `*fireworks-model*`.
+
+#### Built-in test functions
+
+```lisp
+;; Test basic completion
+(fireworks-ai:test-completions)
+
+;; Test tool calling with a simulated weather tool
+(fireworks-ai:test-tools)
+```
+
 ## Tool / Function Calling
 
 The `simple-tools` package provides a `define-tool` macro that registers Lisp functions as LLM-callable tools.
@@ -136,6 +167,10 @@ Pass a list of tool symbols to any provider's `completions` or `generate` functi
 
 ;; With Gemini
 (gemini:generate "What's the weather in London?" :tools '(get-weather))
+
+;; With Fireworks AI (two-turn: executes tool, sends result back)
+(fireworks-ai:completions "What's the weather in Berlin?"
+                          :tools '("get_weather"))
 ```
 
 When the model decides to call a tool, the library dispatches the call automatically and returns the result.
@@ -159,6 +194,7 @@ All tools are stored in `simple-tools:*tools*` (a hash table keyed by name strin
 | `gemini.lisp` | `gemini` | Google Gemini API client (Interactions API) |
 | `openai.lisp` | `openai` | OpenAI API client |
 | `ollama.lisp` | `ollama` | Ollama local model client |
+| `fireworks-ai.lisp` | `fireworks-ai` | Fireworks AI client with two-turn tool calling |
 | `project.lisp` | — | Convenience loader script |
 
 ## Architecture
