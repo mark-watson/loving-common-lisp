@@ -10,4 +10,5 @@
                (:file "gemini")
                (:file "openai")
                (:file "claude")
-               (:file "ollama")))
+                (:file "ollama")
+               (:file "fireworks-ai")))
