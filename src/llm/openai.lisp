@@ -10,7 +10,7 @@
 (in-package #:openai)
 
 (defvar *openai-endpoint* "https://api.openai.com/v1/chat/completions")
-(defvar *openai-model* "gpt-4o-mini")
+(defvar *openai-model* "gpt-5-mini")
 
 (defun get-openai-api-key ()
   (uiop:getenv "OPENAI_KEY"))
