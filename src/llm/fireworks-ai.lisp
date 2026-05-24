@@ -9,7 +9,7 @@
 
 (in-package #:fireworks-ai)
 
-(defvar *fireworks-endpoint* "https://api.fireworks.ai/inference/v1/completions")
+(defvar *fireworks-endpoint* "https://api.fireworks.ai/inference/v1/chat/completions")
 (defvar *fireworks-model* "accounts/fireworks/models/deepseek-v4-flash")
 
 (defun get-fireworks-api-key ()
@@ -25,7 +25,7 @@
                  (:presence--penalty . ,presence-penalty)
                  (:frequency--penalty . ,frequency-penalty)
                  (:temperature . ,temperature)
-                 (:prompt . ,prompt)))
+                 (:messages . (((:role . "user") (:content . ,prompt))))))
          (request-body (cl-json:encode-json-to-string data))
          (headers (list '("Content-Type" . "application/json")
                         (cons "Authorization" (concatenate 'string "Bearer " (get-fireworks-api-key)))))
@@ -34,7 +34,8 @@
       (let* ((json-as-list (cl-json:decode-json s))
              (choices (cdr (assoc :choices json-as-list)))
              (first-choice (car choices))
-             (text (cdr (assoc :text first-choice))))
+             (message (cdr (assoc :message first-choice)))
+             (text (cdr (assoc :content message))))
         (or text "No response content")))))
 
 (defun answer-question (question)
