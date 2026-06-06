@@ -10,6 +10,7 @@ input_output.md
 plotlib.md
 clos.md
 network_programming.md
+web-scraping.md
 bravesearch.md
 database.md
 nosql.md
