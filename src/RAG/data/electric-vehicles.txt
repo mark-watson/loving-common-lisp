@@ -1,0 +1,13 @@
+Electric Vehicles: Technology, Infrastructure, and Market Trends
+
+Electric vehicles (EVs) use electric motors powered by rechargeable battery packs instead of internal combustion engines. The most common battery chemistry used in modern EVs is lithium-ion, specifically lithium nickel manganese cobalt oxide (NMC) and lithium iron phosphate (LFP). NMC batteries offer higher energy density (typically 150-250 Wh/kg) but use expensive cobalt, while LFP batteries are cheaper and more thermally stable but have lower energy density (90-160 Wh/kg).
+
+Battery range has improved dramatically. Early mass-market EVs like the 2011 Nissan Leaf offered about 73 miles of range, while current models routinely exceed 300 miles. Tesla's Model S Long Range achieves over 400 miles on a single charge. Battery degradation is a concern — most EV batteries retain about 80-90% of their original capacity after 200,000 miles of driving, depending on charging habits and climate conditions.
+
+Charging infrastructure is expanding rapidly. Level 1 charging uses a standard household outlet (120V) and adds about 3-5 miles of range per hour. Level 2 charging (240V) adds 10-30 miles per hour and is common in homes and public locations. DC fast charging (DCFC) can add 100-200 miles of range in 20-30 minutes using chargers rated at 50-350 kW. The CCS (Combined Charging System) standard is becoming dominant in North America and Europe.
+
+The environmental impact of EVs depends heavily on the electricity source used for charging. When charged from renewable energy sources like solar or wind, EVs produce zero operational emissions. Even when charged from the average US grid mix, EVs produce roughly 50-60% fewer lifecycle greenhouse gas emissions than comparable gasoline vehicles. Battery manufacturing is energy-intensive, producing approximately 75-100 kg of CO2 per kilowatt-hour of battery capacity.
+
+Solid-state batteries represent the next major advancement in EV technology. These batteries replace the liquid electrolyte in conventional lithium-ion cells with a solid material, potentially offering 2-3 times the energy density, faster charging, improved safety (no risk of thermal runaway), and longer lifespan. Toyota, Samsung SDI, and QuantumScape are leading development efforts, with commercial availability expected between 2027 and 2030.
+
+The recycling of EV batteries is an emerging industry. Spent EV batteries can be repurposed for stationary energy storage applications where the lower capacity is still useful for grid-scale or home energy storage. Eventually, batteries are recycled to recover valuable materials: lithium, cobalt, nickel, and manganese can be extracted and reused in new battery production, creating a circular economy for battery materials.
