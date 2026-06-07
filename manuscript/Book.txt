@@ -38,6 +38,7 @@ knowledge-navigator.md
 lightpanda.md
 web-scraping.md
 doc_qa.md
+RAG.md
 prompts.md
 gemini.md
 tavily.md
@@ -45,7 +46,6 @@ autocontext.md
 agent_llm.md
 agent_part2.md
 llm_lib.md
-RAG.md
 wolfram.md
 symbolic-math.md
 webkit.md

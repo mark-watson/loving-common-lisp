@@ -1,10 +1,10 @@
 # Using a Local Document Embeddings Vector Database With OpenAI GPT-5 APIs for Semantically Querying Your Own Data
 
-*Note: Updated 10/11/2025 to use gpt-5-mini and new OpenAI library.*
-
 This project is inspired by the Python LangChain and LlamaIndex projects, with just the parts I need for my projects written from scratch in Common Lisp. I wrote a Python book "LangChain and LlamaIndex Projects Lab Book: Hooking Large Language Models Up to the Real World Using GPT-3, ChatGPT, and Hugging Face Models in Applications" in March 2023: [https://leanpub.com/langchain](https://leanpub.com/langchain) that you might also be interested in.
 
 The GitHub repository for this example can be found here: [https://github.com/mark-watson/docs-qa](https://github.com/mark-watson/docs-qa). This code also requires my OpenAI Common Lisp library [https://github.com/mark-watson/openai](https://github.com/mark-watson/openai).
+
+The program we build here is a simple Retrieval Augmented Generation (RAG) system that uses SQLite as a vector data store and the OpenAI APIs for creating embeddings and generating text. The techniques are applicable to other vector data stores and other LLM APIs. In the next chapter we will discuss ways to improve performance and other factors related to scaling this type of application. The primary goal of this chapter is to show how to start building such an application in Common Lisp.
 
 ## Overview of Local Embeddings Vector Database to Enhance the Use of GPT3 APIs With Local Documents
 
