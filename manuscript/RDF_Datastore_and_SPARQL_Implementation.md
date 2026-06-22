@@ -370,3 +370,23 @@ This function ties everything together, executing a SPARQL query from start to f
 ## Conclusion
 
 This implementation provides a basic framework for an RDF datastore with partial SPARQL support in Common Lisp. While it lacks many features of a full-fledged RDF database and SPARQL engine, it demonstrates the core concepts and can serve as a starting point for more complex implementations. The code showcases Common Lisp's strengths in list processing and symbolic computation, making it well-suited for working with semantic data structures like RDF.
+
+## Optional Practice Problems
+
+1. **SPARQL FILTER Clause Support (Constraint Checking)**:
+   In [simple_rdf_sparql.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/simple_rdf_sparql/simple_rdf_sparql.lisp), the query engine only supports positive triple matching patterns. Real SPARQL supports a `FILTER` clause (e.g. `FILTER(?age > 30)` or `FILTER(?food = "pizza")`). Write a parsing and evaluation extension for `execute-sparql-query` that detects `FILTER` keywords, parses the associated logical constraints, and filters the generated bindings before they are projected.
+
+2. **Index-Based Query Optimizer (SPO, POS, OSP Indexes)**:
+   The `query-triples` function in [simple_rdf_sparql.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/simple_rdf_sparql/simple_rdf_sparql.lisp) searches the database using `remove-if-not` sequentially, resulting in an $O(N)$ linear scan of `*rdf-store*` for each query pattern. When $N$ (number of triples) is large, this is highly inefficient. Implement subject-predicate-object indexes (SPO, POS, OSP) using hash tables or nested association lists, and update `add-triple` and `query-triples` to use these indexes for constant-time $O(1)$ lookups.
+
+3. **SPARQL OPTIONAL Clause Support**:
+   Implement support for the `OPTIONAL` keyword in `execute-where-patterns` in [simple_rdf_sparql.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/simple_rdf_sparql/simple_rdf_sparql.lisp). The `OPTIONAL` keyword allows query patterns to be conditionally matched; if the pattern fails to match, the query does not fail, but the optional variables are left unbound (`nil`). Extend your parser and execution engine to handle optional blocks appropriately.
+
+4. **Literal vs. URI vs. Blank Node Distinctions**:
+   The current datastore represents subjects, predicates, and objects as simple Lisp strings. However, standard RDF distinguishes between URIs (resources), Literals (strings, numbers, booleans with optional data types), and Blank Nodes (anonymous local resources). Define a set of CLOS classes or structures representing `uri`, `literal`, and `blank-node`. Refactor the triple construction and comparison helpers (such as `query-triples` and `triple-to-binding`) to support these rich types.
+
+5. **JSON-LD Serialization and Ingestion**:
+   Write utility functions to export the contents of `*rdf-store*` to JSON-LD format, and conversely to ingest a JSON-LD document and load it into the store. Use the `cl-json` library to serialize the output as an array of JSON objects containing `@id`, `@type`, and related properties, ensuring compatibility with other semantic web libraries.
+
+6. **Graph Merge and Conflict Resolution**:
+   In collaborative knowledge graphs, merging two separate triple stores can result in conflicts or duplicates. Implement a `merge-rdf-stores` function that combines two `*rdf-store*` lists. Write a conflict resolution strategy callback (e.g., handling functional property constraints where a subject can only have one value for a specific predicate, like `age`, and resolving discrepancies using timestamps or confidence metrics).

@@ -634,3 +634,23 @@ For production use, consider these enhancements:
 - **Parallel search**: Use threads to search multiple corpora simultaneously.
 
 The Google research reports that their production agentic RAG system achieves up to 34% higher accuracy than vanilla RAG on factuality benchmarks, with cross-corpus retrieval nearly matching single-corpus accuracy. Our Common Lisp implementation demonstrates the same architecture on a smaller scale.
+
+## Optional Practice Problems
+
+1. **Custom Chunk Size and Overlap Strategy**:
+   The logic inside `split-into-chunks` in [vector-store.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/vector-store.lisp) uses the package constants `*default-chunk-size*` (500 characters) and `*chunk-overlap*` (50 characters). Modify `add-document` in [vector-store.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/vector-store.lisp) and `agentic-rag` in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp) to support dynamic configuration of these parameters. Write a helper function that measures the sensitivity of retrieval relevance scores to different chunk configurations.
+
+2. **Deduplication with Embedding Similarity (Soft Deduplication)**:
+   In `search-fanout` (in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp)), the retrieved chunks are deduplicated strictly by exact string matching. In large datasets, different documents might contain near-identical chunks or rephrased content. Implement a "soft" deduplication mechanism in `search-fanout` that uses the `cosine-similarity` function from [embeddings.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/embeddings.lisp) to discard any retrieved chunk that has a similarity score greater than 0.9 with an already selected chunk.
+
+3. **Multi-Turn Chat Interface Integration**:
+   The current `interactive-demo` loop in [rag.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/rag.lisp) and the orchestrator `agentic-rag` in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp) are stateless: each query is processed independently. Extend the pipeline to support a conversation history (list of past QA turns). Pass the history to the `Query Rewriter` so it can resolve pronouns and context (e.g., rewriting "How does it compare to hydro?" following "What is the cost of battery storage?").
+
+4. **Self-Correction and Web Search Fallback on Refinement**:
+   In `agentic-rag` (in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp)), if the context remains insufficient after refining queries, the system continues to search the same corpus. Write a fallback mechanism that, when the Sufficient Context Agent reports `INSUFFICIENT` for the second time, switches to an external API (like a local DuckDuckGo lookup or Ollama Cloud web search helper) to gather external context, appending the results to the RAG vector store dynamically.
+
+5. **JSON Schema Schema Enforcement for Agent Verdicts**:
+   The Sufficient Context Agent in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp) relies on string matching (searching for `"VERDICT:"` and `"MISSING:"`) to parse Gemini's response. This is fragile if the model outputs code blocks, explanations, or formatting deviations. Modify `assess-sufficiency` to request structured output using a JSON Schema (by specifying schema parameters in the request payload to the Gemini Interactions API). Parse the returned structured JSON reliably using `cl-json`.
+
+6. **Parallelized Search Fanout**:
+   The `search-fanout` function in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp) runs queries sequentially. If there are 3 sub-queries and multiple corpora, fetching embeddings and searching them one by one introduces latency. Use a threading library such as `bordeaux-threads` to parallelize the calls to `get-embedding` and `search-corpora` for each sub-query, gathering and deduplicating results once all threads terminate.

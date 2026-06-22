@@ -469,3 +469,23 @@ The key takeaways are:
 - **Statistical significance ≠ practical significance.** A tiny p-value tells you an association exists; it does not tell you the association is large or useful.
 - **Correlation ≠ causation, and even correlation ≠ reliable individual prediction.** The Pearson-r between test results and disease is real but insufficient for clinical decision-making.
 - **Both frameworks have their place.** Bayesian methods shine when prior information matters; frequentist methods dominate regulatory and large-sample settings. Pragmatic practitioners use both.
+
+## Optional Practice Problems
+
+1. **Continuous Evidence Support (Bayesian PDF Likelihood)**:
+   In [bayes.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/Probability/bayes.lisp), the `update` function and its `likelihood-fn` parameter assume discrete evidence tokens (such as `:positive-test`). In physical or AI systems, evidence is often continuous (e.g., standard-normal measurements or embedding distances). Write a new likelihood function that computes the probability of a continuous variable under a normal probability density function (PDF). Test this by updating the model's hypothesis probabilities based on a continuous numerical observation.
+
+2. **Bayesian Posterior Credible Interval**:
+   Write a function in [bayes.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/Probability/bayes.lisp) that computes a credible interval for a set of hypotheses. Assuming the hypotheses are ordered (e.g., discrete parameter values), calculate the narrowest interval of hypotheses that contains at least a specified cumulative probability (e.g., 95%). Contrast this with the Wilson score interval returned by `confidence-interval-proportion` in [frequentist.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/Probability/frequentist.lisp).
+
+3. **Causal Inference with Do-Calculus (Simpson's Paradox)**:
+   Pure probability and correlation coefficients (like `pearson-r` in [correlation.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/Probability/correlation.lisp)) can lead to Simpson's paradox, where an association observed in multiple groups disappears or reverses when the groups are combined. Extend the library by creating a simple causal model representation. Write a function that calculates both the observational probability $P(Y \mid X)$ and the causal probability $P(Y \mid \text{do}(X))$ using a confounder $Z$, illustrating how to control for confounding variables dynamically.
+
+4. **Multi-Category Chi-Squared Contingency Table Test**:
+   The current `chi-squared-test` in [frequentist.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/Probability/frequentist.lisp) only supports a one-dimensional goodness-of-fit test. Implement a two-way contingency table chi-squared test of independence, which accepts a 2D matrix of observed counts and computes expected counts, degrees of freedom, and the p-value. Test this by evaluating whether multiple patient symptoms are independent of multiple diagnostic outcomes in [medical.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/Probability/examples/medical.lisp).
+
+5. **Online Sequential Bayesian Updating**:
+   In dynamic environments, evidence arrives sequentially rather than in a single batch. Write a recursive wrapper function, `sequential-update`, that takes a model, a list of incoming evidence items, and a list of likelihood functions, updating the model iteratively. Implement an option to print/log the entropy of the posterior distribution at each step to show how uncertainty changes as more data points are observed.
+
+6. **Spearman Rank Correlation Speed Optimization**:
+   The `spearman-rho` function in [correlation.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/Probability/correlation.lisp) converts data to ranks by sorting copies of lists, which has an $O(N \log N)$ complexity. If $N$ is large, sorting lists multiple times can be slow. Write an optimized version of `rank-list` that works directly on unboxed arrays using SBCL-specific declarations `(declare (optimize (speed 3) (safety 0)))` and type hints. Compare the execution times on a population size of 1,000,000 using `time`.

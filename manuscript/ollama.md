@@ -692,7 +692,7 @@ Final Answer: **Current Bitcoin Price (USD)** – ≈ **$71,560**
 
 *Source:* CoinGecko API (simple price endpoint) – data fetched just now (2024‑06‑15).  
 
-> Prices can fluctuate rapidly across exchanges, so the exact rate may differ by a few dollars at any moment. For the most up-to-date figure, you can query the same endpoint or check a live market ticker (e.g., CoinDesk, Binance, Kraken)."
+> Prices can fluctuate rapidly across exchanges, so the exact rate may differ by a few dollars at any moment. For the most up‑to‑date figure, you can query the same endpoint or check a live market ticker (e.g., CoinDesk, Binance, Kraken)."
 * 
 ```
 
@@ -702,5 +702,22 @@ Dear reader, this chapter demonstrates that the marriage of Common Lisp’s symb
 
 Looking ahead, the shift from local execution to hybrid cloud agents illustrates the evolving landscape of AI development. As seen in the Ollama Cloud integration with web search and web fetch tools, the transition from a deterministic subsystem to a dynamic agent loop requires careful state management and prompt engineering to handle iterative tool requests. Whether you are leveraging the low latency of a local Mistral model instance or the broad capabilities of a cloud-based search agent, the patterns established here of JSON serialization hacks, error handling for external processes, and recursive agent loops provide a flexible foundation for any modern Lisp-based AI application that can be improved by using LLMs.
 
+## Optional Practice Problems
 
+1. **Custom Temperature and Parameter Configuration**:
+   Extend the `completions` function in [ollama.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama.lisp) to support optional configuration parameters such as `:temperature`, `:num-predict`, or `:top-p`. Define an optional alist or plist parameter `options` and map these settings to the `:options` key in the request payload structure. Ensure that parameters like temperature are correctly serialized to JSON float values when invoking `lisp-to-json-string`.
 
+2. **System Prompt Support**:
+   Modify the message construction inside `completions` in [ollama.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama.lisp) to accept a `:system-prompt` keyword argument. If provided, prepend a system-role message, such as `((:|role| . "system") (:|content| . system-prompt))`, to the messages payload list. Test this extension by instructing the local LLM to restrict its answers to a specific format or adopt a persona, such as a strict code-review agent.
+
+3. **Dynamic Tool Schema Generator**:
+   The manual construction of tool JSON schemas in `register-tool-function` in [ollama-tools.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-tools.lisp) is verbose. Design a macro or helper function, such as `defollama-tool`, that automatically generates the required JSON-compatible schema structure from a standard Common Lisp function lambda list and a docstring. For instance, declaring that a function requires an argument `location` of type `string` should automatically generate the appropriate nested properties list.
+
+4. **Multi-Step Local Tool Execution Loop**:
+   Currently, `completions-with-tools` in [ollama-tools.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-tools.lisp) handles only a single tool call execution. If the tool handler returns content that the model needs to analyze further to answer the original user query, it cannot do so. Extend `completions-with-tools` to run an agent loop similar to the stateful `cloud-search-agent` loop in [ollama-cloud-search.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-cloud-search.lisp). Recursively feed the tool execution results back to the local model until it stops requesting tools and provides a final natural-language response.
+
+5. **Tool Argument Schema Validator**:
+   When Ollama returns tool calls, the function arguments are parsed as association lists but never verified. Write a schema validator in [ollama-tools.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-tools.lisp) that validates these arguments against the tool's registered `parameters` JSON schema before executing its handler. If validation fails, return an error message to the LLM (enabling it to correct its parameters) rather than triggering a Lisp error condition.
+
+6. **Web Search Fallback for Local Models**:
+   Combine the tool-calling mechanism of `completions-with-tools` from [ollama-tools.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-tools.lisp) and the DuckDuckGo query mechanism of `execute-web-search`/`execute-web-fetch` from [ollama-cloud-search.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-cloud-search.lisp) to run entirely on a local model (such as `mistral:v0.3` or `qwen3:1.7b`). Register the web tools locally and adapt the loop to handle situations where the smaller local model might return malformed or empty function names, resolving them using `infer-function-name-from-args`.

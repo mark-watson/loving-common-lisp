@@ -573,3 +573,23 @@ const result = await window.webkit_cl.invoke("command-name", {key: "value"});
 5. **Floating-point traps** — SBCL's default FP trap settings conflict with Cocoa; `%disable-fp-traps` is essential
 
 This framework demonstrates that Common Lisp can build polished desktop applications. The web rendering layer handles the visual complexity while Lisp provides the computational backbone — a productive division of labor for tools, dashboards, and data viewers.
+
+## Optional Practice Problems
+
+1. **Window Position and Center Helper**:
+   The current window management API in [webkit-cl.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webkit-cl/webkit-cl.lisp) supports setting window size and title, but not positioning. Add foreign function declarations for setting window positions (`wkcl_set_position` or similar in the C shim) and export them in [package.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webkit-cl/package.lisp) and [webkit-cl-ffi.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webkit-cl/webkit-cl-ffi.lisp). Implement a Lisp-side function `center-window` that centers the app window on the screen using system screen width and height information.
+
+2. **JavaScript Evaluation with Callback/Promise (Bidirectional eval-js)**:
+   The `eval-js` function in [webkit-cl.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webkit-cl/webkit-cl.lisp) is "fire-and-forget" because it calls the underlying C function without returning the evaluation results back to Lisp. Design an asynchronous evaluation function `eval-js-async` that takes a JS expression and a callback. Trigger a special bridge handler in Lisp containing the evaluation result when the JavaScript execution resolves, linking it to the original call.
+
+3. **Asynchronous Multi-Threading File Reader**:
+   In the markdown viewer example in [markdown-viewer.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webkit-cl/examples/markdown-viewer.lisp), the Lisp bridge handler `read-file` reads file contents synchronously. If a file is very large, reading it synchronously blocks the Cocoa event loop, making the window temporarily unresponsive. Refactor this handler using SBCL threads (`sb-thread:make-thread`) to read the file asynchronously, and use `eval-js` to push the completed content back to the JavaScript frontend when finished.
+
+4. **Bi-directional State Synchronization with JSON-diff**:
+   Write a state synchronization helper in [bridge.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webkit-cl/bridge.lisp). Rather than registering manually separate handlers like `increment`, `decrement`, and `reset` (as in [counter-app.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webkit-cl/examples/counter-app.lisp)), design a state synchronization pattern. Store the application state as a nested alist in Lisp, and write a synchronization macro that broadcasts state diffs to the JavaScript frontend automatically whenever the state changes.
+
+5. **Error Reporting with Stack Traces in the JS Console**:
+   The current command dispatch in `dispatch-bridge-command` (in [bridge.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webkit-cl/bridge.lisp)) catches Lisp errors and returns a simple JSON error string. If an error occurs deep in Lisp, the developer loses the stack trace. Enhance `dispatch-bridge-command` to capture the full SBCL stack trace using `sb-debug:backtrace` and format it as a formatted JSON error object. Inject this stack trace into the WebKit inspector console via a `console.error` call using `eval-js`.
+
+6. **Custom URL Scheme Interceptor**:
+   Currently, loading local files relies on the C-level file loader (`wkcl_load_file`), which requires resolving absolute local paths. Implement a custom URL scheme handler (such as `lisp-resource://`) inside the native Objective-C shim and bind it via CFFI. This allows the WebKit browser instance to request files (e.g., `<img src="lisp-resource://images/logo.png">`) by intercepting these requests inside Common Lisp and streaming the binary content back directly from Lisp's memory or an in-memory assets alist.

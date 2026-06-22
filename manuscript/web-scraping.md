@@ -388,3 +388,23 @@ Here are some project ideas that build on this web scraping code:
 - **Monitor pages for changes.** Run the plain-text extractor on a schedule and diff successive snapshots to detect when a page's content changes, useful for tracking product prices, news updates, or government filings.
 - **Extract structured data.** Adapt the CSS-selector technique from the header example to pull specific data fields (prices, dates, names) from pages with consistent HTML structure, and export the results as CSV or JSON.
 - **Combine with the Lightpanda browser client.** For pages that require JavaScript rendering, use the Lightpanda interface from the previous chapter to fetch the fully rendered HTML, then pass that HTML through the text or Markdown extraction functions developed here.
+
+## Optional Practice Problems
+
+1. **Extraction of Hyperlinks into an Association List**:
+   In [page-text.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webscraping/page-text.lisp), hyperlink tags `<a>` are processed by simply extracting their inner text content. Write a function `extract-all-links` that parses the DOM tree using CLSS and extracts all `href` attributes, converting them into an association list of `(anchor-text . url)`. Filter out empty anchors or relative links, resolving relative paths against the base URL.
+
+2. **Robots.txt Parser and Rate Limiting Compliance**:
+   To comply with the responsible scraping guidelines mentioned in the introduction of [web-scraping.md](file:///Users/markwatson/GITHUB/loving-common-lisp/manuscript/web-scraping.md), write a utility function `allowed-by-robots-p` in a new file or as a helper. Fetch and parse the `/robots.txt` file for a given URL, check if the current user agent is allowed to access the target path, and read any `Crawl-delay` directive to sleep dynamically before making requests via Drakma.
+
+3. **Markdown Table Converter**:
+   The `html-to-markdown` function in [page-markdown.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webscraping/page-markdown.lisp) handles block elements, headers, bold/italic markup, links, images, and lists, but does not support HTML tables (`<table>`, `<tr>`, `<th>`, `<td>`). Extend `html-to-markdown` to parse HTML table nodes and render them as correctly formatted GitHub Flavored Markdown (GFM) tables, including table header separators.
+
+4. **Dynamic User-Agent and Request Headers Customization**:
+   Many websites block default Drakma user agents to prevent scraping. Create a configuration utility or a helper function in [html-headers.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webscraping/html-headers.lisp) that randomly selects a User-Agent string from a pre-defined list of modern browser headers (Chrome, Firefox, Safari) and adds custom request headers like `Accept-Language` or `Referer` to the Drakma request payload.
+
+5. **Recursive Site Crawler with Level Limits (DFS/BFS)**:
+   Build a recursive site crawler in [page-text.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webscraping/page-text.lisp) that starts from a seed URL, extracts all internal links (using your link extraction function), and recursively scrapes pages up to a maximum depth limit (e.g. depth 2). Store the scraped pages as individual Markdown files, keeping track of visited URLs in a hash table to avoid infinite recursion.
+
+6. **Automatic Encoding Detection and Recovery**:
+   When Drakma fetches HTML content as a string, it may misinterpret the encoding if the site does not declare UTF-8 in the HTTP response headers. Write a wrapper function `fetch-html-with-encoding-recovery` in [page-text.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/webscraping/page-text.lisp) that handles encoding recovery. If the returned string contains malformed characters, search the raw binary response for `<meta charset="...">` tags, and re-decode the byte array using `flexi-streams:octets-to-string` with the detected encoding.

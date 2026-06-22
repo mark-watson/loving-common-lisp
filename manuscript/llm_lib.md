@@ -790,3 +790,23 @@ The example tools and test file showed the library working end to end: natural l
 
 A few things are worth keeping in mind as you build on this foundation. The single-pass tool dispatch is intentional in its simplicity but will need to grow into a proper agentic loop if you want the model to reason over tool results and decide on follow-up actions. The native Dexador HTTP client layer provides a clean, robust, and asynchronous-friendly solution for any long-running or high-throughput context.
 
+## Optional Practice Problems
+
+1. **Integrated Web Search Support with Citations for Claude**:
+   The `completions-with-search-and-citations` function in [claude.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/llm/claude.lisp) handles the web search beta tool (`web_search_20250305`) and extracts the text response and citations list. Expand this design by implementing a wrapper function `completions-with-search-formatted` that appends the parsed citations (title, URL) to the end of the text response in a markdown format (e.g., `[1] Source Title (URL)`), and replaces inline references in the text where they occur.
+
+2. **Recursive Multi-Step Agent Loop for Ollama**:
+   The `completions` function in [ollama.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/llm/ollama.lisp) only executes one single tool turn. If the tool output needs to be analyzed by the model to answer the query, it fails to do so. Rewrite the execution logic inside `completions` to match the two-turn tool calling logic implemented in [fireworks-ai.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/llm/fireworks-ai.lisp), creating a recursive loop that feeds tool results back to the local model until it halts calling tools.
+
+3. **Schema-Enforced Structured Outputs (JSON Mode)**:
+   In many applications, we want the LLM to return structured JSON data that matches a specific schema, rather than freeform text. Extend the `completions` function in [openai.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/llm/openai.lisp) and [gemini.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/llm/gemini.lisp) to support a `:response-format` keyword argument. If a JSON schema is provided, instruct the provider's API to enforce structured output compliance, and parse the resulting JSON string into a Lisp association list.
+
+4. **Tool Registration Metadata Enhancements (Optional Parameters)**:
+   The `define-tool` macro in [simple-tools.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/llm/simple-tools.lisp) assumes all parameters defined in the lambda list are required by the LLM. Add support for specifying whether a parameter is optional. Modify `render-tool` to separate parameter keys into `properties` and dynamically populate the `required` list to exclude optional arguments, and update `map-args-to-parameters` to supply default values (`nil` or a specified default) for missing arguments.
+
+5. **Token Usage Tracker and Request Cost Estimator**:
+   Implement a token and cost tracking mechanism. In [llm.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/llm/llm.lisp), define a global registry `*usage-log*`. In each provider backend (e.g., `openai.lisp`, `claude.lisp`, and `gemini.lisp`), parse the token usage metadata (e.g., input tokens, output tokens) returned in the HTTP response payload. Log the usage to `*usage-log*` and calculate estimated API costs based on current provider pricing.
+
+6. **Asynchronous Parallel Provider Race (Fallback Execution)**:
+   When building real-time applications, relying on a single hosted API provider can introduce latency or downtime. Using `bordeaux-threads` or `lparallel`, write a function `completions-fallback-race` that sends the same completion request to multiple providers (e.g., Claude and Gemini) simultaneously. Return the response from the provider that finishes first, and cleanly terminate the remaining request threads.
+
