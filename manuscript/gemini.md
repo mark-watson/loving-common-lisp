@@ -494,3 +494,16 @@ Located about 320 miles north of the Arctic Circle, Utqiaġvik is situated on th
 nil
 ```
 
+## Optional Practice Problems
+
+1. **Prompt Comparison:** Write a function `compare-prompts` that accepts two prompt strings, calls `gemini:generate` on each, and prints both results side-by-side with labels. Use `gemini:count-tokens` to also display the token count for each prompt before generating. This exercise reinforces basic usage of the `generate` and `count-tokens` API functions.
+
+2. **Token Budget Helper:** Write a function `fits-in-budget-p` that accepts a prompt string and a maximum token integer. It should call `gemini:count-tokens` and return `T` if the prompt fits within the budget, or `NIL` otherwise. Then write a wrapper around `gemini:generate` called `generate-if-within-budget` that only calls the API when the prompt is within a given token limit, printing a warning message instead of calling the API when the budget is exceeded.
+
+3. **Search-Grounded Fact Checker:** Using `gemini:generate-with-search`, write a function `fact-check` that takes a factual claim as a string, prepends the instruction "Is the following claim true or false? Provide evidence:", and returns the grounded response. Compare the output of `fact-check` with calling plain `gemini:generate` on the same claim to observe how search grounding improves factual accuracy.
+
+4. **Citation Formatter:** Write a function `print-sourced-answer` that wraps `gemini:generate-with-search-and-citations`. It should use `multiple-value-bind` to capture both the response text and the citations list, then print the answer followed by a numbered bibliography of sources. Each source line should display its index, title, and URL using `format`. This exercise practices working with Common Lisp multiple return values.
+
+5. **Custom Tool: Calculator:** Using `gemini:make-function-declaration`, define a `calculate` tool that accepts two parameters: `expression` (a string like "2 + 3") and `precision` (an integer for decimal places). Write the full two-turn interaction: call `gemini:generate-with-tools` with a math question, parse the returned function call from the `:ARGS` alist, evaluate the expression locally (you can use a simple `read-from-string` and `eval` approach), and pass the result back via `gemini:continue-with-function-responses` to get the model's final answer.
+
+6. **Multi-Tool Agent:** Extend the weather tool example from the chapter by registering two function declarations: `getWeather` (as shown) and a new `getPopulation` that takes a `city` parameter. Write a single prompt that asks about both the weather and the population of a city. Observe how the model returns multiple entries in the `function-calls` list, and write code that iterates over all of them, builds simulated responses for each, and passes the full list to `continue-with-function-responses` in a single Turn 2 call.
