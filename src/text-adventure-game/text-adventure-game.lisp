@@ -17,7 +17,7 @@
 (in-package #:text-adventure)
 
 (defvar *model-host* "http://localhost:11434/api/chat")
-(defvar *model-name* "mistral")
+(defvar *model-name* "qwen3.5:2b")
 
 (defun lisp-to-json-string (data)
   (with-output-to-string (s)
