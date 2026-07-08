@@ -1,8 +1,8 @@
 # AI-Powered Text Adventure Game
 
-Interactive fiction — text adventure games where the player types commands and the computer describes what happens next — has been a beloved genre since the days of *Zork* and *Adventure*. Traditionally, these games were built by hand: every room, item, puzzle, and narrative branch had to be authored in advance. A game master (human or algorithmic) could only respond in ways the programmer anticipated.
+Interactive fiction, text adventure games where the player types commands and the computer describes what happens next, has been a beloved genre since the days of *Zork* and *Adventure*. Traditionally, these games were built by hand: every room, item, puzzle, and narrative branch had to be authored in advance. A game master (human or algorithmic) could only respond in ways the programmer anticipated.
 
-Large language models change this entirely. Instead of scripting every possible scenario, we can give an LLM a *system prompt* that establishes the world, the rules, and the tone — then let the model improvise. The player types whatever they want, and the LLM generates a coherent, creative response that respects everything that happened before. There are no hardcoded branches, no "I don't understand that" dead ends. The story emerges from the conversation.
+Large language models change this entirely. Instead of scripting every possible scenario, we can give an LLM a *system prompt* that establishes the world, the rules, and the tone, then lets the model improvise. The player types whatever they want, and the LLM generates a coherent, creative response that respects everything that happened before. There are no hardcoded branches, no "I don't understand that" dead ends. The story emerges from the conversation.
 
 This chapter builds a complete AI text adventure game in Common Lisp. We provide two backends: **Ollama** for running an LLM locally (no API keys, no usage costs) and **Fireworks.ai** for cloud-hosted inference that runs dramatically faster. Both variants use the same conversational architecture; the program is under 60 lines of code, yet it delivers an open-ended interactive storytelling experience.
 
@@ -10,11 +10,11 @@ This chapter builds a complete AI text adventure game in Common Lisp. We provide
 
 The game follows a simple conversation loop:
 
-1. **System prompt** — a text file (`story.txt`) that defines the game world and instructs the LLM to act as a game master.
-2. **Message history** — an accumulating list of role/content pairs representing the full conversation.
-3. **Player input** — free-form text typed at a prompt.
-4. **LLM call** — the full message history is sent to Ollama's chat API; the assistant's reply is displayed.
-5. **Append and repeat** — the reply is appended to the history so the LLM remembers past events.
+1. **System prompt**: a text file (`story.txt`) that defines the game world and instructs the LLM to act as a game master.
+2. **Message history**: an accumulating list of role/content pairs representing the full conversation.
+3. **Player input**: free-form text typed at a prompt.
+4. **LLM call**: the full message history is sent to Ollama's chat API; the assistant's reply is displayed.
+5. **Append and repeat**: the reply is appended to the history so the LLM remembers past events.
 
 The Ollama integration is handled by the `ollama` package (developed in an earlier LLM chapter), which provides the `chat` function for multi-turn conversations. We load the `llm` ASDF system, which pulls in `ollama`, `cl-json`, `uiop`, and all other dependencies.
 
@@ -45,7 +45,7 @@ but is also said to be open to clever negotiation.
 Begin by describing the opening scene and presenting options for the player.
 ```
 
-This prompt does several things at once. It establishes the LLM's *role* (game master), the *rules* of engagement (vivid descriptions, presented options, tracked state), the *setting* (Valley of the Troll), the *goal* (find the Golden Chalice), and a *hint* about gameplay style (negotiation is possible). A well-written system prompt is the difference between a generic chatbot and an immersive game. You can swap out `story.txt` to create entirely different adventures — a space station mystery, a noir detective story, a fantasy quest — without changing a single line of code.
+This prompt does several things at once. It establishes the LLM's *role* (game master), the *rules* of engagement (vivid descriptions, presented options, tracked state), the *setting* (Valley of the Troll), the *goal* (find the Golden Chalice), and a *hint* about gameplay style (negotiation is possible). A well-written system prompt is the difference between a generic chatbot and an immersive game. You can swap out `story.txt` to create entirely different adventures such as a space station mystery, a noir detective story, a fantasy quest - and this is all without changing a single line of code.
 
 ## The Game Code
 
@@ -120,7 +120,7 @@ Here is the full listing of `text-adventure-game.lisp`:
 (ql:quickload :llm)
 ```
 
-This single line loads the `llm` ASDF system, which includes the `ollama` package (providing `chat`), `cl-json` (JSON encoding/decoding), `uiop` (subprocess management), and Dexador (HTTP client). All of the HTTP and JSON plumbing lives in the `ollama` package — our game code never touches it directly.
+This single line loads the `llm` ASDF system, which includes the `ollama` package (providing `chat`), `cl-json` (JSON encoding/decoding), `uiop` (subprocess management), and using the external `curl` program to perform HTTP communication. All of the HTTP and JSON plumbing lives in the `ollama` package; our game code never touches it directly.
 
 ### Reading the Story File
 
@@ -147,7 +147,7 @@ The `play` function is the heart of the program. Let's walk through it section b
 (defun play (&key (story-file "story.txt") (model ollama:*ollama-model*))
 ```
 
-The function accepts two keyword parameters. `story-file` defaults to `"story.txt"` in the current directory. `model` defaults to the Ollama model defined in the `ollama` package — you can override it to use any model you have pulled locally.
+The function accepts two keyword parameters. `story-file` defaults to `"story.txt"` in the current directory. `model` defaults to the Ollama model defined in the `ollama` package but you can override it to use any model you have pulled locally.
 
 ```lisp
   (let ((story (load-story story-file)))
@@ -197,7 +197,7 @@ Two early exits: typing "quit" or "exit" (case-insensitive) ends the game via `r
                                              (cons :|content| user-input)))))
 ```
 
-We append the player's input as a user message to the history. Note that we use `append` rather than a destructive operation — each turn creates a fresh list, which avoids mutation bugs. For a game that runs for dozens of turns the copying overhead is negligible.
+We append the player's input as a user message to the history. Note that we use `append` rather than a destructive operation: each turn creates a fresh list, which avoids mutation bugs. For a game that runs for dozens of turns the copying overhead is negligible.
 
 ```lisp
           (let ((response (ollama:chat messages :model-id model)))
@@ -295,7 +295,7 @@ the winding path.
 
 Ahead lies the narrow trail leading to where the Troll's mountain looms in
 silhouette above a dark cave mouth or cliff face that blocks off direct view
-into the lair itself — the entrance hidden by dense trees and ancient stone
+into the lair itself - the entrance hidden by dense trees and ancient stone
 formations. The mist clings to your boots, dampening any potential light you
 might hold against the gloom of the tunnel.
 
@@ -310,7 +310,7 @@ B) Turn back toward the source of the valley mist; perhaps an elder troll
 C) Scan the surrounding area with your senses before proceeding further up
    towards higher ground for better visibility.
 
-> I choose option C — I want to scan the area carefully before moving on.
+> I choose option C - I want to scan the area carefully before moving on.
 
 You kneel down and run your fingers through the damp soil, closing your eyes
 to focus on the subtle clues the valley might offer. The wind shifts...
@@ -321,11 +321,11 @@ Goodbye!
 
 ## What Makes This Work
 
-The key insight is that the LLM is doing all the creative work — world-building, character dialogue, plot twists — while our Common Lisp code handles only the mechanical concerns: reading input, maintaining state, and routing messages. This separation of concerns is what makes the program so short.
+The key insight is that the LLM is doing all the creative work (e.g., world-building, character dialogue, plot twists) while our Common Lisp code handles only the mechanical concerns: reading input, maintaining state, and routing messages. This separation of concerns is what makes the program so short.
 
-**The message history is the game state.** There is no separate inventory tracker, health counter, or quest log in our code. The LLM tracks these in the conversation itself — notice how the assistant response includes "Inventory: {None} | Health: 10/10." This works because each API call includes the full conversation history, so the model can reference anything it (or the player) said previously.
+**The message history is the game state.** There is no separate inventory tracker, health counter, or quest log in our code. The LLM tracks these in the conversation itself, for example notice how the assistant response includes "Inventory: {None} | Health: 10/10." This works because each API call includes the full conversation history, so the model can reference anything it (or the player) said previously.
 
-**The system prompt does the heavy lifting.** By telling the model *how* to be a game master — describe scenes, present options, track state, maintain consistency — we get structured, game-like responses without any parsing or post-processing. A poorly written system prompt would produce rambling narration without clear choices; a well-written one feels like a real game.
+**The system prompt does the heavy lifting.** By telling the model *how* to be a game master, performing tasks like describing scenes, presenting options, tracking state, and maintain consistency. We get structured, game-like responses without any parsing or post-processing. A poorly written system prompt would produce rambling narration without clear choices; a well-written one feels like a real game.
 
 **Ollama makes it free and private.** Running locally means no API costs, no rate limits, and no data leaving your machine. The trade-off is that smaller models (2B–7B parameters) produce simpler stories than cloud-hosted giants like GPT-4 or Claude. For a fun interactive experience, the smaller models work surprisingly well.
 
@@ -333,7 +333,7 @@ The key insight is that the LLM is doing all the creative work — world-buildin
 
 To create your own adventure, edit `story.txt` and change:
 
-- **Setting**: Replace "Valley of the Troll" with your world — a derelict spaceship, a 1920s speakeasy, a wizard's tower.
+- **Setting**: Replace "Valley of the Troll" with your world such as a derelict spaceship, a 1920s speakeasy, or a wizard's tower.
 - **Goal**: What is the player trying to accomplish? Find an artifact, solve a murder, escape a dungeon?
 - **Rules**: Add constraints like "The player cannot use violence" or "All puzzles require rhyming solutions."
 - **Tone**: Instruct the model to be humorous, terrifying, mysterious, or whimsical.
@@ -342,12 +342,12 @@ You can also experiment with different Ollama models. Larger models like `gemma3
 
 ## Wrap Up
 
-This chapter demonstrated how a small amount of Common Lisp code can harness an LLM to create an open-ended interactive experience. The pattern — system prompt, accumulate message history, call chat API, append response — generalizes beyond games to any conversational AI application: tutoring systems, interactive fiction, role-playing scenarios, and creative writing tools.
+This chapter demonstrated how a small amount of Common Lisp code can harness an LLM to create an open-ended interactive experience. The pattern of using a system prompt, accumulating message history, calling chat API, and appending response generalizes beyond games to any conversational AI application: tutoring systems, interactive fiction, role-playing scenarios, and creative writing tools.
 
 The complete source code lives in the `text-adventure-game` directory of the book's repository. Two backend variants are provided:
 
-- `text-adventure-game_ollama.lisp` — uses Ollama for local, private, cost-free inference. Requires Ollama running locally with at least one chat model pulled.
-- `text-adventure-game_fireworks.lisp` — uses the Fireworks.ai cloud API for much faster responses. Requires a `FIREWORKS_API_KEY` environment variable. Fireworks.ai hosts optimized versions of models like DeepSeek and Llama on dedicated GPU infrastructure, delivering sub-second latency that makes the game feel significantly more responsive.
+- `text-adventure-game_ollama.lisp`: uses Ollama for local, private, cost-free inference. Requires Ollama running locally with at least one chat model pulled.
+- `text-adventure-game_fireworks.lisp`: uses the Fireworks.ai cloud API for much faster responses. Requires a `FIREWORKS_API_KEY` environment variable. Fireworks.ai hosts optimized versions of models like DeepSeek and Llama on dedicated GPU infrastructure, delivering sub-second latency that makes the game feel significantly more responsive.
 
 Both files are under 60 lines of Lisp; the real depth comes from the LLM's ability to improvise within the constraints set by your system prompt.
 

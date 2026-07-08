@@ -6,7 +6,7 @@ An AI-driven text adventure game that uses Ollama for interactive storytelling. 
 
 - [Ollama](https://ollama.com) running locally with at least one chat model pulled
 - LispWorks (or SBCL with UIOP and cl-json via Quicklisp)
-- [cl-json](https://github.com/sharplispers/cl-json) — loadable via Quicklisp: `(ql:quickload :cl-json)`
+- [cl-json](https://github.com/sharplispers/cl-json) - loadable via Quicklisp: `(ql:quickload :cl-json)`
 - `curl` available on your PATH
 
 ## Quick Start
@@ -33,17 +33,17 @@ An AI-driven text adventure game that uses Ollama for interactive storytelling. 
 
 | File | Purpose |
 |------|---------|
-| `text-adventure-game.lisp` | Main game code — defines the `text-adventure` package with Ollama chat API integration |
+| `text-adventure-game.lisp` | Main game code - defines the `text-adventure` package with Ollama chat API integration |
 | `story.txt` | System prompt that sets the adventure's world, tone, and rules |
 
 ## How It Works
 
 The game maintains a growing message history:
 
-1. **System prompt** — `story.txt` is sent as the initial system message, establishing the game world and the LLM's role as game master
-2. **Player input** — each action you type is appended as a user message
-3. **LLM response** — the full conversation history is sent to Ollama's `/api/chat` endpoint, and the assistant's reply is displayed
-4. **Context grows** — every exchange is appended, so the AI remembers what happened earlier in the adventure
+1. **System prompt** - `story.txt` is sent as the initial system message, establishing the game world and the LLM's role as game master
+2. **Player input** - each action you type is appended as a user message
+3. **LLM response** - the full conversation history is sent to Ollama's `/api/chat` endpoint, and the assistant's reply is displayed
+4. **Context grows** - every exchange is appended, so the AI remembers what happened earlier in the adventure
 
 The Ollama API call is made via `curl`, with JSON encoding handled by `cl-json`.
 
@@ -91,7 +91,7 @@ Describe what you want to do, or type 'quit' to exit.
 > I walk up the winding path, crossing the stream. What do I see?
 The air hangs thick and damp over your shoulders as a low wind sweeps through the valley floor, carrying the scent of pine resin and wet stone from across the stream bed just ahead. Your boots kick up small ribbons of mud upon the soft moss, which crunches softly underfoot with every step you take toward the winding path.
 
-Ahead lies the narrow trail leading to where the Troll's mountain looms in silhouette above a dark cave mouth or cliff face that blocks off direct view into the lair itself—the entrance hidden by dense trees and ancient stone formations. The mist clings to your boots, dampening any potential light you might hold against the gloom of the tunnel.
+Ahead lies the narrow trail leading to where the Troll's mountain looms in silhouette above a dark cave mouth or cliff face that blocks off direct view into the lair itself-the entrance hidden by dense trees and ancient stone formations. The mist clings to your boots, dampening any potential light you might hold against the gloom of the tunnel.
 
 **Inventory:** {None} | **Health:** 10/10 (Freshly restored)
 *You are currently in the Valley floor near where a stream crossed under heavy rain clouds.*
