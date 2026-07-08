@@ -3,8 +3,11 @@
 
 (defpackage #:fireworks-ai
   (:use #:cl)
-  (:export #:fireworks-llm
+  (:export #:*fireworks-endpoint*
+           #:*fireworks-model*
+           #:fireworks-llm
            #:completions
+           #:chat
            #:answer-question
            #:test-completions
            #:test-tools))
@@ -26,6 +29,24 @@
         (cons "Authorization"
               (concatenate 'string "Bearer "
                 (get-fireworks-api-key)))))
+
+(defun %curl-post (url headers body)
+  "Make a POST request using curl. HEADERS is an alist of (key . value) pairs."
+  (let* ((header-flags
+          (with-output-to-string (out)
+            (loop for (key . value) in headers
+                  do (format out " -H ~s"
+                             (format nil "~a: ~a" key value)))))
+         (cmd (format nil "curl -s~a -d ~s ~a" header-flags body url))
+         (process (uiop:launch-program cmd
+                                       :output :stream
+                                       :error-output :stream))
+         (response (with-output-to-string (out)
+                     (loop for line
+                             = (read-line (uiop:process-info-output process) nil nil)
+                           while line
+                           do (write-line line out)))))
+    response))
 
 (defun completions (prompt &key tools
                     (model-id *fireworks-model*)
@@ -65,9 +86,7 @@ a final natural-language response."
            (cl-json:encode-json-to-string data))
          (headers (make-headers))
          (response
-           (dex:post *fireworks-endpoint*
-                     :headers headers
-                     :content request-body)))
+           (%curl-post *fireworks-endpoint* headers request-body)))
     (with-input-from-string (s response)
       (let* ((json (cl-json:decode-json s))
              (choices
@@ -148,9 +167,7 @@ Implements the two-turn tool-calling protocol."
          (request-body
            (cl-json:encode-json-to-string data))
          (response
-           (dex:post *fireworks-endpoint*
-                     :headers headers
-                     :content request-body)))
+           (%curl-post *fireworks-endpoint* headers request-body)))
     (with-input-from-string (s response)
       (let* ((json (cl-json:decode-json s))
              (choices
@@ -160,6 +177,27 @@ Implements the two-turn tool-calling protocol."
                (cdr (assoc :message first-choice)))
              (content
                (cdr (assoc :content message))))
+        (or content "No response content")))))
+
+(defun chat (messages &key (model-id *fireworks-model*)
+                          (max-tokens 4096)
+                          (temperature 0.6))
+  "Send a multi-turn chat conversation to Fireworks AI.
+MESSAGES is a list of alists, each with :role and :content keys,
+e.g. ((:role . \"system\") (:content . \"...\"))"
+  (let* ((data `((:model . ,model-id)
+                 (:max--tokens . ,max-tokens)
+                 (:temperature . ,temperature)
+                 (:messages . ,messages)))
+         (request-body (cl-json:encode-json-to-string data))
+         (headers (make-headers))
+         (response (%curl-post *fireworks-endpoint* headers request-body)))
+    (with-input-from-string (s response)
+      (let* ((json (cl-json:decode-json s))
+             (choices (cdr (assoc :choices json)))
+             (first-choice (car choices))
+             (message (cdr (assoc :message first-choice)))
+             (content (cdr (assoc :content message))))
         (or content "No response content")))))
 
 (defun answer-question (question)
