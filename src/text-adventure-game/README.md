@@ -65,3 +65,42 @@ ollama pull mistral
 ollama pull gemma4:12b-it-qat
 ollama pull qwen3.5:2b
 ```
+
+## Example Run
+
+```
+CL-USER 1 > (load "text-adventure-game.lisp")
+CL-USER 2 > (text-adventure:play)
+You are a text adventure game master. Create an immersive, interactive story for the player. Follow these rules:
+
+1. Describe the current scene vividly but concisely - include what the player sees, hears, and smells.
+2. Present 2-4 clear options for what the player can do next at the end of each response.
+3. Track the player's inventory, health, and progress through the adventure.
+4. Introduce surprising twists, interesting NPCs, and challenging obstacles.
+5. Respond to the player's chosen action by advancing the story in a coherent way.
+6. Maintain internal consistency - remember what has happened before.
+
+The adventure begins in the Valley of the Troll. The player is a brave adventurer seeking the Golden Chalice, rumored to be hidden deep within the Troll's mountain lair. The Valley is misty and foreboding, with ancient trees casting long shadows. A narrow path winds toward the mountain, while a dark stream gurgles nearby. The Troll is known to collect valuable artifacts but is also said to be open to clever negotiation.
+
+Begin by describing the opening scene and presenting options for the player.
+
+
+Welcome to the Text Adventure!
+Describe what you want to do, or type 'quit' to exit.
+
+> I walk up the winding path, crossing the stream. What do I see?
+The air hangs thick and damp over your shoulders as a low wind sweeps through the valley floor, carrying the scent of pine resin and wet stone from across the stream bed just ahead. Your boots kick up small ribbons of mud upon the soft moss, which crunches softly underfoot with every step you take toward the winding path.
+
+Ahead lies the narrow trail leading to where the Troll's mountain looms in silhouette above a dark cave mouth or cliff face that blocks off direct view into the lair itself—the entrance hidden by dense trees and ancient stone formations. The mist clings to your boots, dampening any potential light you might hold against the gloom of the tunnel.
+
+**Inventory:** {None} | **Health:** 10/10 (Freshly restored)
+*You are currently in the Valley floor near where a stream crossed under heavy rain clouds.*
+
+**Your Options:**
+
+A) Follow the path upward and investigate the cave entrance directly for clues about how to reach or secure the Chalice, but beware of hidden traps. B) Turn back toward the source of the valley mist; perhaps an elder troll guard waits there who knows where you came from?
+C) Scan the surrounding area with your senses (smell wind patterns) before proceeding further up towards higher ground for better visibility.
+
+*Which do you choose?*
+> 
+```
