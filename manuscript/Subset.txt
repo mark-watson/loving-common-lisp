@@ -1,3 +1,1 @@
-probability.md
-symbolic-math.md
-RDF_Datastore_and_SPARQL_Implementation.md
+Neural-Symbolic-Knowledge-Graph-Engine.md
