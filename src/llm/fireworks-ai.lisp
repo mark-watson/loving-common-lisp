@@ -17,7 +17,7 @@
 (defvar *fireworks-endpoint*
   "https://api.fireworks.ai/inference/v1/chat/completions")
 (defvar *fireworks-model*
-  "accounts/fireworks/models/deepseek-v4-flash")
+  "accounts/fireworks/models/deepseek-v4-flash-0731")
 
 (defun get-fireworks-api-key ()
   (uiop:getenv "FIREWORKS_API_KEY"))
