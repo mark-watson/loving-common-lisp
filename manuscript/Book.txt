@@ -53,5 +53,6 @@ webkit.md
 daily_use.md
 cl-ai-coding-agent.md
 hacking_SBCL_repl.md
+Neural-Symbolic-Knowledge-Graph-Engine.md
 book_wrapup.md
 

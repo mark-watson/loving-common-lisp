@@ -1,0 +1,18 @@
+# Standalone binary from build.lisp
+/nsk
+
+# Compiled Lisp fasls
+*.fasl
+*.64ufasl
+*.64xfasl
+*.nfasl
+*.ufasl
+*.lfasl
+*.dfsl
+
+# Runtime data (transaction logs)
+*.log
+
+# Editor and OS noise
+*~
+.DS_Store

@@ -1,0 +1,62 @@
+# Source Code Map
+
+This table maps each chapter file in `./manuscript` to its source code example directory in `./src`. Chapters follow the book order in `manuscript/Book.txt`. Chapters with no matching example directory show `(none)`. Some chapters use more than one directory. This is a large book, and a few early tutorial chapters reference loose snippet files that no longer live in `src`, so they show `(none)`.
+
+| Chapter file | Source code directory |
+| --- | --- |
+| `manuscript/preface.md` | (none) |
+| `manuscript/introduction.md` | (none) |
+| `manuscript/lisp_basics.md` | (none) |
+| `manuscript/quicklisp.md` | (none) |
+| `manuscript/defining_functions.md` | (none) |
+| `manuscript/defining_macros.md` | (none) |
+| `manuscript/loop_macros.md` | (none) |
+| `manuscript/package_system.md` | (none) |
+| `manuscript/input_output.md` | `src/code_snippets_for_book` |
+| `manuscript/plotlib.md` | (none) |
+| `manuscript/clos.md` | (none) |
+| `manuscript/network_programming.md` | (none) |
+| `manuscript/bravesearch.md` | `src/brave_search` |
+| `manuscript/database.md` | (none) |
+| `manuscript/nosql.md` | (none) |
+| `manuscript/design.md` | (none) |
+| `manuscript/nlp.md` | `src/kbnlp`<br>`src/categorize_summarize`<br>`src/fasttag` |
+| `manuscript/information_gathering.md` | `src/dbpedia` |
+| `manuscript/machine_learning.md` | (none) |
+| `manuscript/backprop_nn.md` | (none) |
+| `manuscript/hopfield_nn.md` | (none) |
+| `manuscript/anomaly_detection.md` | `src/anomaly_detection` |
+| `manuscript/semanticweb.md` | (none) |
+| `manuscript/RDF_Datastore_and_SPARQL_Implementation.md` | `src/simple_rdf_sparql` |
+| `manuscript/kgcreator.md` | (none) |
+| `manuscript/kgsampler.md` | `src/kgsampler` |
+| `manuscript/kgn_common.md` | `src/kgn-common`<br>`src/sparql`<br>`src/sparql-cache` |
+| `manuscript/kgn_text_ui.md` | `src/kgn-text-ui` |
+| `manuscript/kgn_capi_ui.md` | `src/kgn-capi-ui`<br>`src/lw-grapher` |
+| `manuscript/karpathy.md` | `src/Karpathy_MicroGPT` |
+| `manuscript/openai.md` | `src/openai` |
+| `manuscript/ollama.md` | `src/ollama` |
+| `manuscript/ollama_image_processing.md` | `src/ollama_images` |
+| `manuscript/perplexity.md` | `src/perplexity` |
+| `manuscript/moonshot.md` | `src/moonshot_kimi_k2` |
+| `manuscript/huggingface.md` | `src/huggingface` |
+| `manuscript/knowledge-navigator.md` | `src/knowledge-base-navigator` |
+| `manuscript/lightpanda.md` | `src/lightpanda` |
+| `manuscript/web-scraping.md` | `src/webscraping` |
+| `manuscript/doc_qa.md` | `src/docs-qa` |
+| `manuscript/RAG.md` | `src/RAG` |
+| `manuscript/prompts.md` | (none) |
+| `manuscript/gemini.md` | `src/gemini` |
+| `manuscript/tavily.md` | `src/tavily` |
+| `manuscript/autocontext.md` | `src/autocontext` |
+| `manuscript/agent_llm.md` | `src/cl-llm-agent` |
+| `manuscript/agent_part2.md` | `src/cl-llm-agent` |
+| `manuscript/llm_lib.md` | `src/llm`<br>`src/llm_test` |
+| `manuscript/text-adventure-game.md` | `src/text-adventure-game` |
+| `manuscript/wolfram.md` | (none) |
+| `manuscript/symbolic-math.md` | `src/symbolic-math` |
+| `manuscript/webkit.md` | `src/webkit-cl` |
+| `manuscript/daily_use.md` | `src/daily_use` |
+| `manuscript/cl-ai-coding-agent.md` | `src/cl-ai-coding-agent` |
+| `manuscript/hacking_SBCL_repl.md` | (none) |
+| `manuscript/book_wrapup.md` | (none) |
