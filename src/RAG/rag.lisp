@@ -6,12 +6,20 @@
 
 ;;; ---- Public API ----
 
-(defun query (corpora question)
+(defun query (corpora question &key (max-iterations 3)
+                                    (top-k 3)
+                                    (model *rag-model*)
+                                    (max-context-chunks 8))
   "Ask QUESTION against the given CORPORA using agentic RAG.
    CORPORA is a list of corpus structs (or a single corpus).
+   Keyword arguments are passed through to AGENTIC-RAG.
    Returns the answer string."
   (let ((corpus-list (if (listp corpora) corpora (list corpora))))
-    (agentic-rag corpus-list question)))
+    (agentic-rag corpus-list question
+                 :max-iterations max-iterations
+                 :top-k top-k
+                 :model model
+                 :max-context-chunks max-context-chunks)))
 
 ;;; ---- Interactive Demo ----
 
@@ -24,7 +32,7 @@
     (format t "============================~%")
     (format t "~%Loaded ~A corpora with ~A total chunks.~%"
             (length corpus-list)
-            (loop for c in corpus-list sum (length (corpus-chunks c))))
+            (loop for c in corpus-list sum (corpus-chunk-count c)))
     (format t "Type your question (or 'quit' to exit):~%")
     (loop
       (format t "~%RAG> ")
@@ -73,7 +81,7 @@
     
     (let ((all-corpora (list energy-corpus ev-corpus climate-corpus)))
       (format t "~%~%Loaded ~A total chunks across ~A corpora.~%"
-              (loop for c in all-corpora sum (length (corpus-chunks c)))
+              (loop for c in all-corpora sum (corpus-chunk-count c))
               (length all-corpora))
       
       ;; Query 1: Single-corpus question (should find answer easily)

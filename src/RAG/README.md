@@ -50,15 +50,18 @@ If context is insufficient, the system generates refined search queries and iter
 
 ## Dependencies
 
-- **llm** — Mark Watson's LLM library (provides Gemini client)
+- **llm** — Mark Watson's LLM library (provides the Gemini client and `llm:post-json` used for all HTTP)
 - **cl-json** — JSON encoding/decoding
+- **dexador** — HTTP client (via `llm`); transient failures are retried with exponential backoff
 - **uiop** — System utilities
 
 **Environment variable:** `GOOGLE_API_KEY` must be set.
 
 **Models used:**
-- `gemini-2.0-flash` — Inexpensive model for all agent LLM calls
-- `text-embedding-004` — Free-tier embedding model for document/query vectors
+- `gemini-3-flash-preview` — Default for all agent LLM calls (`*rag-model*`; override per call with `:model`)
+- `gemini-embedding-001` — Free-tier embedding model for document/query vectors (`text-embedding-004` was retired from the v1beta API)
+
+Embeddings are computed with a single `batchEmbedContents` call per document and memoized in an in-memory cache (`clear-embedding-cache` resets it).
 
 ## Quick Start
 
@@ -82,11 +85,20 @@ Create an empty corpus (document collection).
 ### `add-document (corpus filepath &key chunk-size)` → count
 Read a text file, split it into overlapping chunks, compute embeddings, and store in the corpus. Returns the number of chunks added.
 
-### `query (corpora question)` → string
+### `query (corpora question &key max-iterations top-k model max-context-chunks)` → string
 Ask a question using the full agentic RAG pipeline. `corpora` can be a single corpus or a list of corpora for cross-corpus retrieval.
 
-### `agentic-rag (corpora user-query &key max-iterations top-k)` → string
-Low-level entry point with full control over iteration limit and retrieval count.
+### `agentic-rag (corpora user-query &key max-iterations top-k model max-context-chunks)` → string
+Low-level entry point with full control. `max-iterations` bounds the sufficiency/refinement loop (default 3), `top-k` sets passages retrieved per query (default 3), `model` overrides `*rag-model*`, and `max-context-chunks` caps how many top-scoring passages are sent to the LLM regardless of iteration count (default 8).
+
+### `save-corpus (corpus pathname)` / `load-corpus (pathname)` → corpus
+Persist a corpus (chunks and embeddings) to an s-expression file and load it back, avoiding re-embedding (and re-paying API calls) on every run.
+
+### `corpus-chunk-count (corpus)` → integer
+Number of chunks stored in a corpus.
+
+### `*rag-verbose*`
+When true (default), each agent prints DEBUG tracing of its decisions — useful for following the pipeline in the book's examples. Bind or set to NIL for quiet library use.
 
 ### `interactive-demo (corpora)`
 Start an interactive REPL for querying loaded corpora.
@@ -94,16 +106,27 @@ Start an interactive REPL for querying loaded corpora.
 ### `test ()` → corpora
 Run the built-in demo: loads sample documents about renewable energy, electric vehicles, and climate science, then runs three progressively harder queries.
 
+## Tests
+
+Offline unit tests (no network access; the LLM and embedding functions are stubbed via `*generate-fn*` / `*embedding-fn*`):
+
+```lisp
+(asdf:test-system :rag)
+```
+
+Covers chunking boundary cases (including the forward-progress guard), vector math, retrieval ranking and deduplication, sufficiency-verdict parsing, corpus save/load round-trip, and the full agentic pipeline with a stubbed LLM.
+
 ## File Structure
 
 | File | Description |
 |---|---|
-| `rag.asd` | ASDF system definition |
+| `rag.asd` | ASDF system definitions (`rag` and `rag/test`) |
 | `package.lisp` | Package definition and exports |
-| `embeddings.lisp` | Gemini text-embedding-004 integration |
-| `vector-store.lisp` | In-memory vector store with cosine similarity |
+| `embeddings.lisp` | Gemini embedding integration: batch API, cache, retries, `*rag-verbose*` |
+| `vector-store.lisp` | In-memory vector store with cosine similarity, chunking, corpus persistence |
 | `agents.lisp` | Multi-agent pipeline (rewriter, search, sufficiency, synthesis) |
 | `rag.lisp` | Top-level API, interactive demo, and test code |
+| `tests.lisp` | Offline unit tests (package `rag-tests`) |
 | `data/` | Sample text documents for the demo |
 
 ## Example Output
