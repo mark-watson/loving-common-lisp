@@ -59,15 +59,20 @@ If context is insufficient, the system generates refined search queries and iter
 
 **Models used:**
 - `gemini-3-flash-preview` — Default for all agent LLM calls (`*rag-model*`; override per call with `:model`)
-- `gemini-embedding-001` — Free-tier embedding model for document/query vectors (`text-embedding-004` was retired from the v1beta API)
+- `gemini-embedding-001` — Free-tier embedding model for document/query vectors (`text-embedding-004` was retired from the v1beta API). The API key is sent in the `x-goog-api-key` header, never in the URL.
 
-Embeddings are computed with a single `batchEmbedContents` call per document and memoized in an in-memory cache (`clear-embedding-cache` resets it).
+Set `*embedding-dimension*` to 768 (or 1536) before building or loading a corpus to cut embedding memory and search time by 4x (2x) with little quality loss; the model default is 3072. If you change the embedding model or dimension, re-embed your corpora: `search` signals a dimension-mismatch error rather than silently scoring with truncated vectors.
+
+Embeddings are computed with batched `batchEmbedContents` calls (at most 100 texts per request, the API cap) and memoized in an in-memory cache (`clear-embedding-cache` resets it; `*embedding-cache-cap*` bounds its size). Transient API failures (HTTP 429/5xx, connection errors) are retried with exponential backoff; permanent 4xx errors signal immediately.
 
 ## Quick Start
 
+The rag system depends on the local `llm` library from this repo, which
+Quicklisp cannot find on its own. Load `project.lisp` first (it registers
+the sibling `llm` system with ASDF, then loads everything):
+
 ```lisp
-;; Load the system
-(ql:quickload :rag)
+(load "project.lisp")   ; registers src/llm with ASDF and quickloads :rag
 
 ;; Run the built-in demo with sample documents
 (rag:test)
@@ -76,6 +81,9 @@ Embeddings are computed with a single `batchEmbedContents` call per document and
 (defvar *corpora* (rag:test))
 (rag:interactive-demo *corpora*)
 ```
+
+After `project.lisp` has been loaded once in a session, `ql:quickload :rag`
+works for subsequent reloads.
 
 ## API Reference
 
@@ -114,7 +122,7 @@ Offline unit tests (no network access; the LLM and embedding functions are stubb
 (asdf:test-system :rag)
 ```
 
-Covers chunking boundary cases (including the forward-progress guard), vector math, retrieval ranking and deduplication, sufficiency-verdict parsing, corpus save/load round-trip, and the full agentic pipeline with a stubbed LLM.
+Covers chunking boundary cases (including the forward-progress guard), query line parsing (digits in query text survive, list prefixes of any number are stripped), vector math (including the dimension-mismatch error), retrieval ranking, cross-source deduplication, batched query embedding, batch splitting at the 100-text API cap, cache eviction, retry behavior (transient vs permanent errors), sufficiency-verdict parsing, corpus save/load round-trip with corruption checks, and the full agentic pipeline with a stubbed LLM (including the skipped sufficiency call at the last iteration and quiet-mode operation).
 
 ## File Structure
 
@@ -122,8 +130,8 @@ Covers chunking boundary cases (including the forward-progress guard), vector ma
 |---|---|
 | `rag.asd` | ASDF system definitions (`rag` and `rag/test`) |
 | `package.lisp` | Package definition and exports |
-| `embeddings.lisp` | Gemini embedding integration: batch API, cache, retries, `*rag-verbose*` |
-| `vector-store.lisp` | In-memory vector store with cosine similarity, chunking, corpus persistence |
+| `embeddings.lisp` | Gemini embedding integration: batched API, cache with eviction, retries, `*rag-verbose*` |
+| `vector-store.lisp` | In-memory vector store with normalized embeddings, cosine similarity, chunking, corpus persistence with validation |
 | `agents.lisp` | Multi-agent pipeline (rewriter, search, sufficiency, synthesis) |
 | `rag.lisp` | Top-level API, interactive demo, and test code |
 | `tests.lisp` | Offline unit tests (package `rag-tests`) |

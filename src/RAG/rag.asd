@@ -4,9 +4,9 @@
   :description "Agentic RAG (Retrieval-Augmented Generation) using Gemini"
   :author "Mark Watson"
   :license "Apache 2"
-  :version "1.0.0"
+  :version "1.1.0"
   :serial t
-  :depends-on (#:llm #:cl-json #:dexador #:uiop)
+  :depends-on (#:llm #:cl-json #:dexador #:usocket #:uiop)
   :components ((:file "package")
                (:file "embeddings")
                (:file "vector-store")

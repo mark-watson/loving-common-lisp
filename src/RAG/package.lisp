@@ -12,7 +12,16 @@
            #:interactive-demo
            #:test
            #:*rag-verbose*
-           #:*rag-model*))
+           #:*rag-model*
+           #:*embedding-model*
+           #:*embedding-dimension*
+           #:*embedding-batch-limit*
+           #:*embedding-cache-cap*
+           #:clear-embedding-cache
+           #:cosine-similarity
+           #:dot-product
+           #:vector-magnitude
+           #:normalize-vector))
 
 (defpackage #:rag-tests
   (:use #:cl)
