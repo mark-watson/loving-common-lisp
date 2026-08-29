@@ -4,7 +4,7 @@ This chapter implements an **Agentic Retrieval-Augmented Generation (RAG)** syst
 
 In the previous chapter on document question answering, we built a "vanilla" RAG system: embed documents, embed the query, find similar chunks, and pass them to an LLM for answer generation. That approach works well for simple factual questions, but falls short on complex queries that require information from multiple sources or where the first retrieval pass misses critical details.
 
-Agentic RAG addresses this limitation by introducing multiple specialized agents that **plan, rewrite queries, assess context sufficiency, and iteratively search** until enough information is gathered to produce a reliable answer. The key insight from the Google research is the **Sufficient Context Agent** — a quality-control step that evaluates whether the retrieved passages actually contain enough information to answer the question, and if not, generates specific feedback about what's missing so the system can refine its search.
+Agentic RAG addresses this limitation by introducing multiple specialized agents that **plan, rewrite queries, assess context sufficiency, and iteratively search** until enough information is gathered to produce a reliable answer. The key insight from the Google research is the **Sufficient Context Agent**, a quality-control step that evaluates whether the retrieved passages actually contain enough information to answer the question, and if not, generates specific feedback about what's missing so the system can refine its search.
 
 The source code for this example is in the directory **src/RAG** of the book's GitHub repository. It uses the Gemini `gemini-embedding-001` model for embeddings (free tier) and `gemini-3-flash-preview` for all agent LLM calls (very inexpensive).
 
@@ -12,11 +12,11 @@ The source code for this example is in the directory **src/RAG** of the book's G
 
 The system implements a multi-agent pipeline with five phases:
 
-1. **Query Rewriting** — A Gemini-powered agent decomposes complex questions into 1–3 focused sub-queries for retrieval.
-2. **Search Fanout** — Each sub-query is embedded and searched across multiple document corpora. Results are deduplicated.
-3. **Sufficient Context Assessment** — A specialized agent evaluates whether the retrieved passages contain enough information to fully answer the original question.
-4. **Iterative Refinement** — If context is insufficient, the system generates refined search queries based on feedback about what's missing, then searches again. This loop repeats up to a configurable limit.
-5. **Synthesis** — Once context is sufficient (or the iteration limit is reached), a synthesis agent generates a grounded answer citing source documents.
+1. **Query Rewriting**: A Gemini-powered agent decomposes complex questions into 1–3 focused sub-queries for retrieval.
+2. **Search Fanout**: All sub-queries are embedded in one batched API call, then each is searched across multiple document corpora. Results are deduplicated.
+3. **Sufficient Context Assessment**: A specialized agent evaluates whether the retrieved passages contain enough information to fully answer the original question.
+4. **Iterative Refinement**: If context is insufficient, the system generates refined search queries based on feedback about what's missing, then searches again. This loop repeats up to a configurable limit.
+5. **Synthesis**: Once context is sufficient (or the iteration limit is reached), a synthesis agent generates a grounded answer citing source documents.
 
 This differs fundamentally from vanilla RAG. In a vanilla system, if the first retrieval doesn't find the right passages, you get a partial answer or a hallucination. In agentic RAG, the system recognizes the gap and actively searches for the missing information.
 
@@ -40,9 +40,9 @@ The ASDF system definition in **rag.asd** defines both the library and its offli
   :description "Agentic RAG (Retrieval-Augmented Generation) using Gemini"
   :author "Mark Watson"
   :license "Apache 2"
-  :version "1.0.0"
+  :version "1.1.0"
   :serial t
-  :depends-on (#:llm #:cl-json #:dexador #:uiop)
+  :depends-on (#:llm #:cl-json #:dexador #:usocket #:uiop)
   :components ((:file "package")
                (:file "embeddings")
                (:file "vector-store")
@@ -52,6 +52,8 @@ The ASDF system definition in **rag.asd** defines both the library and its offli
 
 (asdf:defsystem #:rag/test
   :description "Offline unit tests for the rag system (no network access)."
+  :author "Mark Watson"
+  :license "Apache 2"
   :depends-on (#:rag #:uiop)
   :serial t
   :components ((:file "tests"))
@@ -59,6 +61,8 @@ The ASDF system definition in **rag.asd** defines both the library and its offli
              (declare (ignore op c))
              (uiop:symbol-call :rag-tests :run-tests)))
 ```
+
+The **usocket** dependency exists so the retry logic can recognize connection-level errors (refused connections, timeouts, DNS failures), which Dexador signals as usocket conditions rather than HTTP errors.
 
 The package exports the main entry points:
 
@@ -75,78 +79,188 @@ The package exports the main entry points:
            #:interactive-demo
            #:test
            #:*rag-verbose*
-           #:*rag-model*))
+           #:*rag-model*
+           #:*embedding-model*
+           #:*embedding-dimension*
+           #:*embedding-batch-limit*
+           #:*embedding-cache-cap*
+           #:clear-embedding-cache
+           #:cosine-similarity
+           #:dot-product
+           #:vector-magnitude
+           #:normalize-vector))
 ```
 
 ## Computing Embeddings With the Gemini API
 
 The file **embeddings.lisp** provides the foundation for semantic search. We use Google's `gemini-embedding-001` model, which produces 3072-dimensional vectors and is available on the free tier.
 
-All HTTP access goes through **llm:post-json** from the **llm** library we built earlier, so there is a single HTTP path shared with the rest of the book's examples. The Dexador HTTP library signals a `dex:http-request-failed` condition when the API returns an error status, which lets us implement automatic retry with exponential backoff. This matters in practice because the free tier rate limits are easy to hit while embedding a batch of documents:
+All HTTP access goes through **llm:post-json** from the **llm** library we built earlier, so there is a single HTTP path shared with the rest of the book's examples. The API key travels in the `x-goog-api-key` request header, never in the URL:
 
 ```lisp
+(defun %api-headers ()
+  "Headers for every embedding API call: the key travels in the
+    x-goog-api-key header, not the URL."
+  (list '("Content-Type" . "application/json")
+        (cons "x-goog-api-key" (get-google-api-key))))
+```
+
+Keys in URL query strings leak into server logs, proxy logs, and shell history; the header keeps the key out of every place the URL is recorded.
+
+The Dexador HTTP library signals a `dex:http-request-failed` condition when the API returns an error status, and usocket conditions when the connection itself fails. Not every failure deserves a retry, so a small predicate classifies them:
+
+```lisp
+(defun %transient-p (condition)
+  "True when CONDITION is worth retrying: HTTP 429/5xx, or a
+    connection-level failure (usocket). Permanent 4xx client errors
+    (bad request, bad API key, wrong model name) signal immediately."
+  (typecase condition
+    (dex:http-request-failed
+     (let ((status (dex:response-status condition)))
+       (or (= status 429) (>= status 500))))
+    (usocket:socket-error t)
+    (usocket:ns-error t)
+    (t nil)))
+```
+
+A 400 (malformed request) or 401 (bad API key) will fail again in exactly the same way, so retrying just burns seconds of backoff before surfacing the real problem. Status 429 (rate limited) and 5xx (server trouble) usually clear up, and connection errors usually mean a transient network problem:
+
+```lisp
+(defparameter *retry-sleep-fn* #'sleep
+  "Function called to pause between retries. Rebind to a no-op in
+    tests so retry backoff does not slow the suite down.")
+
 (defun call-with-retries (thunk &key (attempts 3) (initial-delay 1.0))
-  "Call THUNK, retrying on transient HTTP failures with exponential
-   backoff (1s, 2s, 4s by default)."
+  "Call THUNK, retrying transient failures (HTTP 429/5xx, connection
+    errors) with exponential backoff (1s, 2s, 4s by default). Permanent
+    HTTP 4xx errors signal immediately; after ATTEMPTS transient
+    failures an error is signaled, including the underlying condition."
   (loop for attempt from 1
         for delay = initial-delay then (* delay 2)
         do (handler-case (return (funcall thunk))
-             (dex:http-request-failed (e)
-               (when (>= attempt attempts)
-                 (error "Gemini API request failed after ~A attempts: ~A"
-                        attempts e))
-               (%debug-log "~%DEBUG call-with-retries: attempt ~A/~A failed, ~
-                            retrying in ~A seconds~%" attempt attempts delay)
-               (sleep delay)))))
+             (error (e)
+               (cond ((not (%transient-p e))
+                      (error "Non-transient API error: ~A" e))
+                     ((>= attempt attempts)
+                      (error "API request failed after ~A attempts: ~A"
+                             attempts e))
+                     (t
+                      (%debug-log "~%DEBUG call-with-retries: attempt ~A/~A failed ~
+                                   (~A), retrying in ~A seconds~%"
+                                  attempt attempts e delay)
+                      (funcall *retry-sleep-fn* delay)))))))
 ```
+
+The **\*retry-sleep-fn\*** variable follows the same rebindable-function idiom we use for the API calls themselves: the default waits for real backoff, and the test suite rebinds it to a no-op so retry tests run instantly.
 
 Debug output throughout the system goes through the **%debug-log** macro, which prints only when **\*rag-verbose\*** is true. The verbose tracing is valuable when following the pipeline in this chapter, and setting the variable to NIL turns the system into a quiet library.
 
-Embeddings are memoized in **\*embedding-cache\***, a hash table keyed on the model name and text, so reloading a document or re-running the demo never pays for the same API call twice. The low-level function **%fetch-embedding** calls the `embedContent` endpoint for a single string:
+Embeddings are memoized in **\*embedding-cache\***, a hash table keyed on the model name and text, so reloading a document or re-running the demo never pays for the same API call twice. Because a long-running process embedding many queries would grow the cache without bound, **%cache-put** clears it when it reaches **\*embedding-cache-cap\*** (50,000 entries by default):
 
 ```lisp
-(defvar *embedding-model* "gemini-embedding-001")
+(defun %cache-put (text vec)
+  "Store VEC for TEXT, evicting the whole cache when the cap is reached
+    (simple and safe; a full rebuild costs a few batched API calls)."
+  (when (and *embedding-cache-cap*
+             (>= (hash-table-count *embedding-cache*) *embedding-cache-cap*))
+    (%debug-log "~%DEBUG embedding cache reached ~A entries; clearing~%"
+                *embedding-cache-cap*)
+    (clrhash *embedding-cache*))
+  (setf (gethash (embedding-cache-key text) *embedding-cache*) vec))
+```
 
-(defvar *embedding-fn* #'%fetch-embedding
+The model, its output dimension, and the batch size are configurable:
+
+```lisp
+(defparameter *embedding-model* "gemini-embedding-001"
+  "Gemini embedding model name. If you change this you must re-embed
+    existing corpora: saved corpus files hold vectors from the old
+    model/dimension and search signals a dimension mismatch.")
+
+(defparameter *embedding-dimension* nil
+  "Output embedding dimension, or NIL for the model default (3072 for
+    gemini-embedding-001). The API accepts 768, 1536, or 3072 for this
+    model; 768 saves 4x memory and search time with little quality
+    loss. Set before building or loading a corpus.")
+
+(defparameter *embedding-batch-limit* 100
+  "Maximum texts per batchEmbedContents request; the API rejects more.")
+```
+
+The **\*embedding-dimension\*** knob is worth knowing about. The model supports Matryoshka output: you can truncate the 3072-value vector to 768 or 1536 values and keep most of the retrieval quality, at a quarter (or half) of the memory and search cost. One quirk we discovered testing against the live API: `gemini-embedding-001` honors the deprecated top-level `outputDimensionality` field but silently ignores the newer `embedContentConfig`, while newer models like `gemini-embedding-2` accept both. **%make-embedding-request** sends the dimension both ways so either model works.
+
+The low-level function **%fetch-embedding** calls the `embedContent` endpoint for a single string:
+
+```lisp
+(defparameter *embedding-fn* #'%fetch-embedding
   "Function of one argument (a string) returning an embedding vector.
-   Rebind this in tests to run the pipeline without network access.")
+    Rebind this in tests to run the pipeline without network access.
+    When left at its default, GET-EMBEDDINGS batches all cache misses
+    through *batch-request-fn* instead.")
 
 (defun %fetch-embedding (text)
-  "Compute an embedding vector for TEXT via the embedContent endpoint."
+  "Compute an embedding vector for TEXT via the embedContent endpoint.
+    Returns a simple-vector of floats. Retries transient failures."
   (let* ((api-url (concatenate 'string
                                *embedding-api-url*
                                *embedding-model*
-                               ":embedContent"
-                               "?key=" (get-google-api-key)))
+                               ":embedContent"))
          (payload (make-hash-table :test 'equal)))
-    (let ((content-ht (make-hash-table :test 'equal))
-          (part-ht (make-hash-table :test 'equal)))
-      (setf (gethash "text" part-ht) text)
-      (setf (gethash "parts" content-ht) (list part-ht))
-      (setf (gethash "content" payload) content-ht)
-      (setf (gethash "model" payload)
-            (concatenate 'string "models/" *embedding-model*)))
-    (%decode-embedding-response
-     (call-with-retries
-      (lambda ()
-        (llm:post-json api-url
-                       (list '("Content-Type" . "application/json"))
-                       payload))))))
+    (setf (gethash "content" payload)
+          (gethash "content" (%make-embedding-request text))
+          (gethash "model" payload)
+          (concatenate 'string "models/" *embedding-model*))
+    (when *embedding-dimension*
+      (setf (gethash "outputDimensionality" payload) *embedding-dimension*
+            (gethash "embedContentConfig" payload)
+            (let ((cfg (make-hash-table :test 'equal)))
+              (setf (gethash "outputDimensionality" cfg)
+                    *embedding-dimension*)
+              cfg)))
+    (coerce (%decode-embedding-response
+             (call-with-retries
+              (lambda ()
+                (llm:post-json api-url (%api-headers) payload))))
+            'simple-vector)))
 ```
 
 Note the special variable **\*embedding-fn\***: the public entry point **get-embedding** calls whatever function it holds. Defaulting it to the real HTTP implementation while allowing tests to rebind it to a stub is a simple Common Lisp idiom we will use again for the LLM calls, and it is what makes the offline unit tests possible.
 
-Two public functions round out the interface. **get-embedding** checks the cache before calling the API, and **get-embeddings** (not shown) fetches all cache misses for a list of texts with a single `batchEmbedContents` API call, turning N HTTP requests into one when a document is first loaded:
+The batch path has its own injection point. **%fetch-embeddings-batch** splits its input into groups of at most **\*embedding-batch-limit\*** texts (the API rejects a 101st request with an INVALID_ARGUMENT error, which we confirmed the hard way) and calls **\*batch-request-fn\*** per group:
+
+```lisp
+(defparameter *batch-request-fn* #'%post-batch-request
+  "Function of one argument (a list of texts, at most
+    *embedding-batch-limit* long) returning a list of embedding vectors
+    in the same order. Rebind in tests to stub the HTTP layer.")
+
+(defun %fetch-embeddings-batch (texts)
+  "Compute embeddings for all TEXTS, splitting into batches of at most
+    *embedding-batch-limit* texts per batchEmbedContents request (the
+    API cap). Returns a list of vectors in the same order as TEXTS."
+  (loop for batch on texts by (lambda (l) (nthcdr *embedding-batch-limit* l))
+        nconc (funcall *batch-request-fn*
+                       (subseq batch 0
+                               (min *embedding-batch-limit* (length batch))))))
+```
+
+Two public functions round out the interface. **get-embedding** checks the cache before calling the API, and **get-embeddings** fetches all cache misses for a list of texts with batched `batchEmbedContents` calls, turning N HTTP requests into a handful when a document is first loaded:
 
 ```lisp
 (defun get-embedding (text)
-  "Compute (or retrieve from cache) an embedding vector for TEXT."
+  "Compute (or retrieve from cache) an embedding vector for TEXT.
+    Returns a simple-vector of floats."
   (let ((key (embedding-cache-key text)))
     (multiple-value-bind (cached present-p) (gethash key *embedding-cache*)
       (if present-p
-          cached
-          (let ((vec (funcall *embedding-fn* text)))
-            (setf (gethash key *embedding-cache*) vec)
+          (progn
+            (%debug-log "~%DEBUG get-embedding: cache hit for ~S~%"
+                        (subseq text 0 (min 60 (length text))))
+            cached)
+          (let ((vec (coerce (funcall *embedding-fn* text) 'simple-vector)))
+            (%cache-put text vec)
+            (%debug-log "~%DEBUG get-embedding: got ~A-dimensional vector for ~S~%"
+                        (length vec) (subseq text 0 (min 60 (length text))))
             vec)))))
 ```
 
@@ -154,14 +268,27 @@ We also define **cosine-similarity** to compare two embedding vectors; this is h
 
 ```lisp
 (defun dot-product (vec-a vec-b)
-  (loop for a in vec-a for b in vec-b sum (* a b)))
+  "Compute the dot product of two equal-length vectors of floats.
+    Signals an error on length mismatch: silently truncating would hide
+    a model/dimension change and corrupt similarity scores."
+  (let ((a (coerce vec-a 'simple-vector))
+        (b (coerce vec-b 'simple-vector)))
+    (unless (= (length a) (length b))
+      (error "Embedding dimension mismatch: ~A vs ~A (did *embedding-model* ~
+              or *embedding-dimension* change after the corpus was built?)"
+             (length a) (length b)))
+    (loop for x across a
+          for y across b
+          sum (* x y))))
 
 (defun vector-magnitude (vec)
-  (sqrt (loop for x in vec sum (* x x))))
+  "Compute the magnitude (L2 norm) of a vector of floats."
+  (let ((v (coerce vec 'simple-vector)))
+    (sqrt (loop for x across v sum (* x x)))))
 
 (defun cosine-similarity (vec-a vec-b)
   "Compute cosine similarity between two embedding vectors.
-   Returns a value between -1 and 1."
+    Returns a value between -1 and 1."
   (let ((mag-a (vector-magnitude vec-a))
         (mag-b (vector-magnitude vec-b)))
     (if (or (zerop mag-a) (zerop mag-b))
@@ -169,44 +296,97 @@ We also define **cosine-similarity** to compare two embedding vectors; this is h
         (/ (dot-product vec-a vec-b) (* mag-a mag-b)))))
 ```
 
+The dimension check in **dot-product** earns its keep. `loop for x across a for y across b` stops at the shorter vector, so before this check a 3072-value chunk and a 1536-value query (say, after switching **\*embedding-dimension\***) would silently score against a truncated vector instead of failing. A wrong-but-plausible score is worse than an error because nobody notices it.
+
 The embedding API returns a JSON response containing a list of floating-point values. The cosine similarity between two vectors measures how similar their directions are in the high-dimensional embedding space, regardless of magnitude. A similarity of 1.0 means the texts are semantically identical; 0.0 means they are unrelated.
 
 ## In-Memory Vector Store
 
 The file **vector-store.lisp** implements a simple in-memory document store. Production systems would use a dedicated vector database like Pinecone or Chroma, but for a book example, an in-memory list with brute-force cosine similarity is clearer and requires zero setup.
 
-We define two structs: **document-chunk** holds a piece of text with its source filename and embedding vector, and **corpus** is a named collection of chunks:
+We define two structs: **document-chunk** holds a piece of text with its source filename, embedding vector, and precomputed norm; and **corpus** is a named collection of chunks:
 
 ```lisp
-(defstruct document-chunk
-  "A chunk of text with its source file and embedding vector."
+(defstruct (document-chunk (:print-function %print-document-chunk))
+  "A chunk of text with its source file, embedding vector (a normalized
+    simple-vector), and precomputed L2 norm (1.0 for normalized chunks)."
   text
   source
-  embedding)
+  embedding
+  (norm 1.0 :type float))
 
-(defstruct corpus
+(defstruct (corpus (:print-function %print-corpus))
   "A named collection of document chunks for retrieval."
   name
   description
   (chunks nil))
 ```
 
+A struct with 3072 floats per chunk is painful to inspect at the REPL: printing a corpus dumps thousands of numbers per chunk and swamps the terminal. Both structs therefore install custom print functions. A chunk prints its text and source in full but only the first 10 embedding values:
+
+```lisp
+#<DOCUMENT-CHUNK :SOURCE "renewable-energy.txt" :TEXT "Renewable Energy
+Sources and Technologies ..." :EMBEDDING #(3.2552084e-4 6.510417e-4
+9.765625e-4 0.0013020834 0.0016276041 0.001953125 0.0022786458
+0.0026041667 0.0029296875 0.0032552083 ...) [3072 dimensions]>
+```
+
+and a corpus prints just its name, description, and chunk count:
+
+```lisp
+(#<CORPUS :NAME "renewable-energy" :DESCRIPTION "Renewable energy sources
+and technologies" :CHUNKS 9>
+ #<CORPUS :NAME "electric-vehicles" :DESCRIPTION "Electric vehicle
+technology and infrastructure" :CHUNKS 7>
+ #<CORPUS :NAME "climate-science" :DESCRIPTION "Climate science and carbon
+emissions" :CHUNKS 7>)
+```
+
+The printers emit unreadable `#<...>` forms on purpose. A readable `#S(...)` form with a truncated embedding could be `read` back into a program as a chunk whose vector is only 10 values long; the `#<` prefix makes clear the printed form is for humans. Chunks are still reachable through `document-chunk-embedding`, and **save-corpus** remains the way to write them to disk.
+
+The **norm** slot and the custom printer live in the same struct for related reasons: both are about treating embeddings as opaque bulk data. Normalizing each chunk embedding once, when the document is added, means search never recomputes a chunk norm; cosine similarity against a normalized chunk is just a dot product divided by the query's norm. **make-document-chunk/embedded** is the constructor that does the work:
+
+```lisp
+(defun make-document-chunk/embedded (text source raw-embedding)
+  "Build a document-chunk with a normalized simple-vector embedding and
+    its precomputed norm. All chunks in the store are normalized, so
+    search is a dot product (see search-corpus)."
+  (let* ((vec (coerce raw-embedding 'simple-vector))
+         (norm (vector-magnitude vec)))
+    (when (zerop norm)
+      (error "Zero-magnitude embedding for chunk from ~A; cannot normalize" source))
+    (make-document-chunk :text text :source source :embedding vec :norm norm)))
+```
+
+Each chunk also gets a stable identity, used for deduplication later:
+
+```lisp
+(defun document-chunk-key (chunk)
+  "Stable identity for a chunk across corpora: (source . text). The
+    same text in different source files is a different chunk."
+  (cons (document-chunk-source chunk) (document-chunk-text chunk)))
+```
+
 The function **split-into-chunks** breaks a long text into overlapping pieces of approximately 500 characters each, trying to break at sentence boundaries (periods or newlines) rather than cutting words in half:
 
 ```lisp
-(defvar *default-chunk-size* 500)
-(defvar *chunk-overlap* 50)
+(defparameter *default-chunk-size* 500
+  "Default size in characters for splitting documents into chunks.")
+
+(defparameter *chunk-overlap* 50
+  "Number of characters to overlap between adjacent chunks.")
 
 (defun split-into-chunks (text &key (chunk-size *default-chunk-size*)
                                     (overlap *chunk-overlap*))
   "Split TEXT into overlapping chunks of approximately CHUNK-SIZE characters.
-   Tries to break at sentence boundaries when possible."
+    Tries to break at sentence boundaries when possible."
   (let ((chunks nil)
         (len (length text))
         (start 0))
     (loop while (< start len)
           do (let* ((end (min (+ start chunk-size) len))
                     ;; Try to find a sentence boundary at or before END
+                    ;; (searching the window up to 80 chars back from END)
                     (break-pos
                       (if (>= end len)
                           end
@@ -221,6 +401,8 @@ The function **split-into-chunks** breaks a long text into overlapping pieces of
                                     end)))
                ;; Guarantee forward progress: if the break search left us
                ;; at or before START, fall back to a hard cut at CHUNK-SIZE.
+               ;; Without this guard a chunk could be empty or START could
+               ;; fail to advance (looping forever or dropping text).
                (when (<= actual-end start)
                  (setf actual-end (min (+ start chunk-size) len)))
                (let ((chunk (string-trim '(#\Space #\Newline #\Tab)
@@ -237,100 +419,153 @@ The function **split-into-chunks** breaks a long text into overlapping pieces of
 
 The overlap between chunks (defaulting to 50 characters) ensures that information at chunk boundaries is not lost; a sentence that spans two chunks will appear in both. Note the two progress guards: without them, a document whose only sentence break lands at or before the start of the current window could produce an empty chunk or move `start` backwards, looping forever. Loops that compute their next position from searched positions always need an explicit monotonic-progress check.
 
-The function **add-document** reads a file, chunks it, and computes embeddings for all chunks at once. When the default embedding function is in use, **get-embeddings** makes a single batch API call for the whole document instead of one request per chunk:
+The function **add-document** reads a file, chunks it, and computes embeddings for all chunks at once. When the default embedding function is in use, **get-embeddings** makes batched API calls for the whole document instead of one request per chunk:
 
 ```lisp
 (defun add-document (corpus filepath &key (chunk-size *default-chunk-size*))
-  "Read a text file, split it into chunks, compute embeddings (in a
-   single batch API call), and add the chunks to CORPUS."
+  "Read a text file, split it into chunks, compute embeddings (in
+    batched API calls when the default embedding function is used),
+    and add the chunks to CORPUS. Returns the number of chunks added."
+  (%debug-log "~%DEBUG add-document: loading ~A~%" filepath)
   (let* ((text (uiop:read-file-string filepath))
          (chunks (split-into-chunks text :chunk-size chunk-size))
          (source (file-namestring filepath)))
+    (%debug-log "DEBUG add-document: split into ~A chunks~%" (length chunks))
     (setf (corpus-chunks corpus)
           (nconc (corpus-chunks corpus)
                  (loop for chunk-text in chunks
                        for embedding in (get-embeddings chunks)
-                       collect (make-document-chunk :text chunk-text
-                                                    :source source
-                                                    :embedding embedding))))
+                       collect (make-document-chunk/embedded chunk-text
+                                                            source
+                                                            embedding))))
+    (%debug-log "DEBUG add-document: added ~A chunks from ~A~%"
+                (length chunks) source)
     (length chunks)))
 ```
 
-Because embedding a corpus costs API calls, **save-corpus** and **load-corpus** persist a corpus, embeddings included, as a plain s-expression file. Note the `*read-eval*` binding when loading: `read` on an untrusted file must never be allowed to evaluate embedded forms:
+Because embedding a corpus costs API calls, **save-corpus** and **load-corpus** persist a corpus, embeddings included, as a plain s-expression file. Loading is the risky half: a truncated or corrupt file would otherwise produce chunks with NIL embeddings that fail far from the cause, or worse, score quietly wrong. So **load-corpus** validates the overall shape and every chunk before trusting it:
 
 ```lisp
-(defun save-corpus (corpus pathname)
-  "Write CORPUS (name, description, chunks with embeddings) to PATHNAME
-   as a single s-expression. Load it back with LOAD-CORPUS."
-  (with-open-file (out pathname :direction :output
-                                :if-exists :supersede
-                                :if-does-not-exist :create)
-    (with-standard-io-syntax
-      (prin1 (list :name (corpus-name corpus)
-                   :description (corpus-description corpus)
-                   :chunks (mapcar (lambda (chunk)
-                                     (list :text (document-chunk-text chunk)
-                                           :source (document-chunk-source chunk)
-                                           :embedding (document-chunk-embedding chunk)))
-                                   (corpus-chunks corpus)))
-             out)))
-  pathname)
+(defun %valid-chunk-data-p (chunk-data)
+  "True when one saved chunk plist has non-empty TEXT and SOURCE and an
+    EMBEDDING that is a non-empty sequence of numbers."
+  (and (consp chunk-data)
+       (stringp (getf chunk-data :text))
+       (plusp (length (getf chunk-data :text)))
+       (stringp (getf chunk-data :source))
+       (plusp (length (getf chunk-data :source)))
+       (let ((emb (getf chunk-data :embedding)))
+         (and (typep emb 'sequence)
+              (plusp (length emb))
+              (every #'numberp emb)))))
 
 (defun load-corpus (pathname)
-  "Load a corpus previously written by SAVE-CORPUS."
+  "Load a corpus previously written by SAVE-CORPUS. Returns a corpus struct.
+    Signals an error when the file is truncated, corrupt, or contains a
+    chunk missing its text, source, or embedding."
   (with-open-file (in pathname :direction :input)
     (with-standard-io-syntax
       (let* ((*read-eval* nil) ; never evaluate while reading data files
-             (data (read in))
-             (corpus (make-corpus :name (getf data :name)
-                                  :description (getf data :description))))
-        (setf (corpus-chunks corpus)
-              (mapcar (lambda (chunk-data)
-                        (make-document-chunk :text (getf chunk-data :text)
-                                             :source (getf chunk-data :source)
-                                             :embedding (getf chunk-data :embedding)))
-                      (getf data :chunks)))
-        corpus))))
+             (data (read in)))
+        (unless (and (consp data)
+                     (getf data :name)
+                     (listp (getf data :chunks))
+                     (getf data :chunks))
+          (error "Corrupt corpus file ~A: expected (:name ...) (:chunks ...)" pathname))
+        (let ((corpus (make-corpus :name (getf data :name)
+                                   :description (getf data :description))))
+          (setf (corpus-chunks corpus)
+                (mapcar (lambda (chunk-data)
+                          (unless (%valid-chunk-data-p chunk-data)
+                            (error "Corrupt chunk in corpus file ~A: ~S"
+                                   pathname chunk-data))
+                          ;; Re-normalize on load: files saved by older
+                          ;; versions may hold un-normalized vectors.
+                          (make-document-chunk/embedded
+                           (getf chunk-data :text)
+                           (getf chunk-data :source)
+                           (getf chunk-data :embedding)))
+                        (getf data :chunks)))
+          corpus)))))
 ```
+
+Note the `*read-eval*` binding when loading: `read` on an untrusted file must never be allowed to evaluate embedded forms.
 
 The **search-corpus** and **search-corpora** functions find the top-K most similar chunks for a given query embedding:
 
 ```lisp
+(defun score-chunks (chunks query-embedding &key (query-norm 1.0))
+  "Score CHUNKS against QUERY-EMBEDDING. Chunks are stored normalized,
+    so cosine similarity is the dot product divided by the query norm;
+    each chunk's norm is not recomputed."
+  (loop for chunk in chunks
+        collect (cons (/ (dot-product query-embedding
+                                      (document-chunk-embedding chunk))
+                         query-norm)
+                      chunk)))
+
+(defun %top-k-by-score (scored-chunks top-k)
+  "Return the TOP-K entries of SCORED-CHUNKS (sorted by descending car)
+    using a single O(n) selection pass instead of a full O(n log n) sort."
+  (let ((k (min top-k (length scored-chunks))))
+    (when (plusp k)
+      ;; Repeatedly extract the max: k passes, each O(n). Worst case
+      ;; k = n is O(n^2), but k is small (3 by default), so this beats
+      ;; sorting at demo scale and stays O(n) for constant k.
+      (let ((remaining (copy-list scored-chunks))
+            (result nil))
+        (dotimes (i k)
+          (let ((best (loop for entry in remaining
+                            maximize (car entry))))
+            (let ((winner (find best remaining :key #'car)))
+              (push winner result)
+              (setf remaining (remove winner remaining :count 1)))))
+        (nreverse result)))))
+
 (defun search-corpora (corpora query-embedding &key (top-k 3))
   "Search multiple CORPORA for the TOP-K most similar chunks overall.
-   Returns a list of (score . document-chunk) pairs."
-  (let ((all-results
-          (loop for corpus in corpora
-                append (search-corpus corpus query-embedding
-                                      :top-k top-k))))
-    (subseq (sort all-results #'> :key #'car)
-            0 (min top-k (length all-results)))))
+    Returns a list of (score . document-chunk) pairs."
+  (let* ((query (coerce query-embedding 'simple-vector))
+         (query-norm (vector-magnitude query))
+         (all-results
+           (loop for corpus in corpora
+                 nconc (%top-k-by-score
+                        (score-chunks (corpus-chunks corpus)
+                                      query
+                                      :query-norm query-norm)
+                        top-k))))
+    (%top-k-by-score all-results top-k)))
 ```
+
+Scoring exploits the normalization done at add time: with every chunk at unit length, the cosine similarity between a chunk and the query is the dot product divided by the query's norm, computed once per query instead of once per chunk. And instead of sorting all n scores to take the top 3, **%top-k-by-score** extracts the maximum k times, which is O(kn); with small k that beats an O(n log n) sort. Neither optimization matters at 23 chunks, but they keep the search loop harmless at thousands of chunks, and they fall out of the normalized representation naturally.
 
 An important feature for agentic RAG is that **search-corpora** accepts a list of corpora, enabling cross-corpus retrieval. The Google research article emphasizes this capability: real-world knowledge is often spread across separate databases managed by different teams. Our system searches all corpora simultaneously and returns the best results regardless of source.
 
 ## The Multi-Agent Pipeline
 
-The file **agents.lisp** is the heart of the system. Each "agent" is a function that calls Gemini with a specialized prompt. This is a practical and effective pattern — we don't need an external agent framework to implement agent behaviors, just well-crafted prompts and structured response parsing.
+The file **agents.lisp** is the heart of the system. Each "agent" is a function that calls Gemini with a specialized prompt. This is a practical and effective pattern: we don't need an external agent framework to implement agent behaviors, just well-crafted prompts and structured response parsing.
 
-We use `gemini-3-flash-preview` for all agent calls. This model is very inexpensive while being capable enough for query rewriting, sufficiency assessment, and synthesis. The function **rag-generate** delegates to **gemini:generate** from the **llm** library, going through the special variable **\*generate-fn\*** so tests can substitute a stub (the same idiom as **\*embedding-fn\*** above):
+We use `gemini-3-flash-preview` for all agent calls. This model is very inexpensive while being capable enough for query rewriting, sufficiency assessment, and synthesis. The function **rag-generate** delegates to **gemini:generate** from the **llm** library, going through the special variable **\*generate-fn\*** so tests can substitute a stub (the same idiom as **\*embedding-fn\*** above). It also wraps the call in **call-with-retries**, so a transient 500 during assessment or synthesis does not throw away the whole pipeline's work:
 
 ```lisp
-(defvar *rag-model* "gemini-3-flash-preview"
+(defparameter *rag-model* "gemini-3-flash-preview"
   "Gemini model used for all agent LLM calls. Override per call with
-   the :model keyword argument to agentic-rag.")
+    the :model keyword argument to agentic-rag.")
 
-(defvar *generate-fn*
+(defparameter *generate-fn*
   (lambda (prompt &key (model *rag-model*))
     (gemini:generate prompt :model-id model))
   "Function of (prompt &key model) returning generated text. Defaults
-   to a thin wrapper around gemini:generate from the llm library.
-   Rebind this in tests to run the pipeline without network access.")
+    to a thin wrapper around gemini:generate from the llm library.
+    Rebind this in tests to run the pipeline without network access.")
 
 (defun rag-generate (prompt &key (model *rag-model*))
-  "Call the LLM through *generate-fn* and return the generated text.
-   Signals an error if the model returns no text."
-  (or (funcall *generate-fn* prompt :model model)
+  "Call the LLM through *generate-fn* with retries on transient
+    failures (HTTP 429/5xx, connection errors), so one flaky request
+    does not throw away the whole pipeline's work. Signals an error if
+    the model returns no text."
+  (or (call-with-retries
+       (lambda () (funcall *generate-fn* prompt :model model)))
       (error "LLM returned no text for prompt: ~A"
              (subseq prompt 0 (min 80 (length prompt))))))
 ```
@@ -344,19 +579,49 @@ The Query Rewriter takes a complex user question and decomposes it into 1–3 fo
 
 This decomposition improves retrieval because each sub-query targets a specific fact that might appear in a different document or section.
 
+Parsing the model's response deserves care. The prompt says "no numbering, bullets, or extra text", but models drift, and a first implementation that trimmed the characters `- * 1 2 3 .` off both ends of each line mangled legitimate queries: "2024 lithium battery prices" became "024 lithium battery prices", and "1.5 MW turbine output" became "5 MW turbine output". Queries are exactly the kind of text with leading digits and decimal points. The fix strips only a leading list prefix: an optional bullet character, or digits followed by `.` or `)` followed by whitespace. The whitespace test is what distinguishes "1. fourth query" from "1.5 MW output":
+
 ```lisp
+(defun %strip-list-prefix (line)
+  "Remove an optional markdown/numbered list prefix from LINE and the
+    surrounding whitespace. Only leading list syntax is stripped:
+    interior and trailing digits are part of the query (so
+    \"2024 lithium prices\", \"1.5 MW output\", and \"75-100 kg\" survive
+    intact, while \"4. fourth query\" and \"- bullet\" are cleaned)."
+  (flet ((ws-p (c) (member c '(#\Space #\Tab #\Return #\Newline))))
+    (let* ((len (length line))
+           (i 0))
+      ;; skip leading whitespace
+      (loop while (and (< i len) (ws-p (char line i))) do (incf i))
+      ;; skip an optional bullet character
+      (when (and (< i len) (member (char line i) '(#\- #\* #\+)))
+        (incf i)
+        (loop while (and (< i len) (ws-p (char line i))) do (incf i)))
+      ;; skip an optional numbering: digits followed by . or ) followed
+      ;; by whitespace. "1.5 MW" fails the whitespace test, so it stays.
+      (let ((j i))
+        (loop while (and (< j len) (digit-char-p (char line j))) do (incf j))
+        (when (and (> j i) (< j len)
+                   (member (char line j) '(#\. #\)))
+                   (< (1+ j) len)
+                   (ws-p (char line (1+ j))))
+          (setf i (1+ j))
+          (loop while (and (< i len) (ws-p (char line i))) do (incf i))))
+      (string-trim '(#\Space #\Tab #\Return #\Newline) (subseq line i)))))
+
 (defun parse-query-lines (response)
-  "Extract one query per line from a rewriter agent RESPONSE."
+  "Extract one query per line from a rewriter agent RESPONSE, dropping
+    empty lines and list prefixes. Query text itself is untouched."
   (remove-if (lambda (s) (zerop (length s)))
-             (mapcar (lambda (line)
-                       (string-trim '(#\Space #\Tab #\- #\* #\1 #\2 #\3 #\.)
-                                    line))
+             (mapcar #'%strip-list-prefix
                      (uiop:split-string (or response "")
                                         :separator '(#\Newline)))))
 
 (defun rewrite-queries (user-query &key (model *rag-model*))
   "Decompose USER-QUERY into 1-3 focused sub-queries for retrieval.
-   Returns a list of query strings."
+    Returns a list of query strings. The original query is always
+    appended as a fallback so the fanout always searches for what the
+    user actually asked."
   (%debug-log "~%DEBUG rewrite-queries: decomposing query...~%")
   (let* ((prompt
            (format nil
@@ -373,33 +638,38 @@ This decomposition improves retrieval because each sub-query targets a specific 
          (queries (parse-query-lines (rag-generate prompt :model model))))
     (%debug-log "DEBUG rewrite-queries: generated ~A sub-queries:~%~{  - ~A~%~}"
                 (length queries) queries)
-    (if queries
-        queries
-        (list user-query))))
+    (remove-duplicates (append queries (list user-query)) :test #'equal)))
 ```
+
+Appending the original query is deliberate. The rewriter's sub-queries aim at the pieces of a question, but the user's exact phrasing often matches the document's phrasing best; searching it directly is one more vector in the fanout and costs one more row in the batch embedding call.
 
 ### Agent 2: Search Fanout
 
-The Search Fanout agent executes the sub-queries against all corpora. For each sub-query, it computes an embedding and searches for the most similar document chunks. Results are deduplicated to avoid showing the same passage twice when multiple sub-queries match the same text.
+The Search Fanout agent executes the sub-queries against all corpora. All sub-query embeddings are fetched with one call to **get-embeddings** (one batched API request for the whole list) instead of one round trip per query. Results are deduplicated by **document-chunk-key** (source and text together), so the same passage matched by several queries appears once, but identical text from two different files stays as two results:
 
 ```lisp
 (defun search-fanout (corpora sub-queries &key (top-k 3))
   "Execute embedding search across CORPORA for each sub-query.
-   Returns a deduplicated list of (score . document-chunk) pairs,
-   sorted by descending score."
+    All sub-query embeddings are fetched with one batched API call.
+    Returns a deduplicated list of (score . document-chunk) pairs,
+    sorted by descending score. Chunks are deduplicated by
+    (source . text) so identical text in different files stays distinct."
   (%debug-log "~%DEBUG search-fanout: searching ~A corpora with ~A queries~%"
               (length corpora) (length sub-queries))
-  (let ((all-results nil)
-        (seen-texts (make-hash-table :test 'equal)))
-    (dolist (query sub-queries)
-      (%debug-log "DEBUG search-fanout: embedding query: ~S~%" query)
-      (let* ((query-embedding (get-embedding query))
-             (results (search-corpora corpora query-embedding :top-k top-k)))
-        (dolist (result results)
-          (let ((text (document-chunk-text (cdr result))))
-            (unless (gethash text seen-texts)
-              (setf (gethash text seen-texts) t)
-              (push result all-results))))))
+  ;; One batched embedding call for all sub-queries instead of N round trips
+  (let ((query-embeddings (get-embeddings sub-queries))
+        (all-results nil)
+        (seen-keys (make-hash-table :test 'equal)))
+    (mapc (lambda (query query-embedding)
+            (%debug-log "DEBUG search-fanout: searching with: ~S~%" query)
+            (dolist (result (search-corpora corpora query-embedding
+                                            :top-k top-k))
+              (let ((key (document-chunk-key (cdr result))))
+                (unless (gethash key seen-keys)
+                  (setf (gethash key seen-keys) t)
+                  (push result all-results)))))
+          sub-queries query-embeddings)
+    ;; Sort by score descending
     (let ((sorted (sort all-results #'> :key #'car)))
       (%debug-log "DEBUG search-fanout: found ~A unique chunks~%" (length sorted))
       sorted)))
@@ -447,8 +717,8 @@ The structured output format (VERDICT/REASON/MISSING) makes it straightforward t
           ((and verdict-word (search "SUFFICIENT" verdict-word :test #'char-equal))
            (values t feedback))
           (t
-           (%debug-log "WARNING parse-verdict-response: unparseable verdict ~S~%"
-                       verdict-word)
+           (%debug-log "WARNING parse-verdict-response: unparseable verdict ~S; ~
+                        treating as SUFFICIENT~%" verdict-word)
            (values t feedback)))))
 ```
 
@@ -489,7 +759,7 @@ Note the order of the two `cond` clauses: the string "INSUFFICIENT" contains "SU
       (values sufficient-p feedback))))
 ```
 
-The two return values — **sufficient-p** (a boolean) and **feedback** (a string describing what's missing) — drive the orchestrator's decision to either synthesize an answer or refine the search.
+The two return values, **sufficient-p** (a boolean) and **feedback** (a string describing what's missing), drive the orchestrator's decision to either synthesize an answer or refine the search.
 
 ### Agent 4: The Synthesis Agent
 
@@ -532,20 +802,20 @@ The **agentic-rag** function ties everything together. It runs the full pipeline
                                             (model *rag-model*)
                                             (max-context-chunks 8))
   "Run the full agentic RAG pipeline:
-     1. Rewrite the user query into sub-queries
-     2. Search corpora for relevant chunks
-     3. Check if context is sufficient (loop if not)
-     4. Synthesize a grounded answer
+      1. Rewrite the user query into sub-queries
+      2. Search corpora for relevant chunks
+      3. Check if context is sufficient (loop if not)
+      4. Synthesize a grounded answer
 
-   CORPORA is a list of corpus structs.
-   MODEL is the Gemini model id used for every agent call.
-   MAX-CONTEXT-CHUNKS caps how many retrieved passages are sent to the
-   LLM (highest-scoring first) no matter how many iterations ran.
-   Returns the synthesized answer string."
-  (format t "~%~%========================================~%")
-  (format t "  AGENTIC RAG PIPELINE~%")
-  (format t "  Query: ~A~%" user-query)
-  (format t "========================================~%")
+    CORPORA is a list of corpus structs.
+    MODEL is the Gemini model id used for every agent call.
+    MAX-CONTEXT-CHUNKS caps how many retrieved passages are sent to the
+    LLM (highest-scoring first) no matter how many iterations ran.
+    Returns the synthesized answer string."
+  (%debug-log "~%~%========================================~%")
+  (%debug-log "  AGENTIC RAG PIPELINE~%")
+  (%debug-log "  Query: ~A~%" user-query)
+  (%debug-log "========================================~%")
 
   ;; Phase 1: Rewrite queries
   (let* ((sub-queries (rewrite-queries user-query :model model))
@@ -556,57 +826,73 @@ The **agentic-rag** function ties everything together. It runs the full pipeline
     ;; Phase 3: Iterative sufficiency check
     (loop
       (incf iteration)
-      (format t "~%--- Iteration ~A/~A ---~%" iteration max-iterations)
+      (%debug-log "~%--- Iteration ~A/~A ---~%" iteration max-iterations)
 
       (when (null all-chunks)
+        (%debug-log "DEBUG agentic-rag: no chunks found, returning empty answer~%")
         (return-from agentic-rag
           "I could not find any relevant information in the available documents."))
 
       ;; Cap prompt size regardless of how many iterations accumulated chunks
       (let ((context-chunks (%cap-context all-chunks max-context-chunks)))
+
+        ;; At the last allowed iteration both branches end in "synthesize
+        ;; with what we have", so skip the sufficiency LLM call entirely.
+        (when (>= iteration max-iterations)
+          (%debug-log "~%DEBUG agentic-rag: max iterations reached, synthesizing ~
+                       with available context~%")
+          (return-from agentic-rag
+            (synthesize-answer user-query context-chunks :model model)))
+
         (multiple-value-bind (sufficient-p feedback)
             (assess-sufficiency user-query context-chunks :model model)
 
           (when sufficient-p
             (%debug-log "~%DEBUG agentic-rag: context is SUFFICIENT at iteration ~A~%"
                         iteration)
-            (return-from agentic-rag
-              (synthesize-answer user-query context-chunks :model model)))
-
-          (when (>= iteration max-iterations)
-            (%debug-log "~%DEBUG agentic-rag: max iterations reached~%")
+            ;; Phase 5: Synthesize answer
             (return-from agentic-rag
               (synthesize-answer user-query context-chunks :model model)))
 
           ;; Phase 4: Refine and search again
           (%debug-log "~%DEBUG agentic-rag: context INSUFFICIENT, refining...~%")
           (%debug-log "DEBUG agentic-rag: feedback: ~A~%" feedback)
-          (let* ((refined-queries (refine-queries user-query feedback :model model))
-                 (new-chunks (search-fanout corpora refined-queries :top-k top-k)))
-            ;; Accumulate new chunks (deduplicate)
+          (let* ((refined-queries (refine-queries user-query feedback
+                                                  :model model))
+                 (new-chunks (search-fanout corpora refined-queries
+                                            :top-k top-k)))
+            ;; Accumulate new chunks with existing ones (deduplicate by
+            ;; (source . text) so identical text from different files
+            ;; stays distinct)
             (let ((seen (make-hash-table :test 'equal)))
               (dolist (scored-chunk all-chunks)
-                (setf (gethash (document-chunk-text (cdr scored-chunk)) seen) t))
+                (setf (gethash (document-chunk-key (cdr scored-chunk)) seen) t))
               (dolist (scored-chunk new-chunks)
-                (unless (gethash (document-chunk-text (cdr scored-chunk)) seen)
-                  (setf (gethash (document-chunk-text (cdr scored-chunk)) seen) t)
+                (unless (gethash (document-chunk-key (cdr scored-chunk)) seen)
+                  (setf (gethash (document-chunk-key (cdr scored-chunk)) seen) t)
                   (push scored-chunk all-chunks))))
+            ;; Re-sort by score
             (setf all-chunks (sort all-chunks #'> :key #'car))))))))
 ```
 
-Notice how each iteration accumulates new chunks with the existing ones, deduplicating by text content. The accumulated context grows richer with each iteration, increasing the likelihood that the Sufficient Context Agent will be satisfied. The **max-context-chunks** keyword caps how many top-scoring passages are actually sent to the model, so a long refinement loop cannot grow the prompt without bound.
+Two details of the loop are worth pointing out. First, all progress output goes through **%debug-log**, so binding **\*rag-verbose\*** to NIL silences the entire pipeline, banner and iterations included; the orchestrator prints nothing on its own authority. Second, the `max-iterations` check runs *before* **assess-sufficiency**. At the final iteration, both a SUFFICIENT and an INSUFFICIENT verdict end in "synthesize with what we have", so the assessment cannot change the outcome; asking the model anyway spends a call to learn nothing. With `max-iterations 3` and a query that never converges, the pipeline makes two assessment calls, not three.
+
+Notice how each iteration accumulates new chunks with the existing ones, deduplicating by (source . text). The accumulated context grows richer with each iteration, increasing the likelihood that the Sufficient Context Agent will be satisfied. The **max-context-chunks** keyword caps how many top-scoring passages are actually sent to the model, so a long refinement loop cannot grow the prompt without bound.
 
 ## Top-Level API and Demo
 
-The file **rag.lisp** provides convenience functions and a built-in demo. The **test** function creates three separate corpora — renewable energy, electric vehicles, and climate science — and runs three progressively harder queries:
+The file **rag.lisp** provides convenience functions and a built-in demo. The **test** function creates three separate corpora (renewable energy, electric vehicles, and climate science) and runs three progressively harder queries:
 
 ```lisp
 (defun test ()
-  "Run a demo of the Agentic RAG system with sample documents."
+  "Run a demo of the Agentic RAG system with sample documents.
+   Creates three corpora (energy, vehicles, climate) and runs
+   multi-hop queries that require cross-corpus retrieval."
   (format t "~%~%============================================~%")
   (format t "  Agentic RAG Demo — Loading Documents~%")
   (format t "============================================~%")
 
+  ;; Create three separate corpora to demonstrate cross-corpus retrieval
   (let ((energy-corpus (make-corpus :name "renewable-energy"
                                     :description "Renewable energy sources and technologies"))
         (ev-corpus (make-corpus :name "electric-vehicles"
@@ -614,13 +900,17 @@ The file **rag.lisp** provides convenience functions and a built-in demo. The **
         (climate-corpus (make-corpus :name "climate-science"
                                     :description "Climate science and carbon emissions")))
     
+    ;; Load documents into their respective corpora
     (add-document energy-corpus (data-path "renewable-energy.txt"))
     (add-document ev-corpus (data-path "electric-vehicles.txt"))
     (add-document climate-corpus (data-path "climate-science.txt"))
     
     (let ((all-corpora (list energy-corpus ev-corpus climate-corpus)))
-
-      ;; Query 1: Single-corpus question
+      (format t "~%~%Loaded ~A total chunks across ~A corpora.~%"
+              (loop for c in all-corpora sum (corpus-chunk-count c))
+              (length all-corpora))
+      
+      ;; Query 1: Single-corpus question (should find answer easily)
       (format t "~%~%===== TEST QUERY 1 (single topic) =====~%")
       (let ((answer (query all-corpora
                            "What is the current cost of lithium-ion battery storage per kilowatt-hour?")))
@@ -638,14 +928,19 @@ The file **rag.lisp** provides convenience functions and a built-in demo. The **
                            "What role could solid-state batteries and pumped-storage hydroelectricity play together in solving the intermittency problem of wind and solar energy?")))
         (format t "~%~%ANSWER 3:~%~A~%~%" answer))
       
+      (format t "~%~%============================================~%")
+      (format t "  Demo Complete~%")
+      (format t "============================================~%")
+      
+      ;; Return corpora for interactive use
       all-corpora)))
 ```
 
 The test queries are designed to demonstrate different capabilities:
 
-1. **Query 1** is a simple factual lookup — the answer exists in a single document chunk.
-2. **Query 2** requires combining information from the electric vehicles corpus (battery manufacturing emissions) with the climate science corpus (emissions data), demonstrating cross-corpus retrieval.
-3. **Query 3** combines solid-state batteries (EV corpus) with pumped-storage hydro and hybrid storage (renewable energy corpus). The first retrieval pass finds the technologies described separately, so the refinement loop runs and succeeds on the second iteration; we will watch this happen in the sample run below.
+1. **Query 1** is a simple factual lookup: the answer exists in a single document chunk.
+2. **Query 2** requires combining information from the electric vehicles corpus (battery manufacturing emissions) with the climate science corpus (emissions data), demonstrating cross-corpus retrieval. The documents do not actually contain the break-even data the question asks for, so this query also shows the refinement loop running to exhaustion and the synthesis agent reporting what it can and cannot answer.
+3. **Query 3** combines solid-state batteries (EV corpus) with pumped-storage hydro and hybrid storage (renewable energy corpus). Here the initial retrieval already finds the hybrid-storage passage, and the Sufficient Context Agent accepts on the first iteration.
 
 ## Running the Example
 
@@ -665,13 +960,21 @@ $ sbcl
 
 DEBUG add-document: loading .../data/renewable-energy.txt
 DEBUG add-document: split into 9 chunks
+
 DEBUG get-embeddings: batch-fetching 9 embeddings
+DEBUG add-document: added 9 chunks from renewable-energy.txt
+
 DEBUG add-document: loading .../data/electric-vehicles.txt
 DEBUG add-document: split into 7 chunks
+
 DEBUG get-embeddings: batch-fetching 7 embeddings
+DEBUG add-document: added 7 chunks from electric-vehicles.txt
+
 DEBUG add-document: loading .../data/climate-science.txt
 DEBUG add-document: split into 7 chunks
+
 DEBUG get-embeddings: batch-fetching 7 embeddings
+DEBUG add-document: added 7 chunks from climate-science.txt
 
 Loaded 23 total chunks across 3 corpora.
 
@@ -684,63 +987,110 @@ Loaded 23 total chunks across 3 corpora.
          per kilowatt-hour?
 ========================================
 
-DEBUG rewrite-queries: generated 1 sub-queries:
-  - lithium-ion battery storage cost per kilowatt-hour
+DEBUG rewrite-queries: decomposing query...
+DEBUG rewrite-queries: generated 3 sub-queries:
+  - lithium-ion battery storage cost per kWh 2024
+  - recent trends in lithium-ion battery pack prices per kilowatt-hour
+  - average cost per kWh for utility-scale lithium-ion batteries
+
+DEBUG search-fanout: searching 3 corpora with 4 queries
+
+DEBUG get-embeddings: batch-fetching 4 embeddings
+DEBUG search-fanout: searching with: "lithium-ion battery storage cost per kWh 2024"
+DEBUG search-fanout: searching with: "recent trends in lithium-ion battery pack prices per kilowatt-hour"
+DEBUG search-fanout: searching with: "average cost per kWh for utility-scale lithium-ion batteries"
+DEBUG search-fanout: searching with: "What is the current cost of lithium-ion battery storage per kilowatt-hour?"
+DEBUG search-fanout: found 5 unique chunks
 
 --- Iteration 1/3 ---
 
+DEBUG assess-sufficiency: evaluating 5 chunks
+DEBUG assess-sufficiency response:
+VERDICT: SUFFICIENT
+REASON: The first retrieved passage provides a specific current cost
+figure, stating that the price of lithium-ion battery storage has
+fallen to under $140 per kilowatt-hour.
+MISSING: NONE
 DEBUG assess-sufficiency: verdict=SUFFICIENT
 
+DEBUG agentic-rag: context is SUFFICIENT at iteration 1
+
+DEBUG synthesize-answer: generating answer from 5 chunks
+
+
 ANSWER 1:
-The cost of lithium-ion battery storage has fallen by approximately
-90% since 2010, from over $1,100 per kilowatt-hour to under $140
-per kilowatt-hour (source: renewable-energy.txt).
+Based on the provided passages, the current cost of lithium-ion
+battery storage is under $140 per kilowatt-hour (source:
+renewable-energy.txt). The cost has fallen by approximately 90% since
+2010, when prices were over $1,100 per kilowatt-hour (source:
+renewable-energy.txt).
 ```
 
-Notice that loading each document costs a single batched embedding request. Query 3, which asks how solid-state batteries and pumped-storage hydroelectricity could work *together*, is the interesting case: the initial retrieval finds passages about each technology separately, the Sufficient Context Agent reports the combined information is missing, and the refinement pass then locates the hybrid-storage passage in **renewable-energy.txt**:
+Two things are worth noticing in this run. The rewriter produced three sub-queries, but the fanout searched with four: the original question is appended to the sub-query list, and all four embeddings are fetched with one batched call ("batch-fetching 4 embeddings"). Each document load is likewise one batched request.
+
+Query 2 is the interesting case for the refinement loop. The question asks for a comparison the documents cannot fully support, so the Sufficient Context Agent keeps finding the gap and the loop runs to the iteration limit:
 
 ```
-===== TEST QUERY 3 (complex, iterative) =====
+===== TEST QUERY 2 (multi-hop, cross-corpus) =====
 
 --- Iteration 1/3 ---
 
 DEBUG assess-sufficiency response:
 VERDICT: INSUFFICIENT
-REASON: The passages describe the individual characteristics of
-solid-state batteries and pumped-storage hydroelectricity but not
-how they would function together.
-MISSING: Information on the complementary roles of solid-state
-batteries and pumped-storage hydroelectricity in short-term versus
-long-term grid energy storage.
+REASON: While the passages provide the carbon footprint for battery
+manufacturing (75-100 kg CO2/kWh), they lack specific quantitative
+data on the emissions saved per mile or year to allow for a direct
+comparison or break-even analysis.
+MISSING: Quantitative data on CO2 emissions from internal combustion
+engine vehicles or the "break-even" distance/time required for an EV
+charged by renewables to offset its manufacturing carbon footprint.
 
 DEBUG agentic-rag: context INSUFFICIENT, refining...
 DEBUG refine-queries: generated 2 refined queries:
-  - combining battery and pumped hydro storage for grid stability
-  - hybrid energy storage systems short and long duration
+  - lifecycle CO2 emissions per mile internal combustion engine vs EV
+    battery manufacturing data
+  - break-even driving distance EV charged by renewables to offset
+    battery production emissions
+
+DEBUG search-fanout: found 4 unique chunks
 
 --- Iteration 2/3 ---
 
-DEBUG assess-sufficiency: verdict=SUFFICIENT
+DEBUG assess-sufficiency: evaluating 6 chunks
+DEBUG assess-sufficiency response:
+VERDICT: INSUFFICIENT
+REASON: While the passages provide the carbon footprint for battery
+manufacturing (75-100 kg CO2/kWh), they lack the specific emission
+data for gasoline vehicles needed to calculate the "emissions saved"
+or a direct break-even analysis.
+MISSING: Average carbon emissions of internal combustion engine
+vehicles per mile and the specific distance or timeframe required for
+an EV charged on renewables to offset its manufacturing carbon debt.
 
-ANSWER 3:
-Together, solid-state batteries and pumped-storage hydroelectricity
-form a hybrid storage system that addresses wind and solar
-intermittency on complementary time scales (source:
-renewable-energy.txt). Solid-state batteries excel at
-short-duration storage: they respond within milliseconds to smooth
-output when clouds pass over a solar farm or wind speeds drop,
-provide frequency regulation, and shift solar generation into the
-evening demand peak. Pumped-storage hydroelectricity plays the
-opposite role, providing bulk, long-duration storage that moves
-large amounts of energy across many hours or days, using excess
-electricity to pump water uphill and releasing it through turbines
-during peak demand. In such a pairing, the batteries absorb the
-fast, frequent charge cycles that would wear out mechanical
-equipment, while pumped hydro handles the deep, infrequent
-discharges that would otherwise require impractically large battery
-banks, allowing wind and solar installations to deliver firm,
-dispatchable power around the clock.
+--- Iteration 3/3 ---
+
+DEBUG agentic-rag: max iterations reached, synthesizing with available context
+
+DEBUG synthesize-answer: generating answer from 7 chunks
+
+
+ANSWER 2:
+Manufacturing EV batteries produces approximately 75-100 kg of CO2
+per kilowatt-hour of battery capacity (source: electric-vehicles.txt).
+When an EV is charged using renewable energy sources like solar or
+wind, it produces zero operational emissions (source:
+electric-vehicles.txt). Even when accounting for manufacturing, EVs
+produce roughly 50-60% fewer lifecycle greenhouse gas emissions than
+comparable gasoline vehicles when charged from the average US grid
+mix (source: electric-vehicles.txt).
+
+Missing Information: The retrieved passages do not provide a specific
+"break-even" point (such as the number of miles or years) at which
+the emissions saved by renewable charging fully offset the initial
+CO2 generated during battery manufacturing.
 ```
+
+Notice that iteration 3/3 goes straight to synthesis: the sufficiency check is skipped entirely at the last iteration because its verdict cannot change the outcome. The pipeline honestly reports what it found and what is missing, which is the right behavior when the documents simply do not contain the requested data.
 
 After the test completes, you can use the returned corpora for interactive queries:
 
@@ -767,9 +1117,11 @@ pre-industrial levels (source: climate-science.txt).
 RAG> quit
 ```
 
+When **rag:test** returns the corpora and the REPL prints the return value, the custom print functions from the vector store section keep the output readable: each corpus is one line with its name, description, and chunk count, and inspecting a single chunk shows only the first 10 embedding values plus the dimension count. Without those printers, this one expression would dump all 23 chunks with their full 3072-value embeddings.
+
 ## Offline Tests
 
-Because **\*embedding-fn\*** and **\*generate-fn\*** are special variables holding functions, the whole pipeline can be exercised without network access or an API key:
+Because **\*embedding-fn\***, **\*batch-request-fn\***, and **\*generate-fn\*** are special variables holding functions, the whole pipeline can be exercised without network access or an API key:
 
 ```
 * (asdf:test-system :rag)
@@ -777,22 +1129,22 @@ Because **\*embedding-fn\*** and **\*generate-fn\*** are special variables holdi
 All RAG tests passed.
 ```
 
-The test system (**tests.lisp**, package `rag-tests`) covers the chunking edge cases (including the forward-progress guard discussed above), vector math, retrieval ranking and deduplication, verdict parsing (including the INSUFFICIENT-contains-SUFFICIENT substring trap), corpus save/load round-trips, and a full `agentic-rag` run against a stubbed LLM that answers SUFFICIENT on the second iteration. There is no testing framework dependency; a small `check` macro records failures and `run-tests` signals an error if any occurred, which is all ASDF needs to report test failure.
+The test system (**tests.lisp**, package `rag-tests`) covers the chunking edge cases (including the forward-progress guard discussed above), query line parsing (queries that begin with digits or decimal numbers survive; list prefixes of any length are stripped), vector math (including the dimension-mismatch error), retrieval ranking and deduplication (identical text from different files stays distinct), batched query embedding (one call for the whole fanout), batch splitting at the 100-text API cap, cache eviction at the cap, retry behavior (transient 429/5xx and connection errors retry; permanent 4xx signal immediately), verdict parsing (including the INSUFFICIENT-contains-SUFFICIENT substring trap), corpus save/load round-trips with corrupt-file rejection, and a full `agentic-rag` run against a stubbed LLM, including the checks that the last iteration skips the sufficiency call and that a quiet pipeline prints nothing. There is no testing framework dependency; a small `check` macro records failures and `run-tests` signals an error if any occurred, which is all ASDF needs to report test failure.
 
 ## Wrap Up for Agentic RAG
 
-The key takeaway from this chapter is that agentic RAG dramatically improves answer quality compared to vanilla RAG, especially for complex queries that require information from multiple sources. The Sufficient Context Agent is the critical innovation — by explicitly checking whether enough information has been retrieved before generating an answer, we avoid the common failure modes of hallucination and incomplete responses.
+The key takeaway from this chapter is that agentic RAG dramatically improves answer quality compared to vanilla RAG, especially for complex queries that require information from multiple sources. The Sufficient Context Agent is the critical innovation: by explicitly checking whether enough information has been retrieved before generating an answer, we avoid the common failure modes of hallucination and incomplete responses.
 
 The implementation is deliberately simple: each "agent" is just a function with a well-crafted prompt. You don't need an elaborate agent framework to get the benefits of multi-agent architectures. What matters is the pattern: decompose, search, assess, refine, synthesize.
 
-The engineering around that pattern is deliberately practical as well: embeddings are computed with one batched API call per document and memoized, transient HTTP failures are retried with exponential backoff, corpora can be saved to disk and reloaded without re-embedding, and every network-facing function sits behind a rebindable special variable so the entire pipeline is testable offline.
+The engineering around that pattern is deliberately practical as well: embeddings are stored as normalized simple-vectors computed with batched API calls and memoized, all sub-queries in a fanout share one embedding request, the API key travels in a header instead of the URL, transient HTTP and connection failures are retried while permanent client errors surface immediately, corpora can be saved to disk, validated on load, and reloaded without re-embedding, and every network-facing function sits behind a rebindable special variable so the entire pipeline is testable offline.
 
 For production use, consider these enhancements:
 
-- **Persistent vector store**: Replace the in-memory lists with a dedicated vector database (Chroma, Qdrant, or Pinecone) for larger document collections.
+- **Persistent vector store**: Replace the in-memory lists with a dedicated vector database (Chroma, Qdrant, or Pinecone) for larger document collections. Because chunks are stored normalized, a store that indexes unit vectors can use plain dot-product scoring directly.
 - **Document loaders**: Add support for PDF, HTML, and other formats beyond plain text.
 - **Structured agent outputs**: Request JSON Schema-constrained responses from the Interactions API instead of parsing VERDICT lines (see practice problem 5).
-- **Parallel search**: Use threads to search multiple corpora simultaneously.
+- **Parallel search**: Use threads to search multiple corpora simultaneously (see practice problem 6).
 
 The Google research reports that their production agentic RAG system achieves up to 34% higher accuracy than vanilla RAG on factuality benchmarks, with cross-corpus retrieval nearly matching single-corpus accuracy. Our Common Lisp implementation demonstrates the same architecture on a smaller scale.
 
@@ -802,7 +1154,7 @@ The Google research reports that their production agentic RAG system achieves up
    The logic inside `split-into-chunks` in [vector-store.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/vector-store.lisp) uses the package constants `*default-chunk-size*` (500 characters) and `*chunk-overlap*` (50 characters). Modify `add-document` in [vector-store.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/vector-store.lisp) and `agentic-rag` in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp) to support dynamic configuration of these parameters. Write a helper function that measures the sensitivity of retrieval relevance scores to different chunk configurations.
 
 2. **Deduplication with Embedding Similarity (Soft Deduplication)**:
-   In `search-fanout` (in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp)), the retrieved chunks are deduplicated strictly by exact string matching. In large datasets, different documents might contain near-identical chunks or rephrased content. Implement a "soft" deduplication mechanism in `search-fanout` that uses the `cosine-similarity` function from [embeddings.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/embeddings.lisp) to discard any retrieved chunk that has a similarity score greater than 0.9 with an already selected chunk.
+   In `search-fanout` (in [agents.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/RAG/agents.lisp)), the retrieved chunks are deduplicated by exact `document-chunk-key` matching (source plus text). In large datasets, different documents might contain near-identical chunks or rephrased content. Implement a "soft" deduplication mechanism in `search-fanout` that uses the `cosine-similarity` function from [embeddings.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/RAG/embeddings.lisp) to discard any retrieved chunk that has a similarity score greater than 0.9 with an already selected chunk. Remember that stored embeddings are normalized, so the comparison is a plain dot product.
 
 3. **Multi-Turn Chat Interface Integration**:
    The current `interactive-demo` loop in [rag.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/rag.lisp) and the orchestrator `agentic-rag` in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp) are stateless: each query is processed independently. Extend the pipeline to support a conversation history (list of past QA turns). Pass the history to the `Query Rewriter` so it can resolve pronouns and context (e.g., rewriting "How does it compare to hydro?" following "What is the cost of battery storage?").
@@ -814,4 +1166,4 @@ The Google research reports that their production agentic RAG system achieves up
    The Sufficient Context Agent in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp) relies on string matching (searching for `"VERDICT:"` and `"MISSING:"`) to parse Gemini's response. This is fragile if the model outputs code blocks, explanations, or formatting deviations. Modify `assess-sufficiency` to request structured output using a JSON Schema (by specifying schema parameters in the request payload to the Gemini Interactions API). Parse the returned structured JSON reliably using `cl-json`.
 
 6. **Parallelized Search Fanout**:
-   The `search-fanout` function in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp) runs queries sequentially. If there are 3 sub-queries and multiple corpora, fetching embeddings and searching them one by one introduces latency. Use a threading library such as `bordeaux-threads` to parallelize the calls to `get-embedding` and `search-corpora` for each sub-query, gathering and deduplicating results once all threads terminate.
+   The `search-fanout` function in [agents.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/RAG/agents.lisp) embeds all sub-queries in one batched API call, but still searches them sequentially: each sub-query's `search-corpora` call runs one after another. When there are several sub-queries and multiple corpora, searching one by one adds latency. Use a threading library such as `bordeaux-threads` to parallelize the `search-corpora` calls per sub-query, gathering and deduplicating results once all threads terminate.
