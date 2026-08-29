@@ -77,6 +77,16 @@ As long as you are thinking about the new tool Quicklisp that is now in your too
 
 You need to have the Postgres and MySQL client developer libraries installed on your system for the **clsql-postgresql** and **clsql-mysql** installations to work. If you are unlikely to use relational databases with Common Lisp then you might skip the effort of installing Postgres and MySQL. The example in the **Chapter on the Knowledge Graph Navigator** uses the SQLite database for caching. You don't need any extra dependencies for the **sqlite** package.
 
+## Fixing Quicklisp Problems
+
+It is rare, but sometimes my local SBCL or LispWorks config introduces problems building Quicklisp loaded libraries from source code. This often helps:
+
+Run these from your shell (with no SBCL running):
+
+```
+rm -rf ~/quicklisp/dists    # all dist library sources + metadata
+rm -rf ~/.cache/common-lisp # every compiled FASL and ASDF cache
+```
 
 ## Using Quicklisp to Configure Emacs and Slime
 
