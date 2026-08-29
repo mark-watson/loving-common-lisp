@@ -1,4 +1,4 @@
-# Knowledge Graph Navigator User Interface Using LispWorks CAPI {#kgncapi}
+# Knowledge Graph Navigator User Interface Using LispWorks CAPI
 
 
 As we have seen in the last two chapters the Knowledge Graph Navigator (which I will often refer to as KGN) is a tool for processing a set of entity names and automatically exploring the public Knowledge Graph [DBPedia](http://dbpedia.org) using SPARQL queries. I started to write KGN for my own use, to automate some things I used to do manually when exploring Knowledge Graphs, and later thought that KGN might also be useful for educational purposes. KGN shows the user the auto-generated SPARQL queries so hopefully the user will learn by seeing examples. KGN uses NLP code developed in earlier chapters and we will reuse that code with a short review of using the APIs. Here is a screenshot showing the application we develop here:
@@ -6,7 +6,7 @@ As we have seen in the last two chapters the Knowledge Graph Navigator (which I 
 {width=90%}
 ![UI for the Knowledge Graph Navigator](images/kgn1.png)
 
-We will use the [KGN common library](#kgncommon) developed earlier. This example replaces the text bases UI from the last chapter and requires either the free or professional version of LispWorks to run.
+We will use the `KGN common library` developed earlier. This example replaces the text bases UI from the last chapter and requires either the free or professional version of LispWorks to run.
 
 The code for the CAPI user interface is found in the GitHub repository [https://github.com/mark-watson/kgn-capi-ui](https://github.com/mark-watson/kgn-capi-ui).
 
