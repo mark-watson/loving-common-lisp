@@ -1,5 +1,11 @@
 # Loving Common Lisp, or the Savvy Programmer's Secret Weapon, 9th Edition
 
+**Announcement:** Starting in September 2026 I am starting a major rewrite of this book, largely to remove or shorten old material, the goal being a more concise and useful book. A PDF for the August 2026 version of the book is available at https://markwatson.com/opencontent/lovinglisp_before_sept_2026_rewrite.pdf
+
+You can also get the old book materials using the GitHub tag **book_september_2026** by selecting this tag on this GitHub web page and doing a fresh clone.
+
+## Support my Work
+
 If you would like to support my work please consider purchasing my books on [Leanpub](https://leanpub.com/u/markwatson) and star my git repositories that you find useful on [GitHub](https://github.com/mark-watson?tab=repositories&q=&type=public). You can also interact with me on social media on [Mastodon](https://mastodon.social/@mark_watson) and [Twitter](https://twitter.com/mark_l_watson).
 
 This repo is for the latest edition of my book that was released March 2026.
