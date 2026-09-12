@@ -10,7 +10,7 @@ input_output.md
 plotlib.md
 clos.md
 network_programming.md
-bravesearch.md
+search_APIs.md
 database.md
 nlp.md
 information_gathering.md
@@ -30,7 +30,6 @@ openai.md
 ollama.md
 ollama_image_processing.md
 anthropic.md
-perplexity.md
 moonshot.md
 huggingface.md
 knowledge-navigator.md
@@ -40,7 +39,6 @@ doc_qa.md
 RAG.md
 prompts.md
 gemini.md
-tavily.md
 autocontext.md
 agent_llm.md
 agent_part2.md

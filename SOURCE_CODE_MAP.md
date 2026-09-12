@@ -16,7 +16,7 @@ This table maps each chapter file in `./manuscript` to its source code example d
 | `manuscript/plotlib.md` | (none) |
 | `manuscript/clos.md` | (none) |
 | `manuscript/network_programming.md` | (none) |
-| `manuscript/bravesearch.md` | `src/brave_search` |
+| `manuscript/search_APIs.md` | `src/search_APIs` |
 | `manuscript/database.md` | (none) |
 | `manuscript/nosql.md` | (none) |
 | `manuscript/design.md` | (none) |
@@ -37,7 +37,6 @@ This table maps each chapter file in `./manuscript` to its source code example d
 | `manuscript/openai.md` | `src/openai` |
 | `manuscript/ollama.md` | `src/ollama` |
 | `manuscript/ollama_image_processing.md` | `src/ollama_images` |
-| `manuscript/perplexity.md` | `src/perplexity` |
 | `manuscript/moonshot.md` | `src/moonshot_kimi_k2` |
 | `manuscript/huggingface.md` | `src/huggingface` |
 | `manuscript/knowledge-navigator.md` | `src/knowledge-base-navigator` |
@@ -47,7 +46,6 @@ This table maps each chapter file in `./manuscript` to its source code example d
 | `manuscript/RAG.md` | `src/RAG` |
 | `manuscript/prompts.md` | (none) |
 | `manuscript/gemini.md` | `src/gemini` |
-| `manuscript/tavily.md` | `src/tavily` |
 | `manuscript/autocontext.md` | `src/autocontext` |
 | `manuscript/agent_llm.md` | `src/cl-llm-agent` |
 | `manuscript/agent_part2.md` | `src/cl-llm-agent` |
