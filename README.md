@@ -1,4 +1,4 @@
-# Loving Common Lisp, or the Savvy Programmer's Secret Weapon, 9th Edition
+# Loving Common Lisp, or the Savvy Programmer's Secret Weapon
 
 **Announcement:** Starting in September 2026 I am starting a major rewrite of this book, largely to remove or shorten old material, the goal being a more concise and useful book. A PDF for the August 2026 version of the book is available at https://markwatson.com/opencontent/lovinglisp_before_sept_2026_rewrite.pdf
 
