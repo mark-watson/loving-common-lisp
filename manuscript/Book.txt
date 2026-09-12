@@ -12,8 +12,6 @@ clos.md
 network_programming.md
 bravesearch.md
 database.md
-nosql.md
-design.md
 nlp.md
 information_gathering.md
 machine_learning.md
@@ -31,6 +29,7 @@ karpathy.md
 openai.md
 ollama.md
 ollama_image_processing.md
+anthropic.md
 perplexity.md
 moonshot.md
 huggingface.md
@@ -54,5 +53,6 @@ daily_use.md
 cl-ai-coding-agent.md
 hacking_SBCL_repl.md
 Neural-Symbolic-Knowledge-Graph-Engine.md
+probability.md
 book_wrapup.md
 
