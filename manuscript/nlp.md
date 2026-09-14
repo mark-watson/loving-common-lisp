@@ -11,6 +11,8 @@ Natural Language Processing (NLP) is the automated processing of natural languag
 
 We will use a library that I wrote that performs POS tagging, categorization (classification), summarization, and detects proper names.
 
+**Note: Dear reader, I developed the code in this chapter in the  period of 1998 to 2015 and used it for many projects. This code is now deprecated, and I seldom use it anymore but I decided that it is interesting enough to leave it in this book.**
+
 My example code for this chapter is contained in separate Quicklisp projects located in the subdirectories:
 
 - **src/fasttag**: performs part of speech tagging and tokenizes text
