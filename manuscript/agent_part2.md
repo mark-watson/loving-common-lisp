@@ -273,11 +273,11 @@ Here we are using the innate knowledge in X’s Grok model.
 
 ## Agent Using X’s Grok API and Perplexity’s Search API
 
-Here we extend the example in the last section to use a web search tool implemented with Perplexity’s web search API.
+Here we extend the example in the last section to use a web search tool implemented with Perplexity's web search API through the shared **search-apis** library from the earlier web search chapter.
 
 The architecture of this example tool using agent is centered around the **run-agent** function, which implements the core reasoning loop. It begins by sending the user's query and a list of available tools to the Grok API. The program then inspects the API response's **finish_reason**. If Grok determines a tool is needed, the reason will be in **tool_calls**, and the response will contain the name of the tool to execute and the arguments to use. The **execute-tool** function then dispatches to the appropriate local Lisp function. The tool's output is then packaged into a new message and sent back to Grok, continuing the loop. This cycle repeats until Grok has sufficient information and returns a **finish_reason** of stop, at which point it delivers its final synthesized answer to the user.
 
-The system's extensibility is handled by the **def-tool** macro that creates a simple domain-specific language for adding new tools with specified capabilities. To define a new tool, a developer provides its name, a natural language description for the LLM to understand its purpose, a JSON schema for its parameters, and the Lisp lambda function that performs the actual work. The **web_search** tool is an example, as it acts as a bridge to another AI service, Perplexity. Instead of performing a raw web search, it effectively asks the Perplexity Sonar model to answer the query, ensuring the result returned to Grok is a concise, relevant summary. This demonstrates a powerful pattern of chaining specialized AI models together within a single agentic framework. Communication with the external APIs is managed by the Drakma library for HTTP requests and the YASON library for handling the necessary JSON serialization and parsing.
+The system's extensibility is handled by the **def-tool** macro that creates a simple domain-specific language for adding new tools with specified capabilities. To define a new tool, a developer provides its name, a natural language description for the LLM to understand its purpose, a JSON schema for its parameters, and the Lisp lambda function that performs the actual work. The **web_search** tool is an example, as it acts as a bridge to another AI service, Perplexity. Instead of performing a raw web search, it effectively asks the Perplexity Sonar model to answer the query, ensuring the result returned to Grok is a concise, relevant summary. This demonstrates a powerful pattern of chaining specialized AI models together within a single agentic framework. The tool is implemented with one call to **search-apis:websearch** (provider **:perplexity**), so all of the Perplexity-specific HTTP and JSON handling lives in the shared search library. Communication with the Grok API is managed by the Drakma library for HTTP requests and the YASON library for handling the necessary JSON serialization and parsing.
 
 This agent example is a work in progress and currently running the agent results in hundreds of lines of debug printout.
 
@@ -292,14 +292,18 @@ File **agent_grok_perplexity.lisp**:
 ```lisp
 ;;;; agent-system.lisp
 ;;;; A Common Lisp agent system using Grok API with support for tool calling.
-;;;; Optionally uses Perplexity Sonar API for web search tool.
+;;;; Uses the shared search-apis library (../search_APIs) with its Perplexity
+;;;; provider for the web search tool.
 ;;;;
 ;;;; Dependencies (load via Quicklisp):
 ;;;;   (ql:quickload '(:drakma :yason :alexandria :uiop :cl+ssl))
+;;;; The search-apis system (dexador + quri only) must also be loadable, e.g.:
+;;;;   (asdf:load-asd (merge-pathnames "search_APIs/search-apis.asd" *load-pathname*))
+;;;;   (asdf:load-system :search-apis)
 ;;;;
 ;;;; Usage:
 ;;;;   Set *grok-api-key* to your xAI Grok API key.
-;;;;   Optionally set *perplexity-api-key* for web search support.
+;;;;   Set the PERPLEXITY_API_KEY environment variable for web search support.
 ;;;;   Define custom tools using def-tool.
 ;;;;   Run (run-agent "Your query here")
 ;;;;
@@ -313,6 +317,13 @@ File **agent_grok_perplexity.lisp**:
 (require 'asdf)
 (require 'uiop)
 
+;; Load the shared search-apis library (used for the web_search tool):
+(let ((asd (merge-pathnames "../search_APIs/search-apis.asd"
+                            (or *load-pathname* *default-pathname-defaults*))))
+  (when (probe-file asd)
+    (asdf:load-asd asd)))
+(asdf:load-system :search-apis)
+
 ;; Configure YASON to handle symbol keys & values
 (setf yason:*symbol-encoder* #'yason:encode-symbol-as-string)
 
@@ -320,14 +331,11 @@ File **agent_grok_perplexity.lisp**:
   (uiop:getenv "X_GROK_API_KEY")
   "Your xAI Grok API key. Obtain from https://x.ai/api")
 
-(defvar *perplexity-api-key* (uiop:getenv "PERPLEXITY_API_KEY")
-  "Optional Perplexity AI API key for web search. If nil, web_search tool will error.")
-
 (defvar *grok-base-url* "https://api.x.ai/v1"
   "Base URL for Grok API.")
 
-(defvar *perplexity-base-url* "https://api.perplexity.ai"
-  "Base URL for Perplexity API.")
+(defvar *perplexity-model* "sonar"
+  "Perplexity search-plus-LLM model used by the web_search tool.")
 
 (defvar *tools* (make-hash-table :test 'equal)
   "Hash table of tools: name -> (description parameters lisp-function)")
@@ -363,9 +371,7 @@ File **agent_grok_perplexity.lisp**:
 
 ;; Example tools
 
-(defvar *x* nil) ;; DEBUG
-
-;; Web search tool using Perplexity (optional)
+;; Web search tool using the shared search-apis library (Perplexity provider)
 (def-tool "web_search"
   "Search the web for up-to-date information when needed. Use this for current events or real-time data."
   (hash :type "object"
@@ -373,50 +379,22 @@ File **agent_grok_perplexity.lisp**:
                                         :description "The search query string."))
         :required (list "query"))
   (lambda (args)
-    (if *perplexity-api-key*
-        (let* ((query (gethash "query" args))
-               (messages (list (hash "role" "system"
-                                     "content" "You are a helpful search assistant. Provide a concise answer based on web search.")
-                               (hash "role" "user"
-                                     "content" query)))
-               (body (hash "model" "sonar"
-                           "messages" messages
-                           "max_tokens" 1024
-                           "temperature" 0.7))
-               (json-body (with-output-to-string (s) (yason:encode body s)))
-               (raw nil) (status nil))
-          ;; Call Perplexity
-          (multiple-value-setq (raw status)
-            (drakma:http-request
-             (concatenate 'string *perplexity-base-url* "/chat/completions")
-             :method :post
-             :additional-headers `(("Authorization" . ,(concatenate 'string "Bearer " *perplexity-api-key*))
-                                   ("Content-Type" . "application/json"))
-             :content json-body
-             :verify nil))
-          ;; Convert to string if octet‑vector
-          (let* ((body-str (if (vectorp raw)
-                               (babel:octets-to-string raw :encoding :utf-8)
-                               raw)))
-            ;; DEBUG
-            (format t "~&[web_search] Perplexity status=~a~%" status)
-            (format t "[web_search] First 8192 chars: ~a~%" (subseq body-str 0 (min 8192 (length body-str))))
-            ;; Handle non-200 errors
-            (unless (= status 200)
-              (return
-               (format nil "Web search failed (HTTP ~a): ~a" status body-str)))
-            ;; Parse JSON
-	    (setf *x* (yason:parse body-str)) ;; DEBUG ONLY
-            (let* ((parsed (ignore-errors (yason:parse body-str)))
-                   (choices (and (hash-table-p parsed) (gethash "choices" parsed))))
-	      (format t "~%[web_search] choices=~%~A~%" choices)
-              (cond
-                ((and choices (plusp (length choices)))
-                 (let* ((choice (first choices))
-                        (msg (and (hash-table-p choice) (gethash "message" choice)))
-                        (content (and (hash-table-p msg) (gethash "content" msg))))
-		   (format t "~%[web_search] content=~%~A~%" content)
-		   content)))))))))
+    (let ((query (gethash "query" args)))
+      (handler-case
+          (let ((response (search-apis:websearch query
+                                                 :provider :perplexity
+                                                 :model *perplexity-model*)))
+            ;; Perplexity returns a synthesized answer plus cited sources;
+            ;; return the answer to Grok, appending the source URLs.
+            (format t "~&[web_search] Perplexity answer=~%~A~%"
+                    (search-apis:search-response-answer response))
+            (with-output-to-string (s)
+              (when (search-apis:search-response-answer response)
+                (write-string (search-apis:search-response-answer response) s))
+              (dolist (r (search-apis:search-response-results response))
+                (format s "~%Source: ~A" (search-apis:search-result-url r)))))
+        (search-apis:search-error (e)
+          (format nil "Web search failed: ~A" e))))))
 
 ;; Example custom tool: get current date
 (def-tool "get_current_date"
@@ -575,13 +553,7 @@ CL-USER 3 > (run-agent "Consultant Mark Watson has written books on AI, Lisp, an
 [execute-tool] name=web_search args-raw type=(ARRAY CHARACTER (80))
 [execute-tool] first 32 chars: {"query":"Mark Watson AI Lisp se
 [execute-tool] args-json final type=SIMPLE-TEXT-STRING first 32: {"query":"Mark Watson AI Lisp se
-[web_search] Perplexity status=200
-[web_search] First 8192 chars: {"id": "ecc7aa86-4434-4d70-8dfa-e85b7c7e27d6", "model": "sonar", "created": 1759702702, "usage": {"prompt_tokens": 27, "completion_tokens": 230, "total_tokens": 257, "search_context_size": "low", "cost": {"input_tokens_cost": 0.0, "output_tokens_cost": 0.0, "request_cost": 0.005, "total_cost": 0.005}}, "citations": ["https://leanpub.com/hy-lisp-python", "https://markwatson.com/llms.txt", "https://creativecommons.org/2005/07/01/watson/", "https://www.goodreads.com/author/list/5182666.Mark_Watson", "https://github.com/mark-watson/lisp_practical_semantic_web", "https://www.chessprogramming.org/Mark_Watson", "https://markwatson.com", "https://mark-watson.blogspot.com", "https://leanpub.com/u/markwatson", "https://markwatson.com/opencontent/book_lisp.pdf", "https://github.com/mark-watson/free-older-books-and-software"], "search_results": [{"title": "A Lisp Programmer Living in\u2026 by Mark Watson [PDF/iPad/Kindle]", "url": "https://leanpub.com/hy-lisp-python", "date": "2025-08-20", "last_updated": "2025-09-27", "snippet": "A Lisp Programmer Living in Python-Land: The Hy Programming Language. Use Hy with Large Language Models, Semantic Web, Web Scraping, Web Search, ...", "source": "web"}, {"title": "https://markwatson.com/llms.txt", "url": "https://markwatson.com/llms.txt", "date": null, "last_updated": "2025-10-05", "snippet": "Mark Watson's hobbies are cooking, photography, hiking, travel, and playing the following musical instruments: guitar, didgeridoo, and American Indian flute.", "source": "web"}, {"title": "Mark Watson - Creative Commons", "url": "https://creativecommons.org/2005/07/01/watson/", "date": "2005-07-01", "last_updated": "2024-09-26", "snippet": "Mark Watson is an accomplished programmer and writer of thirteen books on various technical topics. An expert in artificial intelligence and language ...", "source": "web"}, {"title": "Books by Mark Watson (Author of Loving Common Lisp ... - Goodreads", "url": "https://www.goodreads.com/author/list/5182666.Mark_Watson", "date": "2025-10-01", "last_updated": "2025-10-05", "snippet": "Mark Watson has 31 books on Goodreads with 379 ratings. Mark Watson's most popular book is Loving Common Lisp, or the Savvy Programmer's Secret Weapon.", "source": "web"}, {"title": "Examples from the Lisp version of my semantic web book - GitHub", "url": "https://github.com/mark-watson/lisp_practical_semantic_web", "date": "2011-10-23", "last_updated": "2025-06-13", "snippet": "Examples from the Lisp version of my semantic web book. markwatson.com \u00b7 37 stars 8 forks Branches Tags Activity.", "source": "web"}, {"title": "Mark Watson - Chessprogramming wiki", "url": "https://www.chessprogramming.org/Mark_Watson", "date": "2003-03-27", "last_updated": "2025-02-12", "snippet": "Mark Watson, an American computer scientist, programmer, consultant and author of books on Artificial Intelligence, Java, Ruby, Common LISP, Semantic Web, NLP, ...", "source": "web"}, {"title": "Mark Watson: AI Practitioner and Author of 20+ AI Books | Mark ...", "url": "https://markwatson.com", "date": "2023-04-18", "last_updated": "2025-10-05", "snippet": "I am the author of 20+ books on Artificial Intelligence, Python, Common Lisp, Deep Learning, Haskell, Clojure, Java, Ruby, Hy language, and the Semantic Web ...", "source": "web"}, {"title": "Mark Watson's artificial intelligence and Lisp hacking blog", "url": "https://mark-watson.blogspot.com", "date": "2025-07-16", "last_updated": "2025-10-05", "snippet": "I am a consultant and the author of 20+ books on artificial intelligence, machine learning, and the semantic web. 55 US patents. My favorite languages are ...", "source": "web"}, {"title": "Mark Watson - Leanpub", "url": "https://leanpub.com/u/markwatson", "date": null, "last_updated": "2025-10-05", "snippet": "He is the author of 20+ published books on Artificial Intelligence, Deep Learning, Java, Ruby, Machine Learning, Common LISP, Clojure, JavaScript, Semantic Web, ...", "source": "web"}, {"title": "[PDF] Practical Semantic Web and Linked Data Applications - Mark Watson", "url": "https://markwatson.com/opencontent/book_lisp.pdf", "date": "2010-11-03", "last_updated": "2025-09-24", "snippet": "The broader purpose of this book is to provide application programming examples using AllegroGraph and. Linked Data sources on the web. This ...", "source": "web"}, {"title": "GitHub - mark-watson/free-older-books-and-software", "url": "https://github.com/mark-watson/free-older-books-and-software", "date": "2023-05-09", "last_updated": "2025-02-21", "snippet": "Mark Watson: AI Practitioner and Consultant Specializing in Large Language Models, LangChain/Llama-Index Integrations, Deep Learning, and the Semantic Web.", "source": "web"}], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "Mark Watson is an AI practitioner, author, and programmer specializing in Lisp, semantic web, and large language models. He is the author of numerous books on AI, Lisp, semantic web technologies, and programming languages. He has worked extensively on semantic web and linked data applications, including a Common Lisp version of his semantic web book, and he integrates AI tools like OpenAI GPT and LangChain in his work[1][5][6].\n\nRegarding musical instruments, Mark Watson plays the **guitar, didgeridoo, and American Indian flute** as part of his hobbies[2].\n\nIn summary:\n\n| Aspect                     | Details                                               |\n|----------------------------|-------------------------------------------------------|\n| Profession                 | AI practitioner, Lisp programmer, semantic web author |\n| Key Contributions          | Books on AI, Lisp, semantic web; projects using Lisp and AI |\n| Semantic Web Work          | Practical Semantic Web and Linked Data Applications (Common Lisp and others) |\n| Musical Instruments Played | Guitar, didgeridoo, American Indian flute             |\n\nThis information is based on Mark Watson's personal website, books, and profiles[1][2][5][6]."}, "delta": {"role": "assistant", "content": ""}}]}
-
-[web_search] choices=
-(#<EQUAL Hash Table{4} 80100DD84B>)
-
-[web_search] content=
+[web_search] Perplexity answer=
 Mark Watson is an AI practitioner, author, and programmer specializing in Lisp, semantic web, and large language models. He is the author of numerous books on AI, Lisp, semantic web technologies, and programming languages. He has worked extensively on semantic web and linked data applications, including a Common Lisp version of his semantic web book, and he integrates AI tools like OpenAI GPT and LangChain in his work[1][5][6].
 
 Regarding musical instruments, Mark Watson plays the **guitar, didgeridoo, and American Indian flute** as part of his hobbies[2].

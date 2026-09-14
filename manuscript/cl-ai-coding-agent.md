@@ -544,7 +544,7 @@ The `cl-ai-coding-agent` and the `cl-llm-agent` framework from the previous chap
 | Error handling | JSON parse failures → crashes | API-level; tools return error strings |
 | Tool registry | Dynamic hash-table with `register-tool` | Static; three built-in tools |
 | Multi-step | `PREV_RESULT` placeholder in JSON | Native multi-turn via `interaction-id` |
-| Dependencies | cl-json, gemini, tavily, fiveam | gemini, uiop |
+| Dependencies | cl-json, gemini, search-apis, fiveam | gemini, uiop |
 | Scope | General-purpose framework | Focused coding assistant |
 
 The `cl-llm-agent` framework is more extensible — you can register arbitrary tools at runtime, compose agents, and use different LLM backends. The `cl-ai-coding-agent` is more reliable for its specific use case because it eliminates the JSON parsing layer entirely. Neither approach is universally better; they serve different design goals.

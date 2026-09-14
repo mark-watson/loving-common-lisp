@@ -8,12 +8,12 @@ Orchestrating multiple agents, however, introduces a new layer of complexity. Wh
 
 ## Example Multi Agent Implementation
 
-The example in this chapter relies on the code in the last two chapters:
+The example in this chapter relies on two libraries:
 
 - The Google Gemini client code in the repository [https://github.com/mark-watson/gemini/](https://github.com/mark-watson/gemini/).
-- The Tavily client code in the repository [https://github.com/mark-watson/tavily](https://github.com/mark-watson/tavily).
+- The combined web search client code in the directory **search_APIs** of this book's repository.
 
-As usual you want to git clone these two repository in your local directory **~/quicklisp/local-projects/** so Quicklisp can, for example, find these libraries with **(ql:quickload :gemini)** and **(ql:quickload :tavily)**.
+As usual you want to git clone the Gemini repository in your local directory **~/quicklisp/local-projects/** so Quicklisp can find it with **(ql:quickload :gemini)**. The web search library is included in this book's repository; load it with **(asdf:load-system :search-apis)** after registering its ASDF file, for example with **(asdf:load-asd "~/GITHUB/loving-common-lisp/src/search_APIs/search-apis.asd")**.
 
 You can find the source code for the example in this chapter in the GitHub repository [https://github.com/mark-watson/cl-llm-agent](https://github.com/mark-watson/cl-llm-agent). I suggest that you also git clone this example project in your local directory **~/quicklisp/local-projects/**.
 
@@ -49,7 +49,7 @@ In the following sections the code is listed first followed by a discussion.
            #:*agent-verbose*))
 ```
 
-This package.lisp file defines the structure and organization of this example project that builds an agent system capable of interacting with language models (Gemini), performing web searches (Tavily), and executing various user-defined tools. It uses packages to encapsulate functionalities and manage dependencies.
+This package.lisp file defines the structure and organization of this example project that builds an agent system capable of interacting with language models (Gemini), performing web searches (via the **search-apis** library), and executing various user-defined tools. It uses packages to encapsulate functionalities and manage dependencies.
 
 ### cl-llm-agent.asd
 
@@ -63,7 +63,7 @@ This package.lisp file defines the structure and organization of this example pr
   :author "Mark Watson <markw@markwatson.com>"
   :license "MIT"
   :description "A generic LLM-based agent framework for Common Lisp."
-  :depends-on ("cl-json" "gemini" "tavily" "uiop" "fiveam")
+  :depends-on ("cl-json" "gemini" "search-apis" "uiop" "fiveam")
   :components ((:file "package")
                (:file "context")
                (:file "agent-generic")
@@ -110,11 +110,11 @@ We use these predefined tools:
 - tool-read-directory: A tool defined using define-tool that uses helper-tool-read-directory to read the contents of a directory specified by the directory-path parameter.
 - helper-tool-read-file: Reads and returns the content of a file.
 - tool-read-file: A tool that uses helper-tool-read-file to read the contents of a file specified by the file-path parameter.
-- tool-search-web: A tool that uses tavily:websearch to perform a web search with the given query.
+- tool-search-web: A tool that uses search-apis:websearch to perform a web search with the given query (using the Tavily provider by default).
 - helper-tool-summarize: Uses Gemini to summarize text.
 - tool-summarize: Uses helper-tool-summarize to summarize text.
 
-The following code listing provides a flexible framework for defining and using tools within the agent system. The define-tool macro and register-tool function allow for easy tool creation, while execute-tool handles their execution. The predefined tools demonstrate how to integrate file system operations, web search (via Tavily), and text summarization (using Gemini) into the agent's capabilities.
+The following code listing provides a flexible framework for defining and using tools within the agent system. The define-tool macro and register-tool function allow for easy tool creation, while execute-tool handles their execution. The predefined tools demonstrate how to integrate file system operations, web search (via the search-apis library), and text summarization (using Gemini) into the agent's capabilities.
 
 
 ### agent-gemini.lisp
@@ -436,11 +436,21 @@ Do not include any markdown formatting, explanation, or extra text. Output only 
                :parameter-example "file-path: string"
                :function #'helper-read-file)
 
+(defun helper-search-web (query)
+  "Search the web with the search-apis library and return the results as text."
+  (let ((response (search-apis:websearch query :provider :tavily)))
+    (with-output-to-string (out)
+      (dolist (result (search-apis:search-response-results response))
+        (format out "~A~%  ~A~%  ~A~%~%"
+                (search-apis:search-result-title result)
+                (search-apis:search-result-url result)
+                (search-apis:search-result-content result))))))
+
 (register-tool "tool-search-web"
-               :description "Search the web with Tavily."
+               :description "Search the web."
                :parameters '(query)
                :parameter-example "query: string"
-               :function (lambda (query) (tavily:websearch query)))
+               :function #'helper-search-web)
 
 (defun helper-summarize (text)
   "Summarize TEXT using Gemini LLM backend."

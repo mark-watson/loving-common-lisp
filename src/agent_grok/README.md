@@ -4,18 +4,21 @@
 
 > **Note:** This example is not yet included in the book.
 
-This project demonstrates a Common Lisp agent system that uses the xAI Grok API with support for tool calling. The agent can be extended with custom tools via the `def-tool` macro. A second variant (`agent_grok_perplexity.lisp`) adds a web-search tool backed by the Perplexity Sonar API, giving the agent the ability to look up live information from the web.
+This project demonstrates a Common Lisp agent system that uses the xAI Grok API with support for tool calling. The agent can be extended with custom tools via the `def-tool` macro. A second variant (`agent_grok_perplexity.lisp`) adds a web-search tool implemented with the shared **search-apis** library (in `../search_APIs`) using its Perplexity provider, giving the agent the ability to look up live information from the web.
 
 ## Prerequisites
 
 - **SBCL** with [Quicklisp](https://www.quicklisp.org/)
 - An xAI Grok API key — set the `X_GROK_API_KEY` environment variable
-- (Optional) A Perplexity API key — set `PERPLEXITY_API_KEY` for web search support
+- A Perplexity API key — set `PERPLEXITY_API_KEY` for web search support
 
 ## Dependencies
 
 Loaded automatically via Quicklisp:
 - `drakma`, `yason`, `alexandria`, `uiop`, `cl+ssl`
+
+The Perplexity variant also loads the local `search-apis` system from
+`../search_APIs` (its only external dependencies are `dexador` and `quri`).
 
 ## Usage
 
@@ -43,7 +46,7 @@ The agent sends a user query to the Grok API using an OpenAI-compatible chat com
 | File | Description |
 |------|-------------|
 | `agent.lisp` | Core agent with tool-calling support via Grok |
-| `agent_grok_perplexity.lisp` | Extended agent that adds a Perplexity web-search tool |
+| `agent_grok_perplexity.lisp` | Extended agent that adds a Perplexity web-search tool via the search-apis library |
 
 ## Architecture
 

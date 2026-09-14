@@ -1,13 +1,17 @@
 ;;;; agent-system.lisp
 ;;;; A Common Lisp agent system using Grok API with support for tool calling.
-;;;; Optionally uses Perplexity Sonar API for web search tool.
+;;;; Uses the shared search-apis library (../search_APIs) with its Perplexity
+;;;; provider for the web search tool.
 ;;;;
 ;;;; Dependencies (load via Quicklisp):
 ;;;;   (ql:quickload '(:drakma :yason :alexandria :uiop :cl+ssl))
+;;;; The search-apis system (dexador + quri only) must also be loadable, e.g.:
+;;;;   (asdf:load-asd (merge-pathnames "search_APIs/search-apis.asd" *load-pathname*))
+;;;;   (asdf:load-system :search-apis)
 ;;;;
 ;;;; Usage:
 ;;;;   Set *grok-api-key* to your xAI Grok API key.
-;;;;   Optionally set *perplexity-api-key* for web search support.
+;;;;   Set the PERPLEXITY_API_KEY environment variable for web search support.
 ;;;;   Define custom tools using def-tool.
 ;;;;   Run (run-agent "Your query here")
 ;;;;
@@ -21,6 +25,13 @@
 (require 'asdf)
 (require 'uiop)
 
+;; Load the shared search-apis library (used for the web_search tool):
+(let ((asd (merge-pathnames "../search_APIs/search-apis.asd"
+                            (or *load-pathname* *default-pathname-defaults*))))
+  (when (probe-file asd)
+    (asdf:load-asd asd)))
+(asdf:load-system :search-apis)
+
 ;; Configure YASON to handle symbol keys & values 
 (setf yason:*symbol-encoder* #'yason:encode-symbol-as-string)
 
@@ -28,14 +39,11 @@
   (uiop:getenv "X_GROK_API_KEY")
   "Your xAI Grok API key. Obtain from https://x.ai/api")
 
-(defvar *perplexity-api-key* (uiop:getenv "PERPLEXITY_API_KEY")
-  "Optional Perplexity AI API key for web search. If nil, web_search tool will error.")
-
 (defvar *grok-base-url* "https://api.x.ai/v1"
   "Base URL for Grok API.")
 
-(defvar *perplexity-base-url* "https://api.perplexity.ai"
-  "Base URL for Perplexity API.")
+(defvar *perplexity-model* "sonar"
+  "Perplexity search-plus-LLM model used by the web_search tool.")
 
 (defvar *tools* (make-hash-table :test 'equal)
   "Hash table of tools: name -> (description parameters lisp-function)")
@@ -71,9 +79,7 @@
 
 ;; Example tools
 
-(defvar *x* nil) ;; DEBUG
-
-;; Web search tool using Perplexity (optional)
+;; Web search tool using the shared search-apis library (Perplexity provider)
 (def-tool "web_search"
   "Search the web for up-to-date information when needed. Use this for current events or real-time data."
   (hash :type "object"
@@ -81,50 +87,22 @@
                                         :description "The search query string."))
         :required (list "query"))
   (lambda (args)
-    (if *perplexity-api-key*
-        (let* ((query (gethash "query" args))
-               (messages (list (hash "role" "system"
-                                     "content" "You are a helpful search assistant. Provide a concise answer based on web search.")
-                               (hash "role" "user"
-                                     "content" query)))
-               (body (hash "model" "sonar"
-                           "messages" messages
-                           "max_tokens" 1024
-                           "temperature" 0.7))
-               (json-body (with-output-to-string (s) (yason:encode body s)))
-               (raw nil) (status nil))
-          ;; Call Perplexity
-          (multiple-value-setq (raw status)
-            (drakma:http-request
-             (concatenate 'string *perplexity-base-url* "/chat/completions")
-             :method :post
-             :additional-headers `(("Authorization" . ,(concatenate 'string "Bearer " *perplexity-api-key*))
-                                   ("Content-Type" . "application/json"))
-             :content json-body
-             :verify nil))
-          ;; Convert to string if octet‑vector
-          (let* ((body-str (if (vectorp raw)
-                               (babel:octets-to-string raw :encoding :utf-8)
-                               raw)))
-            ;; DEBUG
-            (format t "~&[web_search] Perplexity status=~a~%" status)
-            (format t "[web_search] First 8192 chars: ~a~%" (subseq body-str 0 (min 8192 (length body-str))))
-            ;; Handle non-200 errors
-            (unless (= status 200)
-              (return
-               (format nil "Web search failed (HTTP ~a): ~a" status body-str)))
-            ;; Parse JSON
-	    (setf *x* (yason:parse body-str)) ;; DEBUG ONLY
-            (let* ((parsed (ignore-errors (yason:parse body-str)))
-                   (choices (and (hash-table-p parsed) (gethash "choices" parsed))))
-	      (format t "~%[web_search] choices=~%~A~%" choices)
-              (cond
-                ((and choices (plusp (length choices)))
-                 (let* ((choice (first choices))
-                        (msg (and (hash-table-p choice) (gethash "message" choice)))
-                        (content (and (hash-table-p msg) (gethash "content" msg))))
-		   (format t "~%[web_search] content=~%~A~%" content)
-		   content)))))))))
+    (let ((query (gethash "query" args)))
+      (handler-case
+          (let ((response (search-apis:websearch query
+                                                 :provider :perplexity
+                                                 :model *perplexity-model*)))
+            ;; Perplexity returns a synthesized answer plus cited sources;
+            ;; return the answer to Grok, appending the source URLs.
+            (format t "~&[web_search] Perplexity answer=~%~A~%"
+                    (search-apis:search-response-answer response))
+            (with-output-to-string (s)
+              (when (search-apis:search-response-answer response)
+                (write-string (search-apis:search-response-answer response) s))
+              (dolist (r (search-apis:search-response-results response))
+                (format s "~%Source: ~A" (search-apis:search-result-url r)))))
+        (search-apis:search-error (e)
+          (format nil "Web search failed: ~A" e))))))
 
 ;; Example custom tool: get current date
 (def-tool "get_current_date"
