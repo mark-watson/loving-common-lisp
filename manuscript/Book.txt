@@ -14,6 +14,7 @@ search_APIs.md
 database.md
 nlp.md
 information_gathering.md
+Web Scraping
 machine_learning.md
 backprop_nn.md
 hopfield_nn.md
@@ -34,7 +35,6 @@ moonshot.md
 huggingface.md
 knowledge-navigator.md
 lightpanda.md
-web-scraping.md
 doc_qa.md
 RAG.md
 prompts.md
