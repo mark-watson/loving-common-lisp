@@ -16,7 +16,7 @@ The game follows a simple conversation loop:
 4. **LLM call**: the full message history is sent to Ollama's chat API; the assistant's reply is displayed.
 5. **Append and repeat**: the reply is appended to the history so the LLM remembers past events.
 
-The Ollama integration is handled by the `ollama` package (developed in an earlier LLM chapter), which provides the `chat` function for multi-turn conversations. We load the `llm` ASDF system, which pulls in `ollama`, `cl-json`, `uiop`, and all other dependencies.
+The Ollama integration is handled by a small `chat` function defined in the game file itself, which posts multi-turn conversations to the local Ollama server. Only `cl-json` (JSON encoding/decoding) and `uiop` (subprocess management for the external `curl` program) are needed.
 
 ## The System Prompt
 
@@ -49,28 +49,65 @@ This prompt does several things at once. It establishes the LLM's *role* (game m
 
 ## The Game Code
 
-The complete program lives in a single file. We load the `llm` system, define our package, and implement two functions: `load-story` for reading the system prompt file, and `play` for the main game loop.
+The complete program lives in a single file. We quickload `uiop` and `cl-json`, define our package, and implement a small `chat` function plus two game functions: `load-story` for reading the system prompt file, and `play` for the main game loop.
 
 Here is the full listing of `text-adventure-game.lisp`:
 
 ```lisp
-;;;; text-adventure-game.lisp
+;;;; text-adventure-game_ollama.lisp
 ;;;; Text adventure game using Ollama for AI-driven storytelling.
+;;;; Self-contained: a local chat function posts to Ollama's /api/chat endpoint.
 ;;;;
 ;;;; Usage (LispWorks):
-;;;;   (load "text-adventure-game.lisp")
+;;;;   (load "text-adventure-game_ollama.lisp")
 ;;;;   (text-adventure:play)
 ;;;;
 ;;;; Usage (SBCL):
-;;;;   sbcl --load text-adventure-game.lisp --eval '(text-adventure:play)'
+;;;;   sbcl --load text-adventure-game_ollama.lisp --eval '(text-adventure:play)'
 
-(ql:quickload :llm)
+(ql:quickload '(:uiop :cl-json))
 
 (defpackage #:text-adventure
   (:use #:cl)
   (:export #:play))
 
 (in-package #:text-adventure)
+
+(defvar *ollama-endpoint* "http://localhost:11434/api/chat")
+(defvar *ollama-model* "qwen3.5:0.8b")
+
+(defun substitute-subseq (string old new &key (test #'eql))
+  "Single-pass string substitution used to repair cl-json's NIL -> null."
+  (let ((pos (search old string :test test)))
+    (if pos
+        (concatenate 'string
+                     (subseq string 0 pos)
+                     new
+                     (subseq string (+ pos (length old))))
+        string)))
+
+(defun chat (messages &key (model-id *ollama-model*))
+  "Send the multi-turn MESSAGES (list of (:|role| . ...) (:|content| . ...)
+alists) to the local Ollama server and return the assistant's text."
+  (let* ((data (list (cons :|model| model-id)
+                      (cons :|stream| nil)
+                      (cons :|messages| messages)))
+         (json-data (cl-json:encode-json-to-string data))
+         (fixed-json-data
+          (substitute-subseq json-data ":null" ":false" :test #'string=))
+         (process (uiop:launch-program
+                   (format nil "curl -s ~a -d ~s" *ollama-endpoint* fixed-json-data)
+                   :output :stream
+                   :error-output :stream))
+         (response (with-output-to-string (out)
+                     (loop for line = (read-line (uiop:process-info-output process) nil nil)
+                           while line
+                           do (write-line line out)))))
+    (with-input-from-string (s response)
+      (let* ((json-as-list (cl-json:decode-json s))
+             (message-resp (cdr (assoc :message json-as-list)))
+             (content (cdr (assoc :content message-resp))))
+        (or content "No response content")))))
 
 (defun load-story (filepath)
   (handler-case
@@ -83,7 +120,7 @@ Here is the full listing of `text-adventure-game.lisp`:
       (format t "Error: ~a not found.~%" filepath)
       nil)))
 
-(defun play (&key (story-file "story.txt") (model ollama:*ollama-model*))
+(defun play (&key (story-file "story.txt") (model *ollama-model*))
   "Start the text adventure game. Reads story-file as the initial prompt
    and uses Ollama to generate responses to player actions."
   (let ((story (load-story story-file)))
@@ -106,7 +143,7 @@ Here is the full listing of `text-adventure-game.lisp`:
           (setf messages (append messages
                                  (list (list (cons :|role| "user")
                                              (cons :|content| user-input)))))
-          (let ((response (ollama:chat messages :model-id model)))
+          (let ((response (chat messages :model-id model)))
             (when response
               (format t "~a~%" response)
               (setf messages (append messages
@@ -117,10 +154,10 @@ Here is the full listing of `text-adventure-game.lisp`:
 ### Loading the System
 
 ```lisp
-(ql:quickload :llm)
+(ql:quickload '(:uiop :cl-json))
 ```
 
-This single line loads the `llm` ASDF system, which includes the `ollama` package (providing `chat`), `cl-json` (JSON encoding/decoding), `uiop` (subprocess management), and using the external `curl` program to perform HTTP communication. All of the HTTP and JSON plumbing lives in the `ollama` package; our game code never touches it directly.
+This single line pulls in the only two libraries the game needs: `cl-json` for JSON encoding/decoding, and `uiop` for subprocess management of the external `curl` program that performs the HTTP call. All of the HTTP and JSON plumbing lives in the local `chat` function; the game loop never touches it directly.
 
 ### Reading the Story File
 
@@ -144,10 +181,10 @@ This single line loads the `llm` ASDF system, which includes the `ollama` packag
 The `play` function is the heart of the program. Let's walk through it section by section.
 
 ```lisp
-(defun play (&key (story-file "story.txt") (model ollama:*ollama-model*))
+(defun play (&key (story-file "story.txt") (model *ollama-model*))
 ```
 
-The function accepts two keyword parameters. `story-file` defaults to `"story.txt"` in the current directory. `model` defaults to the Ollama model defined in the `ollama` package but you can override it to use any model you have pulled locally.
+The function accepts two keyword parameters. `story-file` defaults to `"story.txt"` in the current directory. `model` defaults to the local `*ollama-model*` special variable but you can override it to use any model you have pulled locally.
 
 ```lisp
   (let ((story (load-story story-file)))
@@ -200,7 +237,7 @@ Two early exits: typing "quit" or "exit" (case-insensitive) ends the game via `r
 We append the player's input as a user message to the history. Note that we use `append` rather than a destructive operation: each turn creates a fresh list, which avoids mutation bugs. For a game that runs for dozens of turns the copying overhead is negligible.
 
 ```lisp
-          (let ((response (ollama:chat messages :model-id model)))
+          (let ((response (chat messages :model-id model)))
             (when response
               (format t "~a~%" response)
               (setf messages (append messages
@@ -208,20 +245,22 @@ We append the player's input as a user message to the history. Note that we use 
                                                  (cons :|content| response))))))))))))
 ```
 
-We call `ollama:chat` with the full message history and the model ID. The `chat` function (defined in the `ollama` package) serializes the messages to JSON, sends them to Ollama's `/api/chat` endpoint via `curl`, and parses the assistant's response. We print the response and append it to the history as an assistant message, so the LLM remembers what it said on future turns.
+We call `chat` with the full message history and the model ID. The `chat` function serializes the messages to JSON, sends them to Ollama's `/api/chat` endpoint via `curl`, and parses the assistant's response. We print the response and append it to the history as an assistant message, so the LLM remembers what it said on future turns.
 
 ## The Ollama Chat Function
 
-For completeness, here is the `chat` function from the `ollama` package (defined in the directory **loving-common-lisp/src/llm**) that our game calls:
+For completeness, here is the `chat` function our game calls:
 
 ```lisp
 (defun chat (messages &key (model-id *ollama-model*))
+  "Send the multi-turn MESSAGES (list of (:|role| . ...) (:|content| . ...)
+alists) to the local Ollama server and return the assistant's text."
   (let* ((data (list (cons :|model| model-id)
                       (cons :|stream| nil)
                       (cons :|messages| messages)))
          (json-data (cl-json:encode-json-to-string data))
          (fixed-json-data
-          (llm:substitute-subseq json-data ":null" ":false" :test #'string=))
+          (substitute-subseq json-data ":null" ":false" :test #'string=))
          (process (uiop:launch-program
                    (format nil "curl -s ~a -d ~s" *ollama-endpoint* fixed-json-data)
                    :output :stream
@@ -237,7 +276,7 @@ For completeness, here is the `chat` function from the `ollama` package (defined
         (or content "No response content")))))
 ```
 
-The function builds a JSON payload with the model ID, `stream` set to `false`, and the message list. It uses `cl-json:encode-json-to-string` for serialization, then fixes a Common Lisp JSON encoding quirk: `cl-json` encodes `nil` as `null`, but Ollama expects `false` for the stream field. The `llm:substitute-subseq` helper performs a single string substitution. The request is sent via `curl` launched as a subprocess with `uiop:launch-program`, reading the response line by line from the process output stream.
+The function builds a JSON payload with the model ID, `stream` set to `false`, and the message list. It uses `cl-json:encode-json-to-string` for serialization, then fixes a Common Lisp JSON encoding quirk: `cl-json` encodes `nil` as `null`, but Ollama expects `false` for the stream field. The local `substitute-subseq` helper performs a single string substitution. The request is sent via `curl` launched as a subprocess with `uiop:launch-program`, reading the response line by line from the process output stream.
 
 ## Running the Game
 

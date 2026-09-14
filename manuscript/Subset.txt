@@ -27,12 +27,10 @@ kgn_common.md
 kgn_text_ui.md
 kgn_capi_ui.md	
 karpathy.md
-openai.md
+agent_llm.md
 ollama.md
 ollama_image_processing.md
-anthropic.md
 moonshot.md
-huggingface.md
 knowledge-navigator.md
 lightpanda.md
 doc_qa.md
@@ -40,9 +38,7 @@ RAG.md
 prompts.md
 gemini.md
 autocontext.md
-agent_llm.md
 agent_part2.md
-llm_lib.md
 text-adventure-game.md
 wolfram.md
 symbolic-math.md

@@ -42,7 +42,7 @@ The ASDF system definition in **rag.asd** defines both the library and its offli
   :license "Apache 2"
   :version "1.1.0"
   :serial t
-  :depends-on (#:llm #:cl-json #:dexador #:usocket #:uiop)
+  :depends-on (#:cl-json #:dexador #:usocket #:uiop)
   :components ((:file "package")
                (:file "embeddings")
                (:file "vector-store")
@@ -95,7 +95,7 @@ The package exports the main entry points:
 
 The file **embeddings.lisp** provides the foundation for semantic search. We use Google's `gemini-embedding-001` model, which produces 3072-dimensional vectors and is available on the free tier.
 
-All HTTP access goes through **llm:post-json** from the **llm** library we built earlier, so there is a single HTTP path shared with the rest of the book's examples. The API key travels in the `x-goog-api-key` request header, never in the URL:
+All HTTP access goes through a local helper **%post-json** (a thin wrapper around Dexador), so the example is self-contained. The API key travels in the `x-goog-api-key` request header, never in the URL:
 
 ```lisp
 (defun %api-headers ()
@@ -220,7 +220,7 @@ The low-level function **%fetch-embedding** calls the `embedContent` endpoint fo
     (coerce (%decode-embedding-response
              (call-with-retries
               (lambda ()
-                (llm:post-json api-url (%api-headers) payload))))
+                (%post-json api-url (%api-headers) payload))))
             'simple-vector)))
 ```
 
@@ -545,18 +545,42 @@ An important feature for agentic RAG is that **search-corpora** accepts a list o
 
 The file **agents.lisp** is the heart of the system. Each "agent" is a function that calls Gemini with a specialized prompt. This is a practical and effective pattern: we don't need an external agent framework to implement agent behaviors, just well-crafted prompts and structured response parsing.
 
-We use `gemini-3-flash-preview` for all agent calls. This model is very inexpensive while being capable enough for query rewriting, sufficiency assessment, and synthesis. The function **rag-generate** delegates to **gemini:generate** from the **llm** library, going through the special variable **\*generate-fn\*** so tests can substitute a stub (the same idiom as **\*embedding-fn\*** above). It also wraps the call in **call-with-retries**, so a transient 500 during assessment or synthesis does not throw away the whole pipeline's work:
+We use `gemini-3-flash-preview` for all agent calls. This model is very inexpensive while being capable enough for query rewriting, sufficiency assessment, and synthesis. The function **rag-generate** delegates to a local helper **%gemini-generate**, which POSTs the prompt to the Gemini Interactions API and extracts the text from the last `model_output` step. The call goes through the special variable **\*generate-fn\*** so tests can substitute a stub (the same idiom as **\*embedding-fn\*** above). It also wraps the call in **call-with-retries**, so a transient 500 during assessment or synthesis does not throw away the whole pipeline's work:
 
 ```lisp
 (defparameter *rag-model* "gemini-3-flash-preview"
   "Gemini model used for all agent LLM calls. Override per call with
     the :model keyword argument to agentic-rag.")
 
+(defvar *rag-interactions-api-url*
+  "https://generativelanguage.googleapis.com/v1beta/interactions")
+
+(defun %extract-text-from-steps (decoded-response)
+  "Extract the text from the last model_output step in an Interactions API response."
+  (let ((steps (cdr (assoc :STEPS decoded-response))))
+    (loop for step in (reverse steps)
+          when (string-equal (cdr (assoc :TYPE step)) "model_output")
+          return (let* ((content (cdr (assoc :CONTENT step)))
+                        (first-content (first content)))
+                   (cdr (assoc :TEXT first-content))))))
+
+(defun %gemini-generate (prompt model)
+  "Call the Gemini Interactions API with PROMPT and return the generated text."
+  (let ((payload (make-hash-table :test 'equal)))
+    (setf (gethash "model" payload) model
+          (gethash "input" payload) prompt)
+    (let* ((headers (list '("Content-Type" . "application/json")
+                          (cons "x-goog-api-key" (uiop:getenv "GOOGLE_API_KEY"))
+                          '("Api-Revision" . "2026-05-20")))
+           (response-string (%post-json *rag-interactions-api-url* headers payload))
+           (decoded-response (cl-json:decode-json-from-string response-string)))
+      (%extract-text-from-steps decoded-response))))
+
 (defparameter *generate-fn*
   (lambda (prompt &key (model *rag-model*))
-    (gemini:generate prompt :model-id model))
+    (%gemini-generate prompt model))
   "Function of (prompt &key model) returning generated text. Defaults
-    to a thin wrapper around gemini:generate from the llm library.
+    to a thin wrapper around %gemini-generate.
     Rebind this in tests to run the pipeline without network access.")
 
 (defun rag-generate (prompt &key (model *rag-model*))

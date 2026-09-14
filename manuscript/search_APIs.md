@@ -448,7 +448,7 @@ the search-plus-LLM model for Perplexity (default \"sonar-pro\")."
              :model model)))
 ```
 
-The provider registry follows the same pattern as the **litelm** library from the LLM chapter. A **search-provider** records the provider's name, its endpoint, the environment variables that may hold its key, and the function that performs the search. **define-search-provider** stores one in the **\*search-providers\*** hash table. **find-search-provider** looks one up by keyword and signals a **search-error** for an unknown name.
+The provider registry follows the same pattern as the **litelm** library in **loving-common-lisp/src/litelm**. A **search-provider** records the provider's name, its endpoint, the environment variables that may hold its key, and the function that performs the search. **define-search-provider** stores one in the **\*search-providers\*** hash table. **find-search-provider** looks one up by keyword and signals a **search-error** for an unknown name.
 
 **provider-api-key** resolves the key in the order a caller expects: an explicit **:api-key** first, then the environment variables in order, and finally an error when the provider needs a key and none is found.
 

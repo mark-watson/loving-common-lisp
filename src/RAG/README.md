@@ -50,10 +50,12 @@ If context is insufficient, the system generates refined search queries and iter
 
 ## Dependencies
 
-- **llm** — Mark Watson's LLM library (provides the Gemini client and `llm:post-json` used for all HTTP)
 - **cl-json** — JSON encoding/decoding
-- **dexador** — HTTP client (via `llm`); transient failures are retried with exponential backoff
+- **dexador** — HTTP client; transient failures are retried with exponential backoff
+- **usocket** — Socket condition classes used for retry detection
 - **uiop** — System utilities
+
+All HTTP (embeddings and the Gemini Interactions API used for generation) is implemented inside the system itself via a small `%post-json` helper.
 
 **Environment variable:** `GOOGLE_API_KEY` must be set.
 
@@ -67,12 +69,12 @@ Embeddings are computed with batched `batchEmbedContents` calls (at most 100 tex
 
 ## Quick Start
 
-The rag system depends on the local `llm` library from this repo, which
-Quicklisp cannot find on its own. Load `project.lisp` first (it registers
-the sibling `llm` system with ASDF, then loads everything):
+The rag system is self-contained in this directory. Load `project.lisp`
+(it registers the local ASDF system and loads everything), or register
+`rag.asd` with ASDF yourself:
 
 ```lisp
-(load "project.lisp")   ; registers src/llm with ASDF and quickloads :rag
+(load "project.lisp")   ; loads the :rag system
 
 ;; Run the built-in demo with sample documents
 (rag:test)

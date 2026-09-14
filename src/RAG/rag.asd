@@ -6,7 +6,7 @@
   :license "Apache 2"
   :version "1.1.0"
   :serial t
-  :depends-on (#:llm #:cl-json #:dexador #:usocket #:uiop)
+  :depends-on (#:cl-json #:dexador #:usocket #:uiop)
   :components ((:file "package")
                (:file "embeddings")
                (:file "vector-store")

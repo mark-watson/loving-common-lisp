@@ -8,7 +8,13 @@
 ;;; and query embeddings (text-embedding-004 was retired from the
 ;;; v1beta API). This model is inexpensive and available on the free tier.
 ;;; The API key is sent in the x-goog-api-key header, never in the URL.
-;;; HTTP goes through llm:post-json (Dexador).
+
+;;; ---- Local HTTP helper ----
+
+(defun %post-json (url headers payload-hash)
+  "POST PAYLOAD-HASH as JSON to URL using Dexador and return the response body."
+  (let ((payload-json (cl-json:encode-json-to-string payload-hash)))
+    (dex:post url :headers headers :content payload-json)))
 
 ;;; ---- Verbosity control (loaded first; used by all other files) ----
 
@@ -174,8 +180,8 @@
     (coerce (%decode-embedding-response
              (call-with-retries
               (lambda ()
-                (llm:post-json api-url (%api-headers) payload))))
-            'simple-vector)))
+                (%post-json api-url (%api-headers) payload))))
+             'simple-vector)))
 
 (defun %post-batch-request (texts)
   "POST one batchEmbedContents request for TEXTS (at most
@@ -189,10 +195,10 @@
          response-string decoded error-obj embeddings)
     (setf (gethash "requests" payload)
           (mapcar #'%make-embedding-request texts))
-    (setf response-string
-          (call-with-retries
-           (lambda ()
-             (llm:post-json api-url (%api-headers) payload))))
+     (setf response-string
+           (call-with-retries
+            (lambda ()
+              (%post-json api-url (%api-headers) payload))))
     (setf decoded (cl-json:decode-json-from-string response-string)
           error-obj (cdr (assoc :ERROR decoded))
           embeddings (cdr (assoc :EMBEDDINGS decoded)))

@@ -15,21 +15,6 @@ All libraries are loaded via Quicklisp after copying to `~/quicklisp/local-proje
 
 ---
 
-## anthropic
-
-**Load:** `(ql:quickload :anthropic)`
-**Deps:** uiop, cl-json
-**Env var:** `ANTHROPIC_API_KEY`
-
-### Exported API
-
-- `(anthropic:completions text max-tokens)` — Send a completion request to Anthropic's API (claude-instant-1 model). Returns generated text string.
-
-### Example
-    (anthropic:completions "Answer concisely. Mary is 30 years old and Bob is 25. Who is older?" 12)
-
----
-
 ## entities
 
 **Load:** `(ql:quickload :entities)`
@@ -189,33 +174,6 @@ All libraries are loaded via Quicklisp after copying to `~/quicklisp/local-proje
 
 ---
 
-## openai
-
-**Load:** `(ql:quickload :openai)`
-**Deps:** uiop, cl-json, drakma
-**Env var:** `OPENAI_KEY`
-**Default model:** `gpt-5-nano`
-
-### Exported API
-
-- `(openai:completions starter-text &optional functions)` — Send completion request. `functions` is optional list of registered function name strings for tool calling. Returns text string.
-- `(openai:summarize some-text)` — Summarize text.
-- `(openai:answer-question question)` — Answer a question concisely.
-- `(openai:embeddings text)` — Get embeddings using `text-embedding-3-small` model. Returns embedding vector.
-- `(openai:dot-product list1 list2)` — Calculate dot product of two embedding vectors.
-
-### Tool calling (internal but key)
-- `(openai::register-function name description parameters fn)` — Register a CL function for tool calling.
-- `(openai::openai-function)` — Struct: name, description, parameters, func.
-
-### Examples
-    (openai:completions "Complete the following text: The President went to Congress")
-    (openai:answer-question "Where were the 1992 Olympics held?")
-    (openai:embeddings "Hello world")
-    (openai:dot-product emb1 emb2)
-
----
-
 ## sparql
 
 **Load:** `(ql:quickload :sparql)`
@@ -241,7 +199,7 @@ All libraries are loaded via Quicklisp after copying to `~/quicklisp/local-proje
 
 ## General Notes
 
-- All LLM API libraries use `curl` via `uiop:run-program` for HTTP requests (no HTTP client library except openai which also uses drakma).
-- Environment variables must be set before use: `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`, `OPENAI_KEY`, `GEMINI_API_KEY`, `OLLAMA_API_KEY` (cloud only).
+- All LLM API libraries use `curl` via `uiop:run-program` for HTTP requests (no HTTP client library). For a single uniform LLM interface use the **litelm** library in `src/litelm` (`(asdf:load-system :litelm)`), which routes `"provider/model"` strings to OpenAI, Gemini, Fireworks AI, DeepSeek, or a local Ollama server and also provides embeddings.
+- Environment variables must be set before use: `GOOGLE_API_KEY`, `GEMINI_API_KEY`, `OPENAI_KEY`, `FIREWORKS_API_KEY`, `DEEPSEEK_API_KEY`, `OLLAMA_API_KEY` (cloud only).
 - The `myutils` package provides shared utilities like `tokenize-string` and `replace-all` used by several libraries.
 - Data-loading libraries (entities, kbnlp) read linguistic data files at load time; `*base-pathname*` is resolved at compile time relative to source file location.

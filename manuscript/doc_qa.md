@@ -2,7 +2,7 @@
 
 This project is inspired by the Python LangChain and LlamaIndex projects, with just the parts I need for my projects written from scratch in Common Lisp. I wrote a Python book "LangChain and LlamaIndex Projects Lab Book: Hooking Large Language Models Up to the Real World Using GPT-3, ChatGPT, and Hugging Face Models in Applications" in March 2023: [https://leanpub.com/langchain](https://leanpub.com/langchain) that you might also be interested in.
 
-The GitHub repository for this example can be found here: [https://github.com/mark-watson/docs-qa](https://github.com/mark-watson/docs-qa). This code also requires my OpenAI Common Lisp library [https://github.com/mark-watson/openai](https://github.com/mark-watson/openai).
+The GitHub repository for this example can be found here: [https://github.com/mark-watson/docs-qa](https://github.com/mark-watson/docs-qa). This code uses the **litelm** LLM routing library (in **loving-common-lisp/src/litelm**) to reach the OpenAI APIs for both embeddings and question answering.
 
 The program we build here is a simple Retrieval Augmented Generation (RAG) system that uses SQLite as a vector data store and the OpenAI APIs for creating embeddings and generating text. The techniques are applicable to other vector data stores and other LLM APIs. In the next chapter we will discuss ways to improve performance and other factors related to scaling this type of application. The primary goal of this chapter is to show how to start building such an application in Common Lisp.
 
@@ -31,7 +31,32 @@ In lines 33-37 function **decode-row** takes data from a SQL query to fetch a da
 ```lisp
 (in-package #:docs-qa)
 
-;; define the environment variable "OPENAI_KEY" with the value of your OpenAI API key
+;; define the environment variable "OPENAI_KEY" (or "OPENAI_API_KEY") with the value
+;; of your OpenAI API key. LLM access goes through the litelm routing library.
+
+(defvar *embedding-model* "openai/text-embedding-3-small"
+  "Embedding model used for document and query vectors (1536 dimensions).")
+
+(defvar *completion-model* "openai/gpt-5-mini"
+  "OpenAI chat model used to answer questions over retrieved context.")
+
+(defun embeddings (text)
+  "Return the embedding vector for TEXT as a list of floats, via litelm."
+  (first (litelm:embedding *embedding-model* text)))
+
+(defun dot-product (list1 list2)
+  "Calculate the dot product of two float lists."
+  (let ((sum 0))
+    (loop for x in list1
+          for y in list2
+          do (setf sum (+ sum (* x y))))
+    sum))
+
+(defun answer-question (question)
+  "Answer QUESTION with the OpenAI chat model, via litelm."
+  (litelm:response-content
+   (litelm:completion *completion-model*
+                      :messages (concatenate 'string "Concisely answer the question: " question))))
 
 (defun write-floats-to-string (lst)
   (with-output-to-string (out)
@@ -126,7 +151,7 @@ The next listing shows of parts of **docs-qa.lisp** that contain code to use SqL
   (let ((contents (break-into-chunks (read-file fpath) 200)))
     (dolist (content contents)
       (handler-case	  
-	  (let ((embedding (openai::embeddings content)))
+	  (let ((embedding (embeddings content)))
 	    (insert-document fpath content embedding))
 	(error (c)
 	       (format t "Error: ~&~a~%" c))))))
@@ -144,12 +169,12 @@ The next listing showing of parts of **docs-qa.lisp** interfaces with the OpenAI
 
 ```lisp
 (defun semantic-match (query custom-context &optional (cutoff 0.3))
-  (let ((emb (openai::embeddings query))
+  (let ((emb (embeddings query))
         (ret))
     (dolist (doc (all-documents))
       (let ((context (nth 1 doc)) ;; ignore fpath for now
 	    (embedding (nth 2 doc)))
-	(let ((score (openai::dot-product emb embedding)))
+	(let ((score (dot-product emb embedding)))
 	  (when (> score cutoff)
 	    (push context ret)))))
     (format t "~%semantic-search: ret=~A~%" ret)
@@ -159,7 +184,7 @@ The next listing showing of parts of **docs-qa.lisp** interfaces with the OpenAI
                " "
                (list context custom-context
                  "Question:" query))))
-      (openai:answer-question query-with-context))))
+      (answer-question query-with-context))))
 
 (defun QA (query &optional (quiet nil))
   (let ((answer (semantic-match query "")))
@@ -296,4 +321,4 @@ I prefer using Common Lisp over Python when I can, so I am implementing a tiny s
 
 5. **Multi-Format Document Ingestion:** The `create-document` function reads only plain text files. Extend it by writing `create-document-from-directory` that scans a directory for `.txt` and `.md` files. For Markdown files, write a simple preprocessor `strip-markdown` that removes common Markdown syntax (headings `#`, bold `**`, links `[text](url)`, code fences) before chunking, so the embeddings are computed on clean prose rather than markup. Test with a directory containing both formats and verify that queries match content from both file types.
 
-6. **Swap to Gemini Embeddings:** The current system uses OpenAI for both embeddings and question answering. Using the `gemini` library from the Gemini chapter, write an alternative version that uses `gemini:generate` for answering questions instead of `openai:answer-question`, while keeping OpenAI for embeddings (or vice versa). This exercise teaches you how the embedding and generation components of a RAG system are independent and interchangeable. Compare the answer quality between the OpenAI and Gemini backends for the same query and context.
+6. **Swap Providers:** The current system routes embeddings and question answering to OpenAI via the litelm provider prefix (`"openai/..."`). Since litelm can route the same calls to any OpenAI-compatible provider, rewrite `*completion-model*` to use, say, Gemini (`"gemini/gemini-2.5-flash"`) or a locally hosted Ollama model (`"ollama/qwen3:4b"`) without changing any other code. This exercise teaches you how the embedding and generation components of a RAG system are independent and interchangeable. Compare the answer quality between the OpenAI and Ollama backends for the same query and context.

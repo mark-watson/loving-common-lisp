@@ -17,11 +17,37 @@
   "Gemini model used for all agent LLM calls. Override per call with
     the :model keyword argument to agentic-rag.")
 
+;;; ---- Gemini generate (previously gemini:generate from the llm library) ----
+
+(defvar *rag-interactions-api-url*
+  "https://generativelanguage.googleapis.com/v1beta/interactions")
+
+(defun %extract-text-from-steps (decoded-response)
+  "Extract the text from the last model_output step in an Interactions API response."
+  (let ((steps (cdr (assoc :STEPS decoded-response))))
+    (loop for step in (reverse steps)
+          when (string-equal (cdr (assoc :TYPE step)) "model_output")
+          return (let* ((content (cdr (assoc :CONTENT step)))
+                        (first-content (first content)))
+                   (cdr (assoc :TEXT first-content))))))
+
+(defun %gemini-generate (prompt model)
+  "Call the Gemini Interactions API with PROMPT and return the generated text."
+  (let ((payload (make-hash-table :test 'equal)))
+    (setf (gethash "model" payload) model
+          (gethash "input" payload) prompt)
+    (let* ((headers (list '("Content-Type" . "application/json")
+                          (cons "x-goog-api-key" (uiop:getenv "GOOGLE_API_KEY"))
+                          '("Api-Revision" . "2026-05-20")))
+           (response-string (%post-json *rag-interactions-api-url* headers payload))
+           (decoded-response (cl-json:decode-json-from-string response-string)))
+      (%extract-text-from-steps decoded-response))))
+
 (defparameter *generate-fn*
   (lambda (prompt &key (model *rag-model*))
-    (gemini:generate prompt :model-id model))
+    (%gemini-generate prompt model))
   "Function of (prompt &key model) returning generated text. Defaults
-    to a thin wrapper around gemini:generate from the llm library.
+    to a thin wrapper around %gemini-generate.
     Rebind this in tests to run the pipeline without network access.")
 
 (defun rag-generate (prompt &key (model *rag-model*))

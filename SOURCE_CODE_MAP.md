@@ -34,11 +34,9 @@ This table maps each chapter file in `./manuscript` to its source code example d
 | `manuscript/kgn_text_ui.md` | `src/kgn-text-ui` |
 | `manuscript/kgn_capi_ui.md` | `src/kgn-capi-ui`<br>`src/lw-grapher` |
 | `manuscript/karpathy.md` | `src/Karpathy_MicroGPT` |
-| `manuscript/openai.md` | `src/openai` |
 | `manuscript/ollama.md` | `src/ollama` |
 | `manuscript/ollama_image_processing.md` | `src/ollama_images` |
 | `manuscript/moonshot.md` | `src/moonshot_kimi_k2` |
-| `manuscript/huggingface.md` | `src/huggingface` |
 | `manuscript/knowledge-navigator.md` | `src/knowledge-base-navigator` |
 | `manuscript/lightpanda.md` | `src/lightpanda` |
 | `manuscript/web-scraping.md` | `src/webscraping` |
@@ -48,8 +46,7 @@ This table maps each chapter file in `./manuscript` to its source code example d
 | `manuscript/gemini.md` | `src/gemini` |
 | `manuscript/autocontext.md` | `src/autocontext` |
 | `manuscript/agent_llm.md` | `src/cl-llm-agent` |
-| `manuscript/agent_part2.md` | `src/cl-llm-agent` |
-| `manuscript/llm_lib.md` | `src/llm`<br>`src/llm_test` |
+| `manuscript/agent_part2.md` | `src/agent_grok` |
 | `manuscript/text-adventure-game.md` | `src/text-adventure-game` |
 | `manuscript/wolfram.md` | (none) |
 | `manuscript/symbolic-math.md` | `src/symbolic-math` |

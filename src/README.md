@@ -9,7 +9,7 @@ Please see the README.md file at the top directory of this repo for a descriptio
 Once copied to your local **~/quicklisp/local-projects/** directory then you can load any library using Quicklisp. For example:
 
     (ql:quickload :sparql-cache)
-    (ql:quickload :openai)
+    (ql:quickload :search-apis)
     (ql:quickload :wordnet)
     (ql:quickload :fasttag)
     (ql:quickload :kbnlp)

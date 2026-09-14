@@ -3,7 +3,32 @@
 ;; Copyright 2023-2025 Mark Watson. All Rights Reserved. Apache 2 License
 
 
-;; define the environment variable "OPENAI_KEY" with the value of your OpenAI API key
+;; define the environment variable "OPENAI_KEY" (or "OPENAI_API_KEY") with the value
+;; of your OpenAI API key. LLM access goes through the litelm routing library.
+
+(defvar *embedding-model* "openai/text-embedding-3-small"
+  "Embedding model used for document and query vectors (1536 dimensions).")
+
+(defvar *completion-model* "openai/gpt-5-mini"
+  "OpenAI chat model used to answer questions over retrieved context.")
+
+(defun embeddings (text)
+  "Return the embedding vector for TEXT as a list of floats, via litelm."
+  (first (litelm:embedding *embedding-model* text)))
+
+(defun dot-product (list1 list2)
+  "Calculate the dot product of two float lists."
+  (let ((sum 0))
+    (loop for x in list1
+          for y in list2
+          do (setf sum (+ sum (* x y))))
+    sum))
+
+(defun answer-question (question)
+  "Answer QUESTION with the OpenAI chat model, via litelm."
+  (litelm:response-content
+   (litelm:completion *completion-model*
+                      :messages (concatenate 'string "Concisely answer the question: " question))))
 
 (defun write-floats-to-string (lst)
   (with-output-to-string (out)
@@ -93,8 +118,8 @@
 (defun create-document (fpath)
   (let ((contents (break-into-chunks (read-file fpath) 200)))
     (dolist (content contents)
-      (handler-case	  
-	  (let ((embedding (openai::embeddings content)))
+      (handler-case
+	  (let ((embedding (embeddings content)))
 	    (insert-document fpath content embedding))
 	(error (c)
 	       (format t "Error: ~&~a~%" c))))))
@@ -103,18 +128,18 @@
 ;;(pprint docs)
 
 (defun semantic-match (query custom-context &optional (cutoff 0.3))
-  (let ((emb (openai::embeddings query))
+  (let ((emb (embeddings query))
         (ret))
     (dolist (doc (all-documents))
       (let ((context (nth 1 doc)) ;; ignore fpath for now
 	    (embedding (nth 2 doc)))
-	(let ((score (openai::dot-product emb embedding)))
+	(let ((score (dot-product emb embedding)))
 	  (when (> score cutoff)
 	    (push context ret)))))
     (format t "~%semantic-search: ret=~A~%" ret)
     (let* ((context (join-strings " . " (reverse ret)))
            (query-with-context (join-strings " " (list context custom-context "Question:" query))))
-      (openai:answer-question query-with-context))))
+      (answer-question query-with-context))))
 
 (defun QA (query &optional (quiet nil))
   (let ((answer (semantic-match query "")))
