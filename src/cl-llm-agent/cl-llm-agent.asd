@@ -7,7 +7,7 @@
   :author "Mark Watson <markw@markwatson.com>"
   :license "MIT"
   :description "A generic LLM-based agent framework for Common Lisp."
-  :depends-on ("cl-json" "gemini" "tavily" "uiop" "fiveam")
+  :depends-on ("cl-json" "gemini" "search-apis" "uiop" "fiveam")
   :components ((:file "package")
                (:file "context")
                (:file "agent-generic")

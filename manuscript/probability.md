@@ -8,6 +8,8 @@ In modern tech stacks, particularly within local-first AI orchestration and agen
 
 The source code for this chapter is in the directory **src/Probability**.
 
+**Note: I have written an entire book on Common Lisp and Probability: [https://leanpub.com/probability-common-lisp](https://leanpub.com/probability-common-lisp).**
+
 
 ## Words of Warning
 

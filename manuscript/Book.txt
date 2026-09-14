@@ -10,10 +10,8 @@ input_output.md
 plotlib.md
 clos.md
 network_programming.md
-bravesearch.md
+search_APIs.md
 database.md
-nosql.md
-design.md
 nlp.md
 information_gathering.md
 machine_learning.md
@@ -31,7 +29,7 @@ karpathy.md
 openai.md
 ollama.md
 ollama_image_processing.md
-perplexity.md
+anthropic.md
 moonshot.md
 huggingface.md
 knowledge-navigator.md
@@ -41,7 +39,6 @@ doc_qa.md
 RAG.md
 prompts.md
 gemini.md
-tavily.md
 autocontext.md
 agent_llm.md
 agent_part2.md
@@ -54,5 +51,6 @@ daily_use.md
 cl-ai-coding-agent.md
 hacking_SBCL_repl.md
 Neural-Symbolic-Knowledge-Graph-Engine.md
+probability.md
 book_wrapup.md
 

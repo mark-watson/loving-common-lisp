@@ -74,11 +74,21 @@
                :parameter-example "file-path: string"
                :function #'helper-read-file)
 
+(defun helper-search-web (query)
+  "Search the web with the search-apis library and return the results as text."
+  (let ((response (search-apis:websearch query :provider :tavily)))
+    (with-output-to-string (out)
+      (dolist (result (search-apis:search-response-results response))
+        (format out "~A~%  ~A~%  ~A~%~%"
+                (search-apis:search-result-title result)
+                (search-apis:search-result-url result)
+                (search-apis:search-result-content result))))))
+
 (register-tool "tool-search-web"
-               :description "Search the web with Tavily."
+               :description "Search the web."
                :parameters '(query)
                :parameter-example "query: string"
-               :function (lambda (query) (tavily:websearch query)))
+               :function #'helper-search-web)
 
 (defun helper-summarize (text)
   "Summarize TEXT using Gemini LLM backend."
