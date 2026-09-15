@@ -460,11 +460,6 @@ The two HTTP helpers wrap **dex:get** and **dex:post**. Both catch Dexador's **h
 
 Each provider has two functions. A **parse** function turns a decoded JSON response into a **search-response**. A **search** function builds the request, sends it, and calls the parser. Keeping the parsers separate means they can be tested offline against recorded JSON.
 
-The following diagram shows the high-level architecture of the Brave client:
-
-{width: "80%"}
-![Brave search architecture](images/brave_search_architecture.png)
-
 Brave uses a GET request and puts the key in the **X-Subscription-Token** header. The query is URL-encoded, so spaces and special characters travel safely in the query string:
 
 ```lisp
@@ -497,11 +492,6 @@ Brave uses a GET request and puts the key in the **X-Subscription-Token** header
 ```
 
 Brave nests its hits under **web.results**, and the snippet field is named **description**. The parser reads those fields and discards the rest. Because Brave has no synthesized answer, **answer** stays **nil**.
-
-The following diagram shows the high-level architecture of the Tavily client:
-
-{width: "80%"}
-![Tavily search architecture](images/tavily_architecture.png)
 
 Tavily uses a POST request and puts the key in the JSON body along with the query and the result limit. The parser also checks the top-level **error** field that Tavily uses for application-level errors, which arrive with an HTTP 200 status and would otherwise pass silently:
 
@@ -537,12 +527,6 @@ Tavily uses a POST request and puts the key in the JSON body along with the quer
 ```
 
 Tavily names its snippet field **content** and supplies a **score** between 0 and 1, which the parser copies into the result.
-
-The following diagram shows the high-level architecture of the Perplexity client:
-
-{width: "80%"}
-![Perplexity architecture](images/perplexity_architecture.png)
-
 Perplexity uses the OpenAI-compatible chat completions endpoint. The key travels in the **Authorization** header as a Bearer token, and the query becomes the single user message. The response carries the answer under **choices**, and the sources under **search_results** or **citations**:
 
 ```lisp
