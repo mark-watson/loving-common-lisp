@@ -1,8 +1,12 @@
 # Hopfield Neural Networks
 
+**Dear reader, the code in this chapter is old but I include it from a feeling of personal nostalgia. In the 1980s I was on a neural network DARPA advisory panel and John Hopfield was one of many interesting pioneers in the field who I enjoyed talking with.**
+
 A [Hopfield network](https://en.wikipedia.org/wiki/Hopfield_network) (named after John Hopfield) is a recurrent network since the flow of activation through the network has loops. These networks are trained by applying input patterns and letting the network settle in a state that stores the input patterns.
 
 The example code is in the file **src/loving_snippets/Hopfield_neural_network.lisp**.
+
+The figures in this chapter were generated using an old version of the example code that included plotting output.
 
 The example we look at recognizes patterns that are similar to the patterns seen in training examples and maps input patterns to a similar training input pattern. The following figure shows output from the example program showing an original training pattern, a similar pattern with one cell turned on and other off, and the reconstructed pattern:
 
