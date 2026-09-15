@@ -15,7 +15,6 @@ database.md
 nlp.md
 information_gathering.md
 Web Scraping
-machine_learning.md
 backprop_nn.md
 hopfield_nn.md
 anomaly_detection.md
