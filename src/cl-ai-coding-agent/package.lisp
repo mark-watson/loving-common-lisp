@@ -4,4 +4,6 @@
   (:export #:coding-agent-query
            #:coding-agent-query-file
            #:coding-agent-repl
-           #:*verbose*))
+           #:*verbose*
+           #:*default-model*
+           #:*max-tool-rounds*))

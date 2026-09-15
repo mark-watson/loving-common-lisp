@@ -43,47 +43,43 @@
     (format nil "Wrote ~D characters to ~A"
             (length content) path)))
 
-;;; ---- Gemini function declarations ----
+;;; ---- litelm tool definitions ----
+;;;
+;;; Tools use litelm's Lisp format:
+;;;   (name description ((param type desc) ...))
 
 (defun %make-tool-declarations ()
-  "Build the list of Gemini function declarations
+  "Build the list of litelm tool definitions
    for file-system tools."
-  (list
-   (gemini:make-function-declaration
-    "list_directory"
-    "List files and subdirectories in a directory.
-     Returns one entry per line."
-    '(("path" "STRING"
-       "Absolute or relative directory path"))
-    '("path"))
-
-   (gemini:make-function-declaration
-    "read_file"
-    "Read the full contents of a text file and
-     return it as a string."
-    '(("path" "STRING"
-       "Absolute or relative file path"))
-    '("path"))
-
-   (gemini:make-function-declaration
-    "write_file"
-    "Create or overwrite a file with the given
-     content.  Parent directories are created
-     automatically."
-    '(("path" "STRING"
+  '((list_directory
+     "List files and subdirectories in a directory.
+      Returns one entry per line."
+     ((path "string"
+       "Absolute or relative directory path")))
+    (read_file
+     "Read the full contents of a text file and
+      return it as a string."
+     ((path "string"
+       "Absolute or relative file path")))
+    (write_file
+     "Create or overwrite a file with the given
+      content.  Parent directories are created
+      automatically."
+     ((path "string"
        "Absolute or relative file path")
-      ("content" "STRING"
-       "The full text content to write"))
-    '("path" "content"))))
+      (content "string"
+       "The full text content to write")))))
 
-;;; ---- Dispatch a function-call plist ----
+;;; ---- Dispatch a tool-call plist ----
 
 (defun dispatch-tool-call (fc)
-  "Execute the tool described by function-call
-   plist FC (:NAME :ID :ARGS).
+  "Execute the tool described by tool-call plist
+   FC (:ID :NAME :ARGUMENTS) as returned by
+   litelm:response-tool-calls.
    Returns a string result."
   (let* ((name (getf fc :name))
-         (args (getf fc :args))
+         (args (or (getf fc :arguments)
+                   (getf fc :args)))
          (get-arg (lambda (key)
                     (cdr (assoc key args
                                 :test #'string-equal)))))

@@ -1,8 +1,12 @@
 # cl-ai-coding-agent
 
-A Common Lisp AI coding agent powered by the Gemini API.  The agent
+A Common Lisp AI coding agent powered by litelm. The agent
 takes a string prompt as input and can autonomously read directories,
 read files, write new files, and diagnose stacktraces/error messages.
+
+The default model is the local Ollama model `qwen3.5:4b`,
+so it runs without an API key. Any other litelm
+`provider/model` string can be passed per call.
 
 ## Features
 
@@ -17,22 +21,28 @@ read files, write new files, and diagnose stacktraces/error messages.
 ## Requirements
 
 - SBCL with Quicklisp
-- `GOOGLE_API_KEY` environment variable set
-- The `gemini` package (from this repository)
+- Ollama running locally with the model pulled:
+  `ollama pull qwen3.5:4b`
+- The `litelm` library (in `../litelm`)
 
 ## Installation
 
 ```bash
-export GOOGLE_API_KEY="your-key-here"
+ollama pull qwen3.5:4b
 ```
 
 In your Lisp REPL:
 
 ```lisp
+(asdf:load-asd "/path/to/litelm/litelm.asd")
+(asdf:load-asd "/path/to/cl-ai-coding-agent/cl-ai-coding-agent.asd")
 (ql:quickload :cl-ai-coding-agent)
 ```
 
 ## Usage
+
+All queries default to `ollama/qwen3.5:4b`.
+Pass `:model` to use another litelm model string.
 
 ### One-shot query
 
@@ -49,6 +59,11 @@ In your Lisp REPL:
 ;; Write a new file
 (cl-ai-coding-agent:coding-agent-query
   "Write a file hello.lisp with a hello-world function.")
+
+;; Use a different model
+(cl-ai-coding-agent:coding-agent-query
+  "What files are here?"
+  :model "gemini/gemini-2.5-flash")
 ```
 
 ### Interactive REPL
@@ -65,7 +80,7 @@ In your Lisp REPL:
 
 Stacktraces often contain quote characters and span
 multiple lines, making them awkward to paste into a
-Lisp string.  Save the error output to a file instead:
+Lisp string. Save the error output to a file instead:
 
 ```bash
 # In your terminal, copy the stacktrace to a file:
@@ -88,26 +103,28 @@ pbpaste > /tmp/error.txt
 ```lisp
 (setf cl-ai-coding-agent:*verbose* t)
 (cl-ai-coding-agent:coding-agent-query "...")
-;; Prints tool calls, responses, and round info
+;; Prints model, tool calls, responses, and round info
 ```
 
 ## Exported API
 
 | Symbol | Type | Description |
 |--------|------|-------------|
-| `coding-agent-query` | Function | `(prompt) -> string` -- one-shot agent query |
-| `coding-agent-query-file` | Function | `(path &optional prefix) -> string` -- query from file |
+| `coding-agent-query` | Function | `(prompt &key model) -> string` -- one-shot agent query, defaults to `ollama/qwen3.5:4b` |
+| `coding-agent-query-file` | Function | `(path &optional prefix model) -> string` -- query from file |
 | `coding-agent-repl` | Function | `() -> nil` -- interactive REPL loop |
 | `*verbose*` | Variable | When non-NIL, prints debug info |
+| `*default-model*` | Variable | litelm model string, default `"ollama/qwen3.5:4b"` |
+| `*max-tool-rounds*` | Variable | Max tool round-trips, default 10 |
 
 ## Architecture
 
-The agent uses Gemini's Interactions API with function calling:
+The agent uses litelm `completion` with tool calling:
 
-1. User prompt is augmented with a system prompt and tool declarations
-2. Gemini may request tool calls (`list_directory`, `read_file`, `write_file`)
-3. The agent executes tools locally and sends results back
-4. This loop repeats (up to 10 rounds) until Gemini responds with text
+1. User prompt is paired with a system prompt and litelm tool definitions
+2. litelm may return tool calls (`list_directory`, `read_file`, `write_file`)
+3. The agent executes tools locally and appends `:tool` results to the message history
+4. This loop repeats (up to 10 rounds) until litelm responds with text
 
 
 ## WORK in Progress: Doesn't yet work:

@@ -9,6 +9,11 @@
   "Maximum number of tool-use round-trips before
    the agent returns whatever it has.")
 
+(defparameter *default-model* "ollama/qwen3.5:4b"
+  "Default litelm model for the agent.
+   Uses a local Ollama model, so no API key
+   is needed.")
+
 ;;; ---- Stacktrace detection ----
 
 (defparameter *stacktrace-patterns*
@@ -42,9 +47,8 @@
 
 ;;; ---- System prompt construction ----
 
-(defun %system-prompt (user-prompt)
-  "Build the full prompt sent to Gemini, including
-   the system instructions and the user's input."
+(defun %system-instructions (user-prompt)
+  "Build the system message for USER-PROMPT."
   (let ((stacktrace-instructions
          (if (stacktrace-p user-prompt)
              "The user's input contains a stacktrace
@@ -68,94 +72,83 @@ You have access to three file-system tools:
 
 Use these tools when the user asks you to inspect
 or modify files.  When creating new files, always
-use write_file — do NOT just print the code.
+use write_file, do not just print the code.
 
-~AUser request:
-~A" stacktrace-instructions user-prompt)))
+~A" stacktrace-instructions)))
 
 ;;; ---- Agent loop ----
 
-(defun coding-agent-query (prompt)
+(defun coding-agent-query (prompt &key (model *default-model*))
   "Process PROMPT through the AI coding agent.
    The agent can read directories, read files,
    write new files, and diagnose stacktraces.
+   MODEL is a litelm \"provider/model\" string,
+   defaulting to *DEFAULT-MODEL*.
    Returns the final text response."
-  (let* ((declarations (%make-tool-declarations))
-         (full-prompt  (%system-prompt prompt)))
+  (let* ((tools (%make-tool-declarations))
+         (messages
+          (list (list :system
+                      (%system-instructions prompt))
+                (list :user prompt)))
+         (round 0)
+         text calls)
     (when *verbose*
-      (format t "~&[coding-agent] prompt:~%~A~%"
-              full-prompt))
-    ;; Turn 1 -- send prompt with tools
-    (multiple-value-bind (text calls interaction-id)
-        (gemini:generate-with-tools
-         full-prompt declarations)
-      (when *verbose*
-        (format t "[coding-agent] turn-1 text: ~A~%"
-                text)
-        (format t "[coding-agent] turn-1 calls: ~A~%"
-                calls))
-      ;; If no tool calls, return the text directly
-      (unless calls
-        (return-from coding-agent-query
-          (or text "(no response from model)")))
-      ;; Multi-turn tool loop
-      (loop for round from 1 to *max-tool-rounds*
-            while calls
-            do
-         (let ((responses
-                (mapcar
-                 (lambda (fc)
-                   (let ((result
-                          (dispatch-tool-call fc)))
-                     (when *verbose*
-                       (format t
-                        "[coding-agent] tool ~A -> ~A~%"
-                        (getf fc :name)
-                        (subseq result 0
-                         (min 200
-                          (length result)))))
-                     (list :name (getf fc :name)
-                           :id   (getf fc :id)
-                           :response result)))
-                 calls)))
-           (multiple-value-bind
-               (next-text next-calls next-iid)
-               (gemini:continue-with-function-responses
-                interaction-id
-                responses
-                declarations)
-             (when *verbose*
-               (format t
-                "[coding-agent] round-~D text: ~A~%"
-                round next-text)
-               (format t
-                "[coding-agent] round-~D calls: ~A~%"
-                round next-calls))
-             (setf text           next-text
-                   calls          next-calls
-                   interaction-id next-iid)))
-         finally
-         (return
-          (or text
-              "(agent exhausted tool rounds)"))))))
+      (format t "~&[coding-agent] model: ~A~%~A~%"
+              model messages))
+    (loop
+      (incf round)
+      (let ((resp (litelm:completion model
+                                     :messages messages
+                                     :tools tools)))
+        (setf text (litelm:response-content resp)
+              calls (litelm:response-tool-calls resp))
+        (when *verbose*
+          (format t "[coding-agent] round-~D text: ~A~%"
+                  round text)
+          (format t "[coding-agent] round-~D calls: ~A~%"
+                  round calls))
+        (unless calls
+          (return (or text "(no response from model)")))
+        (when (> round *max-tool-rounds*)
+          (return (or text "(agent exhausted tool rounds)")))
+        (setf messages
+              (nconc messages
+                     (list (list :assistant text
+                                 :tool-calls calls))
+                     (mapcar (lambda (fc)
+                               (let ((result
+                                      (dispatch-tool-call fc)))
+                                 (when *verbose*
+                                   (format t
+                                    "[coding-agent] tool ~A -> ~A~%"
+                                    (getf fc :name)
+                                    (subseq result 0
+                                     (min 200
+                                      (length result)))))
+                                 (list :tool result
+                                       :tool-call-id
+                                       (getf fc :id))))
+                             calls)))))))
 
 ;;; ---- File-based query ----
 
 (defun coding-agent-query-file (path
-                                &optional prefix)
+                                &optional prefix
+                                (model *default-model*))
   "Read the contents of PATH and send them as a
    prompt to the coding agent.  This is the easiest
    way to diagnose multi-line stacktraces that may
    contain quote characters -- just save the error
    output to a file and pass the path here.
    PREFIX is an optional string prepended to the
-   file contents (e.g. \"Fix this error:\")."
+   file contents (e.g. \"Fix this error:\").
+   MODEL is a litelm \"provider/model\" string."
   (let* ((content (uiop:read-file-string path))
          (prompt (if prefix
                      (format nil "~A~%~A"
                              prefix content)
                      content)))
-    (coding-agent-query prompt)))
+    (coding-agent-query prompt :model model)))
 
 ;;; ---- Interactive REPL ----
 

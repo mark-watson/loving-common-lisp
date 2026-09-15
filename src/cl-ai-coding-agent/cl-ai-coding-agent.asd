@@ -9,7 +9,7 @@
   :description
   "An AI coding agent that reads directories and files,
    writes new files, and diagnoses stacktraces."
-  :depends-on ("gemini" "uiop")
+  :depends-on ("litelm" "uiop")
   :components ((:file "package")
                (:file "tools")
                (:file "agent")))
