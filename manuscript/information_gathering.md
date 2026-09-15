@@ -1,6 +1,8 @@
 # Information Gathering Using DBPedia Lookup {#information_gathering}
 
-Wikipedia is a great source of information. As you may know, you can download a [data dump of all Wikipedia data](https://en.wikipedia.org/wiki/Wikipedia:Database_download) with or without version information and comments. When I want fast access to the entire Wikipedia set of English language articles I choose the second option and just get the current pages with no comments of versioning information. [This is the direct download link for current Wikipedia articles.](http://download.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2) There are no comments or user pages in this GZIP file. This is not as much data as you might think, only about 9 gigabytes compressed or about 42 gigabytes uncompressed.
+Wikipedia is a great source of information. As you may know, you can download a [data dump of all Wikipedia data](https://en.wikipedia.org/wiki/Wikipedia:Database_download) with or without version information and comments. When I want fast access to the entire Wikipedia set of English language articles I use the DBPedia Lookup service for finding information on entities like people, companies, etc.
+
+The source code for this chapter in in the directory **loving-common-lisp/src/dbpedia**.
 
 To load and run an example, try:
 
@@ -10,7 +12,7 @@ To load and run an example, try:
 (dbpedia:dbpedia-lookup "berlin")
 ~~~~~~~~
 
-Wikipedia is a great resource to have on hand but I am going to show you in this section how to access the Semantic Web version or Wikipedia, [DBPedia](http://dbpedia.org/) using the DBPedia Lookup Service in the next code listing that shows the contents of the example file **dbpedia-lookup.lisp** in the directory **src/dbpedia**:
+Wikipedia is a great resource to have on hand but I am going to show you in this section how to access the Semantic Web version or Wikipedia, [DBPedia](http://dbpedia.org/) using the DBPedia Lookup Service in the next code listing that shows the contents of the example file **dbpedia-lookup.lisp**:
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
@@ -85,7 +87,7 @@ I am only capturing the attributes for DBPedia URI, label and description in thi
 
 The following diagram shows the high-level architecture of the information gathering tools developed in this chapter:
 
-{width: "80%"}
+{width: “60%"}
 ![Architecture diagram](images/information_gathering_architecture.png)
 
 Here is a sample call to the function **dbpedia:dbpedia-lookup** (only some of the returned data is shown):
