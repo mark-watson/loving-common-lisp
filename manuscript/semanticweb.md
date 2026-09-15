@@ -1,5 +1,7 @@
 # Semantic Web and Linked Data
 
+**Dear reader, this chapter is technical background material for code examples in later chapters.**
+
 I have written two previous books on the semantic web and linked data and most of my programming books have semantic web examples. Please note that the background material here on the semantic web standards RDF, RDFS, and SPARQL is shared with my book [Practical Artificial Intelligence Programming With Java](https://leanpub.com/javaai) so if you have read that book then the first several pages of this chapter will seem familiar.
 
 Construction of Knowledge Graphs, as we will do in later chapters, is a core technology at many corporations and organizations to prevent data silos where different database systems are poorly connected and not as useful in combination than they could be. The use of RDF data stores is a powerful technique for data interoperability within organizations. Semantic Web standards like RDF, RDFS, and SPARQL support both building Knowledge Graphs and also key technologies for automating the collection and use of web data.
