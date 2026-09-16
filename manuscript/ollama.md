@@ -112,7 +112,9 @@ Tool-calling (function calling) support is implemented in `ollama-tools.lisp`, e
   - Accepts prompt text and an optional list of function name strings to enable
   - Translates registered functions into `litelm` tool definitions
   - Sends request to Ollama via `litelm:completion`
-  - Automatically dispatches handlers when the model returns tool calls
+  - Runs the full `litelm` tool-use loop: dispatches *every* tool call the model
+    returns, appends each result as a `:tool` message, and calls the model again
+    until it stops requesting tools and answers in natural language
 
 #### Built-in Tools
 
@@ -123,15 +125,19 @@ Two sample tools are pre-registered:
    - Returns: Formatted weather string
 
 2. **calculate** -- Evaluates mathematical expressions
-   - Parameters: `expression` (string) -- Math expression like "2 + 2"
-   - Uses Common Lisp's `eval` to compute results
+   - Parameters: `expression` (string) -- Infix math expression like "2 + 2"
+   - Tokenizes and parses the infix text into a prefix Lisp form, then computes
+     it with `%evaluate-math`, which handles only numbers and the operators
+     `+ - * /` -- no `eval` and no symbol resolution, so LLM-supplied text
+     cannot execute arbitrary Lisp
 
 #### Tool Call Flow
 
 ```
 User Prompt + Tool Names -> Build Tool Definitions -> litelm:completion ->
-Ollama API -> Response with Tool Calls -> Parse Function Call ->
-Lookup Handler -> Invoke with Arguments -> Return Result
+Ollama API -> Response with Tool Calls -> Parse Function Calls ->
+For Each Call: Lookup Handler -> Invoke with Arguments -> Append :tool Result ->
+litelm:completion (repeat until no tool calls) -> Final Answer
 ```
 
 #### Example Usage
@@ -140,7 +146,7 @@ Lookup Handler -> Invoke with Arguments -> Return Result
 (ollama:completions-with-tools 
   "Use the get_weather tool for: What's the weather like in New York?" 
   '("get_weather" "calculate"))
-;; => "Weather in New York: Sunny, 72°F"
+;; => "The weather in New York is currently Sunny with a temperature of 72°F."
 ```
 
 
@@ -271,7 +277,7 @@ The program also showcases the extensibility of the base completion logic throug
 
 ## Implementation of Tool Use/Function Calling Generative AI Functionality
 
-The following listing implements tool-calling (also known as function-calling) within a Common Lisp environment using Ollama and `litelm`. By defining a custom **ollama-function** structure and a global registry via a hash table, the code allows developers to map Large Language Model (LLM) tool requests directly to native Lisp handlers. The primary entry point, **completions-with-tools**, translates the registered tools into `litelm`'s native Lisp tool format and submits them to Ollama. When the model requests a tool call, the dispatcher unpacks the arguments and invokes the corresponding Common Lisp function.
+The following listing implements tool-calling (also known as function-calling) within a Common Lisp environment using Ollama and `litelm`. By defining a custom **ollama-function** structure and a global registry via a hash table, the code allows developers to map Large Language Model (LLM) tool requests directly to native Lisp handlers. The primary entry point, **completions-with-tools**, translates the registered tools into `litelm`'s native Lisp tool format and submits them to Ollama. When the model requests tool calls, the dispatcher unpacks the arguments and invokes the corresponding Common Lisp functions. Because a single model turn may request several tools — and because the model has not yet seen any tool output when it makes that request — **completions-with-tools** runs the complete `litelm` tool-use loop: it executes *every* requested call, appends each result to the conversation as a `:tool` message, and calls the model again, repeating until the model stops asking for tools and returns a synthesized final answer.
 
 Listing of ollama-tools.lisp:
 
@@ -355,19 +361,40 @@ Listing of ollama-tools.lisp:
 (defun completions-with-tools (starter-text &optional functions)
   "Completion with function/tool calling support.
    STARTER-TEXT is the prompt to send to the LLM.
-   FUNCTIONS is an optional list of registered function names to make available."
+   FUNCTIONS is an optional list of registered function names to make available.
+   Runs the complete litelm tool-use loop: every tool call the model requests is
+   dispatched, each result is appended to the conversation as a :tool message,
+   and the model is called again until it returns a plain final answer.
+   Returns the final answer string."
   (let* ((full-model (ensure-model-name *tool-model-name*))
          (tool-defs (when functions
                       (%convert-to-litelm-tools functions)))
-         (resp (litelm:completion full-model
-                                  :messages starter-text
-                                  :tools tool-defs
-                                  :api-base *model-host*)))
-    (format t "Raw response: ~s~%" (litelm:response-raw resp))
-    (let ((tool-calls (litelm:response-tool-calls resp)))
-      (if tool-calls
-          (handle-tool-function-call (first tool-calls))
-          (or (litelm:response-content resp) "No response content")))))
+         (messages (list (list :user starter-text))))
+    (loop
+      (let* ((resp (litelm:completion full-model
+                                      :messages messages
+                                      :tools tool-defs
+                                      :api-base *model-host*))
+             (content (litelm:response-content resp))
+             (tool-calls (litelm:response-tool-calls resp)))
+        (format t "Raw response: ~s~%" (litelm:response-raw resp))
+        (if tool-calls
+            (progn
+              (format t "~%Model requested ~a tool call(s).~%" (length tool-calls))
+              ;; Record the assistant turn that asked for the tool calls.
+              (setf messages
+                    (append messages
+                            (list (list :assistant content :tool-calls tool-calls))))
+              ;; Execute every requested call and feed each result back.
+              (dolist (tc tool-calls)
+                (let ((result (handle-tool-function-call tc)))
+                  (format t "  Tool ~a completed.~%" (getf tc :name))
+                  (setf messages
+                        (append messages
+                                (list (list :tool (format nil "~a" result)
+                                            :tool-call-id (getf tc :id))))))))
+            ;; No tool calls - the model produced its final answer.
+            (return (or content "No response content")))))))
 
 ;; Define handler functions
 
@@ -378,6 +405,100 @@ Listing of ollama-tools.lisp:
                       (cdr (assoc "location" args :test #'string-equal)))))
     (format nil "Weather in ~a: Sunny, 72°F" (or location "Unknown"))))
 
+;;; The calculate tool evaluates ordinary infix arithmetic ("2 + 2",
+;;; "(3 + 4) * 2") written by the LLM. That text is untrusted, so the path from
+;;; string to number is deliberately narrow:
+;;;   1. Tokens are restricted to ASCII digits, "." and the operators + - * / ( ).
+;;;   2. Number literals are read with *READ-EVAL* bound to NIL, which disables
+;;;      #. read-time evaluation.
+;;;   3. The parsed form is walked by %EVALUATE-MATH, which understands only
+;;;      numbers and the four operators. No symbol is ever resolved and EVAL is
+;;;      never called, so LLM-supplied text cannot execute arbitrary Lisp.
+;;; Expression length is capped so a hostile or runaway prompt cannot consume
+;;; unbounded time or memory building huge bignums and rationals.
+
+(defvar *calculate-max-expression-length* 1000
+  "Maximum number of characters accepted by the calculate tool's :expression.")
+
+(defun %ascii-digit-char-p (ch)
+  "True if CH is one of the ASCII digits 0-9."
+  (char<= #\0 ch #\9))
+
+(defun %tokenize-math (string)
+  "Split the infix math STRING into a vector of numbers and operator characters."
+  (let ((*read-eval* nil)
+        (tokens '())
+        (number (make-string-output-stream)))
+    (labels ((flush-number ()
+               (let ((text (get-output-stream-string number)))
+                 (when (plusp (length text))
+                   (push (read-from-string text) tokens)))))
+      (loop for ch across string do
+        (cond ((or (%ascii-digit-char-p ch) (char= ch #\.))
+               (write-char ch number))
+              ((find ch "+-*/()") (flush-number) (push ch tokens))
+              (t (flush-number))))
+      (flush-number))
+    (coerce (nreverse tokens) 'vector)))
+
+(defun %parse-math (tokens)
+  "Parse the infix TOKENS into a prefix Lisp form. Grammar:
+     expression := term (('+' | '-') term)*
+     term       := factor (('*' | '/') factor)*
+     factor     := number | '(' expression ')' | '-' factor"
+  (let ((pos 0))
+    (labels ((peek () (when (< pos (length tokens)) (aref tokens pos)))
+             (take () (prog1 (peek) (incf pos)))
+             (expression ()
+               (let ((left (term)))
+                 (loop for op = (peek)
+                       while (member op '(#\+ #\-))
+                       do (take)
+                          (setf left (list (if (char= op #\+) '+ '-)
+                                           left (term)))
+                       finally (return left))))
+             (term ()
+               (let ((left (factor)))
+                 (loop for op = (peek)
+                       while (member op '(#\* #\/))
+                       do (take)
+                          (setf left (list (if (char= op #\*) '* '/)
+                                           left (factor)))
+                       finally (return left))))
+             (factor ()
+               (let ((token (take)))
+                 (cond ((null token) (error "Unexpected end of expression"))
+                       ((numberp token) token)
+                       ((char= token #\() (prog1 (expression)
+                                            (unless (eql (take) #\))
+                                              (error "Missing close parenthesis"))))
+                       ((char= token #\-) (list '- (factor)))
+                       (t (error "Unexpected token ~s" token))))))
+      (let ((form (expression)))
+        (when (peek)
+          (error "Unexpected trailing input"))
+        form))))
+
+(defun %evaluate-math (form)
+  "Evaluate a parsed arithmetic FORM of numbers and the operators + - * /.
+Returns a number. Signals an error for any other shape, so a malformed tree can
+never reach the Lisp evaluator."
+  (cond
+    ((numberp form) form)
+    ;; Unary minus, produced by FACTOR for input such as "-3 + 10".
+    ((and (consp form) (eq (car form) '-) (null (cddr form)))
+     (- (%evaluate-math (second form))))
+    ;; Binary operation: exactly three elements, operator restricted to + - * /.
+    ((and (consp form) (member (car form) '(+ - * /)) (null (cdddr form)))
+     (let ((left (%evaluate-math (second form)))
+           (right (%evaluate-math (third form))))
+       (ecase (car form)
+         (+ (+ left right))
+         (- (- left right))
+         (* (* left right))
+         (/ (/ left right)))))
+    (t (error "Refusing to evaluate unsafe expression form: ~s" form))))
+
 (defun calculate (args)
   "Handler for calculate tool. ARGS is an alist with :expression key."
   (format t "calculate called with args: ~a~%" args)
@@ -385,8 +506,12 @@ Listing of ollama-tools.lisp:
                         (cdr (assoc "expression" args :test #'string-equal)))))
     (if expression
         (handler-case
-            (format nil "Result: ~a"
-                    (eval (read-from-string expression)))
+            (progn
+              (when (> (length expression) *calculate-max-expression-length*)
+                (error "Expression too long (~a characters, limit is ~a)"
+                       (length expression) *calculate-max-expression-length*))
+              (format nil "Result: ~a"
+                      (%evaluate-math (%parse-math (%tokenize-math expression)))))
           (error (e) (format nil "Error calculating: ~a" e)))
         "No expression provided")))
 
@@ -404,9 +529,9 @@ Listing of ollama-tools.lisp:
  #'calculate)
 ```
 
-The core of this system lies in decoupling tool definitions from their execution logic. By using the **register-tool-function** routine, you can define tools using clean Common Lisp parameter lists, specifying parameter names, types, and descriptions, while simultaneously binding them to a specific Lisp function. This allows the **handle-tool-function-call** dispatcher to act as a bridge, looking up the appropriate handler in the `*available-functions*` hash table and executing it with the arguments returned by the LLM.
+The core of this system lies in decoupling tool definitions from their execution logic. By using the **register-tool-function** routine, you can define tools using clean Common Lisp parameter lists, specifying parameter names, types, and descriptions, while simultaneously binding them to a specific Lisp function. This allows the **handle-tool-function-call** dispatcher to act as a bridge, looking up the appropriate handler in the `*available-functions*` hash table and executing it with the arguments returned by the LLM. The surrounding loop in **completions-with-tools** then closes the circuit: each handler result is added back to `messages` as a `:tool` message carrying the originating call's `:tool-call-id`, so the next `litelm:completion` call lets the model read the tool output and answer the user in natural language.
 
-Additionally, the calculate tool demonstrates the dynamism of Common Lisp by using `read-from-string` and `eval`, allowing the LLM to execute mathematical expressions directly within the Lisp runtime.
+Additionally, the calculate tool shows what it takes to run a *safe* evaluator over untrusted model output. Because the model writes human-style infix arithmetic, `%tokenize-math` splits the text into numbers and operator characters and `%parse-math` turns that token stream into a prefix Lisp form -- but the result is never handed to `eval`. Instead `%evaluate-math` walks the form itself, accepting only numbers and the operators `+ - * /`, so no symbol from the LLM is ever resolved and no arbitrary code can run. Three further details matter: the tokenizer accepts only ASCII digits (not `digit-char-p`, which on SBCL also returns true for non-ASCII digits such as Arabic-Indic `U+0663`), number literals are read with `*read-eval*` bound to `nil` so `#.` read-time evaluation is disabled, and the expression length is capped so a runaway prompt cannot build enormous bignums or rationals. A naive `(eval (read-from-string expression))` would be wrong twice over: `read-from-string` stops after the first form, so `"2 + 2"` would evaluate to just `2`, and any text reaching `eval` is a code-execution path. Malformed or rejected input is caught by `handler-case` and returned as an `"Error calculating: ..."` string, which the tool loop hands back to the model so it can correct itself on the next turn.
 
 Sample REPL session:
 
@@ -419,27 +544,45 @@ To load "ollama":
 [package ollama].
 
 * (ollama:completions-with-tools "Use the get_weather tool for: What's the weather like in New York?" '("get_weather" "calculate"))
-Raw response: (("id" . "chatcmpl-5") ("object" . "chat.completion")
-               ("created" . 1789572213) ("model" . "qwen3-vl:2b")
+Raw response: (("id" . "chatcmpl-336") ("object" . "chat.completion")
+               ("created" . 1789576838) ("model" . "qwen3-vl:2b")
                ("system_fingerprint" . "fp_ollama")
                ("choices"
                 (("index" . 0)
                  ("message" ("role" . "assistant") ("content" . "")
                   ("reasoning"
-                   . "The user is asking for the weather in New York. I need to use the get_weather tool.")
+                   . "Okay, the user is asking about the weather in New York. ...")
                   ("tool_calls"
-                   (("id" . "call_4h6756rc") ("index" . 0)
+                   (("id" . "call_g0yphv05") ("index" . 0)
                     ("type" . "function")
                     ("function" ("name" . "get_weather")
                      ("arguments" . "{\"location\":\"New York\"}")))))
                  ("finish_reason" . "tool_calls")))
-               ("usage" ("prompt_tokens" . 238) ("completion_tokens" . 132) ("total_tokens" . 370)))
+               ("usage" ("prompt_tokens" . 238) ("completion_tokens" . 103) ("total_tokens" . 341)))
 
-DEBUG handle-tool-function-call: (ID call_4h6756rc NAME get_weather ARGUMENTS ((LOCATION . New York)))
+Model requested 1 tool call(s).
+
+DEBUG handle-tool-function-call: (ID call_g0yphv05 NAME get_weather ARGUMENTS ((LOCATION . New York)))
 DEBUG raw-name=get_weather inferred-name=get_weather args=((LOCATION . New York)) func=#S(OLLAMA-FUNCTION :NAME get_weather ...)
 get_weather called with args: ((LOCATION . New York))
-"Weather in New York: Sunny, 72°F"
+  Tool get_weather completed.
+Raw response: (("id" . "chatcmpl-200") ("object" . "chat.completion")
+               ("created" . 1789576839) ("model" . "qwen3-vl:2b")
+               ("system_fingerprint" . "fp_ollama")
+               ("choices"
+                (("index" . 0)
+                 ("message" ("role" . "assistant")
+                  ("content"
+                   . "The weather in New York is currently **Sunny** with a temperature of **72°F**. Enjoy your day! 😊")
+                  ("reasoning"
+                   . "Okay, the user asked for the weather in New York. ..."))
+                 ("finish_reason" . "stop")))
+               ("usage" ("prompt_tokens" . 283) ("completion_tokens" . 153) ("total_tokens" . 436)))
+
+"The weather in New York is currently **Sunny** with a temperature of **72°F**. Enjoy your day! 😊"
 ```
+
+Note that the model is called twice. The first turn returns a `tool_calls` finish reason and no prose, so `completions-with-tools` executes `get_weather` and appends both the assistant turn and the tool result to `messages`. The second turn then has the tool output available and returns the final natural-language answer with a `stop` finish reason, which ends the loop. When a single turn requests several tools (for example, asking for both the weather and a calculation), the `dolist` dispatches each one and appends one `:tool` message per call before the next model call.
 
 
 ## Using Built In Web Search Tool on Ollama Cloud
@@ -618,11 +761,11 @@ Looking ahead, the shift from single-turn local execution to multi-turn cloud an
 3. **Streaming Responses to the REPL**:
    The `litelm` library supports streaming via the `:stream` keyword argument to `litelm:completion`. Modify `completions` in [ollama.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama.lisp) to accept an optional `:stream` argument (defaulting to `nil`). When `t`, pass a callback to `litelm:completion` that immediately writes each token delta to `*standard-output*` and flushes with `finish-output`.
 
-4. **Multi-Step Local Tool Execution Loop**:
-   Currently, `completions-with-tools` in [ollama-tools.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-tools.lisp) executes a single tool call and returns the result string. Extend `completions-with-tools` to run an agent loop similar to `cloud-search-agent` in [ollama-cloud-search.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-cloud-search.lisp). Recursively feed the tool execution results back to the local model until it stops requesting tools and provides a final natural-language response.
+4. **Bounding the Tool Loop**:
+   The loop in `completions-with-tools` in [ollama-tools.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-tools.lisp) repeats until the model stops requesting tools, with no upper bound. Add a `:max-iterations` keyword argument (for example, defaulting to 8) and, when the limit is reached, stop and return the most recent assistant content together with a diagnostic noting that the limit was hit. Verify that a prompt engineered to keep requesting tools terminates instead of looping indefinitely.
 
 5. **Tool Error Handling and Recovery**:
-   When a tool handler triggers an error (such as a division by zero in `calculate`), wrap the handler call in `handler-case` and return a descriptive error message as the tool result string. Pass this result back to the model in the multi-turn loop, observing how the LLM attempts to correct its mistake or inform the user.
+   An uncaught error anywhere in the dispatch aborts the entire tool loop. `handle-tool-function-call` signals an error for an unregistered tool name, and a handler may throw for any other reason. Wrap the handler dispatch in [ollama-tools.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-tools.lisp) in `handler-case` and return a descriptive message string as the tool result instead. Then exercise the path — for example, register a tool whose handler deliberately signals an error — and observe how the LLM recovers in the multi-turn loop. (Note that `calculate` already catches its own arithmetic errors such as division by zero, so pick a different failure for this exercise.)
 
 6. **Web Search Fallback for Local Models**:
    Combine the tool-calling mechanism of `completions-with-tools` from [ollama-tools.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-tools.lisp) and the DuckDuckGo query mechanism of `execute-web-search`/`execute-web-fetch` from [ollama-cloud-search.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/ollama/ollama-cloud-search.lisp) to run entirely on a local model (such as `qwen3-vl:2b` or `qwen3.5:2b`). Register the web tools locally and test how effectively small local models can perform multi-turn search queries.

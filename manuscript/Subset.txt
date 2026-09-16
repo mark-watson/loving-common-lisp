@@ -14,7 +14,7 @@ search_APIs.md
 database.md
 nlp.md
 information_gathering.md
-Web Scraping
+web-scraping.md
 backprop_nn.md
 hopfield_nn.md
 anomaly_detection.md
@@ -26,9 +26,9 @@ kgn_common.md
 kgn_text_ui.md
 kgn_capi_ui.md	
 karpathy.md
+litelm.md
 ollama.md
 ollama_image_processing.md
-moonshot.md
 knowledge-navigator.md
 lightpanda.md
 doc_qa.md

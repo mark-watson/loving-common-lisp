@@ -77,19 +77,40 @@
 (defun completions-with-tools (starter-text &optional functions)
   "Completion with function/tool calling support.
    STARTER-TEXT is the prompt to send to the LLM.
-   FUNCTIONS is an optional list of registered function names to make available."
+   FUNCTIONS is an optional list of registered function names to make available.
+   Runs the complete litelm tool-use loop: every tool call the model requests is
+   dispatched, each result is appended to the conversation as a :tool message,
+   and the model is called again until it returns a plain final answer.
+   Returns the final answer string."
   (let* ((full-model (ensure-model-name *tool-model-name*))
          (tool-defs (when functions
                       (%convert-to-litelm-tools functions)))
-         (resp (litelm:completion full-model
-                                  :messages starter-text
-                                  :tools tool-defs
-                                  :api-base *model-host*)))
-    (format t "Raw response: ~s~%" (litelm:response-raw resp))
-    (let ((tool-calls (litelm:response-tool-calls resp)))
-      (if tool-calls
-          (handle-tool-function-call (first tool-calls))
-          (or (litelm:response-content resp) "No response content")))))
+         (messages (list (list :user starter-text))))
+    (loop
+      (let* ((resp (litelm:completion full-model
+                                      :messages messages
+                                      :tools tool-defs
+                                      :api-base *model-host*))
+             (content (litelm:response-content resp))
+             (tool-calls (litelm:response-tool-calls resp)))
+        (format t "Raw response: ~s~%" (litelm:response-raw resp))
+        (if tool-calls
+            (progn
+              (format t "~%Model requested ~a tool call(s).~%" (length tool-calls))
+              ;; Record the assistant turn that asked for the tool calls.
+              (setf messages
+                    (append messages
+                            (list (list :assistant content :tool-calls tool-calls))))
+              ;; Execute every requested call and feed each result back.
+              (dolist (tc tool-calls)
+                (let ((result (handle-tool-function-call tc)))
+                  (format t "  Tool ~a completed.~%" (getf tc :name))
+                  (setf messages
+                        (append messages
+                                (list (list :tool (format nil "~a" result)
+                                            :tool-call-id (getf tc :id))))))))
+            ;; No tool calls - the model produced its final answer.
+            (return (or content "No response content")))))))
 
 ;; Define handler functions
 
@@ -100,6 +121,100 @@
                       (cdr (assoc "location" args :test #'string-equal)))))
     (format nil "Weather in ~a: Sunny, 72°F" (or location "Unknown"))))
 
+;;; The calculate tool evaluates ordinary infix arithmetic ("2 + 2",
+;;; "(3 + 4) * 2") written by the LLM. That text is untrusted, so the path from
+;;; string to number is deliberately narrow:
+;;;   1. Tokens are restricted to ASCII digits, "." and the operators + - * / ( ).
+;;;   2. Number literals are read with *READ-EVAL* bound to NIL, which disables
+;;;      #. read-time evaluation.
+;;;   3. The parsed form is walked by %EVALUATE-MATH, which understands only
+;;;      numbers and the four operators. No symbol is ever resolved and EVAL is
+;;;      never called, so LLM-supplied text cannot execute arbitrary Lisp.
+;;; Expression length is capped so a hostile or runaway prompt cannot consume
+;;; unbounded time or memory building huge bignums and rationals.
+
+(defvar *calculate-max-expression-length* 1000
+  "Maximum number of characters accepted by the calculate tool's :expression.")
+
+(defun %ascii-digit-char-p (ch)
+  "True if CH is one of the ASCII digits 0-9."
+  (char<= #\0 ch #\9))
+
+(defun %tokenize-math (string)
+  "Split the infix math STRING into a vector of numbers and operator characters."
+  (let ((*read-eval* nil)
+        (tokens '())
+        (number (make-string-output-stream)))
+    (labels ((flush-number ()
+               (let ((text (get-output-stream-string number)))
+                 (when (plusp (length text))
+                   (push (read-from-string text) tokens)))))
+      (loop for ch across string do
+        (cond ((or (%ascii-digit-char-p ch) (char= ch #\.))
+               (write-char ch number))
+              ((find ch "+-*/()") (flush-number) (push ch tokens))
+              (t (flush-number))))
+      (flush-number))
+    (coerce (nreverse tokens) 'vector)))
+
+(defun %parse-math (tokens)
+  "Parse the infix TOKENS into a prefix Lisp form. Grammar:
+     expression := term (('+' | '-') term)*
+     term       := factor (('*' | '/') factor)*
+     factor     := number | '(' expression ')' | '-' factor"
+  (let ((pos 0))
+    (labels ((peek () (when (< pos (length tokens)) (aref tokens pos)))
+             (take () (prog1 (peek) (incf pos)))
+             (expression ()
+               (let ((left (term)))
+                 (loop for op = (peek)
+                       while (member op '(#\+ #\-))
+                       do (take)
+                          (setf left (list (if (char= op #\+) '+ '-)
+                                           left (term)))
+                       finally (return left))))
+             (term ()
+               (let ((left (factor)))
+                 (loop for op = (peek)
+                       while (member op '(#\* #\/))
+                       do (take)
+                          (setf left (list (if (char= op #\*) '* '/)
+                                           left (factor)))
+                       finally (return left))))
+             (factor ()
+               (let ((token (take)))
+                 (cond ((null token) (error "Unexpected end of expression"))
+                       ((numberp token) token)
+                       ((char= token #\() (prog1 (expression)
+                                            (unless (eql (take) #\))
+                                              (error "Missing close parenthesis"))))
+                       ((char= token #\-) (list '- (factor)))
+                       (t (error "Unexpected token ~s" token))))))
+      (let ((form (expression)))
+        (when (peek)
+          (error "Unexpected trailing input"))
+        form))))
+
+(defun %evaluate-math (form)
+  "Evaluate a parsed arithmetic FORM of numbers and the operators + - * /.
+Returns a number. Signals an error for any other shape, so a malformed tree can
+never reach the Lisp evaluator."
+  (cond
+    ((numberp form) form)
+    ;; Unary minus, produced by FACTOR for input such as "-3 + 10".
+    ((and (consp form) (eq (car form) '-) (null (cddr form)))
+     (- (%evaluate-math (second form))))
+    ;; Binary operation: exactly three elements, operator restricted to + - * /.
+    ((and (consp form) (member (car form) '(+ - * /)) (null (cdddr form)))
+     (let ((left (%evaluate-math (second form)))
+           (right (%evaluate-math (third form))))
+       (ecase (car form)
+         (+ (+ left right))
+         (- (- left right))
+         (* (* left right))
+         (/ (/ left right)))))
+    (t (error "Refusing to evaluate unsafe expression form: ~s" form))))
+
 (defun calculate (args)
   "Handler for calculate tool. ARGS is an alist with :expression key."
   (format t "calculate called with args: ~a~%" args)
@@ -107,8 +222,12 @@
                         (cdr (assoc "expression" args :test #'string-equal)))))
     (if expression
         (handler-case
-            (format nil "Result: ~a"
-                    (eval (read-from-string expression)))
+            (progn
+              (when (> (length expression) *calculate-max-expression-length*)
+                (error "Expression too long (~a characters, limit is ~a)"
+                       (length expression) *calculate-max-expression-length*))
+              (format nil "Result: ~a"
+                      (%evaluate-math (%parse-math (%tokenize-math expression)))))
           (error (e) (format nil "Error calculating: ~a" e)))
         "No expression provided")))
 

@@ -36,7 +36,6 @@ This table maps each chapter file in `./manuscript` to its source code example d
 | `manuscript/karpathy.md` | `src/Karpathy_MicroGPT` |
 | `manuscript/ollama.md` | `src/ollama` |
 | `manuscript/ollama_image_processing.md` | `src/ollama_images` |
-| `manuscript/moonshot.md` | `src/moonshot_kimi_k2` |
 | `manuscript/knowledge-navigator.md` | `src/knowledge-base-navigator` |
 | `manuscript/lightpanda.md` | `src/lightpanda` |
 | `manuscript/web-scraping.md` | `src/webscraping` |

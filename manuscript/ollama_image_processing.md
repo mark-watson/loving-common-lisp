@@ -8,14 +8,14 @@ The code for this example can be found in the directory **loving-common-lisp/src
 
 Briefly dear reader, here are my design notes for this project:
 
-- Network Delegation: Rather than importing a heavy Lisp HTTP client (like `Dexador` or `Drakma`), the library delegates network I/O to curl via `uiop:run-program`. This keeps the dependency footprint small.
-- Security & Injection Prevention: By passing curl arguments as a strict list and piping the JSON payload through an in-memory string stream (`make-string-input-stream`) to curl's stdin (--data-binary @-), the design completely bypasses the system shell. This eliminates command injection risks and avoids temporary file overhead.
-- Asymmetric JSON Handling: It relies on the external `cl-json` library for decoding responses but uses a lightweight, custom recursive function (`lisp-to-json-string`) for encoding. This ensures strict control over how Lisp keywords, symbols, and lists map to the specific JSON schema required by the Ollama API without needing complex CLOS (Common Lisp Object System) serializations.
+- Network Delegation to litelm: The module performs no HTTP of its own. Every request goes through the **litelm** library (src/litelm), which routes a `"provider/model"` string to an OpenAI-compatible endpoint using `dexador`. That removes the `curl` subprocess, the hand-rolled JSON encoder, and the external JSON decoder that earlier drafts of this example required.
+- Multimodal Messages as Lisp Data: The prompt and the images travel as ordinary Lisp structures in litelm's message format -- a `:user` message whose content is the OpenAI-compatible content-parts list, one `text` part plus one `image_url` part per image. litelm encodes that to JSON internally, so there is no wire format to maintain by hand and no shell is involved, which eliminates the command-injection surface entirely.
+- Structured Error Handling: Because litelm maps HTTP failures onto a condition hierarchy (`litelm:not-found-error`, `litelm:api-error`, `litelm:rate-limit-error`, and friends), an unknown model name or an unreachable server surfaces as a catchable Lisp condition instead of a string that has to be parsed.
 - Functional Wrappers: The public API (`image-to-text`, `describe-image-simple`) hides the encoding and transport complexity, presenting a clean, functional interface with sensible dynamic variables (*model-name*, *ollama-host*) for environment overrides.
 
 ## Code to Process Images
 
-This Common Lisp module acts as a lightweight client for the Ollama vision API by base64-encoding local images and serializing them into a customized JSON payload. To minimize dependencies and avoid shell injection risks, it securely streams this data to a spawned curl process via standard input and parses the returned JSON to extract the model's text description.
+This Common Lisp module acts as a lightweight client for the Ollama vision API. It base64-encodes local images, wraps each one in an OpenAI-compatible `image_url` content part, and hands the resulting message to `litelm:completion`, which builds the request, performs the HTTP POST, and decodes the reply. The only work left to this file is turning image files into base64 strings and shaping them as litelm content parts.
 
 ```lisp
 ;;;; describe-image.lisp — Send images to Ollama vision models for description
@@ -28,9 +28,13 @@ This Common Lisp module acts as a lightweight client for the Ollama vision API b
 ;;;;
 ;;;; Environment:
 ;;;;   OLLAMA_MODEL — optional model override (default: qwen3.5:0.8b)
-;;;;   OLLAMA_HOST  — optional API host override (default: http://localhost:11434/api/chat)
+;;;;   OLLAMA_HOST  — optional OpenAI-compatible base URL override
+;;;;                  (default: http://localhost:11434/v1)
+;;;;
+;;;; Transport, JSON encoding/decoding, and error mapping are delegated to the
+;;;; litelm library (src/litelm), the same way the ollama package does it.
 
-(ql:quickload '(:cl-base64 :cl-json :uiop) :silent t)
+(ql:quickload '(:litelm :cl-base64 :uiop) :silent t)
 
 (defpackage #:describe-image
   (:use #:cl)
@@ -41,11 +45,11 @@ This Common Lisp module acts as a lightweight client for the Ollama vision API b
 
 (in-package #:describe-image)
 
-(defvar *model-name* "qwen3.5:0.8b"
+(defvar *model-name* (or (uiop:getenv "OLLAMA_MODEL") "qwen3.5:0.8b")
   "Default vision-capable model for image queries.")
 
-(defvar *ollama-host* "http://localhost:11434/api/chat"
-  "Ollama API endpoint for chat completions.")
+(defvar *ollama-host* (or (uiop:getenv "OLLAMA_HOST") "http://localhost:11434/v1")
+  "OpenAI-compatible Ollama API base URL; litelm appends /chat/completions.")
 
 (defun encode-image (image-path)
   "Read IMAGE-PATH file and return its contents as a base64-encoded string.
@@ -57,104 +61,45 @@ This Common Lisp module acts as a lightweight client for the Ollama vision API b
       (read-sequence bytes in)
       (cl-base64:usb8-array-to-base64-string bytes))))
 
-(defun lisp-to-json-string (data)
-  "Convert a Lisp nested association list to a JSON string.
-   Keyword keys become JSON object keys; :true/:false become JSON booleans;
-   lists of cons cells become JSON objects; plain lists become JSON arrays."
-  (with-output-to-string (s)
-    (labels ((alist-object-p (lst)
-               "Return T if LST is a non-empty alist whose every car is a keyword."
-               (and (consp lst)
-                    (every #'(lambda (elem)
-                               (and (consp elem)
-                                    (keywordp (car elem))))
-                           lst)))
-             (write-json-value (value)
-               (cond
-                 ((null value)   (write-string "null"  s))
-                 ((eq value :true)  (write-string "true"  s))
-                 ((eq value :false) (write-string "false" s))
-                 ((stringp value)
-                  (write-char #\" s)
-                  (loop for char across value
-                        do (case char
-                             (#\"      (write-string "\\\"" s))
-                             (#\\      (write-string "\\\\" s))
-                             (#\Newline (write-string "\\n"  s))
-                             (#\Return  (write-string "\\r"  s))
-                             (#\Tab     (write-string "\\t"  s))
-                             (t         (write-char char s))))
-                  (write-char #\" s))
-                 ((numberp value)
-                  (format s "~a" value))
-                 ((symbolp value)
-                  (write-json-value (string-downcase (symbol-name value))))
-                 ((listp value)
-                  (if (alist-object-p value)
-                      ;; Encode as JSON object
-                      (progn
-                        (write-char #\{ s)
-                        (loop for pair in value
-                              for i from 0
-                              when (> i 0) do (write-string ", " s)
-                              do (let ((key (car pair))
-                                       (val (cdr pair)))
-                                   (write-json-value (if (keywordp key)
-                                                         (string-downcase (symbol-name key))
-                                                         key))
-                                   (write-char #\: s)
-                                   (write-json-value val)))
-                        (write-char #\} s))
-                      ;; Encode as JSON array
-                      (progn
-                        (write-char #\[ s)
-                        (loop for elem in value
-                              for i from 0
-                              when (> i 0) do (write-string ", " s)
-                              do (write-json-value elem))
-                        (write-char #\] s))))
-                 (t (error "Unsupported JSON type: ~a" (type-of value))))))
-      (write-json-value data))))
+(defun image-media-type (image-path)
+  "Return the media type for IMAGE-PATH, derived from its file extension."
+  (let ((type (string-downcase (or (pathname-type image-path) ""))))
+    (cond ((member type '("jpg" "jpeg") :test #'string=) "image/jpeg")
+          ((string= type "gif")  "image/gif")
+          ((string= type "webp") "image/webp")
+          ((string= type "bmp")  "image/bmp")
+          (t "image/png"))))
 
-(defun parse-ollama-response (json-string)
-  "Parse the Ollama JSON response string.
-   Signals a descriptive error if the response is empty or contains an API error field.
-   Returns the message content string on success."
-  (when (or (null json-string) (string= json-string ""))
-    (error "Empty response from Ollama — is the server running at ~a?" *ollama-host*))
-  (let ((parsed (cl-json:decode-json-from-string json-string)))
-    ;; Propagate server-side error messages rather than swallowing them
-    (let ((err (cdr (assoc :error parsed))))
-      (when err
-        (error "Ollama API error: ~a" err)))
-    (let ((message (cdr (assoc :message parsed))))
-      (when message
-        (cdr (assoc :content message))))))
+(defun text-part (prompt)
+  "Build the OpenAI-compatible text content part for PROMPT."
+  (list (cons "type" "text")
+        (cons "text" prompt)))
 
-(defun call-ollama-vision (image-base64-list prompt &key (model *model-name*) (host *ollama-host*))
-  "Call the Ollama vision API with a list of base64-encoded images and PROMPT.
-   JSON is streamed directly to curl's stdin — no temp file, no shell injection.
-   curl stderr is captured and reported on failure.
-   Returns the response content string."
-  (let* ((message (list (cons :|role|   "user")
-                        (cons :|content| prompt)
-                        (cons :|images|  image-base64-list)))
-         (data    (list (cons :|model|    model)
-                        (cons :|stream|   :false)
-                        (cons :|messages| (list message))))
-         (json-data (lisp-to-json-string data)))
-    (multiple-value-bind (response-string stderr-string exit-code)
-        ;; Pass args as a list — uiop bypasses the shell, preventing injection
-        (uiop:run-program (list "curl" "-s" "-X" "POST" host
-                                "-H" "Content-Type: application/json"
-                                "--data-binary" "@-")
-                          :input        (make-string-input-stream json-data)
-                          :output       '(:string :stripped t)
-                          :error-output '(:string :stripped t)
-                          :ignore-error-status t)
-      (unless (zerop exit-code)
-        (error "curl failed (exit code ~a): ~a" exit-code stderr-string))
-      (parse-ollama-response response-string))))
+(defun image-part (image-path base64)
+  "Build the OpenAI-compatible image content part for one base64-encoded image.
+   IMAGE-PATH supplies the media type; BASE64 is the encoded image data."
+  (list (cons "type" "image_url")
+        (cons "image_url"
+              (list (cons "url"
+                          (concatenate 'string
+                                       "data:" (image-media-type image-path)
+                                       ";base64," base64))))))
+
+(defun ensure-model-name (model)
+  "Ensure MODEL has a provider prefix for litelm routing (defaults to ollama/)."
+  (if (find #\/ model)
+      model
+      (concatenate 'string "ollama/" model)))
+
+(defun call-ollama-vision (image-parts prompt &key (model *model-name*) (host *ollama-host*))
+  "Send IMAGE-PARTS (content parts built by IMAGE-PART) and PROMPT to Ollama.
+   litelm builds the request, performs the HTTP POST, and decodes the response.
+   Returns the model's text response string."
+  (let ((response (litelm:completion (ensure-model-name model)
+                                     :messages (list (list :user (cons (text-part prompt)
+                                                                       image-parts)))
+                                     :api-base host)))
+    (or (litelm:response-content response) "")))
 
 (defun image-to-text (image-paths prompt &key (model nil) (host nil))
   "Send one or more images to an Ollama vision model with PROMPT and return text.
@@ -173,10 +118,11 @@ This Common Lisp module acts as a lightweight client for the Ollama vision API b
     (dolist (p paths)
       (unless (probe-file p)
         (error "Image file not found: ~a" p)))
-    (let ((encoded-list (mapcar #'encode-image paths))
-          (use-model    (or model *model-name*))
-          (use-host     (or host  *ollama-host*)))
-      (call-ollama-vision encoded-list prompt :model use-model :host use-host))))
+    (let ((parts      (loop for p in paths
+                            collect (image-part p (encode-image p))))
+          (use-model  (or model *model-name*))
+          (use-host   (or host  *ollama-host*)))
+      (call-ollama-vision parts prompt :model use-model :host use-host))))
 
 (defun describe-image-simple (image-path)
   "Convenience wrapper — describe a single image using the default model and prompt.
@@ -226,10 +172,10 @@ The unique barcodes on this ticket allow only one entry to the event. If multipl
 
 2. **Model Comparison:** The `*model-name*` variable defaults to `qwen3.5:0.8b`, but Ollama supports several vision models (e.g., `llava`, `llava:13b`, `moondream`). Write a function `compare-models` that takes an image path, a prompt, and a list of model name strings. For each model, call `image-to-text` with the `:model` keyword, measure the wall-clock time using `get-internal-real-time`, and print the model name, response time in seconds, and the first 200 characters of the response. Discuss how response quality and speed vary across model sizes.
 
-3. **Structured Data Extraction:** The `image-to-text` function returns free-form text. Write a function `extract-ticket-info` that takes an image path of a ticket or receipt, crafts a prompt that asks the model to return the data as a JSON object with specific keys (e.g., `"event"`, `"date"`, `"time"`, `"price"`, `"seat"`), calls `image-to-text` with that prompt, and then parses the returned JSON string with `cl-json:decode-json-from-string`. Return the parsed alist. Handle the case where the model returns text that isn't valid JSON by wrapping the parse in `handler-case` and falling back to the raw text.
+3. **Structured Data Extraction:** The `image-to-text` function returns free-form text. Write a function `extract-ticket-info` that takes an image path of a ticket or receipt, crafts a prompt that asks the model to return the data as a JSON object with specific keys (e.g., `"event"`, `"date"`, `"time"`, `"price"`, `"seat"`), calls `image-to-text` with that prompt, and then parses the returned JSON string with `litelm:json-decode`. Return the parsed alist. Handle the case where the model returns text that isn't valid JSON by wrapping the parse in `handler-case` and falling back to the raw text.
 
 4. **Image Diff Reporter:** The `image-to-text` function already supports multiple images. Write a function `visual-diff-report` that takes two image paths (e.g., a "before" and "after" screenshot), sends them both with a prompt like "Describe all visual differences between these two images in a numbered list", and returns the model's comparison. Then write a wrapper `visual-regression-test` that takes a directory of "expected" images and a directory of "actual" images, pairs them by filename, and generates a diff report for each pair. This simulates a visual regression testing pipeline.
 
-5. **Fetch and Describe URL Images:** The current `encode-image` function only reads local files. Write a function `encode-image-from-url` that uses `uiop:run-program` to call `curl` to download an image from a URL into a temporary file (via `uiop:with-temporary-file`), then base64-encodes it. Write a public wrapper `url-image-to-text` that accepts a URL string and a prompt, downloads the image, and passes it to the existing `call-ollama-vision` function. Test it with a publicly accessible image URL. Be sure to clean up the temporary file afterwards.
+5. **Fetch and Describe URL Images:** The current `encode-image` function only reads local files. Write a function `encode-image-from-url` that uses `uiop:run-program` to call `curl` to download an image from a URL into a temporary file (via `uiop:with-temporary-file`), then base64-encodes it. Write a public wrapper `url-image-to-text` that accepts a URL string and a prompt, downloads the image, and passes the local path to the existing `image-to-text` function. Test it with a publicly accessible image URL. Be sure to clean up the temporary file afterwards.
 
-6. **Conversational Image REPL:** The current API is single-shot — each call to `image-to-text` is independent. Write a function `image-chat` that loads one or more images, displays an initial description, then enters a REPL loop where the user can ask follow-up questions about the same images. Maintain a `chat-history` list of `(role . content)` pairs and modify `call-ollama-vision` (or write a variant) to send the full message history in the `messages` array rather than a single user message. This lets the model reference its previous answers when the user asks "What color is the text?" after an initial "Describe this image" turn.
+6. **Conversational Image REPL:** The current API is single-shot — each call to `image-to-text` is independent. Write a function `image-chat` that loads one or more images, displays an initial description, then enters a REPL loop where the user can ask follow-up questions about the same images. Maintain a `chat-history` list of `(role content)` messages in litelm's message format and modify `call-ollama-vision` (or write a variant) to pass that full list to `litelm:completion` rather than the single `:user` message it builds today. This lets the model reference its previous answers when the user asks "What color is the text?" after an initial "Describe this image" turn.

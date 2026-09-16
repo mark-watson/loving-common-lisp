@@ -8,9 +8,13 @@
 ;;;;
 ;;;; Environment:
 ;;;;   OLLAMA_MODEL — optional model override (default: qwen3.5:0.8b)
-;;;;   OLLAMA_HOST  — optional API host override (default: http://localhost:11434/api/chat)
+;;;;   OLLAMA_HOST  — optional OpenAI-compatible base URL override
+;;;;                  (default: http://localhost:11434/v1)
+;;;;
+;;;; Transport, JSON encoding/decoding, and error mapping are delegated to the
+;;;; litelm library (src/litelm), the same way the ollama package does it.
 
-(ql:quickload '(:cl-base64 :cl-json :uiop) :silent t)
+(ql:quickload '(:litelm :cl-base64 :uiop) :silent t)
 
 (defpackage #:describe-image
   (:use #:cl)
@@ -21,11 +25,11 @@
 
 (in-package #:describe-image)
 
-(defvar *model-name* "qwen3.5:0.8b"
+(defvar *model-name* (or (uiop:getenv "OLLAMA_MODEL") "qwen3.5:0.8b")
   "Default vision-capable model for image queries.")
 
-(defvar *ollama-host* "http://localhost:11434/api/chat"
-  "Ollama API endpoint for chat completions.")
+(defvar *ollama-host* (or (uiop:getenv "OLLAMA_HOST") "http://localhost:11434/v1")
+  "OpenAI-compatible Ollama API base URL; litelm appends /chat/completions.")
 
 (defun encode-image (image-path)
   "Read IMAGE-PATH file and return its contents as a base64-encoded string.
@@ -37,104 +41,45 @@
       (read-sequence bytes in)
       (cl-base64:usb8-array-to-base64-string bytes))))
 
-(defun lisp-to-json-string (data)
-  "Convert a Lisp nested association list to a JSON string.
-   Keyword keys become JSON object keys; :true/:false become JSON booleans;
-   lists of cons cells become JSON objects; plain lists become JSON arrays."
-  (with-output-to-string (s)
-    (labels ((alist-object-p (lst)
-               "Return T if LST is a non-empty alist whose every car is a keyword."
-               (and (consp lst)
-                    (every #'(lambda (elem)
-                               (and (consp elem)
-                                    (keywordp (car elem))))
-                           lst)))
-             (write-json-value (value)
-               (cond
-                 ((null value)   (write-string "null"  s))
-                 ((eq value :true)  (write-string "true"  s))
-                 ((eq value :false) (write-string "false" s))
-                 ((stringp value)
-                  (write-char #\" s)
-                  (loop for char across value
-                        do (case char
-                             (#\"      (write-string "\\\"" s))
-                             (#\\      (write-string "\\\\" s))
-                             (#\Newline (write-string "\\n"  s))
-                             (#\Return  (write-string "\\r"  s))
-                             (#\Tab     (write-string "\\t"  s))
-                             (t         (write-char char s))))
-                  (write-char #\" s))
-                 ((numberp value)
-                  (format s "~a" value))
-                 ((symbolp value)
-                  (write-json-value (string-downcase (symbol-name value))))
-                 ((listp value)
-                  (if (alist-object-p value)
-                      ;; Encode as JSON object
-                      (progn
-                        (write-char #\{ s)
-                        (loop for pair in value
-                              for i from 0
-                              when (> i 0) do (write-string ", " s)
-                              do (let ((key (car pair))
-                                       (val (cdr pair)))
-                                   (write-json-value (if (keywordp key)
-                                                         (string-downcase (symbol-name key))
-                                                         key))
-                                   (write-char #\: s)
-                                   (write-json-value val)))
-                        (write-char #\} s))
-                      ;; Encode as JSON array
-                      (progn
-                        (write-char #\[ s)
-                        (loop for elem in value
-                              for i from 0
-                              when (> i 0) do (write-string ", " s)
-                              do (write-json-value elem))
-                        (write-char #\] s))))
-                 (t (error "Unsupported JSON type: ~a" (type-of value))))))
-      (write-json-value data))))
+(defun image-media-type (image-path)
+  "Return the media type for IMAGE-PATH, derived from its file extension."
+  (let ((type (string-downcase (or (pathname-type image-path) ""))))
+    (cond ((member type '("jpg" "jpeg") :test #'string=) "image/jpeg")
+          ((string= type "gif")  "image/gif")
+          ((string= type "webp") "image/webp")
+          ((string= type "bmp")  "image/bmp")
+          (t "image/png"))))
 
-(defun parse-ollama-response (json-string)
-  "Parse the Ollama JSON response string.
-   Signals a descriptive error if the response is empty or contains an API error field.
-   Returns the message content string on success."
-  (when (or (null json-string) (string= json-string ""))
-    (error "Empty response from Ollama — is the server running at ~a?" *ollama-host*))
-  (let ((parsed (cl-json:decode-json-from-string json-string)))
-    ;; Propagate server-side error messages rather than swallowing them
-    (let ((err (cdr (assoc :error parsed))))
-      (when err
-        (error "Ollama API error: ~a" err)))
-    (let ((message (cdr (assoc :message parsed))))
-      (when message
-        (cdr (assoc :content message))))))
+(defun text-part (prompt)
+  "Build the OpenAI-compatible text content part for PROMPT."
+  (list (cons "type" "text")
+        (cons "text" prompt)))
 
-(defun call-ollama-vision (image-base64-list prompt &key (model *model-name*) (host *ollama-host*))
-  "Call the Ollama vision API with a list of base64-encoded images and PROMPT.
-   JSON is streamed directly to curl's stdin — no temp file, no shell injection.
-   curl stderr is captured and reported on failure.
-   Returns the response content string."
-  (let* ((message (list (cons :|role|   "user")
-                        (cons :|content| prompt)
-                        (cons :|images|  image-base64-list)))
-         (data    (list (cons :|model|    model)
-                        (cons :|stream|   :false)
-                        (cons :|messages| (list message))))
-         (json-data (lisp-to-json-string data)))
-    (multiple-value-bind (response-string stderr-string exit-code)
-        ;; Pass args as a list — uiop bypasses the shell, preventing injection
-        (uiop:run-program (list "curl" "-s" "-X" "POST" host
-                                "-H" "Content-Type: application/json"
-                                "--data-binary" "@-")
-                          :input        (make-string-input-stream json-data)
-                          :output       '(:string :stripped t)
-                          :error-output '(:string :stripped t)
-                          :ignore-error-status t)
-      (unless (zerop exit-code)
-        (error "curl failed (exit code ~a): ~a" exit-code stderr-string))
-      (parse-ollama-response response-string))))
+(defun image-part (image-path base64)
+  "Build the OpenAI-compatible image content part for one base64-encoded image.
+   IMAGE-PATH supplies the media type; BASE64 is the encoded image data."
+  (list (cons "type" "image_url")
+        (cons "image_url"
+              (list (cons "url"
+                          (concatenate 'string
+                                       "data:" (image-media-type image-path)
+                                       ";base64," base64))))))
+
+(defun ensure-model-name (model)
+  "Ensure MODEL has a provider prefix for litelm routing (defaults to ollama/)."
+  (if (find #\/ model)
+      model
+      (concatenate 'string "ollama/" model)))
+
+(defun call-ollama-vision (image-parts prompt &key (model *model-name*) (host *ollama-host*))
+  "Send IMAGE-PARTS (content parts built by IMAGE-PART) and PROMPT to Ollama.
+   litelm builds the request, performs the HTTP POST, and decodes the response.
+   Returns the model's text response string."
+  (let ((response (litelm:completion (ensure-model-name model)
+                                     :messages (list (list :user (cons (text-part prompt)
+                                                                       image-parts)))
+                                     :api-base host)))
+    (or (litelm:response-content response) "")))
 
 (defun image-to-text (image-paths prompt &key (model nil) (host nil))
   "Send one or more images to an Ollama vision model with PROMPT and return text.
@@ -153,10 +98,11 @@
     (dolist (p paths)
       (unless (probe-file p)
         (error "Image file not found: ~a" p)))
-    (let ((encoded-list (mapcar #'encode-image paths))
-          (use-model    (or model *model-name*))
-          (use-host     (or host  *ollama-host*)))
-      (call-ollama-vision encoded-list prompt :model use-model :host use-host))))
+    (let ((parts      (loop for p in paths
+                            collect (image-part p (encode-image p))))
+          (use-model  (or model *model-name*))
+          (use-host   (or host  *ollama-host*)))
+      (call-ollama-vision parts prompt :model use-model :host use-host))))
 
 (defun describe-image-simple (image-path)
   "Convenience wrapper — describe a single image using the default model and prompt.
