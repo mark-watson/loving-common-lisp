@@ -50,9 +50,10 @@
   "POST PAYLOAD (alist) as JSON to URL. Returns the decoded JSON alist."
   (let ((body (json-encode payload)))
     (handler-case
-        (json-decode (dex:post url :headers headers :content body))
+        (json-decode (dex:post url :headers headers :content body :read-timeout 120 :connect-timeout 60))
       (dex:http-request-failed (e)
         (%map-http-error (dex:response-status e) (dex:response-body e))))))
+
 
 ;;; ---- streaming ----
 
@@ -114,7 +115,9 @@ Tool calls are returned, not executed — execution is the caller's job."
                 (let ((http-stream
                         (dex:post url :headers headers
                                       :content (json-encode payload)
-                                      :want-stream t)))
+                                      :want-stream t
+                                      :read-timeout 120
+                                      :connect-timeout 60)))
                   (make-response :content (%handle-sse-stream http-stream on-chunk)
                                  :model model-name))
               (dex:http-request-failed (e)

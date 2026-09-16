@@ -1,7 +1,15 @@
 ;;;; package.lisp
 
 (defpackage #:ollama
-  (:use #:cl #:uiop #:cl-json)
-  (:export #:completions #:completions-with-tools #:summarize
+  (:use #:cl)
+  (:export #:completions
+           #:completions-with-tools
+           #:summarize
            #:answer-question
-           *model-name* *tool-model-name* *model-host*))
+           #:register-tool-function
+           #:cloud-search-agent
+           #:*model-name*
+           #:*tool-model-name*
+           #:*model-host*
+           #:*cloud-model-name*
+           #:*cloud-host*))

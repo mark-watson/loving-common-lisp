@@ -1,9 +1,9 @@
 (in-package #:ollama)
 
 ;;; Ollama completions with tool/function calling support
-;;; Uses shared utilities from ollama-helper.lisp
+;;; Uses litelm for model routing, message handling, and tool schemas.
 
-(defvar *tool-model-name* "qwen3:1.7b")
+(defvar *tool-model-name* "qwen3-vl:2b")
 
 (defvar *available-functions* (make-hash-table :test 'equal))
 
@@ -15,34 +15,42 @@
 
 (defun register-tool-function (name description parameters handler)
   "Register a function that can be called by the LLM via tool calling.
-   HANDLER is a Common Lisp function that takes a plist of arguments."
-  (setf (gethash name *available-functions*)
-        (make-ollama-function
-         :name name
-         :description description
-         :parameters parameters
-         :handler handler)))
+   NAME is a string or symbol.
+   PARAMETERS is a list of parameters in litelm format:
+     ((param-name param-type param-description &key required enum) ...)
+   HANDLER is a Common Lisp function that takes an alist of arguments."
+  (let ((tool-name (string-downcase (string name))))
+    (setf (gethash tool-name *available-functions*)
+          (make-ollama-function
+           :name tool-name
+           :description description
+           :parameters parameters
+           :handler handler))))
 
 (defun infer-function-name-from-args (args)
   "Infer the function name based on argument keys
    (workaround for models that return empty name)."
-  (let ((arg-keys (mapcar #'car args)))
+  (let ((arg-keys (mapcar (lambda (pair)
+                            (string-downcase (string (car pair))))
+                          args)))
     (cond
-      ((member :location arg-keys) "get_weather")
-      ((member :expression arg-keys) "calculate")
+      ((member "location" arg-keys :test #'string=) "get_weather")
+      ((member "expression" arg-keys :test #'string=) "calculate")
       (t nil))))
 
 (defun handle-tool-function-call (function-call)
   "Handle a function call returned from the LLM
    by invoking the registered handler."
   (format t "~%DEBUG handle-tool-function-call: ~a~%" function-call)
-  (let* ((raw-name (cdr (assoc :name function-call)))
-         (args (cdr (assoc :arguments function-call)))
+  (let* ((raw-name (or (getf function-call :name)
+                       (cdr (assoc :name function-call))))
+         (args (or (getf function-call :arguments)
+                   (cdr (assoc :arguments function-call))))
          ;; If name is empty, try to infer from arguments
          (name (if (or (null raw-name) (string= raw-name ""))
                    (infer-function-name-from-args args)
                    raw-name))
-         (func (gethash name *available-functions*)))
+         (func (gethash (string-downcase (string name)) *available-functions*)))
     (format t "DEBUG raw-name=~a inferred-name=~a args=~a func=~a~%"
             raw-name name args func)
     (if func
@@ -53,58 +61,50 @@
                       "No handler for function ~a, args: ~a" name args)))
         (error "Unknown function: ~a" name))))
 
+(defun %convert-to-litelm-tools (functions)
+  "Convert registered tool names into litelm tool definitions:
+   ((name description ((param-name param-type param-desc ...) ...)) ...)"
+  (mapcar (lambda (f)
+            (let* ((name-str (string-downcase (string f)))
+                   (func (gethash name-str *available-functions*)))
+              (unless func
+                (error "Unknown tool function: ~a" f))
+              (list (ollama-function-name func)
+                    (ollama-function-description func)
+                    (ollama-function-parameters func))))
+          functions))
+
 (defun completions-with-tools (starter-text &optional functions)
   "Completion with function/tool calling support.
    STARTER-TEXT is the prompt to send to the LLM.
-   FUNCTIONS is an optional list of registered function names
-   to make available."
-  (let* ((function-defs
-           (when functions
-             (mapcar
-              (lambda (f)
-                (let ((func (gethash f *available-functions*)))
-                  (list
-                   (cons :|name| (ollama-function-name func))
-                   (cons :|description|
-                         (ollama-function-description func))
-                   (cons :|parameters|
-                         (ollama-function-parameters func)))))
-              functions)))
-         (message (list (cons :|role| "user")
-                        (cons :|content| starter-text)))
-         (base-data (list (cons :|model| *tool-model-name*)
-                          (cons :|stream| nil)
-                          (cons :|messages| (list message))))
-         (data (if function-defs
-                   (append base-data
-                           (list (cons :|tools| function-defs)))
-                   base-data))
-         (json-data (lisp-to-json-string data))
-         ;; Hack: cl-json encodes nil as null, but we need false
-         (fixed-json-data
-           (substitute-subseq json-data ":null" ":false"
-                              :test #'string=))
-         (curl-command
-           (format nil "curl ~a -d ~s"
-                   ollama::*model-host*
-                   fixed-json-data)))
-    (multiple-value-bind (content function-call)
-        (ollama-helper curl-command)
-      (if function-call
-          (handle-tool-function-call (car function-call))
-          (or content "No response content")))))
+   FUNCTIONS is an optional list of registered function names to make available."
+  (let* ((full-model (ensure-model-name *tool-model-name*))
+         (tool-defs (when functions
+                      (%convert-to-litelm-tools functions)))
+         (resp (litelm:completion full-model
+                                  :messages starter-text
+                                  :tools tool-defs
+                                  :api-base *model-host*)))
+    (format t "Raw response: ~s~%" (litelm:response-raw resp))
+    (let ((tool-calls (litelm:response-tool-calls resp)))
+      (if tool-calls
+          (handle-tool-function-call (first tool-calls))
+          (or (litelm:response-content resp) "No response content")))))
 
 ;; Define handler functions
 
 (defun get_weather (args)
   "Handler for get_weather tool. ARGS is an alist with :location key."
   (format t "get_weather called with args: ~a~%" args)
-  (let ((location (cdr (assoc :location args))))
+  (let ((location (or (cdr (assoc :location args :test #'string-equal))
+                      (cdr (assoc "location" args :test #'string-equal)))))
     (format nil "Weather in ~a: Sunny, 72°F" (or location "Unknown"))))
 
 (defun calculate (args)
   "Handler for calculate tool. ARGS is an alist with :expression key."
-  (let ((expression (cdr (assoc :expression args))))
+  (format t "calculate called with args: ~a~%" args)
+  (let ((expression (or (cdr (assoc :expression args :test #'string-equal))
+                        (cdr (assoc "expression" args :test #'string-equal)))))
     (if expression
         (handler-case
             (format nil "Result: ~a"
@@ -116,27 +116,11 @@
 (register-tool-function
  "get_weather"
  "Get current weather for a location"
- (list (cons :|type| "object")
-       (cons :|properties|
-             (list (cons :|location|
-                         (list (cons :|type| "string")
-                               (cons :|description|
-                                     "The city name")))))
-       (cons :|required| '("location")))
+ '((location "string" "The city name"))
  #'get_weather)
 
 (register-tool-function
  "calculate"
  "Perform a mathematical calculation"
- (list (cons :|type| "object")
-       (cons :|properties|
-             (list (cons :|expression|
-                         (list (cons :|type| "string")
-                               (cons :|description|
-                                     "Math expression like 2 + 2")))))
-       (cons :|required| '("expression")))
+ '((expression "string" "Math expression like 2 + 2"))
  #'calculate)
-
-;; (ollama::completions-with-tools
-;;   "Use the get_weather tool for: What's the weather like in NY?"
-;;   '("get_weather" "calculate"))

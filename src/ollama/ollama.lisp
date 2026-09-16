@@ -3,26 +3,16 @@
 ;;; Basic Ollama completions without tool calling support
 ;;; For tool calling, see ollama-tools.lisp
 
-(defvar *model-name* "mistral:v0.3")
+(defvar *model-name* "qwen3-vl:2b")
 
-(defun completions (starter-text)
+(defun completions (starter-text &key (model *model-name*))
   "Simple completion without function/tool calling support."
-  (let* ((message (list (cons :|role| "user")
-                        (cons :|content| starter-text)))
-         (data (list (cons :|model| *model-name*)
-                     (cons :|stream| nil)
-                     (cons :|messages| (list message))))
-         (json-data (lisp-to-json-string data))
-         ;; Hack: cl-json encodes nil as null, but we need false for stream
-         (fixed-json-data (substitute-subseq json-data ":null" ":false" :test #'string=))
-         (curl-command
-          (format nil "curl ~a -d ~s"
-                  ollama::*model-host*
-                  fixed-json-data)))
-    (multiple-value-bind (content function-call)
-        (ollama-helper curl-command)
-      (declare (ignore function-call))
-      (or content "No response content"))))
+  (let* ((full-model (ensure-model-name model))
+         (resp (litelm:completion full-model
+                                  :messages starter-text
+                                  :api-base *model-host*)))
+    (format t "Raw response: ~s~%" (litelm:response-raw resp))
+    (or (litelm:response-content resp) "No response content")))
 
 ;;(ollama:completions "Complete the following text: The President went to")
 
@@ -34,3 +24,4 @@
   (completions (concatenate 'string "
 Q: " some-text "
 A:")))
+

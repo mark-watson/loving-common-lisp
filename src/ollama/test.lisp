@@ -15,5 +15,6 @@
 (format t "~%=== Answer Question Example ===~%")
 (format t "~a~%" (ollama:answer-question "What is the capital of France?"))
 
-(format t "~%=== Answer Question Example ===~%")
-(format t "~a~%" (ollama::completions "Use function calling for: What's the weather like in New York?" '("get_weather" "calculate")))
+(format t "~%=== Tool Calling Example ===~%")
+(format t "~a~%" (ollama:completions-with-tools "Use the get_weather tool for: What's the weather like in New York?" '("get_weather" "calculate")))
+
