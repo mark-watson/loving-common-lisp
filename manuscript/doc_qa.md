@@ -1,10 +1,10 @@
-# Using a Local Document Embeddings Vector Database With OpenAI GPT-5 APIs for Semantically Querying Your Own Data
+# Using a Local Document Embeddings Vector Database for Semantically Querying Your Own Data
 
 This project is inspired by the Python LangChain and LlamaIndex projects, with just the parts I need for my projects written from scratch in Common Lisp. I wrote a Python book "LangChain and LlamaIndex Projects Lab Book: Hooking Large Language Models Up to the Real World Using GPT-3, ChatGPT, and Hugging Face Models in Applications" in March 2023: [https://leanpub.com/langchain](https://leanpub.com/langchain) that you might also be interested in.
 
-The GitHub repository for this example can be found here: [https://github.com/mark-watson/docs-qa](https://github.com/mark-watson/docs-qa). This code uses the **litelm** LLM routing library (in **loving-common-lisp/src/litelm**) to reach the OpenAI APIs for both embeddings and question answering.
+The example code is found in **src/docs-qa**. This code uses the **litelm** LLM routing library (in **loving-common-lisp/src/litelm**) to reach OpenAI for the document and query embeddings and to reach a local Ollama model for answer generation.
 
-The program we build here is a simple Retrieval Augmented Generation (RAG) system that uses SQLite as a vector data store and the OpenAI APIs for creating embeddings and generating text. The techniques are applicable to other vector data stores and other LLM APIs. In the next chapter we will discuss ways to improve performance and other factors related to scaling this type of application. The primary goal of this chapter is to show how to start building such an application in Common Lisp.
+The program we build here is a simple Retrieval Augmented Generation (RAG) system that uses SQLite as a vector data store, the OpenAI API for creating embeddings, and a local Ollama model for generating text. The techniques are applicable to other vector data stores and other LLM APIs. In the next chapter we will discuss ways to improve performance and other factors related to scaling this type of application. The primary goal of this chapter is to show how to start building such an application in Common Lisp.
 
 ## Overview of Local Embeddings Vector Database to Enhance the Use of GPT3 APIs With Local Documents
 
@@ -12,7 +12,7 @@ In this example we will use the SqLite database to store the text from documents
 
 For long documents, we extract the text and create multiple chunks of text. Each chunk is stored as a row in a SqLite database table. This is an easy way to implement a vector datastore. There are many open source and commercial vector data stores if you reach performance limits with the simple techniques we use here.
 
-For each text chunk we call an OpenAI API to get an embedding vector. Later when we want to have a GPT enabled conversation or just semantically query our local documents, we take the user's query and call an OpenAI API to get an embedding vector for the query text. We then compute the vector dot product between the query embedding vector and each chunk embedding vector. We save the text of the chunks that are semantically similar to the query embedding vector and use this text as "context text" that we pass to an OpenAI Large Language Model (LLM) API along with the user's original query text.
+For each text chunk we call an OpenAI API to get an embedding vector. Later when we want to have a GPT enabled conversation or just semantically query our local documents, we take the user's query and call an OpenAI API to get an embedding vector for the query text. We then compute the vector dot product between the query embedding vector and each chunk embedding vector. We save the text of the chunks that are semantically similar to the query embedding vector and use this text as "context text" that we pass to a chat model -- by default a local Ollama model -- along with the user's original query text.
 
 What does this process really do? Normally when you query ChatGPT or similar LLMs, we are querying against knowledge gained from all the original model training text. This process can lead to so-called "model hallucinations" where the model "makes stuff up." The advantage to the using the Python libraries LangChain and LlamaIndex is that a LLM is effectively using all original training data but is also primed with hopefully relevant context text from your local documents that might be useful for answering the user's query. We will replicate a small amount of this functionality in Common Lisp.
 
@@ -21,11 +21,11 @@ At the end of this chapter we will extend our code for single queries with a con
 
 ## Implementing a Local Vector Database for Document Embeddings
 
-In the following listing of the file **docs-qa.lisp** we start with a few string utility functions we will need: **write-floats-to-string**, **read-file**, **join-strings**, **truncate-string**, and **break-into-chunks**.
+In the following listing of the file **docs-qa.lisp** we start with the two model variables and the two functions that reach a model through **litelm**: **embeddings** calls `litelm:embedding` for the document and query vectors, and **answer-question** calls `litelm:completion`. Because the provider prefix is part of the model string, both calls route through litelm without any provider-specific client code. After those come a few string utility functions we will need: **write-floats-to-string** (which stores an embedding vector as JSON text using `litelm:json-encode`), **read-file**, **join-strings**, and **break-into-chunks**.
 
 The function **break-into-chunks** is a work in progress. For now we simply cut long input texts into specific chunk lengths, often cutting words in half. A future improvement will be detecting sentence boundaries and breaking text on sentences. The Python libraries LangChain and LlamaIndex have multiple chunking strategies.
 
-In lines 33-37 function **decode-row** takes data from a SQL query to fetch a database table row and extracts the original chunk text and the embedding vector. Because of the overhead of making many calls to the OpenAI APIs the time spent running the local Common Lisp example code is very small so I have not yet worked on making my code efficient.
+The function **decode-row** takes data from a SQL query to fetch a database table row and extracts the original chunk text and the embedding vector, the latter read back with `litelm:json-decode`. Because of the overhead of making many calls to the OpenAI APIs the time spent running the local Common Lisp example code is very small so I have not yet worked on making my code efficient.
 
 
 ```lisp
@@ -37,8 +37,14 @@ In lines 33-37 function **decode-row** takes data from a SQL query to fetch a da
 (defvar *embedding-model* "openai/text-embedding-3-small"
   "Embedding model used for document and query vectors (1536 dimensions).")
 
-(defvar *completion-model* "openai/gpt-5-mini"
-  "OpenAI chat model used to answer questions over retrieved context.")
+(defvar *completion-model* "ollama/qwen3.5:4b"
+  "Chat model used to answer questions over retrieved context. This default runs
+   locally through Ollama; change the provider prefix to route elsewhere via litelm.")
+
+(defvar *answering-instruction*
+  "Concisely answer the question, using the provided context when it is relevant."
+  "System message sent with each question. litelm delivers this as a separate
+   :system message rather than pasting it onto the user's text.")
 
 (defun embeddings (text)
   "Return the embedding vector for TEXT as a list of floats, via litelm."
@@ -53,17 +59,17 @@ In lines 33-37 function **decode-row** takes data from a SQL query to fetch a da
     sum))
 
 (defun answer-question (question)
-  "Answer QUESTION with the OpenAI chat model, via litelm."
+  "Answer QUESTION with the completion model, via litelm.
+   QUESTION already carries the retrieved context; the answering instruction is
+   sent as a litelm :system message so the model sees the roles separately."
   (litelm:response-content
    (litelm:completion *completion-model*
-                      :messages (concatenate 'string "Concisely answer the question: " question))))
+                      :messages (list (list :system *answering-instruction*)
+                                      (list :user question)))))
 
 (defun write-floats-to-string (lst)
-  (with-output-to-string (out)
-    (format out "( ")
-    (loop for i in lst
-          do (format out "~f " i))
-    (format out " )")))
+  "Serialize the embedding vector LST as JSON text for storage, via litelm."
+  (litelm:json-encode lst))
 
 (defun read-file (infile) ;; from Bing+ChatGPT
   (with-open-file (instream infile
@@ -79,9 +85,6 @@ In lines 33-37 function **decode-row** takes data from a SQL query to fetch a da
     (reduce (lambda (a b) (concatenate 'string a separator b)) list)
     " "))
 
-(defun truncate-string (string length)
-  (subseq string 0 (min length (length string))))
-
 (defun break-into-chunks (text chunk-size)
   "Breaks TEXT into chunks of size CHUNK-SIZE."
   (loop for start from 0 below (length text) by chunk-size
@@ -90,7 +93,7 @@ In lines 33-37 function **decode-row** takes data from a SQL query to fetch a da
 (defun decode-row (row)
   (let ((id (nth 0 row))
         (context (nth 1 row))
-        (embedding (read-from-string (nth 2 row))))
+        (embedding (litelm:json-decode (nth 2 row))))
     (list id context embedding)))
 ```
 
@@ -116,7 +119,7 @@ The next listing shows of parts of **docs-qa.lisp** that contain code to use SqL
       (execute-non-query
        *db*
        "CREATE INDEX idx_documents_embedding ON documents (embedding);"))
- (error (c)
+ (error ()
    (print "Database and indices is already created")))
 
 (defun insert-document (document_path content embedding)

@@ -9,8 +9,14 @@
 (defvar *embedding-model* "openai/text-embedding-3-small"
   "Embedding model used for document and query vectors (1536 dimensions).")
 
-(defvar *completion-model* "openai/gpt-5-mini"
-  "OpenAI chat model used to answer questions over retrieved context.")
+(defvar *completion-model* "ollama/qwen3.5:4b"
+  "Chat model used to answer questions over retrieved context. This default runs
+   locally through Ollama; change the provider prefix to route elsewhere via litelm.")
+
+(defvar *answering-instruction*
+  "Concisely answer the question, using the provided context when it is relevant."
+  "System message sent with each question. litelm delivers this as a separate
+   :system message rather than pasting it onto the user's text.")
 
 (defun embeddings (text)
   "Return the embedding vector for TEXT as a list of floats, via litelm."
@@ -25,17 +31,17 @@
     sum))
 
 (defun answer-question (question)
-  "Answer QUESTION with the OpenAI chat model, via litelm."
+  "Answer QUESTION with the completion model, via litelm.
+   QUESTION already carries the retrieved context; the answering instruction is
+   sent as a litelm :system message so the model sees the roles separately."
   (litelm:response-content
    (litelm:completion *completion-model*
-                      :messages (concatenate 'string "Concisely answer the question: " question))))
+                      :messages (list (list :system *answering-instruction*)
+                                      (list :user question)))))
 
 (defun write-floats-to-string (lst)
-  (with-output-to-string (out)
-    (format out "( ")
-    (loop for i in lst
-          do (format out "~f " i))
-    (format out " )")))
+  "Serialize the embedding vector LST as JSON text for storage, via litelm."
+  (litelm:json-encode lst))
 
 (defun read-file (infile) ;; from Bing+ChatGPT
   (with-open-file (instream infile
@@ -51,16 +57,6 @@
     (reduce (lambda (a b) (concatenate 'string a separator b)) list)
     " "))
 
-(defun truncate-string (string length)
-  (subseq string 0 (min length (length string))))
-
-(defun interleave (list1 list2)
-  (if (or (null list1) (null list2))
-      (append list1 list2)
-      (cons (car list1)
-            (cons (car list2)
-                  (interleave (cdr list1) (cdr list2))))))
-
 (defun break-into-chunks (text chunk-size)
   "Breaks TEXT into chunks of size CHUNK-SIZE."
   (loop for start from 0 below (length text) by chunk-size
@@ -69,7 +65,7 @@
 (defun decode-row (row)
   (let ((id (nth 0 row))
         (context (nth 1 row))
-        (embedding (read-from-string (nth 2 row))))
+        (embedding (litelm:json-decode (nth 2 row))))
     (list id context embedding)))
 
 (defvar *db* (connect ":memory:"))
@@ -84,7 +80,7 @@
       (execute-non-query *db* "CREATE INDEX idx_documents_id ON documents (document_path);")
       (execute-non-query *db* "CREATE INDEX idx_documents_content ON documents (content);")
       (execute-non-query *db* "CREATE INDEX idx_documents_embedding ON documents (embedding);"))
- (error (c)
+ (error ()
    (print "Database and indices is already created")))
 
 (defun insert-document (document_path content embedding)

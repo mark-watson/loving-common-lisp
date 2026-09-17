@@ -43,8 +43,12 @@
 (defun %write-json-float (f out)
   (if (and (<= -1.0d15 f 1.0d15) (= f (truncate f)))
       (format out "~D.0" (truncate f))
-      ;; ~G prints the shortest round-trip representation (Burger-Dybvig)
-      (let ((s (string-right-trim " " (format nil "~G" f))))
+      ;; ~G prints the shortest round-trip representation (Burger-Dybvig), but
+      ;; for a double-float it uses a "d" exponent marker (e.g. 1.0d-5), which
+      ;; is not valid JSON. JSON requires "e"/"E", so rewrite the marker.
+      (let ((s (substitute #\e #\D
+                           (substitute #\e #\d
+                                       (string-right-trim " " (format nil "~G" f))))))
         (write-string s out)
         (when (char= (char s (1- (length s))) #\.)
           (write-char #\0 out)))))

@@ -1,4 +1,4 @@
-# Common Lisp library for Documents Question Answering Using OpenAI GPT-5 APIs and a Local Embeddings Vector Database
+# Common Lisp library for Documents Question Answering Using a Local Embeddings Vector Database
 
 **Book Chapter:** [Using a Local Document Embeddings Vector Database With OpenAI GPT-5 APIs](https://leanpub.com/read/lovinglisp/using-a-local-document-embeddings-vector-database-with-openai-gpt-5-apis) — *Loving Common Lisp* (free to read online).
 
@@ -17,15 +17,19 @@ to get all of the library examples from my book.
 
 Note: this library is under construction, but the code as-is works and will hopefully be useful.
 
-## Require's my openai library
+## LLM access: litelm, not a separate OpenAI client
 
-You need to Quicklisp install:
-
-    https://github.com/mark-watson/openai
+All model calls go through the **litelm** routing library (in this repository at
+**loving-common-lisp/src/litelm**). There is no separate OpenAI client library to
+install.
 
 ## setting your OpenAI API key
- 
- Define the  "OPENAI_KEY" environment variable with the value of your OpenAI API key
+
+ Define the `OPENAI_KEY` or `OPENAI_API_KEY` environment variable with the value of
+ your OpenAI API key. litelm reads either one for the `openai/` provider. Because the
+ provider prefix is part of the model string, the same code can be pointed at another
+ OpenAI-compatible backend (Gemini, Fireworks AI, or a local Ollama server) by changing
+ only `*embedding-model*` and `*completion-model*`.
  
 ## Example:
 
