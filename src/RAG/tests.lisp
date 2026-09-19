@@ -270,7 +270,7 @@ only one
                   (lambda ()
                     (incf attempts)
                     (if (< attempts 3)
-                        (error 'dex:http-request-failed
+                        (error 'litelm:api-error
                                :status 503 :body "down")
                         :success))))
     (check-equal 3 attempts)
@@ -279,7 +279,7 @@ only one
     (check-error (rag::call-with-retries
                   (lambda ()
                     (incf attempts)
-                    (error 'dex:http-request-failed
+                    (error 'litelm:api-error
                            :status 400 :body "bad"))))
     (check-equal 1 attempts)
     ;; 429 is transient
@@ -289,7 +289,7 @@ only one
                   (lambda ()
                     (incf attempts)
                     (if (= attempts 1)
-                        (error 'dex:http-request-failed
+                        (error 'litelm:rate-limit-error
                                :status 429 :body "slow")
                         :ok))))
     (check-equal 2 attempts)
@@ -308,7 +308,7 @@ only one
     (check-error (rag::call-with-retries
                   (lambda ()
                     (incf attempts)
-                    (error 'dex:http-request-failed
+                    (error 'litelm:api-error
                            :status 503 :body "down"))
                   :attempts 2))
     (check-equal 2 attempts)
@@ -509,7 +509,7 @@ MISSING: NONE")
               (declare (ignore prompt model))
               (incf attempts)
               (if (= attempts 1)
-                  (error 'dex:http-request-failed
+                  (error 'litelm:api-error
                          :status 500 :body "oops")
                   "recovered text"))))
       (check-equal "recovered text" (rag::rag-generate "p")))))

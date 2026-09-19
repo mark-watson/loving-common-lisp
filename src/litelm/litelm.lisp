@@ -135,15 +135,19 @@ Tool calls are returned, not executed — execution is the caller's job."
              :usage (parse-usage (aget json "usage"))
              :raw json))))))
 
-(defun embedding (model input &key api-key api-base)
+(defun embedding (model input &key api-key api-base dimensions)
   "Compute embeddings for INPUT (a string or list of strings) using MODEL,
-a \"provider/model-name\" string. Returns a list of float lists."
+a \"provider/model-name\" string. Returns a list of float lists.
+DIMENSIONS, when non-nil, asks the provider to return vectors of that
+width (the OpenAI-compatible \"dimensions\" parameter)."
   (multiple-value-bind (provider model-name) (parse-model model)
     (let* ((key (provider-api-key provider api-key))
            (headers (provider-headers key))
            (url (provider-url provider "/embeddings" api-base))
            (payload `(("model" . ,model-name)
-                      ("input" . ,(if (stringp input) (list input) input))))
+                      ("input" . ,(if (stringp input) (list input) input))
+                      ,@(when dimensions
+                          `(("dimensions" . ,dimensions)))))
            (json (%post url headers payload)))
       (loop for item in (aget json "data")
             collect (aget item "embedding")))))

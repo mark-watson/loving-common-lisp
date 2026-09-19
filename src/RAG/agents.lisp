@@ -13,41 +13,27 @@
 
 (in-package #:rag)
 
-(defparameter *rag-model* "gemini-3-flash-preview"
-  "Gemini model used for all agent LLM calls. Override per call with
-    the :model keyword argument to agentic-rag.")
+(defparameter *rag-model* "gemini/gemini-3-flash-preview"
+  "Model used for all agent LLM calls, as a litelm \"provider/model\"
+    string. Override per call with the :model keyword argument to
+    agentic-rag.")
 
-;;; ---- Gemini generate (previously gemini:generate from the llm library) ----
+;;; ---- Text generation via litelm ----
 
-(defvar *rag-interactions-api-url*
-  "https://generativelanguage.googleapis.com/v1beta/interactions")
-
-(defun %extract-text-from-steps (decoded-response)
-  "Extract the text from the last model_output step in an Interactions API response."
-  (let ((steps (cdr (assoc :STEPS decoded-response))))
-    (loop for step in (reverse steps)
-          when (string-equal (cdr (assoc :TYPE step)) "model_output")
-          return (let* ((content (cdr (assoc :CONTENT step)))
-                        (first-content (first content)))
-                   (cdr (assoc :TEXT first-content))))))
-
-(defun %gemini-generate (prompt model)
-  "Call the Gemini Interactions API with PROMPT and return the generated text."
-  (let ((payload (make-hash-table :test 'equal)))
-    (setf (gethash "model" payload) model
-          (gethash "input" payload) prompt)
-    (let* ((headers (list '("Content-Type" . "application/json")
-                          (cons "x-goog-api-key" (uiop:getenv "GOOGLE_API_KEY"))
-                          '("Api-Revision" . "2026-05-20")))
-           (response-string (%post-json *rag-interactions-api-url* headers payload))
-           (decoded-response (cl-json:decode-json-from-string response-string)))
-      (%extract-text-from-steps decoded-response))))
+(defun %generate (prompt model)
+  "Generate text for PROMPT with MODEL through litelm. litelm routes the
+    model string to the provider's OpenAI-compatible chat endpoint, sends
+    the JSON, and decodes the reply; we return its text content."
+  (litelm:response-content
+   (litelm:completion model
+                      :messages prompt
+                      :api-base *api-base*)))
 
 (defparameter *generate-fn*
   (lambda (prompt &key (model *rag-model*))
-    (%gemini-generate prompt model))
+    (%generate prompt model))
   "Function of (prompt &key model) returning generated text. Defaults
-    to a thin wrapper around %gemini-generate.
+    to a thin wrapper around %GENERATE, which calls litelm.
     Rebind this in tests to run the pipeline without network access.")
 
 (defun rag-generate (prompt &key (model *rag-model*))

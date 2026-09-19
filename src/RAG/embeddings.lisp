@@ -1,20 +1,15 @@
-;;; embeddings.lisp — Gemini embedding integration
+;;; embeddings.lisp — Embedding integration via litelm
 ;;; Copyright (C) 2026 Mark Watson <markw@markwatson.com>
 ;;; Apache 2 License
 
 (in-package #:rag)
 
-;;; Uses the Gemini gemini-embedding-001 model for computing document
-;;; and query embeddings (text-embedding-004 was retired from the
-;;; v1beta API). This model is inexpensive and available on the free tier.
-;;; The API key is sent in the x-goog-api-key header, never in the URL.
-
-;;; ---- Local HTTP helper ----
-
-(defun %post-json (url headers payload-hash)
-  "POST PAYLOAD-HASH as JSON to URL using Dexador and return the response body."
-  (let ((payload-json (cl-json:encode-json-to-string payload-hash)))
-    (dex:post url :headers headers :content payload-json)))
+;;; Embeddings are computed through the litelm routing library: the
+;;; "gemini/gemini-embedding-001" model string routes to Google's
+;;; OpenAI-compatible /embeddings endpoint, and litelm handles the JSON and
+;;; HTTP details -- including mapping HTTP failures onto its condition
+;;; hierarchy (litelm:rate-limit-error, litelm:api-error, ...).
+;;; The API key comes from GEMINI_API_KEY or GOOGLE_API_KEY.
 
 ;;; ---- Verbosity control (loaded first; used by all other files) ----
 
@@ -30,13 +25,13 @@
 ;;; ---- Retry helper ----
 
 (defun %transient-p (condition)
-  "True when CONDITION is worth retrying: HTTP 429/5xx, or a
-    connection-level failure (usocket). Permanent 4xx client errors
-    (bad request, bad API key, wrong model name) signal immediately."
+  "True when CONDITION is worth retrying: HTTP 429/5xx (which litelm
+    reports as rate-limit-error / api-error), or a connection-level
+    failure (usocket). Permanent 4xx client errors (bad request, bad API
+    key, wrong model name) signal immediately."
   (typecase condition
-    (dex:http-request-failed
-     (let ((status (dex:response-status condition)))
-       (or (= status 429) (>= status 500))))
+    (litelm:rate-limit-error t)                     ; HTTP 429
+    (litelm:api-error (>= (litelm:api-error-status condition) 500))
     (usocket:socket-error t)
     (usocket:ns-error t)
     (t nil)))
@@ -67,32 +62,26 @@
 
 ;;; ---- Configuration ----
 
-(defparameter *embedding-model* "gemini-embedding-001"
-  "Gemini embedding model name. If you change this you must re-embed
-    existing corpora: saved corpus files hold vectors from the old
-    model/dimension and search signals a dimension mismatch.")
+(defparameter *embedding-model* "gemini/gemini-embedding-001"
+  "Embedding model as a litelm \"provider/model\" string. If you change
+    this you must re-embed existing corpora: saved corpus files hold
+    vectors from the old model/dimension and search signals a dimension
+    mismatch.")
 
 (defparameter *embedding-dimension* nil
   "Output embedding dimension, or NIL for the model default (3072 for
-    gemini-embedding-001). The API accepts 768, 1536, or 3072 for this
+    gemini-embedding-001). Providers accept 768, 1536, or 3072 for this
     model; 768 saves 4x memory and search time with little quality
-    loss. Set before building or loading a corpus.")
+    loss. Set before building or loading a corpus. Passed to litelm as
+    the OpenAI-compatible \"dimensions\" parameter.")
 
 (defparameter *embedding-batch-limit* 100
-  "Maximum texts per batchEmbedContents request; the API rejects more.")
+  "Maximum texts per embeddings request; the API rejects more.")
 
-(defparameter *embedding-api-url*
-  "https://generativelanguage.googleapis.com/v1beta/models/")
-
-(defun get-google-api-key ()
-  (or (uiop:getenv "GOOGLE_API_KEY")
-      (error "GOOGLE_API_KEY environment variable is not set")))
-
-(defun %api-headers ()
-  "Headers for every embedding API call: the key travels in the
-    x-goog-api-key header, not the URL."
-  (list '("Content-Type" . "application/json")
-        (cons "x-goog-api-key" (get-google-api-key))))
+(defparameter *api-base* nil
+  "Optional override for the provider's base URL, passed straight to
+    litelm. NIL uses the provider default. Useful for a proxy or a
+    local test server.")
 
 ;;; ---- Embedding cache ----
 
@@ -123,94 +112,40 @@
 
 ;;; ---- Low-level API calls (with error checking and retries) ----
 
-(defun %make-embedding-request (text)
-  "Build one EmbedContentRequest hash table for TEXT."
-  (let ((request (make-hash-table :test 'equal))
-        (content-ht (make-hash-table :test 'equal))
-        (part-ht (make-hash-table :test 'equal)))
-    (setf (gethash "text" part-ht) text
-          (gethash "parts" content-ht) (list part-ht)
-          (gethash "content" request) content-ht
-          (gethash "model" request)
-          (concatenate 'string "models/" *embedding-model*))
-    ;; gemini-embedding-001 honors the deprecated top-level
-    ;; outputDimensionality field; newer models honor embedContentConfig.
-    ;; Send both so either model works.
-    (when *embedding-dimension*
-      (setf (gethash "outputDimensionality" request) *embedding-dimension*
-            (gethash "embedContentConfig" request)
-            (let ((cfg (make-hash-table :test 'equal)))
-              (setf (gethash "outputDimensionality" cfg)
-                    *embedding-dimension*)
-              cfg)))
-    request))
-
-(defun %decode-embedding-response (response-string)
-  "Decode an embedContent response, checking for API errors."
-  (let* ((decoded (cl-json:decode-json-from-string response-string))
-         (error-obj (cdr (assoc :ERROR decoded))))
-    (when error-obj
-      (error "Gemini embedding API error: ~A" response-string))
-    (let* ((embedding-obj (cdr (assoc :EMBEDDING decoded)))
-           (values-list (cdr (assoc :VALUES embedding-obj))))
-      (unless values-list
-        (error "Gemini embedding response contained no embedding vector: ~A"
-               response-string))
-      values-list)))
+(defun %check-embedding-vectors (vectors expected)
+  "Coerce VECTORS (the list of vectors litelm returned) into simple-vectors,
+    checking that the provider returned one non-empty vector per input text."
+  (unless (= (length vectors) expected)
+    (error "Embedding request returned ~A vectors for ~A texts"
+           (length vectors) expected))
+  (mapcar (lambda (vector)
+            (unless (and (consp vector) (every #'numberp vector))
+              (error "Embedding response contained no vector values: ~S"
+                     vector))
+            (coerce vector 'simple-vector))
+          vectors))
 
 (defun %fetch-embedding (text)
-  "Compute an embedding vector for TEXT via the embedContent endpoint.
-    Returns a simple-vector of floats. Retries transient failures."
-  (let* ((api-url (concatenate 'string
-                               *embedding-api-url*
-                               *embedding-model*
-                               ":embedContent"))
-         (payload (make-hash-table :test 'equal)))
-    (setf (gethash "content" payload)
-          (gethash "content" (%make-embedding-request text))
-          (gethash "model" payload)
-          (concatenate 'string "models/" *embedding-model*))
-    (when *embedding-dimension*
-      (setf (gethash "outputDimensionality" payload) *embedding-dimension*
-            (gethash "embedContentConfig" payload)
-            (let ((cfg (make-hash-table :test 'equal)))
-              (setf (gethash "outputDimensionality" cfg)
-                    *embedding-dimension*)
-              cfg)))
-    (coerce (%decode-embedding-response
-             (call-with-retries
-              (lambda ()
-                (%post-json api-url (%api-headers) payload))))
-             'simple-vector)))
+  "Compute an embedding vector for TEXT through litelm. Returns a
+    simple-vector of floats. Retries transient failures."
+  (first (%check-embedding-vectors
+          (call-with-retries
+           (lambda ()
+             (litelm:embedding *embedding-model* text
+                               :dimensions *embedding-dimension*
+                               :api-base *api-base*)))
+          1)))
 
 (defun %post-batch-request (texts)
-  "POST one batchEmbedContents request for TEXTS (at most
-    *embedding-batch-limit* of them) and return the decoded list of
-    embedding vectors in the same order."
-  (let* ((api-url (concatenate 'string
-                               *embedding-api-url*
-                               *embedding-model*
-                               ":batchEmbedContents"))
-         (payload (make-hash-table :test 'equal))
-         response-string decoded error-obj embeddings)
-    (setf (gethash "requests" payload)
-          (mapcar #'%make-embedding-request texts))
-     (setf response-string
-           (call-with-retries
-            (lambda ()
-              (%post-json api-url (%api-headers) payload))))
-    (setf decoded (cl-json:decode-json-from-string response-string)
-          error-obj (cdr (assoc :ERROR decoded))
-          embeddings (cdr (assoc :EMBEDDINGS decoded)))
-    (when error-obj
-      (error "Gemini batch embedding API error: ~A" response-string))
-    (unless (and embeddings (= (length embeddings) (length texts)))
-      (error "batchEmbedContents returned ~A embeddings for ~A texts: ~A"
-             (length embeddings) (length texts) response-string))
-    (mapcar (lambda (embedding-obj)
-              (or (cdr (assoc :VALUES embedding-obj))
-                  (error "Embedding without values: ~A" response-string)))
-            embeddings)))
+  "Request embeddings for TEXTS (at most *embedding-batch-limit* of them)
+    in a single litelm call and return the vectors in the same order."
+  (%check-embedding-vectors
+   (call-with-retries
+    (lambda ()
+      (litelm:embedding *embedding-model* texts
+                        :dimensions *embedding-dimension*
+                        :api-base *api-base*)))
+   (length texts)))
 
 (defparameter *batch-request-fn* #'%post-batch-request
   "Function of one argument (a list of texts, at most
@@ -219,8 +154,8 @@
 
 (defun %fetch-embeddings-batch (texts)
   "Compute embeddings for all TEXTS, splitting into batches of at most
-    *embedding-batch-limit* texts per batchEmbedContents request (the
-    API cap). Returns a list of vectors in the same order as TEXTS."
+    *embedding-batch-limit* texts per litelm request (the API cap).
+    Returns a list of vectors in the same order as TEXTS."
   (loop for batch on texts by (lambda (l) (nthcdr *embedding-batch-limit* l))
         nconc (funcall *batch-request-fn*
                        (subseq batch 0
@@ -253,7 +188,7 @@
 (defun get-embeddings (texts)
   "Compute embeddings for a list of TEXTS. When the default embedding
     function is in use, all cache misses are fetched with batched
-    batchEmbedContents API calls (at most *embedding-batch-limit* texts
+    batched litelm calls (at most *embedding-batch-limit* texts
     per request) instead of one HTTP round trip per text."
   (when (eq *embedding-fn* #'%fetch-embedding)
     (let ((misses (remove-duplicates

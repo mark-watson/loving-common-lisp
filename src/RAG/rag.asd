@@ -1,12 +1,12 @@
 ;;;; rag.asd — Agentic RAG system definition
 
 (asdf:defsystem #:rag
-  :description "Agentic RAG (Retrieval-Augmented Generation) using Gemini"
+  :description "Agentic RAG (Retrieval-Augmented Generation) using Gemini via the litelm routing library"
   :author "Mark Watson"
   :license "Apache 2"
   :version "1.1.0"
   :serial t
-  :depends-on (#:cl-json #:dexador #:usocket #:uiop)
+  :depends-on (#:litelm #:usocket #:uiop)
   :components ((:file "package")
                (:file "embeddings")
                (:file "vector-store")

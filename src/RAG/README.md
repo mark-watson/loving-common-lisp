@@ -50,22 +50,21 @@ If context is insufficient, the system generates refined search queries and iter
 
 ## Dependencies
 
-- **cl-json** — JSON encoding/decoding
-- **dexador** — HTTP client; transient failures are retried with exponential backoff
+- **litelm** — LLM routing library (in this repository at `../litelm`). All model access, embeddings and text generation, goes through it, so this system contains no HTTP or JSON code of its own.
 - **usocket** — Socket condition classes used for retry detection
 - **uiop** — System utilities
 
-All HTTP (embeddings and the Gemini Interactions API used for generation) is implemented inside the system itself via a small `%post-json` helper.
+**Environment variable:** `GEMINI_API_KEY` (or `GOOGLE_API_KEY`); litelm reads either one for the `gemini/` provider.
 
-**Environment variable:** `GOOGLE_API_KEY` must be set.
+**Models used** (written as litelm `"provider/model"` strings):
+- `gemini/gemini-3-flash-preview` — Default for all agent LLM calls (`*rag-model*`; override per call with `:model`)
+- `gemini/gemini-embedding-001` — Free-tier embedding model for document/query vectors (`text-embedding-004` was retired from the v1beta API).
 
-**Models used:**
-- `gemini-3-flash-preview` — Default for all agent LLM calls (`*rag-model*`; override per call with `:model`)
-- `gemini-embedding-001` — Free-tier embedding model for document/query vectors (`text-embedding-004` was retired from the v1beta API). The API key is sent in the `x-goog-api-key` header, never in the URL.
+Set `*embedding-dimension*` to 768 (or 1536) before building or loading a corpus to cut embedding memory and search time by 4x (2x) with little quality loss; the model default is 3072. It is passed to litelm as the OpenAI-compatible `dimensions` parameter. If you change the embedding model or dimension, re-embed your corpora: `search` signals a dimension-mismatch error rather than silently scoring with truncated vectors.
 
-Set `*embedding-dimension*` to 768 (or 1536) before building or loading a corpus to cut embedding memory and search time by 4x (2x) with little quality loss; the model default is 3072. If you change the embedding model or dimension, re-embed your corpora: `search` signals a dimension-mismatch error rather than silently scoring with truncated vectors.
+Embeddings are computed with batched litelm calls (at most 100 texts per request) and memoized in an in-memory cache (`clear-embedding-cache` resets it; `*embedding-cache-cap*` bounds its size). Transient API failures (HTTP 429/5xx, connection errors) are retried with exponential backoff; permanent 4xx errors signal immediately. Because litelm maps HTTP failures onto its condition hierarchy, the retry logic treats `litelm:rate-limit-error` and any 5xx `litelm:api-error` as transient.
 
-Embeddings are computed with batched `batchEmbedContents` calls (at most 100 texts per request, the API cap) and memoized in an in-memory cache (`clear-embedding-cache` resets it; `*embedding-cache-cap*` bounds its size). Transient API failures (HTTP 429/5xx, connection errors) are retried with exponential backoff; permanent 4xx errors signal immediately.
+`*api-base*` overrides the provider base URL handed to litelm (default `NIL`, meaning the provider's own endpoint) — useful for a proxy or a local test server.
 
 ## Quick Start
 
@@ -132,7 +131,7 @@ Covers chunking boundary cases (including the forward-progress guard), query lin
 |---|---|
 | `rag.asd` | ASDF system definitions (`rag` and `rag/test`) |
 | `package.lisp` | Package definition and exports |
-| `embeddings.lisp` | Gemini embedding integration: batched API, cache with eviction, retries, `*rag-verbose*` |
+| `embeddings.lisp` | Embedding integration via litelm: batched calls, cache with eviction, retries, `*rag-verbose*` |
 | `vector-store.lisp` | In-memory vector store with normalized embeddings, cosine similarity, chunking, corpus persistence with validation |
 | `agents.lisp` | Multi-agent pipeline (rewriter, search, sufficiency, synthesis) |
 | `rag.lisp` | Top-level API, interactive demo, and test code |

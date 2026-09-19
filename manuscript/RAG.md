@@ -1,5 +1,6 @@
 # Agentic RAG Using the Gemini LLM APIs
 
+Dear reader, the previous chapter showed a practical RAG implementation that is easy to understand and incorporate in your own projects. Here we develop a more complex RAG system.
 This chapter implements an **Agentic Retrieval-Augmented Generation (RAG)** system in Common Lisp, inspired by Google's June 2026 research blog post [Unlocking Dependable Responses with Agentic RAG](https://research.google/blog/unlocking-dependable-responses-with-gemini-enterprise-agent-platforms-agentic-rag/).
 
 In the previous chapter on document question answering, we built a "vanilla" RAG system: embed documents, embed the query, find similar chunks, and pass them to an LLM for answer generation. That approach works well for simple factual questions, but falls short on complex queries that require information from multiple sources or where the first retrieval pass misses critical details.
@@ -37,12 +38,12 @@ The ASDF system definition in **rag.asd** defines both the library and its offli
 
 ```lisp
 (asdf:defsystem #:rag
-  :description "Agentic RAG (Retrieval-Augmented Generation) using Gemini"
+  :description "Agentic RAG (Retrieval-Augmented Generation) using Gemini via the litelm routing library"
   :author "Mark Watson"
   :license "Apache 2"
   :version "1.1.0"
   :serial t
-  :depends-on (#:cl-json #:dexador #:usocket #:uiop)
+  :depends-on (#:litelm #:usocket #:uiop)
   :components ((:file "package")
                (:file "embeddings")
                (:file "vector-store")
@@ -95,29 +96,19 @@ The package exports the main entry points:
 
 The file **embeddings.lisp** provides the foundation for semantic search. We use Google's `gemini-embedding-001` model, which produces 3072-dimensional vectors and is available on the free tier.
 
-All HTTP access goes through a local helper **%post-json** (a thin wrapper around Dexador), so the example is self-contained. The API key travels in the `x-goog-api-key` request header, never in the URL:
+All HTTP and JSON handling is delegated to the **litelm** routing library. The model is named as a litelm `"provider/model"` string — `"gemini/gemini-embedding-001"` — and litelm routes it to Google's OpenAI-compatible `/embeddings` endpoint, attaching the API key from `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) as a bearer token and decoding the reply. This system contains no HTTP code of its own.
 
-```lisp
-(defun %api-headers ()
-  "Headers for every embedding API call: the key travels in the
-    x-goog-api-key header, not the URL."
-  (list '("Content-Type" . "application/json")
-        (cons "x-goog-api-key" (get-google-api-key))))
-```
-
-Keys in URL query strings leak into server logs, proxy logs, and shell history; the header keeps the key out of every place the URL is recorded.
-
-The Dexador HTTP library signals a `dex:http-request-failed` condition when the API returns an error status, and usocket conditions when the connection itself fails. Not every failure deserves a retry, so a small predicate classifies them:
+Because litelm owns the transport, it also owns error classification: an HTTP failure arrives as a condition in its hierarchy — `litelm:rate-limit-error` for 429, `litelm:authentication-error` for 401/403, `litelm:api-error` for everything else, with the status readable through `litelm:api-error-status`. Connection-level failures still surface as usocket conditions. Not every failure deserves a retry, so a small predicate classifies them:
 
 ```lisp
 (defun %transient-p (condition)
-  "True when CONDITION is worth retrying: HTTP 429/5xx, or a
-    connection-level failure (usocket). Permanent 4xx client errors
-    (bad request, bad API key, wrong model name) signal immediately."
+  "True when CONDITION is worth retrying: HTTP 429/5xx (which litelm
+    reports as rate-limit-error / api-error), or a connection-level
+    failure (usocket). Permanent 4xx client errors (bad request, bad API
+    key, wrong model name) signal immediately."
   (typecase condition
-    (dex:http-request-failed
-     (let ((status (dex:response-status condition)))
-       (or (= status 429) (>= status 500))))
+    (litelm:rate-limit-error t)                     ; HTTP 429
+    (litelm:api-error (>= (litelm:api-error-status condition) 500))
     (usocket:socket-error t)
     (usocket:ns-error t)
     (t nil)))
@@ -172,63 +163,74 @@ Embeddings are memoized in **\*embedding-cache\***, a hash table keyed on the mo
 The model, its output dimension, and the batch size are configurable:
 
 ```lisp
-(defparameter *embedding-model* "gemini-embedding-001"
-  "Gemini embedding model name. If you change this you must re-embed
-    existing corpora: saved corpus files hold vectors from the old
-    model/dimension and search signals a dimension mismatch.")
+(defparameter *embedding-model* "gemini/gemini-embedding-001"
+  "Embedding model as a litelm \"provider/model\" string. If you change
+    this you must re-embed existing corpora: saved corpus files hold
+    vectors from the old model/dimension and search signals a dimension
+    mismatch.")
 
 (defparameter *embedding-dimension* nil
   "Output embedding dimension, or NIL for the model default (3072 for
-    gemini-embedding-001). The API accepts 768, 1536, or 3072 for this
+    gemini-embedding-001). Providers accept 768, 1536, or 3072 for this
     model; 768 saves 4x memory and search time with little quality
-    loss. Set before building or loading a corpus.")
+    loss. Set before building or loading a corpus. Passed to litelm as
+    the OpenAI-compatible \"dimensions\" parameter.")
 
 (defparameter *embedding-batch-limit* 100
-  "Maximum texts per batchEmbedContents request; the API rejects more.")
+  "Maximum texts per embeddings request; the API rejects more.")
+
+(defparameter *api-base* nil
+  "Optional override for the provider's base URL, passed straight to
+    litelm. NIL uses the provider default. Useful for a proxy or a
+    local test server.")
 ```
 
-The **\*embedding-dimension\*** knob is worth knowing about. The model supports Matryoshka output: you can truncate the 3072-value vector to 768 or 1536 values and keep most of the retrieval quality, at a quarter (or half) of the memory and search cost. One quirk we discovered testing against the live API: `gemini-embedding-001` honors the deprecated top-level `outputDimensionality` field but silently ignores the newer `embedContentConfig`, while newer models like `gemini-embedding-2` accept both. **%make-embedding-request** sends the dimension both ways so either model works.
+The **\*embedding-dimension\*** knob is worth knowing about. The model supports Matryoshka output: you can truncate the 3072-value vector to 768 or 1536 values and keep most of the retrieval quality, at a quarter (or half) of the memory and search cost. The value travels to litelm as the OpenAI-compatible `dimensions` parameter. If a provider ignores it, the dimension check in the vector store catches the mismatch at search time rather than silently comparing vectors of different widths. **\*api-base\*** exists for the same practical reason: it lets you point litelm at a proxy or a local test server without touching the rest of the system.
 
-The low-level function **%fetch-embedding** calls the `embedContent` endpoint for a single string:
+The low-level function **%fetch-embedding** asks litelm for a single string's vector, and **%check-embedding-vectors** validates what comes back before it enters the corpus:
 
 ```lisp
-(defparameter *embedding-fn* #'%fetch-embedding
-  "Function of one argument (a string) returning an embedding vector.
-    Rebind this in tests to run the pipeline without network access.
-    When left at its default, GET-EMBEDDINGS batches all cache misses
-    through *batch-request-fn* instead.")
+(defun %check-embedding-vectors (vectors expected)
+  "Coerce VECTORS (the list of vectors litelm returned) into simple-vectors,
+    checking that the provider returned one non-empty vector per input text."
+  (unless (= (length vectors) expected)
+    (error "Embedding request returned ~A vectors for ~A texts"
+           (length vectors) expected))
+  (mapcar (lambda (vector)
+            (unless (and (consp vector) (every #'numberp vector))
+              (error "Embedding response contained no vector values: ~S"
+                     vector))
+            (coerce vector 'simple-vector))
+          vectors))
 
 (defun %fetch-embedding (text)
-  "Compute an embedding vector for TEXT via the embedContent endpoint.
-    Returns a simple-vector of floats. Retries transient failures."
-  (let* ((api-url (concatenate 'string
-                               *embedding-api-url*
-                               *embedding-model*
-                               ":embedContent"))
-         (payload (make-hash-table :test 'equal)))
-    (setf (gethash "content" payload)
-          (gethash "content" (%make-embedding-request text))
-          (gethash "model" payload)
-          (concatenate 'string "models/" *embedding-model*))
-    (when *embedding-dimension*
-      (setf (gethash "outputDimensionality" payload) *embedding-dimension*
-            (gethash "embedContentConfig" payload)
-            (let ((cfg (make-hash-table :test 'equal)))
-              (setf (gethash "outputDimensionality" cfg)
-                    *embedding-dimension*)
-              cfg)))
-    (coerce (%decode-embedding-response
-             (call-with-retries
-              (lambda ()
-                (%post-json api-url (%api-headers) payload))))
-            'simple-vector)))
+  "Compute an embedding vector for TEXT through litelm. Returns a
+    simple-vector of floats. Retries transient failures."
+  (first (%check-embedding-vectors
+          (call-with-retries
+           (lambda ()
+             (litelm:embedding *embedding-model* text
+                               :dimensions *embedding-dimension*
+                               :api-base *api-base*)))
+          1)))
 ```
 
 Note the special variable **\*embedding-fn\***: the public entry point **get-embedding** calls whatever function it holds. Defaulting it to the real HTTP implementation while allowing tests to rebind it to a stub is a simple Common Lisp idiom we will use again for the LLM calls, and it is what makes the offline unit tests possible.
 
-The batch path has its own injection point. **%fetch-embeddings-batch** splits its input into groups of at most **\*embedding-batch-limit\*** texts (the API rejects a 101st request with an INVALID_ARGUMENT error, which we confirmed the hard way) and calls **\*batch-request-fn\*** per group:
+The batch path has its own injection point. **%post-batch-request** hands a whole group of texts to litelm in one call — litelm turns the list into the JSON `input` array — and **%fetch-embeddings-batch** splits longer input into groups of at most **\*embedding-batch-limit\*** texts, calling **\*batch-request-fn\*** per group (the API rejects a 101st text in a single request, which we confirmed the hard way):
 
 ```lisp
+(defun %post-batch-request (texts)
+  "Request embeddings for TEXTS (at most *embedding-batch-limit* of them)
+    in a single litelm call and return the vectors in the same order."
+  (%check-embedding-vectors
+   (call-with-retries
+    (lambda ()
+      (litelm:embedding *embedding-model* texts
+                        :dimensions *embedding-dimension*
+                        :api-base *api-base*)))
+   (length texts)))
+
 (defparameter *batch-request-fn* #'%post-batch-request
   "Function of one argument (a list of texts, at most
     *embedding-batch-limit* long) returning a list of embedding vectors
@@ -236,17 +238,25 @@ The batch path has its own injection point. **%fetch-embeddings-batch** splits i
 
 (defun %fetch-embeddings-batch (texts)
   "Compute embeddings for all TEXTS, splitting into batches of at most
-    *embedding-batch-limit* texts per batchEmbedContents request (the
-    API cap). Returns a list of vectors in the same order as TEXTS."
+    *embedding-batch-limit* texts per litelm request (the API cap).
+    Returns a list of vectors in the same order as TEXTS."
   (loop for batch on texts by (lambda (l) (nthcdr *embedding-batch-limit* l))
         nconc (funcall *batch-request-fn*
                        (subseq batch 0
                                (min *embedding-batch-limit* (length batch))))))
 ```
 
-Two public functions round out the interface. **get-embedding** checks the cache before calling the API, and **get-embeddings** fetches all cache misses for a list of texts with batched `batchEmbedContents` calls, turning N HTTP requests into a handful when a document is first loaded:
+Two public functions round out the interface. **get-embedding** checks the cache before calling the API, and **get-embeddings** fetches all cache misses for a list of texts with batched litelm calls, turning N HTTP requests into a handful when a document is first loaded:
 
 ```lisp
+;;; ---- Public embedding interface (injectable for tests) ----
+
+(defparameter *embedding-fn* #'%fetch-embedding
+  "Function of one argument (a string) returning an embedding vector.
+    Rebind this in tests to run the pipeline without network access.
+    When left at its default, GET-EMBEDDINGS batches all cache misses
+    through *batch-request-fn* instead.")
+
 (defun get-embedding (text)
   "Compute (or retrieve from cache) an embedding vector for TEXT.
     Returns a simple-vector of floats."
@@ -314,7 +324,9 @@ We define two structs: **document-chunk** holds a piece of text with its source 
   source
   embedding
   (norm 1.0 :type float))
+```
 
+```lisp
 (defstruct (corpus (:print-function %print-corpus))
   "A named collection of document chunks for retrieval."
   name
@@ -324,7 +336,7 @@ We define two structs: **document-chunk** holds a piece of text with its source 
 
 A struct with 3072 floats per chunk is painful to inspect at the REPL: printing a corpus dumps thousands of numbers per chunk and swamps the terminal. Both structs therefore install custom print functions. A chunk prints its text and source in full but only the first 10 embedding values:
 
-```lisp
+```text
 #<DOCUMENT-CHUNK :SOURCE "renewable-energy.txt" :TEXT "Renewable Energy
 Sources and Technologies ..." :EMBEDDING #(3.2552084e-4 6.510417e-4
 9.765625e-4 0.0013020834 0.0016276041 0.001953125 0.0022786458
@@ -333,7 +345,7 @@ Sources and Technologies ..." :EMBEDDING #(3.2552084e-4 6.510417e-4
 
 and a corpus prints just its name, description, and chunk count:
 
-```lisp
+```text
 (#<CORPUS :NAME "renewable-energy" :DESCRIPTION "Renewable energy sources
 and technologies" :CHUNKS 9>
  #<CORPUS :NAME "electric-vehicles" :DESCRIPTION "Electric vehicle
@@ -522,6 +534,18 @@ The **search-corpus** and **search-corpora** functions find the top-K most simil
               (setf remaining (remove winner remaining :count 1)))))
         (nreverse result)))))
 
+(defun search-corpus (corpus query-embedding &key (top-k 3))
+  "Search CORPUS for the TOP-K chunks most similar to QUERY-EMBEDDING.
+    Returns a list of (score . document-chunk) pairs, sorted by
+    descending similarity. The query embedding may be normalized or raw;
+    its norm is computed once here."
+  (%top-k-by-score (score-chunks (corpus-chunks corpus)
+                                 (coerce query-embedding 'simple-vector)
+                                 :query-norm (vector-magnitude
+                                              (coerce query-embedding
+                                                      'simple-vector)))
+                   top-k))
+
 (defun search-corpora (corpora query-embedding &key (top-k 3))
   "Search multiple CORPORA for the TOP-K most similar chunks overall.
     Returns a list of (score . document-chunk) pairs."
@@ -545,42 +569,30 @@ An important feature for agentic RAG is that **search-corpora** accepts a list o
 
 The file **agents.lisp** is the heart of the system. Each "agent" is a function that calls Gemini with a specialized prompt. This is a practical and effective pattern: we don't need an external agent framework to implement agent behaviors, just well-crafted prompts and structured response parsing.
 
-We use `gemini-3-flash-preview` for all agent calls. This model is very inexpensive while being capable enough for query rewriting, sufficiency assessment, and synthesis. The function **rag-generate** delegates to a local helper **%gemini-generate**, which POSTs the prompt to the Gemini Interactions API and extracts the text from the last `model_output` step. The call goes through the special variable **\*generate-fn\*** so tests can substitute a stub (the same idiom as **\*embedding-fn\*** above). It also wraps the call in **call-with-retries**, so a transient 500 during assessment or synthesis does not throw away the whole pipeline's work:
+We use `gemini/gemini-3-flash-preview` for all agent calls. This model is very inexpensive while being capable enough for query rewriting, sufficiency assessment, and synthesis. The function **rag-generate** delegates to a local helper **%generate**, which hands the prompt to `litelm:completion` and takes the text content out of the returned response struct. The call goes through the special variable **\*generate-fn\*** so tests can substitute a stub (the same idiom as **\*embedding-fn\*** above). It also wraps the call in **call-with-retries**, so a transient 500 during assessment or synthesis does not throw away the whole pipeline's work:
 
 ```lisp
-(defparameter *rag-model* "gemini-3-flash-preview"
-  "Gemini model used for all agent LLM calls. Override per call with
-    the :model keyword argument to agentic-rag.")
+(defparameter *rag-model* "gemini/gemini-3-flash-preview"
+  "Model used for all agent LLM calls, as a litelm \"provider/model\"
+    string. Override per call with the :model keyword argument to
+    agentic-rag.")
 
-(defvar *rag-interactions-api-url*
-  "https://generativelanguage.googleapis.com/v1beta/interactions")
+;;; ---- Text generation via litelm ----
 
-(defun %extract-text-from-steps (decoded-response)
-  "Extract the text from the last model_output step in an Interactions API response."
-  (let ((steps (cdr (assoc :STEPS decoded-response))))
-    (loop for step in (reverse steps)
-          when (string-equal (cdr (assoc :TYPE step)) "model_output")
-          return (let* ((content (cdr (assoc :CONTENT step)))
-                        (first-content (first content)))
-                   (cdr (assoc :TEXT first-content))))))
-
-(defun %gemini-generate (prompt model)
-  "Call the Gemini Interactions API with PROMPT and return the generated text."
-  (let ((payload (make-hash-table :test 'equal)))
-    (setf (gethash "model" payload) model
-          (gethash "input" payload) prompt)
-    (let* ((headers (list '("Content-Type" . "application/json")
-                          (cons "x-goog-api-key" (uiop:getenv "GOOGLE_API_KEY"))
-                          '("Api-Revision" . "2026-05-20")))
-           (response-string (%post-json *rag-interactions-api-url* headers payload))
-           (decoded-response (cl-json:decode-json-from-string response-string)))
-      (%extract-text-from-steps decoded-response))))
+(defun %generate (prompt model)
+  "Generate text for PROMPT with MODEL through litelm. litelm routes the
+    model string to the provider's OpenAI-compatible chat endpoint, sends
+    the JSON, and decodes the reply; we return its text content."
+  (litelm:response-content
+   (litelm:completion model
+                      :messages prompt
+                      :api-base *api-base*)))
 
 (defparameter *generate-fn*
   (lambda (prompt &key (model *rag-model*))
-    (%gemini-generate prompt model))
+    (%generate prompt model))
   "Function of (prompt &key model) returning generated text. Defaults
-    to a thin wrapper around %gemini-generate.
+    to a thin wrapper around %GENERATE, which calls litelm.
     Rebind this in tests to run the pipeline without network access.")
 
 (defun rag-generate (prompt &key (model *rag-model*))
@@ -708,12 +720,12 @@ The structured output format (VERDICT/REASON/MISSING) makes it straightforward t
 ```lisp
 (defun parse-verdict-response (response)
   "Parse a Sufficient Context Agent RESPONSE of the form:
-     VERDICT: SUFFICIENT | INSUFFICIENT
-     REASON: ...
-     MISSING: ...
-   Returns two values: SUFFICIENT-P and FEEDBACK (the MISSING text).
-   An unparseable verdict is treated as SUFFICIENT — this bounds API
-   cost because the iteration limit is the only other safeguard."
+      VERDICT: SUFFICIENT | INSUFFICIENT
+      REASON: ...
+      MISSING: ...
+    Returns two values: SUFFICIENT-P and FEEDBACK (the MISSING text).
+    An unparseable verdict is treated as SUFFICIENT — this bounds API
+    cost because the iteration limit is the only other safeguard."
   (let* ((lines (uiop:split-string (or response "") :separator '(#\Newline)))
          (verdict-line (find-if (lambda (line)
                                   (search "VERDICT:" line :test #'char-equal))
@@ -751,9 +763,9 @@ Note the order of the two `cond` clauses: the string "INSUFFICIENT" contains "SU
 ```lisp
 (defun assess-sufficiency (user-query retrieved-chunks &key (model *rag-model*))
   "Evaluate whether RETRIEVED-CHUNKS provide sufficient context
-   to answer USER-QUERY. Returns two values:
-     1. SUFFICIENT-P — T if context is sufficient, NIL otherwise
-     2. FEEDBACK — String describing what information is missing."
+    to answer USER-QUERY. Returns two values:
+      1. SUFFICIENT-P — T if context is sufficient, NIL otherwise
+      2. FEEDBACK — String describing what information is missing."
   (%debug-log "~%DEBUG assess-sufficiency: evaluating ~A chunks~%"
               (length retrieved-chunks))
   (let* ((context (format-retrieved-chunks retrieved-chunks))
@@ -792,7 +804,7 @@ When the context is deemed sufficient, the Synthesis Agent generates the final a
 ```lisp
 (defun synthesize-answer (user-query retrieved-chunks &key (model *rag-model*))
   "Generate a grounded answer to USER-QUERY using RETRIEVED-CHUNKS.
-   The answer cites source documents."
+    The answer cites source documents."
   (%debug-log "~%DEBUG synthesize-answer: generating answer from ~A chunks~%"
               (length retrieved-chunks))
   (let* ((context (format-retrieved-chunks retrieved-chunks))
@@ -1161,13 +1173,13 @@ The key takeaway from this chapter is that agentic RAG dramatically improves ans
 
 The implementation is deliberately simple: each "agent" is just a function with a well-crafted prompt. You don't need an elaborate agent framework to get the benefits of multi-agent architectures. What matters is the pattern: decompose, search, assess, refine, synthesize.
 
-The engineering around that pattern is deliberately practical as well: embeddings are stored as normalized simple-vectors computed with batched API calls and memoized, all sub-queries in a fanout share one embedding request, the API key travels in a header instead of the URL, transient HTTP and connection failures are retried while permanent client errors surface immediately, corpora can be saved to disk, validated on load, and reloaded without re-embedding, and every network-facing function sits behind a rebindable special variable so the entire pipeline is testable offline.
+The engineering around that pattern is deliberately practical as well: embeddings are stored as normalized simple-vectors computed with batched litelm calls and memoized, all sub-queries in a fanout share one embedding request, transport, JSON, and API-key handling are delegated to litelm, transient HTTP and connection failures are retried while permanent client errors surface immediately, corpora can be saved to disk, validated on load, and reloaded without re-embedding, and every network-facing function sits behind a rebindable special variable so the entire pipeline is testable offline.
 
 For production use, consider these enhancements:
 
 - **Persistent vector store**: Replace the in-memory lists with a dedicated vector database (Chroma, Qdrant, or Pinecone) for larger document collections. Because chunks are stored normalized, a store that indexes unit vectors can use plain dot-product scoring directly.
 - **Document loaders**: Add support for PDF, HTML, and other formats beyond plain text.
-- **Structured agent outputs**: Request JSON Schema-constrained responses from the Interactions API instead of parsing VERDICT lines (see practice problem 5).
+- **Structured agent outputs**: Request schema-constrained responses from the chat model instead of parsing VERDICT lines (see practice problem 5).
 - **Parallel search**: Use threads to search multiple corpora simultaneously (see practice problem 6).
 
 The Google research reports that their production agentic RAG system achieves up to 34% higher accuracy than vanilla RAG on factuality benchmarks, with cross-corpus retrieval nearly matching single-corpus accuracy. Our Common Lisp implementation demonstrates the same architecture on a smaller scale.
@@ -1186,8 +1198,8 @@ The Google research reports that their production agentic RAG system achieves up
 4. **Self-Correction and Web Search Fallback on Refinement**:
    In `agentic-rag` (in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp)), if the context remains insufficient after refining queries, the system continues to search the same corpus. Write a fallback mechanism that, when the Sufficient Context Agent reports `INSUFFICIENT` for the second time, switches to an external API (like a local DuckDuckGo lookup or Ollama Cloud web search helper) to gather external context, appending the results to the RAG vector store dynamically.
 
-5. **JSON Schema Schema Enforcement for Agent Verdicts**:
-   The Sufficient Context Agent in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp) relies on string matching (searching for `"VERDICT:"` and `"MISSING:"`) to parse Gemini's response. This is fragile if the model outputs code blocks, explanations, or formatting deviations. Modify `assess-sufficiency` to request structured output using a JSON Schema (by specifying schema parameters in the request payload to the Gemini Interactions API). Parse the returned structured JSON reliably using `cl-json`.
+5. **Structured Agent Verdicts**:
+   The Sufficient Context Agent in [agents.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/RAG/agents.lisp) relies on string matching (searching for `"VERDICT:"` and `"MISSING:"`) to parse the model's reply. This is fragile if the model emits code blocks, explanations, or formatting deviations. Modify `assess-sufficiency` to get a structured verdict instead: either ask for JSON and decode it with `litelm:json-decode`, or define a `record_verdict` tool with `verdict`, `reason`, and `missing` parameters, pass it to `litelm:completion` through `:tools`, and read the arguments out of `litelm:response-tool-calls`. Compare how often each approach parses correctly across a set of deliberately awkward prompts.
 
 6. **Parallelized Search Fanout**:
    The `search-fanout` function in [agents.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/RAG/agents.lisp) embeds all sub-queries in one batched API call, but still searches them sequentially: each sub-query's `search-corpora` call runs one after another. When there are several sub-queries and multiple corpora, searching one by one adds latency. Use a threading library such as `bordeaux-threads` to parallelize the `search-corpora` calls per sub-query, gathering and deduplicating results once all threads terminate.
