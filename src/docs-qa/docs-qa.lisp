@@ -1,6 +1,6 @@
 (in-package #:docs-qa)
 
-;; Copyright 2023-2025 Mark Watson. All Rights Reserved. Apache 2 License
+;; Copyright 2023-2026 Mark Watson. All Rights Reserved. Apache 2 License
 
 
 ;; define the environment variable "OPENAI_KEY" (or "OPENAI_API_KEY") with the value
