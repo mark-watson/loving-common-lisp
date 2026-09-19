@@ -51,7 +51,7 @@ To load "docs-qa":
 (:docs-qa)
 * (in-package :docs-qa)
 #<package "DOCS-QA">
-* (test)
+* (docs-qa::test)
 
 ** query: What is the history of the science of chemistry?
 ** answer: The history of chemistry as a science began in the 6th century BC, when the Greek philosopher Leucippus and his student Democritus posited the existence of an endless number of worlds

@@ -200,7 +200,6 @@ The next listing showing of parts of **docs-qa.lisp** interfaces with the OpenAI
 ## Testing Local Embeddings Vector Database With OpenAI GPT APIs
 
 In the next part of the listing of **docs-qa.lisp** we write a test function to create two documents. The two calls to **create-document** actually save text and embeddings for about 20 text chunks in the database.
-
 ```lisp
 (defun test()
   "Test code for Semantic Document Search Using
@@ -211,32 +210,32 @@ In the next part of the listing of **docs-qa.lisp** we write a test function to 
   (QA "What are the advantages of engainging in sports?"))
 ```
 
-The output is (with a lot of debug printout not shown):
+The following output is heavily edited for brevity, long output often removed and replaced by **...**:
 
 ```console
 $ sbcl
 * (quicklisp:quickload :docs-qa)
-To load "docs-qa":
-  Load 1 ASDF system:
-    docs-qa
-; Loading "docs-qa"
-..................................................
-[package docs-qa]To load "sqlite":
-  Load 1 ASDF system:
-    sqlite
-; Loading "sqlite"
+* (docs-qa::test)
 
-#<sqlite-handle {7005CA3783}>
-(:docs-qa)
-* (in-package :docs-qa)
-#<package "DOCS-QA">
-* (test)
+insert-document:
+  content:Sport is generally recognised as activities based in physical athleticism or physical dexterity. Sports are usually governed by rules to ensure fair competition and consistent adjudication of the winn
+
+insert-document:
+  content:dening the definition of sport to include all physical activity and exercise. For instance, the Council of Europe include all forms of physical exercise, including those completed just for fun.
+
+ ... DELETED OUTPUT
+
+semantic-search: ret=( ... )
 
 ** query: What is the history of the science of chemistry?
-** answer: The history of chemistry as a science began in the 6th century BC, when the Greek philosopher Leucippus and his student Democritus posited the existence of an endless number of worlds
+** answer: Based on the provided context, the history of chemistry is characterized by an evolving definition: in 1730, Georg Ernst Stahl viewed it as resolving bodies into principles; in 1837, Jean-Baptiste Dumas focused on molecular forces; in 1947, Linus Pauling defined it as the science of substances and their reactions; and in 1998, Raymond Chang broadened it to the study of matter and its changes. Modern chemistry utilizes the quantum mechanical model to study atoms, molecules, and chemical bonds.
+
+semantic-search: ret=( ... )
 
 ** query: What are the advantages of engainging in sports?
-** answer: The advantages of engaging in sports are:n1. It helps to develop the body and mind.n2. It helps to develop the character.n3. It helps to develop the personality.
+** answer: The provided context does not state the advantages of engaging in sports; it only defines the term and traces its etymology.
+
+"The provided context does not state the advantages of engaging in sports; it only defines the term and traces its etymology."
 ```
 
 
