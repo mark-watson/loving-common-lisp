@@ -1,9 +1,6 @@
 (in-package #:gemini)
 
 (defvar *google-api-key* (uiop:getenv "GOOGLE_API_KEY"))
-(defvar
-  *interactions-api-url*
-  "https://generativelanguage.googleapis.com/v1beta/interactions")
 
 (defvar *model* "gemini-3-flash-preview") ;; model used in this file.
 

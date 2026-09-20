@@ -6,6 +6,18 @@ While the Google Gemini APIs offer a compelling suite of advantages for develope
 
 The source code for this Gemini library is in my GitHub repository [https://github.com/mark-watson/gemini](https://github.com/mark-watson/gemini). As usual you want to git clone this repository in your local directory **~/quicklisp/local-projects/** so Quicklisp can find this library with **(ql:quickload :gemini)**. We will list the code below and then look at example use.
 
+## Relationship to the litelm library
+
+The **litelm** routing library (in **loving-common-lisp/src/litelm**) already covers ordinary Gemini text generation and embeddings: it routes a `"gemini/..."` model string to Google's OpenAI-compatible endpoints, so plain generation is just `(litelm:completion "gemini/gemini-3-flash-preview" :messages prompt)`.
+
+This chapter's library is therefore **not redundant** with litelm. It exists for the Gemini features that are native to Google's API, and so fall outside the OpenAI-compatible surface litelm speaks:
+
+- **Google Search grounding** (`generate-with-search`) and the **citations** returned with it (`generate-with-search-and-citations`)
+- **Token counting** (`count-tokens`), via the native `:countTokens` action
+- **The Interactions API** (`generate-with-tools`, `continue-with-function-responses`), which mixes Google's built-in search tool with client-side function calls across turns
+
+Use litelm for ordinary generation and embeddings; use this library when you need search grounding, citations, token counts, or platform tools.
+
 ### package.lisp
 
 We need the function **post** in the external library **dexador**:
@@ -16,7 +28,7 @@ We need the function **post** in the external library **dexador**:
 (defpackage #:gemini
   (:use #:cl)
 
-  (:export #:generate #:count-tokens #:send-chat-message #:generate-streaming #:generate-with-search #:generate-with-search-and-citations
+  (:export #:generate #:count-tokens #:generate-with-search #:generate-with-search-and-citations
            #:make-function-declaration #:generate-with-tools #:continue-with-function-responses))
 ```
 
@@ -38,53 +50,51 @@ We need the function **post** in the external library **dexador**:
 ```
 ### gemini.lisp
 
-This code defines functions for generating content and counting tokens. Rather than spawning an external `curl` process, it executes native HTTP POST requests using the `Dexador` client via the helper function `%post-json`. 
+This code defines functions for generating content and counting tokens. Rather than spawning an external `curl` process, it executes native HTTP POST requests using the `Dexador` client via the helper function `%post-json`.
 
-To generate text, the `generate` function calls the Google Interactions API at the `https://generativelanguage.googleapis.com/v1beta/interactions` endpoint. It sends a simple JSON payload containing the model identifier and prompt string, then decodes the response and extracts the generated text from the steps. The `count-tokens` function queries the standard models endpoint (`countTokens` action) using the same native HTTP post helper.
+To generate text, the `generate` function calls the standard `generateContent` action at `https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent`. It sends a JSON payload whose `contents` array holds one content object containing a single `parts` entry with the prompt text, then decodes the response and pulls the generated text out of the first candidate's first part. The `count-tokens` function queries the companion `countTokens` action on the same models endpoint, using the same native HTTP post helper.
 
 ```lisp
 (in-package #:gemini)
 
 (defvar *google-api-key* (uiop:getenv "GOOGLE_API_KEY"))
-(defvar
-  *interactions-api-url*
-  "https://generativelanguage.googleapis.com/v1beta/interactions")
 
 (defvar *model* "gemini-3-flash-preview") ;; model used in this file.
 
 (defun %post-json (url headers payload-hash)
   "Helper function to perform an HTTP POST request with a JSON payload using Dexador."
   (let ((payload-json (cl-json:encode-json-to-string payload-hash)))
-    (dex:post url :headers headers :content payload-json)))
+    (dex:post url :headers (append headers '(("Accept-Encoding" . "identity")))
+                 :content payload-json)))
 
-;;; ---- Interactions API helpers ----
-
-(defun %extract-text-from-steps (decoded-response)
-  "Extract the text from the last model_output step in an Interactions API response.
-   Response format: {\"steps\": [{\"type\": \"model_output\", \"content\": [{\"type\": \"text\", \"text\": \"...\"}]}]}"
-  (let* ((steps (cdr (assoc :STEPS decoded-response))))
-    (loop for step in (reverse steps)
-          when (string-equal (cdr (assoc :TYPE step)) "model_output")
-          return (let* ((content (cdr (assoc :CONTENT step)))
-                        (first-content (first content)))
-                   (cdr (assoc :TEXT first-content))))))
+;;; ---- generateContent API ----
 
 (defun generate (prompt &optional (model-id *model*))
-  "Generates text from a given prompt using the Interactions API.
+  "Generates text from a given prompt using the Gemini generateContent API.
    Uses *model* defined at the top of this file as default.
    PROMPT: The text prompt to generate content from.
    MODEL-ID: Optional. The ID of the model to use.
    Returns the generated text as a string."
-  (let* ((payload (make-hash-table :test 'equal)))
-    (setf (gethash "model" payload) model-id
-          (gethash "input" payload) prompt)
-    (let* ((headers (list '("Content-Type" . "application/json")
-                          (cons "x-goog-api-key" *google-api-key*)
-                          '("Api-Revision" . "2026-05-20")))
-           (response-string (%post-json *interactions-api-url* headers payload))
-           (decoded-response (cl-json:decode-json-from-string response-string)))
-      (%extract-text-from-steps decoded-response))))
-  
+  (let* ((payload (make-hash-table :test 'equal))
+         (part-ht (make-hash-table :test 'equal))
+         (content-ht (make-hash-table :test 'equal)))
+    (setf (gethash "text" part-ht) prompt)
+    (setf (gethash "parts" content-ht) (list part-ht))
+    (setf (gethash "contents" payload) (list content-ht))
+    (let* ((url (concatenate 'string
+                             "https://generativelanguage.googleapis.com/v1beta/models/"
+                             model-id ":generateContent"))
+           (headers (list '("Content-Type" . "application/json")
+                          (cons "X-goog-api-key" *google-api-key*)))
+           (response-string (%post-json url headers payload))
+           (decoded-response (cl-json:decode-json-from-string response-string))
+           (candidates (cdr (assoc :CANDIDATES decoded-response)))
+           (first-candidate (first candidates))
+           (content (cdr (assoc :CONTENT first-candidate)))
+           (parts (cdr (assoc :PARTS content)))
+           (first-part (first parts)))
+      (cdr (assoc :TEXT first-part)))))
+
 ;; (gemini:generate "In one sentence, explain how AI works to a child.")
 ;; (gemini:generate "Write a short, four-line poem about coding in Python.")
 
@@ -113,16 +123,17 @@ To generate text, the `generate` function calls the Google Interactions API at t
            (total-tokens-pair (assoc :TOTAL-TOKENS decoded-response)))
       (if total-tokens-pair
           (cdr total-tokens-pair)
-          (error "Could not retrieve token count from API response: ~S"
-		 decoded-response)))))
+          (error
+           "Could not retrieve token count from API response: ~S"
+           decoded-response)))))
 
 ;; (gemini:count-tokens "In one sentence, explain how AI works to a child.")
 
 (defun run-tests ()
   "Runs tests for generate and count-tokens functions."
   (let* ((prompt "In one sentence, explain how AI works to a child.")
-         (generated-text (generate prompt))
-         (token-count (count-tokens prompt)))
+          (generated-text (generate prompt))
+          (token-count (count-tokens prompt)))
     (format t "Generated Text: ~A~%Token Count: ~A~%" generated-text token-count)))
 ```
 
@@ -142,31 +153,38 @@ Google’s “Grounding with Google Search” is a powerful feature that connect
 
 ```lisp
 (defun generate-with-search (prompt &optional (model-id *model*))
-  "Generates text with Google Search grounding via the Interactions API."
-  (let* ((payload (make-hash-table :test 'equal)))
-    (setf (gethash "model" payload) model-id
-          (gethash "input" payload) prompt
-          (gethash "tools" payload)
-          (list (let ((tool (make-hash-table :test 'equal)))
-                  (setf (gethash "type" tool) "google_search")
-                  tool)))
-    (let* ((headers (list '("Content-Type" . "application/json")
-                          (cons "x-goog-api-key" *google-api-key*)
-                          '("Api-Revision" . "2026-05-20")))
-           (response-string (%post-json *interactions-api-url* headers payload))
-           (decoded-response (cl-json:decode-json-from-string response-string)))
-      (%extract-text-from-steps decoded-response))))
-
-;; (gemini:generate-with-search "Consultant Mark Watson has written Common Lisp, semantic web, Clojure, Java, and AI books. What musical instruments does he play?")
+  "Generates text with Google Search grounding via the generateContent API."
+  (let* ((payload (make-hash-table :test 'equal))
+         (part-ht (make-hash-table :test 'equal))
+         (content-ht (make-hash-table :test 'equal))
+         (google-search-tool (make-hash-table :test 'equal)))
+    (setf (gethash "text" part-ht) prompt)
+    (setf (gethash "parts" content-ht) (list part-ht))
+    (setf (gethash "contents" payload) (list content-ht))
+    (setf (gethash "google_search" google-search-tool) (make-hash-table :test 'equal))
+    (setf (gethash "tools" payload) (list google-search-tool))
+    (let* ((url (concatenate 'string
+                             "https://generativelanguage.googleapis.com/v1beta/models/"
+                             model-id ":generateContent"))
+           (headers (list '("Content-Type" . "application/json")
+                          (cons "X-goog-api-key" *google-api-key*)))
+           (response-string (%post-json url headers payload))
+           (decoded-response (cl-json:decode-json-from-string response-string))
+           (candidates (cdr (assoc :CANDIDATES decoded-response)))
+           (first-candidate (first candidates))
+           (content (cdr (assoc :CONTENT first-candidate)))
+           (parts (cdr (assoc :PARTS content)))
+           (first-part (first parts)))
+      (cdr (assoc :TEXT first-part)))))
 ```
 
 The core mechanism of this implementation relies on the payload hash table construction, specifically where the `"tools"` key is populated. Unlike a standard generation request, this payload includes a list containing a Google Search tool definition; the presence of this specific configuration acts as a switch, granting the model permission to query Google's search index before formulating its answer. This is particularly critical for questions regarding current events, as the model's static training data would otherwise be outdated.
 
-Because we are calling the `/v1beta/interactions` API rather than standard generation endpoints, the payload accepts a direct `"input"` prompt string, and the response is structured as a series of unified `"steps"`. The helper `%extract-text-from-steps` simplifies traversal by parsing the returned steps in reverse order and returning the text from the last `model_output` step.
+Because this goes to the standard `generateContent` endpoint, the request body keeps the same `contents` → `parts` shape as plain generation, with the search tool added under `"tools"`, and the reply arrives in the usual `candidates` array — the text is read from the first candidate's first part. Declaring the `google_search` tool is what authorizes the model to consult Google's search index before answering; without it, the same prompt would be answered from static training data alone.
 
 Here is example output:
 
-```lisp
+```text
 $ sbcl
 This is SBCL 2.5.10, an implementation of ANSI Common Lisp.
 * (ql:quickload :gemini)
@@ -202,43 +220,43 @@ Here is the code:
 
 ```lisp
 (defun generate-with-search-and-citations (prompt &optional (model-id *model*))
-  "Generates text with Google Search grounding and returns citations via the Interactions API.
+  "Generates text with Google Search grounding and returns citations via the generateContent API.
    Returns two values: the response text and a list of (title . url) citation pairs."
-  (let* ((payload (make-hash-table :test 'equal)))
-    (setf (gethash "model" payload) model-id
-          (gethash "input" payload) prompt
-          (gethash "tools" payload)
-          (list (let ((tool (make-hash-table :test 'equal)))
-                  (setf (gethash "type" tool) "google_search")
-                  tool)))
-    (let* ((headers (list '("Content-Type" . "application/json")
-                          (cons "x-goog-api-key" *google-api-key*)
-                          '("Api-Revision" . "2026-05-20")))
-           (response-string (%post-json *interactions-api-url* headers payload))
+  (let* ((payload (make-hash-table :test 'equal))
+         (part-ht (make-hash-table :test 'equal))
+         (content-ht (make-hash-table :test 'equal))
+         (google-search-tool (make-hash-table :test 'equal)))
+    (setf (gethash "text" part-ht) prompt)
+    (setf (gethash "parts" content-ht) (list part-ht))
+    (setf (gethash "contents" payload) (list content-ht))
+    (setf (gethash "google_search" google-search-tool) (make-hash-table :test 'equal))
+    (setf (gethash "tools" payload) (list google-search-tool))
+    (let* ((url (concatenate 'string
+                             "https://generativelanguage.googleapis.com/v1beta/models/"
+                             model-id ":generateContent"))
+           (headers (list '("Content-Type" . "application/json")
+                          (cons "X-goog-api-key" *google-api-key*)))
+           (response-string (%post-json url headers payload))
            (decoded-response (cl-json:decode-json-from-string response-string))
-           (steps (cdr (assoc :STEPS decoded-response)))
-           ;; Extract text from last model_output step
-           (text (loop for step in (reverse steps)
-                       when (string-equal (cdr (assoc :TYPE step)) "model_output")
-                       return (let* ((content (cdr (assoc :CONTENT step)))
-                                     (first-content (first content)))
-                                 (cdr (assoc :TEXT first-content)))))
-           ;; Extract citations from url_citation annotations in model_output steps
-           (citations
-            (loop for step in steps
-                  when (string-equal (cdr (assoc :TYPE step)) "model_output")
-                  append (loop for content-item in (cdr (assoc :CONTENT step))
-                               append (loop for annotation in (cdr (assoc :ANNOTATIONS content-item))
-                                            when (string-equal (cdr (assoc :TYPE annotation)) "url_citation")
-                                            collect (cons (cdr (assoc :TITLE annotation))
-                                                          (cdr (assoc :URL annotation))))))))
-      ;; Return both text and citations
+           (candidates (cdr (assoc :CANDIDATES decoded-response)))
+           (first-candidate (first candidates))
+           (content (cdr (assoc :CONTENT first-candidate)))
+           (parts (cdr (assoc :PARTS content)))
+           (first-part (first parts))
+           (text (cdr (assoc :TEXT first-part)))
+           (grounding-metadata (cdr (assoc :GROUNDINGMETADATA first-candidate)))
+           (grounding-chunks (cdr (assoc :GROUNDINGCHUNKS grounding-metadata)))
+           (citations (loop for chunk in grounding-chunks
+                            for web = (cdr (assoc :WEB chunk))
+                            when web
+                            collect (cons (cdr (assoc :TITLE web))
+                                          (cdr (assoc :URI web))))))
       (values text citations))))
 ```
 
 Here is the sample output (output shortened: redirect URIs shortened for brevity):
 
-```lisp
+```text
 * (multiple-value-bind (response sources)
     (gemini:generate-with-search-and-citations "Who won the Super Bowl in 2024?")
   (format t "Answer: ~a~%~%Sources:~%" response)
@@ -262,7 +280,9 @@ nil
 The following diagram shows the high-level architecture of the Google Gemini API client library developed in this chapter:
 
 {width: "80%"}
-![Architecture diagram](images/gThe Google Interactions APIs provide a clean schema for managing multi-turn conversations and executing client-side tools. You can find more details in the official documentation here: [https://ai.google.dev/gemini-api/docs/interactions](https://ai.google.dev/gemini-api/docs/interactions?ua=chat).
+![Architecture diagram](images/gemini_architecture.png)
+
+The Google Interactions APIs provide a clean schema for managing multi-turn conversations and executing client-side tools. You can find more details in the official documentation here: [https://ai.google.dev/gemini-api/docs/interactions](https://ai.google.dev/gemini-api/docs/interactions?ua=chat).
 
 The following Common Lisp implementation in the file **gemini_interactions_api.lisp** offers a robust framework for multi-turn conversations with tool orchestration. Unlike standard API generation endpoints where the developer has to manually accumulate and format the message history on the client side, the Interactions endpoint maintains the conversation state server-side. 
 
@@ -286,6 +306,11 @@ When you call `generate-with-tools` on "Turn 1," the API returns the model's out
 ;;;   4. Call CONTINUE-WITH-FUNCTION-RESPONSES for Turn 2 -- returns final TEXT
 ;;; ====================================================================
 
+
+;;; ---- Endpoint ----
+
+(defvar *interactions-api-url*
+  "https://generativelanguage.googleapis.com/v1beta/interactions")
 
 ;;; ---- Internal utilities ----
 

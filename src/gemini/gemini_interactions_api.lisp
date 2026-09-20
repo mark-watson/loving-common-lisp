@@ -16,6 +16,11 @@
 ;;; ====================================================================
 
 
+;;; ---- Endpoint ----
+
+(defvar *interactions-api-url*
+  "https://generativelanguage.googleapis.com/v1beta/interactions")
+
 ;;; ---- Internal utilities ----
 
 (defun %make-tools-list (function-declarations &optional google-search-p)

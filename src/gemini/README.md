@@ -7,6 +7,26 @@ This library provides a Common Lisp interface to Google's Gemini Large Language 
 
 This project was originally forked from a library for Perplexity AI in the book [Loving Common Lisp](https://leanpub.com/lovinglisp) by Mark Watson.
 
+## Relationship to litelm
+
+The **litelm** routing library (in this repository at `../litelm`) already covers ordinary
+Gemini text generation and embeddings, by routing a `"gemini/..."` model string to
+Google's OpenAI-compatible endpoints — for those, prefer
+`(litelm:completion "gemini/gemini-3-flash-preview" :messages prompt)`.
+
+This library is therefore **not redundant**: it exists for the Gemini capabilities that
+are native to Google's API and so fall outside the OpenAI-compatible surface litelm
+speaks:
+
+- **Google Search grounding** (`generate-with-search`) and the **citations** returned with
+  it (`generate-with-search-and-citations`)
+- **Token counting** (`count-tokens`), via the native `:countTokens` action
+- **The Interactions API** (`generate-with-tools`, `continue-with-function-responses`),
+  which mixes Google's built-in search tool with client-side function calls across turns
+
+Reach for litelm when you want plain generation or embeddings; reach for this library
+when you need search grounding, citations, token counts, or platform tools.
+
 ## Setting your GOOGLE_API_KEY API key
 
 Define the `GOOGLE_API_KEY` environment variable with the value of your Google API key. You can obtain an API key from the [Google AI Studio](https://aistudio.google.com/app/apikey).
