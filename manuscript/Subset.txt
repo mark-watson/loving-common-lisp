@@ -36,7 +36,6 @@ RAG.md
 prompts.md
 gemini.md
 autocontext.md
-agent_part2.md
 text-adventure-game.md
 wolfram.md
 symbolic-math.md
