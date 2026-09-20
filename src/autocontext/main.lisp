@@ -5,7 +5,11 @@
   (:use #:cl #:bm25)
   (:export #:auto-context
            #:get-prompt
-           #:run-example))
+           #:run-example
+           #:ask-with-context
+           #:ask-example
+           #:*chat-model*
+           #:*default-data-directory*))
 
 (in-package #:autocontext)
 
@@ -13,6 +17,18 @@
   ((chunks :reader chunks :initarg :chunks :documentation "A list of original text chunks.")
    (bm25-index :reader bm25-index :initarg :bm25-index :documentation "The BM25 sparse index.")
    (chunk-embeddings :reader chunk-embeddings :initarg :chunk-embeddings :documentation "A magicl matrix of dense embeddings.")))
+
+;;; Configuration
+
+(defparameter *system-directory*
+  (asdf:system-relative-pathname :autocontext "")
+  "Directory holding this system's source files. Resolving it through ASDF
+   means the Python helper is found no matter what the REPL's current
+   directory is.")
+
+(defparameter *default-data-directory*
+  (asdf:system-relative-pathname :autocontext "../data/")
+  "Directory of sample .txt files used by RUN-EXAMPLE.")
 
 ;;; Initialization
 
@@ -37,11 +53,12 @@
 
 (defun list-txt-files-in-directory (dir-path)
   "Return a list of pathnames for *.txt files in the directory given by DIR-PATH (a string or pathname)."
-  (let* ((base (uiop:parse-native-namestring dir-path))
-         ;; ensure base is a directory pathname
-         (dir (uiop:ensure-directory-pathname base))
+  (let* ((dir (uiop:ensure-directory-pathname
+               (if (pathnamep dir-path)
+                   dir-path
+                   (uiop:parse-native-namestring dir-path))))
          ;; create a wildcard pathname for *.txt under that directory
-         (pattern (uiop:merge-pathnames* 
+         (pattern (uiop:merge-pathnames*
                     (make-pathname :name :wild :type "txt")
                     dir)))
     (directory pattern)))
@@ -82,10 +99,14 @@
     chunks));;; Embedding Generation (Interface to Python)
 
 (defun generate-embeddings (text-list)
-  "Calls the Python script to generate embeddings for a list of strings."
+  "Calls the Python script to generate embeddings for a list of strings.
+   The command is passed as a list of arguments (it never goes through a
+   shell), and :DIRECTORY pins uv's working directory so it finds both
+   pyproject.toml and generate_embeddings.py."
   (let* ((input-string (format nil "~{~a~%~}" text-list))
-         (command "uv run generate_embeddings.py")
+         (command (list "uv" "run" "generate_embeddings.py"))
          (json-output (uiop:run-program command
+                                        :directory *system-directory*
                                         :input (make-string-input-stream input-string)
                                         :output :string)))
     (let* ((parsed (yason:parse json-output))
@@ -114,10 +135,10 @@
 
   ;; 1. Sparse Search (BM25)
   (let* ((query-tokens (tokenize query))
-         (bm25-docs (bm25:get-top-n (bm25-index ac) query-tokens num-results))
-         (bm25-results (mapcar (lambda (tokens) (format nil "~{~a~^ ~}" tokens)) bm25-docs)))
-    (format t "~&BM25 found ~d keyword-based results." (length bm25-results))
-    ;;(format t "~%~%bm25-results:~%~A~%~%" bm25-results)
+         (bm25-hits (bm25:get-top-n (bm25-index ac) query-tokens num-results))
+         (bm25-indices (mapcar #'cdr bm25-hits)))
+    (format t "~&BM25 found ~d keyword-based results." (length bm25-indices))
+    ;;(format t "~%~%bm25-hits:~%~A~%~%" bm25-hits)
 
      ;; 2. Dense Search (Vector Similarity)
      (let* ((query-embedding-matrix (generate-embeddings (list query)))
@@ -128,26 +149,65 @@
                                                                  (get-row-vector all-embeddings i))
                                               i)))
             (sorted-sim (sort similarities #'> :key #'car))
-            (top-indices (mapcar #'cdr (subseq sorted-sim 0 (min num-results (length sorted-sim)))))
-            (vector-results (mapcar (lambda (i) (nth i (chunks ac))) top-indices)))
-       (format t "~&Vector search found ~d semantic-based results." (length vector-results))
-       ;;(format t "~%~%vector-results:~%~A~%~%" vector-results)
+            (vector-indices (mapcar #'cdr (subseq sorted-sim 0 (min num-results (length sorted-sim))))))
+       (format t "~&Vector search found ~d semantic-based results." (length vector-indices))
+       ;;(format t "~%~%vector-indices:~%~A~%~%" vector-indices)
 
-       ;; 3. Combine and deduplicate
-       (let* ((combined (append bm25-results vector-results))
-              (unique-results (remove-duplicates combined :test #'string= :from-end t)))
+       ;; 3. Combine and deduplicate. Both retrievers index the same chunk
+       ;; list, so a chunk found by both is a single index: deduplicating on
+       ;; the index merges the two hits, where comparing their *text* could
+       ;; not (BM25 used to hand back re-joined tokens, which never string=
+       ;; the original chunk). The surviving chunks are taken from CHUNKS,
+       ;; so every passage in the prompt is the original text.
+       (let* ((unique-indices (remove-duplicates
+                               (append bm25-indices vector-indices)))
+              (unique-results (mapcar (lambda (i) (nth i (chunks ac)))
+                                      unique-indices)))
          (format t "~&Combined and deduplicated, we have ~d context chunks." (length unique-results))
 
-         ;; 4. Format the final prompt
-         (format nil "Based on the following context, please answer the question:~%~A~2%--- CONTEXT ---~%~{~a~^~%---~%~}--- END CONTEXT ---~2%Question: ~a~%Answer:"
+         ;; 4. Format the final prompt. ~{~a~%---~%~} puts a separator after
+         ;; every chunk; the ~^ form used previously omitted it after the
+         ;; last one, welding that chunk onto the END CONTEXT marker.
+         (format nil "Based on the following context, please answer the question:~%~A~2%--- CONTEXT ---~%~{~a~%---~%~}--- END CONTEXT ---~2%Question: ~a~%Answer:"
                  query unique-results query)))))
 
 ;;; Example Usage
 
 
-(defun test2 ()
-  "A simple top-level function to demonstrate the system."
-  (let* ((ac (make-instance 'auto-context :directory-path "../data"))
+(defun run-example ()
+  "A simple top-level function to demonstrate the system. Prints the
+   generated prompt and returns it, so callers can pass it to a model."
+  (let* ((ac (make-instance 'auto-context
+                            :directory-path *default-data-directory*))
          (query "who says that economics is bullshit?")
          (prompt (get-prompt ac query :num-results 2)))
-      (format t "~&~%--- Generated Prompt for LLM ---~%~a" prompt)))
+    (format t "~&~%--- Generated Prompt for LLM ---~%~a~%" prompt)
+    prompt))
+
+;;; End-to-end: send the prompt to a model
+
+(defparameter *chat-model* "ollama/qwen3.5:4b"
+  "Model used by ASK-WITH-CONTEXT and ASK-EXAMPLE, written as a litelm
+   \"provider/model\" string. The default runs locally through Ollama, so no
+   API key is needed; change the provider prefix to route elsewhere.")
+
+(defun ask-with-context (ac question &key (model *chat-model*) (num-results 5))
+  "Build a context prompt for QUESTION with GET-PROMPT, send it to MODEL
+   through litelm, and return the model's answer as a string."
+  (let ((prompt (get-prompt ac question :num-results num-results)))
+    (format t "~&~%--- Sending ~d-character prompt to ~a ---~%"
+            (length prompt) model)
+    (litelm:response-content (litelm:completion model :messages prompt))))
+
+(defun ask-example (&key (model *chat-model*))
+  "Run the demo end to end: build the sample corpus, generate a prompt for
+   the demo query, and have MODEL answer it. Needs a reachable model -- the
+   default is a local Ollama server. Returns the answer string."
+  (let* ((ac (make-instance 'auto-context
+                            :directory-path *default-data-directory*))
+         (answer (ask-with-context ac
+                                   "who says that economics is bullshit?"
+                                   :model model
+                                   :num-results 2)))
+    (format t "~&~%--- Answer ---~%~a~%" answer)
+    answer))

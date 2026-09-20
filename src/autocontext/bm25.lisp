@@ -38,17 +38,18 @@
                    :b b)))
 
 (defmethod get-top-n ((index bm25-index) query-tokens n)
-  "Returns the top N documents from the corpus for a given query."
-  (let ((scores (loop for doc in (corpus index)
-                      for i from 0
+  "Returns up to N (score . document-index) pairs for a given query,
+    sorted by descending score. The index is the document's position in
+    the tokenized corpus that built this index, which is also its position
+    in the caller's own chunk list. Returning the index (rather than the
+    token list) lets callers map a hit straight back to the original text
+    and deduplicate hits against other retrievers by identity."
+  (let ((scores (loop for i from 0 below (length (corpus index))
                       collect (cons (score-doc index query-tokens i) i))))
     ;; Sort by score descending
     (let* ((sorted-scores (sort scores #'> :key #'car))
            (top-scores (subseq sorted-scores 0 (min n (length sorted-scores)))))
-      ;; Return the original documents, not the tokenized versions
-      (mapcar (lambda (score-pair)
-                (nth (cdr score-pair) (slot-value index 'corpus)))
-              top-scores))))
+      top-scores)))
 
 ;;; Internal methods
 
