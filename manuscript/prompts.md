@@ -54,7 +54,7 @@ Steve Jobes founded Apple Computer and Bill Gates started Microsoft. Seattle is 
 Steve lived in Palo Alto. Palo Alto is located in California.
 ```
 
-ChatGPT 4 returns:
+GPT returns:
 
 ```
 entities
@@ -106,7 +106,7 @@ Sam has a brother Mike. Suzy has a sister Sally. Suszy ahs a mother Jill, and a 
 Mike is in San Diego. Sam is located is Oakland. Suzy's family all live in Los Angeles.
 ```
 
-ChatGPT 4 results are:
+GPT results are:
 
 ```
 Based on the provided list of relationships, here is the processed text with an index for each unique relationship:
@@ -160,7 +160,7 @@ Sam has a brother Mike. Suzy has a sister Sally. Suszy ahs a mother Jill, and a 
 Mike is in San Diego. Sam is located is Oakland. Suzy's family all live in Los Angeles.
 ```
 
-The ChatGPT 4 output is:
+The GPT output is:
 
 ```
 First, we create the indexed list of unique relationships:
@@ -225,7 +225,7 @@ Sam has a brother Mike. Suzy has a sister Sally. Suzy has a mother Jill, and a f
 Mike is in San Diego. Sam is located is Oakland. Suzy's family all live in Los Angeles.
 ```
 
-The ChatGPT 4 output is:
+The GPT output is:
 
 ```json
 {
@@ -284,6 +284,6 @@ In this template, I like to ask the LLM to repeat the list of topics (or classif
 
 ## Prompt Engineering Wrapup
 
-When you experiment with the examples in this chapter you can both use the ChatGPT web interface to modify and develop prompts and you can also revisit the chapter on OpenAI APIs and experiment with prompts programmatically. My personal preference is to perform initial experiments with the ChatGPT web interface but to do most of the iterative prompt development in Emacs with a SLIME REPL. 
+When you experiment with the examples in this chapter you can both use the Gemini, Claude, or ChatGPT web interface to modify and develop prompts and you can also revisit the chapter on OpenAI APIs and experiment with prompts programmatically. My personal preference is to perform initial experiments with the ChatGPT web interface but to do most of the iterative prompt development in Emacs with a SLIME REPL. 
 
 I mentioned earlier Andrew Ng's and Isa Fulford's one hour prompt engineering class. The devote time and provide good advice on interactive developement. Their examples use the Python language.
