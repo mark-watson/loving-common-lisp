@@ -4,27 +4,45 @@
 ;;; to list and read files from the filesystem via Lisp.
 
 (require :asdf)
-(push (make-pathname :directory (pathname-directory
-                                  (make-pathname
-                                    :directory (butlast (pathname-directory *load-pathname*)))))
+;; Register the directory that holds webkit-cl.asd — the parent of examples/.
+;; *load-truename* is absolute, so this works from any current directory.
+(push (make-pathname
+       :directory (butlast (pathname-directory
+                            (or *load-truename* *load-pathname*))))
       asdf:*central-registry*)
 (asdf:load-system :webkit-cl)
 
 ;;; ── Bridge Handlers ────────────────────────────────────────────
 
+(defun read-text-file (path)
+  "Return the entire contents of PATH as a string, decoded as UTF-8.
+
+   FILE-LENGTH cannot be used to size the buffer: for a character stream it
+   reports the length in *bytes*, so a file containing multi-byte characters
+   would produce a string padded with NULs. Reading in chunks until EOF is
+   correct regardless of how many bytes each character occupies."
+  (with-open-file (stream path
+                          :direction :input
+                          :element-type 'character
+                          :external-format :utf-8)
+    (with-output-to-string (out)
+      (let ((buffer (make-string 8192)))
+        (loop for count = (read-sequence buffer stream)
+              while (plusp count)
+              do (write-string buffer out :end count))))))
+
 (webkit-cl:register-handler "read-file"
   (lambda (payload)
     (let ((path (cdr (assoc :path payload))))
-      (if (and path (probe-file path))
-          (let ((content (with-open-file (s path :direction :input)
-                           (let ((data (make-string (file-length s))))
-                             (read-sequence data s)
-                             data))))
-            (format nil "{\"content\": ~a, \"path\": ~a}"
-                    (json:encode-json-to-string content)
-                    (json:encode-json-to-string path)))
-          (format nil "{\"error\": \"File not found: ~a\"}"
-                  (or path "nil"))))))
+      (if (and (stringp path) (probe-file path))
+          (format nil "{\"content\": ~a, \"path\": ~a}"
+                  (json:encode-json-to-string (read-text-file path))
+                  (json:encode-json-to-string path))
+          ;; Encode the message with cl-json so a path containing a quote
+          ;; or backslash cannot produce malformed JSON.
+          (format nil "{\"error\": ~a}"
+                  (json:encode-json-to-string
+                   (format nil "File not found: ~a" (or path "nil"))))))))
 
 (webkit-cl:register-handler "list-files"
   (lambda (payload)

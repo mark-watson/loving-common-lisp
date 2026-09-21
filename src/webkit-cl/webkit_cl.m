@@ -16,10 +16,18 @@
 
 /* ── Internal App Structure ──────────────────────────────────── */
 
+/* WKWebView's navigationDelegate property is weak, so the app has to keep its
+   own strong reference or the delegate is deallocated the moment wkcl_create
+   returns.  Forward declaration needed because the class is defined below. */
+@class WKCLNavigationDelegate;
+
+/* The object fields below are ARC-strong, but ARC has no destructor for a C
+   struct: clearing them is the job of wkcl_destroy. */
 typedef struct {
     NSWindow*             window;
     WKWebView*            webview;
-    WKUserContentController* content_controller;
+    WKUserContentController* content_controller;   /* retains the bridge handler */
+    WKCLNavigationDelegate* navigation_delegate;   /* WKWebView only holds this weakly */
     wkcl_bridge_callback_t bridge_callback;
     void*                 bridge_userdata;
     NSString*             pending_html;
@@ -203,9 +211,10 @@ wkcl_app_t wkcl_create(const char* title, int width, int height) {
                                       configuration:config];
     app->webview.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 
-    /* Navigation delegate */
-    WKCLNavigationDelegate *navDelegate = [[WKCLNavigationDelegate alloc] init];
-    app->webview.navigationDelegate = navDelegate;
+    /* Navigation delegate.  WKWebView holds this weakly, so the app struct
+       keeps the strong reference that keeps it alive. */
+    app->navigation_delegate = [[WKCLNavigationDelegate alloc] init];
+    app->webview.navigationDelegate = app->navigation_delegate;
 
     /* Create the window */
     NSUInteger styleMask = NSWindowStyleMaskTitled
@@ -268,7 +277,22 @@ void wkcl_quit(wkcl_app_t handle) {
 void wkcl_destroy(wkcl_app_t handle) {
     if (!handle) return;
     wkcl_app_internal *app = (wkcl_app_internal*)handle;
-    /* ARC handles Objective-C object cleanup */
+
+    /* ARC manages retain/release for the object fields, but it cannot destroy
+       a C struct, so calling free() alone would leak the window, the web view,
+       the content controller and every string.  Assigning NIL to a strong
+       struct member releases the previous value, so clear them all first.
+       Releasing the content controller also releases the bridge handler it
+       retains. */
+    app->window              = nil;
+    app->webview             = nil;
+    app->content_controller  = nil;
+    app->navigation_delegate = nil;
+    app->pending_html        = nil;
+    app->pending_url         = nil;
+    app->pending_file        = nil;
+    app->title               = nil;
+
     free(app);
 }
 

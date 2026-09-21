@@ -9,9 +9,11 @@
 ;;; process commands and return JSON responses.
 
 (require :asdf)
-(push (make-pathname :directory (pathname-directory
-                                  (make-pathname
-                                    :directory (butlast (pathname-directory *load-pathname*)))))
+;; Register the directory that holds webkit-cl.asd — the parent of examples/.
+;; *load-truename* is absolute, so this works from any current directory.
+(push (make-pathname
+       :directory (butlast (pathname-directory
+                            (or *load-truename* *load-pathname*))))
       asdf:*central-registry*)
 (asdf:load-system :webkit-cl)
 

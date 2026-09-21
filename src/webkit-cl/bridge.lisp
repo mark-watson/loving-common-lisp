@@ -74,7 +74,18 @@
 
    Example:
      (json-response :message \"hello\" :count 42)
-     => {\"message\":\"hello\",\"count\":42}"
-  (json:encode-json-to-string
-   (loop for (key val) on pairs by #'cddr
-         collect (cons key val))))
+     => {\"message\":\"hello\",\"count\":42}
+
+   Note: build the object with cl-json's streaming API rather than by
+   handing it an alist.  An alist entry whose value is NIL collapses to
+   the one-element list (KEY), which cl-json encodes as a JSON *array*
+   instead of an object member — so (json-response :a nil) would come out
+   as [[\"a\"]] rather than {\"a\":null}."
+  (assert (evenp (length pairs)) (pairs)
+          "JSON-RESPONSE needs an even number of arguments, got ~d."
+          (length pairs))
+  (with-output-to-string (out)
+    (json:with-object (out)
+      (loop for (key val) on pairs by #'cddr
+            do (json:as-object-member (key out)
+                 (json:encode-json val out))))))

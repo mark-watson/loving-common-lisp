@@ -4,7 +4,7 @@ In this chapter we build native macOS desktop applications using Common Lisp and
 
 **Note 1: This library works only on macOS. It requires SBCL, CFFI, and cl-json.**
 
-**Note 1: This example was vibe coded with AntiGravity and Claude Opus 4.6.**
+**Note 2: This example was vibe coded with AntiGravity and Claude Opus 4.6.**
 
 ## Architecture Overview
 
@@ -334,8 +334,18 @@ The simplest webkit-cl app loads inline HTML into a native window:
 
 {lang="lisp",linenos=off}
 ~~~~~~~~
+;;; hello-world.lisp — Minimal webkit-cl example
+;;;
+;;; Displays a styled HTML page in a native macOS window.
+;;; This is the simplest possible webkit-cl app.
+
+;; Load the system
 (require :asdf)
-(push (make-pathname :directory (pathname-directory *load-pathname*))
+;; Register the directory that holds webkit-cl.asd — the parent of examples/.
+;; *load-truename* is absolute, so this works from any current directory.
+(push (make-pathname
+       :directory (butlast (pathname-directory
+                            (or *load-truename* *load-pathname*))))
       asdf:*central-registry*)
 (asdf:load-system :webkit-cl)
 
@@ -348,31 +358,43 @@ The simplest webkit-cl app loads inline HTML into a native window:
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
     color: #e0e0e0;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
+    overflow: hidden;
   }
   .card {
     text-align: center;
     background: rgba(255,255,255,0.05);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 24px;
     padding: 48px 64px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    animation: fadeIn 0.8s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
   }
   h1 {
     font-size: 2.5em;
+    font-weight: 700;
     background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 12px;
   }
-  p { font-size: 1.1em; color: rgba(255,255,255,0.6); }
+  p {
+    font-size: 1.1em;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
   .badge {
     display: inline-block;
     margin-top: 20px;
@@ -411,18 +433,10 @@ This example demonstrates bidirectional communication. Lisp manages the applicat
 
 {lang="lisp",linenos=off}
 ~~~~~~~~
-(require :asdf)
-(push (make-pathname :directory (pathname-directory
-                                  (make-pathname
-                                    :directory (butlast
-                                      (pathname-directory *load-pathname*)))))
-      asdf:*central-registry*)
-(asdf:load-system :webkit-cl)
-
-;;; Application State
 (defvar *counter* 0)
 
-;;; Bridge Handlers
+;;; ── Bridge Handlers ────────────────────────────────────────────
+
 (webkit-cl:register-handler "increment"
   (lambda (payload)
     (declare (ignore payload))
@@ -441,6 +455,11 @@ This example demonstrates bidirectional communication. Lisp manages the applicat
     (setf *counter* 0)
     (format nil "{\"count\": ~d}" *counter*)))
 
+(webkit-cl:register-handler "get-count"
+  (lambda (payload)
+    (declare (ignore payload))
+    (format nil "{\"count\": ~d}" *counter*)))
+
 (webkit-cl:register-handler "get-system-info"
   (lambda (payload)
     (declare (ignore payload))
@@ -454,14 +473,42 @@ Each handler receives a parsed JSON payload (an alist from `cl-json`) and return
 
 {lang="javascript",linenos=off}
 ~~~~~~~~
+const display = document.getElementById('counter');
+const info = document.getElementById('info');
+
+function updateDisplay(count) {
+  display.textContent = count;
+  display.classList.add('bump');
+  setTimeout(() => display.classList.remove('bump'), 150);
+}
+
 async function increment() {
   const result = await window.webkit_cl.invoke('increment', {});
   updateDisplay(result.count);
 }
 
-// On startup, query the Lisp runtime
-const sysInfo = await window.webkit_cl.invoke('get-system-info', {});
-info.innerHTML = 'Powered by ' + sysInfo.lisp + ' ' + sysInfo.version;
+async function decrement() {
+  const result = await window.webkit_cl.invoke('decrement', {});
+  updateDisplay(result.count);
+}
+
+async function reset() {
+  const result = await window.webkit_cl.invoke('reset', {});
+  updateDisplay(result.count);
+}
+
+// Load system info on startup
+setTimeout(async () => {
+  try {
+    const sysInfo = await window.webkit_cl.invoke('get-system-info', {});
+    info.innerHTML =
+      'Powered by <span>' + sysInfo.lisp + ' ' + sysInfo.version + '</span>' +
+      '<br>Architecture: <span>' + sysInfo.machine + '</span>';
+  } catch(e) {
+    info.textContent = 'JS ↔ Lisp bridge active';
+  }
+}, 500);
+  
 ~~~~~~~~
 
 The counter value lives entirely in Lisp — JavaScript only renders it. This pattern cleanly separates application logic (Lisp) from presentation (HTML/CSS/JS).
@@ -479,19 +526,35 @@ The most complete example demonstrates filesystem access through the bridge. Two
 
 {lang="lisp",linenos=off}
 ~~~~~~~~
+(defun read-text-file (path)
+  "Return the entire contents of PATH as a string, decoded as UTF-8.
+
+   FILE-LENGTH cannot be used to size the buffer: for a character stream it
+   reports the length in *bytes*, so a file containing multi-byte characters
+   would produce a string padded with NULs. Reading in chunks until EOF is
+   correct regardless of how many bytes each character occupies."
+  (with-open-file (stream path
+                          :direction :input
+                          :element-type 'character
+                          :external-format :utf-8)
+    (with-output-to-string (out)
+      (let ((buffer (make-string 8192)))
+        (loop for count = (read-sequence buffer stream)
+              while (plusp count)
+              do (write-string buffer out :end count))))))
+
 (webkit-cl:register-handler "read-file"
   (lambda (payload)
     (let ((path (cdr (assoc :path payload))))
-      (if (and path (probe-file path))
-          (let ((content (with-open-file (s path :direction :input)
-                           (let ((data (make-string (file-length s))))
-                             (read-sequence data s)
-                             data))))
-            (format nil "{\"content\": ~a, \"path\": ~a}"
-                    (json:encode-json-to-string content)
-                    (json:encode-json-to-string path)))
-          (format nil "{\"error\": \"File not found: ~a\"}"
-                  (or path "nil"))))))
+      (if (and (stringp path) (probe-file path))
+          (format nil "{\"content\": ~a, \"path\": ~a}"
+                  (json:encode-json-to-string (read-text-file path))
+                  (json:encode-json-to-string path))
+          ;; Encode the message with cl-json so a path containing a quote
+          ;; or backslash cannot produce malformed JSON.
+          (format nil "{\"error\": ~a}"
+                  (json:encode-json-to-string
+                   (format nil "File not found: ~a" (or path "nil"))))))))
 
 (webkit-cl:register-handler "list-files"
   (lambda (payload)
@@ -504,31 +567,73 @@ The most complete example demonstrates filesystem access through the bridge. Two
                       files)))))
 ~~~~~~~~
 
-The `read-file` handler uses `json:encode-json-to-string` to safely escape file contents for JSON embedding. The `list-files` handler uses `directory` with a wildcard pattern and the format directive `~{~a~^, ~}` to build a JSON array from the results.
+Reading a file correctly takes a little care. The obvious idiom — size a string with `file-length` and fill it with `read-sequence` — is wrong for text: `file-length` reports the length of a *character* stream in **bytes**, so any file containing multi-byte characters yields a string padded with NULs. Reading in chunks until `read-sequence` returns zero works for every file, whatever the byte-to-character ratio, which is why `read-text-file` does it that way. The `:external-format :utf-8` argument makes the decoding explicit.
 
-The UI is a split-pane layout with a file sidebar and content area. JavaScript calls the bridge on startup:
+Both handlers then hand their results to `json:encode-json-to-string` rather than interpolating them with `~a`. That matters for the file contents *and* for the error message: a path containing a double quote or a backslash would otherwise produce malformed JSON and the Promise on the JavaScript side would reject. The `list-files` handler uses `directory` with a wildcard pattern and the format directive `~{~a~^, ~}` to build a JSON array from the results.
+
+The UI is a split-pane layout with a file sidebar and content area. JavaScript calls the bridge on startup. Note that every value that reaches `innerHTML` — file names, paths, file contents, error text — is passed through `escapeHtml` first, and single quotes in a file name are escaped before being embedded in the `onclick` attribute:
 
 {lang="javascript",linenos=off}
 ~~~~~~~~
+const fileList = document.getElementById('file-list');
+const content = document.getElementById('content');
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+}
+
+function basename(path) {
+  return path.split('/').pop();
+}
+
 async function loadFileList() {
-  const result = await window.webkit_cl.invoke('list-files',
-                                                { directory: '.' });
-  if (result.files && result.files.length > 0) {
-    fileList.innerHTML = result.files.map(f =>
-      '<div class="file-item" onclick="loadFile(\'' + f + '\')">' +
-      '<div class="name">' + basename(f) + '</div>' +
-      '</div>'
-    ).join('');
+  try {
+    const result = await window.webkit_cl.invoke('list-files', { directory: '.' });
+    if (result.files && result.files.length > 0) {
+      fileList.innerHTML = result.files.map(f =>
+        '<div class="file-item" onclick="loadFile(\'' + f.replace(/'/g, '\\\'') + '\')">' +
+        '<div class="name">' + escapeHtml(basename(f)) + '</div>' +
+        '<div class="path">' + escapeHtml(f) + '</div>' +
+        '</div>'
+      ).join('');
+    } else {
+      fileList.innerHTML =
+        '<div class="empty-state" style="height:200px;font-size:0.85rem;">' +
+        'No .md files found</div>';
+    }
+  } catch(e) {
+    fileList.innerHTML =
+      '<div class="empty-state" style="height:200px;font-size:0.85rem;">' +
+      'Error: ' + e + '</div>';
   }
 }
 
 async function loadFile(path) {
-  const result = await window.webkit_cl.invoke('read-file',
-                                                { path: path });
-  if (result.content) {
-    content.innerHTML = '<pre>' + escapeHtml(result.content) + '</pre>';
+  // Highlight active item
+  document.querySelectorAll('.file-item').forEach(el => {
+    el.classList.remove('active');
+    if (el.querySelector('.path').textContent === path) {
+      el.classList.add('active');
+    }
+  });
+
+  try {
+    const result = await window.webkit_cl.invoke('read-file', { path: path });
+    if (result.error) {
+      content.innerHTML = '<div class="empty-state">' + escapeHtml(result.error) + '</div>';
+    } else {
+      content.innerHTML = '<pre>' + escapeHtml(result.content) + '</pre>';
+    }
+  } catch(e) {
+    content.innerHTML = '<div class="empty-state">Error loading file</div>';
   }
 }
+
+// Load file list on startup
+setTimeout(loadFileList, 300);
+  
 ~~~~~~~~
 
 Run it with:
@@ -538,24 +643,58 @@ Run it with:
 sbcl --load examples/markdown-viewer.lisp
 ~~~~~~~~
 
-This opens a native window with a dark sidebar listing `.md` files from the current directory. Clicking a file reads its content via the Lisp bridge and displays it in a styled code panel.
+This opens a native window with a dark sidebar listing `.md` files from the current directory. Clicking a file reads its content via the Lisp bridge and displays it in a styled code panel. Try it on a file containing accented letters, em dashes or CJK text — the UTF-8 path is exercised by any of them.
 
 ## API Reference Summary
 
 The webkit-cl public API:
 
+**App lifecycle**
+
 | Function | Description |
 |---|---|
 | `(with-app (&key title width height) &body body)` | Create app, run body, enter event loop, auto-cleanup |
-| `(load-html html)` | Load inline HTML string |
-| `(load-url url)` | Navigate to a URL |
-| `(load-file path)` | Load a local HTML file |
-| `(eval-js js-string)` | Evaluate JavaScript (fire-and-forget) |
+| `(make-app &key title width height)` | Create the window and install the bridge callback; does not run |
+| `(app-run app)` | Show the window and enter the event loop (blocks) |
+| `(app-quit &optional app)` | Request the application to quit |
+| `(app-destroy app)` | Destroy the app and free native resources |
+
+**Content loading**
+
+| Function | Description |
+|---|---|
+| `(load-html html &optional app)` | Load inline HTML string |
+| `(load-url url &optional app)` | Navigate to a URL |
+| `(load-file path &optional app)` | Load a local HTML file |
+
+**JavaScript**
+
+| Function | Description |
+|---|---|
+| `(eval-js js-string &optional app)` | Evaluate JavaScript (fire-and-forget) |
+
+**Bridge**
+
+| Function | Description |
+|---|---|
 | `(register-handler name fn)` | Register a bridge command handler |
 | `(unregister-handler name)` | Remove a bridge command handler |
-| `(set-title title)` | Change window title |
-| `(set-size width height)` | Resize window |
-| `(set-resizable flag)` | Toggle window resizability |
+
+**Window management**
+
+| Function | Description |
+|---|---|
+| `(set-title title &optional app)` | Change window title |
+| `(set-size width height &optional app)` | Resize window |
+| `(set-resizable flag &optional app)` | Toggle window resizability |
+
+**App accessors**
+
+| Name | Description |
+|---|---|
+| `*current-app*` | The app bound for the duration of `app-run` and `with-app` |
+| `(app-handle app)` | The underlying `wkcl_app_t` foreign pointer |
+| `(app-title app)`, `(app-width app)`, `(app-height app)` | The struct slots |
 
 From JavaScript, call Lisp handlers with:
 

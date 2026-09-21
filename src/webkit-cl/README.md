@@ -65,7 +65,7 @@ sbcl --load examples/hello-world.lisp
 # Counter app — bridge demo with JS ↔ Lisp communication
 sbcl --load examples/counter-app.lisp
 
-# Markdown viewer — load HTML from file
+# Markdown viewer — inline UI, filesystem access through the bridge
 sbcl --load examples/markdown-viewer.lisp
 ```
 
@@ -126,7 +126,7 @@ webkit-cl/
 └── examples/
     ├── hello-world.lisp      # Minimal inline HTML example
     ├── counter-app.lisp      # Interactive counter with bridge
-    └── markdown-viewer.lisp  # Local HTML file viewer
+    └── markdown-viewer.lisp  # File browser driven by the Lisp bridge
 ```
 
 ## License
