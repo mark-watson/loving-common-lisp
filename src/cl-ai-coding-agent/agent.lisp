@@ -22,7 +22,6 @@
     "debugger invoked"
     "Unhandled"
     "HANDLER-BIND"
-    "The value"
     "is not of type"
     "UNDEFINED-FUNCTION"
     "SIMPLE-ERROR"
@@ -31,19 +30,23 @@
     "UNBOUND-VARIABLE"
     "SB-INT:SIMPLE-READER-ERROR"
     "Traceback (most recent call last)"
-    "at .* line [0-9]+"
     "Exception in thread"
     "Error:"
     "Stack trace:")
-  "Patterns indicating the input contains a
-   stacktrace or error message.")
+  "Literal substrings -- not regular expressions -- that
+   indicate the input contains a stacktrace or error
+   message.  STACKTRACE-P searches with SEARCH, so a pattern
+   written as a regex would silently never match.")
 
 (defun stacktrace-p (text)
   "Return T if TEXT likely contains a stacktrace
-   or Common Lisp error output."
-  (some (lambda (pat)
-          (search pat text :test #'char-equal))
-        *stacktrace-patterns*))
+   or Common Lisp error output, and NIL otherwise."
+  ;; SOME returns the value SEARCH produced, which is a match
+  ;; position, so coerce it to a real boolean.
+  (and (some (lambda (pat)
+               (search pat text :test #'char-equal))
+             *stacktrace-patterns*)
+       t))
 
 ;;; ---- System prompt construction ----
 
@@ -152,6 +155,9 @@ use write_file, do not just print the code.
 
 ;;; ---- Interactive REPL ----
 
+(defparameter *whitespace* '(#\Space #\Tab #\Newline #\Return)
+  "Characters trimmed from REPL input.")
+
 (defun coding-agent-repl ()
   "Start an interactive REPL for the coding agent.
    Type 'quit' or 'exit' to leave."
@@ -159,22 +165,20 @@ use write_file, do not just print the code.
   (loop
     (format t "~&> ")
     (finish-output)
-    (let ((input (read-line *standard-input*
-                            nil nil)))
-      (when (or (null input)
-                (string-equal (string-trim
-                               '(#\Space) input)
-                              "quit")
-                (string-equal (string-trim
-                               '(#\Space) input)
-                              "exit"))
+    (let ((input (read-line *standard-input* nil nil)))
+      (when (null input)
         (format t "~&Goodbye.~%")
         (return))
-      (let ((trimmed (string-trim '(#\Space) input)))
-        (when (plusp (length trimmed))
-          (let ((response
-                 (handler-case
-                     (coding-agent-query trimmed)
-                   (error (e)
-                     (format nil "Error: ~A" e)))))
-            (format t "~&~A~%" response)))))))
+      (let ((trimmed (string-trim *whitespace* input)))
+        (cond
+          ((member trimmed '("quit" "exit")
+                   :test #'string-equal)
+           (format t "~&Goodbye.~%")
+           (return))
+          ((plusp (length trimmed))
+           (let ((response
+                  (handler-case
+                      (coding-agent-query trimmed)
+                    (error (e)
+                      (format nil "Error: ~A" e)))))
+             (format t "~&~A~%" response))))))))

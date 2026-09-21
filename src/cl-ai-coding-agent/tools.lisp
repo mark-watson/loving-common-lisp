@@ -6,9 +6,16 @@
 (defun tool-list-directory (dir)
   "List files and subdirectories in DIR.
    Excludes hidden and backup entries.
-   Returns a newline-separated string of pathnames."
-  (let* ((resolved (uiop:ensure-directory-pathname
-                    (or dir ".")))
+   Returns a newline-separated string of names
+   relative to DIR."
+  ;; TRUENAME canonicalises the directory.  Without it a relative
+  ;; argument such as \".\" stays relative, and ENOUGH-NAMESTRING cannot
+  ;; strip an absolute entry name against a relative default -- so the
+  ;; model would receive full absolute paths instead of relative ones.
+  ;; It also turns a misspelled directory into an error rather than an
+  ;; empty listing.
+  (let* ((resolved (truename
+                    (uiop:ensure-directory-pathname (or dir "."))))
          (entries
           (append (uiop:directory-files resolved)
                   (uiop:subdirectories resolved))))
@@ -78,11 +85,18 @@
    litelm:response-tool-calls.
    Returns a string result."
   (let* ((name (getf fc :name))
-         (args (or (getf fc :arguments)
-                   (getf fc :args)))
+         (args (getf fc :arguments))
          (get-arg (lambda (key)
-                    (cdr (assoc key args
-                                :test #'string-equal)))))
+                    (let ((pair (assoc key args
+                                       :test #'string-equal)))
+                      ;; Report a missing argument by name.  Letting NIL
+                      ;; reach the tool would surface a raw SBCL type error
+                      ;; ("NIL is not of type ...") instead of something the
+                      ;; model can act on.
+                      (unless (and pair (cdr pair))
+                        (error "Missing required argument ~S for tool ~A"
+                               key name))
+                      (cdr pair)))))
     (handler-case
         (cond
           ((string-equal name "list_directory")

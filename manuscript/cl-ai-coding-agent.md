@@ -1,8 +1,8 @@
 # Building an AI Coding Assistant for Common Lisp
 
-In the previous chapter we built a general-purpose multi-agent framework with a tool registry, context objects, and a JSON-based action protocol.
+Earlier chapters built the pieces this one assembles: the `litelm` chapter introduced the provider-neutral model client, and the previous chapter wrapped a persistent SQLite cache in a small Common Lisp API.
 
-In this chapter we build `cl-ai-coding-agent`, a focused coding assistant that uses the `litelm` library from the previous `litelm` chapter. The `litelm` library speaks the OpenAI-compatible tool-calling protocol shared by many providers: we declare tools in a plain Lisp list format, the model returns typed tool-call requests, and our agent loop dispatches them directly. This eliminates the fragile JSON parsing layer entirely and lets the model decide autonomously when to inspect directories, read source files, write new files, or simply answer a question.
+In this chapter we build `cl-ai-coding-agent`, a focused coding assistant that uses `litelm`. The library speaks the OpenAI-compatible tool-calling protocol shared by many providers: we declare tools in a plain Lisp list format, the model returns typed tool-call requests, and our agent loop dispatches them directly. This eliminates the fragile JSON parsing layer entirely and lets the model decide autonomously when to inspect directories, read source files, write new files, or simply answer a question.
 
 Because `litelm` routes calls by a `"provider/model"` string, the same agent code works with OpenAI, Gemini, Fireworks AI, DeepSeek, or a local Ollama server. The default model is the local Ollama model `qwen3.5:4b`, so the examples in this chapter run without any API key. Later in the Hacking the SBCL REPL chapter we integrate the agent further with reader macros (`#?`) and automatic error interception so the agent is always one keystroke away.
 
@@ -29,7 +29,7 @@ The project has three source files plus an ASDF system definition:
 | `agent.lisp` | System prompt construction, agent loop, and public API |
 | `cl-ai-coding-agent.asd` | ASDF system definition |
 
-The only external dependencies are the `litelm` library (developed in the litelm chapter, in the sibling directory `../litelm`) and UIOP (which ships with ASDF).
+Its direct dependencies are the `litelm` library (developed in the litelm chapter, in the sibling directory `../litelm`) and UIOP (which ships with ASDF). `litelm` itself brings in `dexador`, `cl-json` and `alexandria`, so those must be reachable on the Quicklisp path.
 
 ### cl-ai-coding-agent.asd
 
@@ -38,10 +38,9 @@ The only external dependencies are the `litelm` library (developed in the litelm
 (in-package #:asdf-user)
 
 (defsystem "cl-ai-coding-agent"
-  :name "cl-ai-coding-agent"
   :version "0.1.0"
   :author "Mark Watson <markw@markwatson.com>"
-  :license "Apache 2"
+  :license "Apache-2.0"
   :description
   "An AI coding agent that reads directories and files,
    writes new files, and diagnoses stacktraces."
@@ -82,9 +81,16 @@ The agent has three tools, each consisting of a local implementation function an
 (defun tool-list-directory (dir)
   "List files and subdirectories in DIR.
    Excludes hidden and backup entries.
-   Returns a newline-separated string of pathnames."
-  (let* ((resolved (uiop:ensure-directory-pathname
-                    (or dir ".")))
+   Returns a newline-separated string of names
+   relative to DIR."
+  ;; TRUENAME canonicalises the directory.  Without it a relative
+  ;; argument such as \".\" stays relative, and ENOUGH-NAMESTRING cannot
+  ;; strip an absolute entry name against a relative default -- so the
+  ;; model would receive full absolute paths instead of relative ones.
+  ;; It also turns a misspelled directory into an error rather than an
+  ;; empty listing.
+  (let* ((resolved (truename
+                    (uiop:ensure-directory-pathname (or dir "."))))
          (entries
           (append (uiop:directory-files resolved)
                   (uiop:subdirectories resolved))))
@@ -122,7 +128,7 @@ The agent has three tools, each consisting of a local implementation function an
 
 Each tool returns a string. This is important because tool results travel back to the model as text messages, so even `tool-list-directory` and `tool-write-file` produce human-readable string output rather than structured data.
 
-The `tool-list-directory` function filters out hidden files (names starting with `.`), Emacs backup files (ending with `~`), and Emacs auto-save files (starting with `#`). The `enough-namestring` call strips the directory prefix so the output is clean relative names rather than full absolute paths.
+The `tool-list-directory` function filters out hidden files (names starting with `.`), Emacs backup files (ending with `~`), and Emacs auto-save files (starting with `#`). The `truename` call canonicalises the directory first, and `enough-namestring` then strips that prefix so the output is clean relative names rather than full absolute paths. The `truename` is doing real work here: leave the directory as a relative pathname such as `./` and `enough-namestring` cannot relativise the absolute names that `directory-files` returns, so the model receives full paths after all. It also turns a misspelled directory into an error the model can see, rather than letting it look like an empty folder.
 
 The `tool-write-file` function calls `ensure-directories-exist` before writing, so the model can create files in new subdirectories without a separate `mkdir` step.
 
@@ -174,11 +180,18 @@ When the model requests a tool call, `litelm` returns a plist with `:ID`, `:NAME
    litelm:response-tool-calls.
    Returns a string result."
   (let* ((name (getf fc :name))
-         (args (or (getf fc :arguments)
-                   (getf fc :args)))
+         (args (getf fc :arguments))
          (get-arg (lambda (key)
-                    (cdr (assoc key args
-                                :test #'string-equal)))))
+                    (let ((pair (assoc key args
+                                       :test #'string-equal)))
+                      ;; Report a missing argument by name.  Letting NIL
+                      ;; reach the tool would surface a raw SBCL type error
+                      ;; ("NIL is not of type ...") instead of something the
+                      ;; model can act on.
+                      (unless (and pair (cdr pair))
+                        (error "Missing required argument ~S for tool ~A"
+                               key name))
+                      (cdr pair)))))
     (handler-case
         (cond
           ((string-equal name "list_directory")
@@ -229,7 +242,6 @@ Before constructing the system message, the agent checks whether the user's inpu
     "debugger invoked"
     "Unhandled"
     "HANDLER-BIND"
-    "The value"
     "is not of type"
     "UNDEFINED-FUNCTION"
     "SIMPLE-ERROR"
@@ -238,22 +250,26 @@ Before constructing the system message, the agent checks whether the user's inpu
     "UNBOUND-VARIABLE"
     "SB-INT:SIMPLE-READER-ERROR"
     "Traceback (most recent call last)"
-    "at .* line [0-9]+"
     "Exception in thread"
     "Error:"
     "Stack trace:")
-  "Patterns indicating the input contains a
-   stacktrace or error message.")
+  "Literal substrings -- not regular expressions -- that
+   indicate the input contains a stacktrace or error
+   message.  STACKTRACE-P searches with SEARCH, so a pattern
+   written as a regex would silently never match.")
 
 (defun stacktrace-p (text)
   "Return T if TEXT likely contains a stacktrace
-   or Common Lisp error output."
-  (some (lambda (pat)
-          (search pat text :test #'char-equal))
-        *stacktrace-patterns*))
+   or Common Lisp error output, and NIL otherwise."
+  ;; SOME returns the value SEARCH produced, which is a match
+  ;; position, so coerce it to a real boolean.
+  (and (some (lambda (pat)
+               (search pat text :test #'char-equal))
+             *stacktrace-patterns*)
+       t))
 ```
 
-The patterns cover SBCL conditions (`UNDEFINED-FUNCTION`, `TYPE-ERROR`, `debugger invoked`), Python tracebacks (`Traceback (most recent call last)`), and Java or generic stack traces (`Exception in thread`, `Stack trace:`). The `char-equal` test makes the search case-insensitive. This detection is heuristic: it may occasionally fire on benign input containing the word "Error:", but false positives are harmless since the extra instructions only add diagnostic guidance without changing the agent's capabilities.
+The patterns cover SBCL conditions (`UNDEFINED-FUNCTION`, `TYPE-ERROR`, `debugger invoked`), Python tracebacks (`Traceback (most recent call last)`), and Java or generic stack traces (`Exception in thread`, `Stack trace:`). The `char-equal` test makes the search case-insensitive. Every pattern is matched with `search`, so they are literal substrings rather than regular expressions — one written as a regex would simply never match, and would sit in the list looking useful. Detection is heuristic: it can fire on benign input containing the word `Error:`, but a false positive is harmless, since the extra instructions only add diagnostic guidance without changing the agent's capabilities.
 
 ### System Message Construction
 
@@ -292,7 +308,7 @@ use write_file, do not just print the code.
 ~A" stacktrace-instructions)))
 ```
 
-Note that `%system-instructions` builds only the system message. The user's input travels as a separate `:user` entry in the message list, which matches the chat message format that `litelm `expects.
+Note that `%system-instructions` builds only the system message. The user's input travels as a separate `:user` entry in the message list, which matches the chat message format that `litelm` expects.
 
 The system message explicitly instructs the model to use `write_file` when creating files rather than just printing code. Without this instruction, models tend to respond with code blocks in their text output, which is useful for a chatbot but unhelpful when you want the agent to actually create the file on disk.
 
@@ -402,6 +418,9 @@ For extended sessions, the agent provides its own REPL loop:
 ```lisp
 ;;; ---- Interactive REPL ----
 
+(defparameter *whitespace* '(#\Space #\Tab #\Newline #\Return)
+  "Characters trimmed from REPL input.")
+
 (defun coding-agent-repl ()
   "Start an interactive REPL for the coding agent.
    Type 'quit' or 'exit' to leave."
@@ -409,25 +428,23 @@ For extended sessions, the agent provides its own REPL loop:
   (loop
     (format t "~&> ")
     (finish-output)
-    (let ((input (read-line *standard-input*
-                            nil nil)))
-      (when (or (null input)
-                (string-equal (string-trim
-                               '(#\Space) input)
-                              "quit")
-                (string-equal (string-trim
-                               '(#\Space) input)
-                              "exit"))
+    (let ((input (read-line *standard-input* nil nil)))
+      (when (null input)
         (format t "~&Goodbye.~%")
         (return))
-      (let ((trimmed (string-trim '(#\Space) input)))
-        (when (plusp (length trimmed))
-          (let ((response
-                 (handler-case
-                     (coding-agent-query trimmed)
-                   (error (e)
-                     (format nil "Error: ~A" e)))))
-            (format t "~&~A~%" response)))))))
+      (let ((trimmed (string-trim *whitespace* input)))
+        (cond
+          ((member trimmed '("quit" "exit")
+                   :test #'string-equal)
+           (format t "~&Goodbye.~%")
+           (return))
+          ((plusp (length trimmed))
+           (let ((response
+                  (handler-case
+                      (coding-agent-query trimmed)
+                    (error (e)
+                      (format nil "Error: ~A" e)))))
+             (format t "~&~A~%" response))))))))
 ```
 
 The `handler-case` around `coding-agent-query` ensures that API errors, network timeouts, and other failures produce a message rather than dropping into the SBCL debugger. This matters for a tool you use throughout the day, since you do not want to lose your REPL state because of a transient network issue.
@@ -441,6 +458,8 @@ The agent depends on the litelm library, which lives in the sibling directory `.
 (asdf:load-asd "/path/to/cl-ai-coding-agent/cl-ai-coding-agent.asd")
 (ql:quickload :cl-ai-coding-agent)
 ```
+
+Replace `/path/to` with the checkout's `src` directory — `src/litelm/litelm.asd` and `src/cl-ai-coding-agent/cl-ai-coding-agent.asd` in this repository.
 
 The default model runs locally under Ollama, so no API key is needed. Pull the model once from your terminal:
 
@@ -558,7 +577,7 @@ Behind the scenes, this query triggered three tool-use rounds:
 
 6. **Composition with the REPL**: This library is designed to be loaded into `~/.sbclrc` and used alongside normal Lisp development. The Hacking the SBCL REPL chapter shows how to integrate it with `#?` reader macros and automatic error interception for a seamless coding experience.
 
-## Wrap Up for cl-llm-agent
+## Wrap Up
 
 You can use this example in building your own coding environment. In the chapter **Hacking the SBCL REPL** we'll see how to use this agent in an interactive SBCL REPL.
 

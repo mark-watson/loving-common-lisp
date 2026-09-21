@@ -127,34 +127,18 @@ The agent uses litelm `completion` with tool calling:
 4. This loop repeats (up to 10 rounds) until litelm responds with text
 
 
-## WORK in Progress: Doesn't yet work:
+## Automatic error interception lives in another chapter
 
+`ai-diagnose-error` -- the function that formats a Common Lisp condition object
+into a diagnostic prompt and sends it to this agent -- is **not** part of this
+system. It is defined in the **Hacking the SBCL REPL** chapter
+(`manuscript/hacking_SBCL_repl.md`), along with the `#?` reader macro and the
+`*debugger-hook*` wiring that make it fire automatically. Loading only
+`cl-ai-coding-agent` will not give you an `ai-diagnose-error` function.
 
-#### Automatic Error Interception
+A session there looks like this:
 
-The `ai-diagnose-error` function formats any Common Lisp condition object into a string and sends it to the agent. You can call it manually from the debugger:
-
-```lisp
-;; From within SBCL's debugger, after an error:
-(ai-diagnose-error *)
-```
-
-Or, for a fully automatic workflow, you can hook it into SBCL's debugger hook. Add the following **optional** line if you want every unhandled error to be automatically diagnosed:
-
-```lisp
-;; Optional: auto-diagnose all unhandled errors
-(setf *debugger-hook*
-      (lambda (condition hook)
-        (declare (ignore hook))
-        (ai-diagnose-error condition)
-        ;; Drop into the normal debugger afterward
-        (invoke-debugger condition)))
-```
-
-With this hook active, any unhandled error will first print the AI's diagnosis and then drop into the normal SBCL debugger. Remove this line if the automatic diagnosis becomes too chatty during normal development.
-
-
-
+```text
 * (/ 1 0)
 --- AI Diagnosis ---
 This error occurs because Common Lisp does not allow
@@ -171,3 +155,4 @@ Fix: Add a guard before dividing:
 --- End Diagnosis ---
 
 debugger invoked on DIVISION-BY-ZERO ...
+```

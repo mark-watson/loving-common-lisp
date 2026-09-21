@@ -152,7 +152,7 @@ Notice that normal Lisp expressions still work exactly as before. The `#!` macro
 
 The `#!` reader macro from the previous section gave us shell access from the REPL. In this section we go further by integrating an AI coding agent directly into the REPL so we can ask questions, diagnose errors, and generate code without leaving SBCL.
 
-The `cl-ai-coding-agent` package (developed in the "Building an AI Coding Assistant for Common Lisp") provides a function `coding-agent-query` that takes a string prompt and returns the agent's response. The agent can autonomously list directories, read files, write new files, and diagnose stacktraces using Gemini's function-calling API. But calling it directly requires quoting strings:
+The `cl-ai-coding-agent` package (developed in the chapter "Building an AI Coding Assistant for Common Lisp") provides a function `coding-agent-query` that takes a string prompt and returns the agent's response. The agent can autonomously list directories, read files, write new files, and diagnose stacktraces, using `litelm`'s OpenAI-compatible tool-calling protocol. Its default model is the local `ollama/qwen3.5:4b`, so nothing in this section needs an API key. But calling it directly requires quoting strings:
 
 ```lisp
 (cl-ai-coding-agent:coding-agent-query
@@ -163,16 +163,23 @@ This syntactic friction slows down the interactive workflow. We want three level
 
 1. **An `ai` macro** — eliminates string quoting by stringifying unevaluated symbols, so we can type natural language as Lisp forms.
 2. **A `#?` reader macro** — captures an entire line as a prompt, matching the `#!` pattern from the shell integration.
+3. **Automatic error interception** — an `ai-diagnose-error` function that turns a condition into a prompt, wired into `*debugger-hook*` so an unhandled error is diagnosed before the normal debugger appears.
 
 
 ### The Code
 
-Add the following code to your `~/.sbclrc` file, after the shell integration code from the previous section. It assumes `cl-ai-coding-agent` is installed in your Quicklisp local-projects directory:
+Add the following code to your `~/.sbclrc` file, after the shell integration code from the previous section. It registers the two local systems exactly as the previous chapter's Installation section describes, then loads the agent on startup. Set `*book-src*` to your checkout's `src` directory:
 
 ```lisp
 ;;; ---- AI Coding Agent REPL Integration ----
 
-;; Load the agent on startup
+;; Register the two local systems, then load the agent on startup.
+;; Point *BOOK-SRC* at the src directory of your checkout.  If you would
+;; rather symlink src/cl-ai-coding-agent into ~/quicklisp/local-projects,
+;; delete the two LOAD-ASD forms and keep the QUICKLOAD.
+(defparameter *book-src* #P"/path/to/loving-common-lisp/src/")
+(asdf:load-asd (merge-pathnames "litelm/litelm.asd" *book-src*))
+(asdf:load-asd (merge-pathnames "cl-ai-coding-agent/cl-ai-coding-agent.asd" *book-src*))
 (ql:quickload :cl-ai-coding-agent :silent t)
 
 ;; 1. The AI macro -- type natural language without quotes
@@ -180,7 +187,10 @@ Add the following code to your `~/.sbclrc` file, after the shell integration cod
   "Ask the AI coding agent a question using natural
    language without string quotes.
    Usage: (ai write a function that sorts strings)"
-  (let ((prompt (format nil "~{~A~^ ~}" words)))
+  ;; The reader up-cases bare symbols, so down-case the assembled
+  ;; prompt to keep it reading like natural language.
+  (let ((prompt (string-downcase
+                 (format nil "~{~A~^ ~}" words))))
     `(progn
        (format t "~&~A~%"
                (cl-ai-coding-agent:coding-agent-query
@@ -219,6 +229,15 @@ Add the following code to your `~/.sbclrc` file, after the shell integration cod
     (format t "~&~%--- AI Diagnosis ---~%~A~%~
                --- End Diagnosis ---~%"
             response)))
+
+;; Optional: diagnose every unhandled error before the normal debugger
+;; sees it.  *DEBUGGER-HOOK* is bound to NIL while the hook runs, so a
+;; failure inside AI-DIAGNOSE-ERROR cannot recurse into the hook.
+(setf *debugger-hook*
+      (lambda (condition hook)
+        (declare (ignore hook))
+        (ai-diagnose-error condition)
+        (invoke-debugger condition)))
 ```
 
 ### How It Works
@@ -241,22 +260,24 @@ expands to:
   (values))
 ```
 
+The prompt arrives down-cased because the reader has already up-cased every symbol: the macro receives `WRITE`, `A`, `QUICKSORT` and `FUNCTION`, and `~A` would print them exactly that way, so the macro applies `string-downcase` before handing the string to the agent.
+
 The `(values)` suppresses the return value to keep the REPL output clean — we only want to see the agent's printed response, not a redundant return string. Because the macro stringifies symbols, any valid Lisp identifier characters work: letters, digits, hyphens. However, characters that the Lisp reader treats specially — parentheses, commas, quotes, semicolons — will cause read errors. For prompts that need those characters, use `coding-agent-query` with an explicit string, or the `#?` reader macro.
 
 #### The `#?` Reader Macro
 
 The `#?` dispatch macro works identically to `#!` but routes to the AI agent instead of the shell:
 
-```lisp
+````text
 * #? write the common list file test.lisp that prints numbers form 1 to 10
 
 I have created the file `test.lisp` with the following Common Lisp code:
 
-``lisp
+```lisp
 (loop for i from 1 to 10
       do (format t "~D~%" i))
-``
 ```
+````
 
 Like `#!`, it consumes the rest of the input line as a raw string, bypassing the Lisp reader entirely. This means any characters — including parentheses, quotes, and semicolons — are treated as plain text. This makes `#?` ideal for pasting error messages or asking questions that contain Lisp syntax.
 
@@ -264,7 +285,7 @@ Like `#!`, it consumes the rest of the input line as a raw string, bypassing the
 
 Stacktraces often contain double-quote characters and span multiple lines, making them awkward to paste into a Lisp string literal. The `coding-agent-query-file` function reads the contents of a file and sends them as the prompt:
 
-```lisp
+````lisp
 ;; Save a stacktrace to a file (e.g., from terminal):
 ;;   pbpaste > /tmp/error.txt
 ;;
@@ -286,38 +307,49 @@ To prevent this error, you should validate that the divisor is not zero before p
 #### Option A: Conditional Check (Recommended)
 Before dividing, check if the denominator is zero using `zerop`.
 
-``lisp
+```lisp
 (let ((numerator 10)
       (denominator 0))
   (if (zerop denominator)
       (format t \"Error: Cannot divide by zero.\")
       (/ numerator denominator)))
-``
+```
 
 #### Option B: Using `handler-case`
 If the division is part of a larger computation and you want to catch the error gracefully:
 
-``lisp
+```lisp
 (handler-case (/ 10 0)
   (division-by-zero ()
     (format t \"Caught division by zero! Returning NIL.\")
     nil))
-``
+```
 
 #### Option C: Using `ignore-errors`
 If you simply want the expression to return `NIL` instead of crashing:
 
-``lisp
+```lisp
 (ignore-errors (/ 10 0)) ; Returns NIL and the condition object as a second value
-``"
-
 ```
+"
+
+````
+
+#### Automatic Error Interception
+
+The third integration point is the one you never type yourself. `ai-diagnose-error` takes any condition object, formats it into a string with `~A`, and hands that string to the agent — the same route a pasted stacktrace takes, so the agent's stacktrace instructions apply automatically.
+
+On its own that function is no more convenient than `#?`, because you have to be sitting in the debugger to call it. The `*debugger-hook*` assignment at the end of the code block is what makes it pay off: every unhandled error is diagnosed before the normal debugger takes over, so instead of reading a backtrace you get a plain-English explanation and a suggested fix, and then the ordinary debugger appears as usual.
+
+Two details make it safe to leave switched on. `*debugger-hook*` is bound to `NIL` while the hook runs, so if `ai-diagnose-error` itself signals — an API timeout, say — the failure cannot recurse into the hook. And the hook calls `invoke-debugger` afterwards rather than swallowing the condition, so you keep the normal debugger and its restarts; the diagnosis is an addition, not a replacement.
+
+Because the agent is a network call, every unhandled error now costs a round trip before you see the debugger. If that becomes tiresome during a long debugging session, remove the `setf` and call `ai-diagnose-error` by hand only when you want it.
 
 ### Example Session
 
 After adding the integration code to `~/.sbclrc` and restarting SBCL:
 
-```text
+````text
 $ sbcl
 * (ai what is a hash table in common lisp)
 A hash table in Common Lisp is a data structure that maps
@@ -347,7 +379,7 @@ I have created a file named `test.lisp` in the current directory to test the `gr
 
 The contents of `test.lisp` are as follows:
 
-``lisp
+```lisp
 ;;;; test.lisp
 ;;;; Simple test for the groq library
 
@@ -368,14 +400,14 @@ The contents of `test.lisp` are as follows:
     (format t "Extracted Content:~%~A~%" content)))
 
 (run-groq-test)
-``
+```
 
 To run this test, ensure you have your `GROQ_API_KEY` environment variable set, then execute:
-``bash
+```bash
 sbcl --load test.lisp --quit
-``
+```
 * 
 
-```
+````
 
 Notice how all integration levels coexist. The `ai` macro handles simple natural-language queries, `#?` handles anything with special characters, `#!` still works for shell commands, and Standard Lisp expressions continue to work normally.
