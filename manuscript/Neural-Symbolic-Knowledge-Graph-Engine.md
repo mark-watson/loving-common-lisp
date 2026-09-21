@@ -131,16 +131,16 @@ A **logic variable** is a hole. A **substitution** (NSK calls it an
 environment) is a set of bindings from variables to values. To unify two terms
 means to find a substitution that makes them identical.
 
-Write `t\theta`$ for the result of replacing every variable in a term `t`$ with
-its value under a substitution `\theta`$. Then unifying two terms `t_1`$ and
-`t_2`$ means finding a `\theta`$ for which
+Write `tθ` for the result of replacing every variable in a term `t` with
+its value under a substitution `θ`. Then unifying two terms `t1` and
+`t2` means finding a `θ` for which
 
-```$
-t_1\theta = t_2\theta .
+```
+t1θ = t2θ
 ```
 
 For example, unifying the pattern `(?who :wrote :nsk)` with the stored triple
-`(:mark :wrote :nsk)` succeeds with `\theta`$ binding `?who` to `:mark`. The
+`(:mark :wrote :nsk)` succeeds with `θ` binding `?who` to `:mark`. The
 predicate and object already match, so no extra binding is needed.
 
 The algorithm walks both terms together. When it meets a variable, it binds it,
@@ -272,7 +272,7 @@ removed.
 In memory the store keeps three views of the same triples. A list preserves
 insertion order. Two hash tables index triples by subject and by object, so a
 pattern with a known subject or object narrows to a short candidate list in
-`O(1)`$ time instead of scanning everything. Here is the complete
+`O(1)` time instead of scanning everything. Here is the complete
 `src/store.lisp`.
 
 ```lisp

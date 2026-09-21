@@ -19,6 +19,10 @@
 
 (defpackage #:symbolic-math/diff
   (:use #:cl #:symbolic-math)
+  ;; SYMBOLIC-MATH exports RUN-SMOKE-TEST, and :USE makes that symbol
+  ;; accessible here.  Without this SHADOW, the DEFUN below would redefine
+  ;; SYMBOLIC-MATH:RUN-SMOKE-TEST instead of defining a package-local one.
+  (:shadow #:run-smoke-test)
   (:export
    ;; Core differentiation
    #:differentiate-term
@@ -73,7 +77,7 @@ Returns a new sym-polynomial (the zero polynomial for a constant input).
                                (mapcar #'differentiate-term
                                        (polynomial-terms poly)))))
     (if (null diff-terms)
-        (zero-polynomial var)
+        (zero-polynomial var :domain (polynomial-domain poly))
         (make-polynomial var diff-terms :domain (polynomial-domain poly)))))
 
 

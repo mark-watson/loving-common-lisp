@@ -200,9 +200,12 @@ EXPONENT must be a non-negative integer.
 
 (defun term->string (term)
   "Return a human-readable string representation of TERM.
-Example: 3x^2, -x^1, 5 (for exponent 0)."
+The variable name is down-cased, so the display matches the mathematical
+notation used in this library's documentation.
+
+Example: 3x^2, -1x, 5 (for exponent 0)."
   (let ((c (term-coefficient term))
-        (v (symbol-name (variable-name (term-variable term))))
+        (v (string-downcase (symbol-name (variable-name (term-variable term)))))
         (e (term-exponent term)))
     (cond
       ((zerop e)
@@ -230,7 +233,8 @@ DOMAIN is :real (default) or :complex."
   (sym-polynomial-p obj))
 
 (defun %sort-and-combine-terms (terms)
-  "Internal: combine like-exponent terms, drop zero coefficients, sort descending."
+  "Internal: combine like-exponent terms, drop zero coefficients, and return
+(exponent . coefficient) pairs sorted by descending exponent."
   (let ((table (make-hash-table :test #'eql)))
     ;; accumulate coefficients by exponent
     (dolist (term terms)
@@ -238,13 +242,13 @@ DOMAIN is :real (default) or :complex."
         (setf (gethash e table)
               (+ (gethash e table 0)
                  (term-coefficient term)))))
-    ;; rebuild term list, drop zeros, sort descending
+    ;; collect the surviving pairs and sort them by descending exponent
     (let ((result '()))
       (maphash (lambda (exp coeff)
                  (unless (zerop coeff)
                    (push (cons exp coeff) result)))
                table)
-      result)))
+      (sort result #'> :key #'car))))
 
 (defun make-polynomial (variable terms &key (domain :real))
   "Create a polynomial in VARIABLE from a list of TERMS (sym-term objects).
@@ -267,12 +271,11 @@ Result terms are stored in descending exponent order.
   (assert (member domain '(:real :complex))
           (domain) "DOMAIN must be :real or :complex, got ~s" domain)
   (let* ((pairs   (%sort-and-combine-terms terms))
-         (sorted  (sort pairs #'> :key #'car))
          (new-terms (mapcar (lambda (pair)
                               (make-sym-term :coefficient (cdr pair)
                                              :variable    variable
                                              :exponent    (car pair)))
-                            sorted)))
+                            pairs)))
     (make-sym-polynomial :variable variable
                          :terms    new-terms
                          :domain   domain)))
@@ -299,9 +302,16 @@ Returns -1 for the zero polynomial (no terms)."
 
 ;;; ── Arithmetic ──────────────────────────────────────────────────────────
 
+(defun %join-domains (a b)
+  "Internal: return the wider of domains A and B (:real ⊂ :complex).
+Arithmetic on polynomials from different domains happens in the wider one:
+a real polynomial plus a complex polynomial is a complex polynomial."
+  (if (or (eq a :complex) (eq b :complex)) :complex :real))
+
 (defun polynomial-add (p q)
   "Return P + Q as a new polynomial.
-P and Q must share the same variable."
+P and Q must share the same variable; the result takes the wider of the
+two domains."
   (check-type p sym-polynomial)
   (check-type q sym-polynomial)
   (assert (variable= (polynomial-variable p) (polynomial-variable q))
@@ -310,7 +320,8 @@ P and Q must share the same variable."
           (variable-name (polynomial-variable q)))
   (make-polynomial (polynomial-variable p)
                    (append (polynomial-terms p) (polynomial-terms q))
-                   :domain (polynomial-domain p)))
+                   :domain (%join-domains (polynomial-domain p)
+                                          (polynomial-domain q))))
 
 (defun polynomial-negate (poly)
   "Return -POLY as a new polynomial."
@@ -353,7 +364,7 @@ Returns a number.
 Terms are printed in descending exponent order, separated by ' + '.
 The zero polynomial is rendered as '0'.
 
-  Example: '3x^2 + -1x^1 + 5'"
+  Example: '3x^2 + -1x + 5'"
   (check-type poly sym-polynomial)
   (if (null (polynomial-terms poly))
       "0"
@@ -362,9 +373,11 @@ The zero polynomial is rendered as '0'.
 
 ;;; ── Convenience constructors ─────────────────────────────────────────────
 
-(defun zero-polynomial (variable)
-  "Return the zero polynomial in VARIABLE (no terms)."
-  (make-sym-polynomial :variable variable :terms '() :domain :real))
+(defun zero-polynomial (variable &key (domain :real))
+  "Return the zero polynomial in VARIABLE (no terms).
+DOMAIN defaults to :real; pass the domain of the polynomial you are
+reducing from so that domain information is not silently dropped."
+  (make-sym-polynomial :variable variable :terms '() :domain domain))
 
 (defun constant-polynomial (variable value)
   "Return the constant polynomial VALUE in VARIABLE.
@@ -429,11 +442,17 @@ Fields:
   (not (null (integral-lower integral))))
 
 (defun %bound->string (bound)
-  "Internal: render a bound (number or sym-constant) as a string."
+  "Internal: render a bound (number or sym-constant) as a string.
+Symbolic constants are rendered with their mathematical glyph where one
+exists (:pi → π, :e → e) and otherwise by their down-cased name."
   (cond
     ((null bound) "")
     ((numberp bound) (format nil "~a" bound))
-    ((sym-constant-p bound) (symbol-name (constant-name bound)))
+    ((sym-constant-p bound)
+     (case (constant-value bound)
+       (:pi "π")
+       (:e  "e")
+       (t   (string-downcase (symbol-name (constant-name bound))))))
     (t (format nil "~a" bound))))
 
 (defun integral->string (integral)
@@ -442,7 +461,8 @@ Fields:
 Indefinite:  ∫(expr) dx
 Definite:    ∫[a,b](expr) dx"
   (check-type integral sym-integral)
-  (let* ((var (symbol-name (variable-name (integral-variable integral))))
+  (let* ((var (string-downcase
+               (symbol-name (variable-name (integral-variable integral)))))
          (body (cond
                  ((sym-polynomial-p (integral-integrand integral))
                   (polynomial->string (integral-integrand integral)))

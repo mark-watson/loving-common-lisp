@@ -18,17 +18,22 @@
 
 (defpackage #:symbolic-math/integ
   (:use #:cl #:symbolic-math)
+  ;; SYMBOLIC-MATH exports RUN-SMOKE-TEST, and :USE makes that symbol
+  ;; accessible here.  Without this SHADOW, the DEFUN below would redefine
+  ;; SYMBOLIC-MATH:RUN-SMOKE-TEST instead of defining a package-local one.
+  (:shadow #:run-smoke-test)
   (:export
    ;; Core integration
    #:integrate-term          ; reverse power rule on one sym-term
    #:integrate               ; antiderivative of a sym-polynomial
    ;; Definite integral evaluation
    #:evaluate-definite       ; numeric result of ∫[a,b] p dx
+   #:evaluate-integral       ; numeric result of a definite sym-integral
    ;; Higher-order / iterated integrals
    #:integrate-n             ; n-th antiderivative
    ;; sym-integral shell helpers
-   #:make-indefinite-integral ; wrap antiderivative in a sym-integral
-   #:make-definite-integral   ; wrap antiderivative+bounds in a sym-integral
+   #:make-indefinite-integral ; wrap an integrand in an indefinite sym-integral
+   #:make-definite-integral   ; wrap an integrand + bounds in a sym-integral
    ;; Smoke test
    #:run-smoke-test))
 
@@ -48,9 +53,9 @@ Returns a new sym-term.  The constant of integration (+C) is handled at
 the polynomial level by the caller.
 
   Examples:
-    (integrate-term (make-term 3 x 2))   ; => (1)x^3  [3/(2+1) = 1]
-    (integrate-term (make-term -1 x 1))  ; => (-1/2)x^2
-    (integrate-term (make-term 5 x 0))   ; => 5x^1"
+    (integrate-term (make-term 3 x 2))   ; => 1x^3  [3/(2+1) = 1]
+    (integrate-term (make-term -1 x 1))  ; => -1/2x^2
+    (integrate-term (make-term 5 x 0))   ; => 5x"
   (check-type term sym-term)
   (let* ((c    (term-coefficient term))
          (v    (term-variable    term))
@@ -79,7 +84,7 @@ rule across terms.
          (new-terms (mapcar #'integrate-term (polynomial-terms poly))))
     (if (null new-terms)
         ;; integral of the zero polynomial is still zero
-        (zero-polynomial var)
+        (zero-polynomial var :domain (polynomial-domain poly))
         (make-polynomial var new-terms :domain (polynomial-domain poly)))))
 
 
@@ -114,6 +119,26 @@ Uses the Fundamental Theorem of Calculus:
     (- (polynomial-evaluate F b)
        (polynomial-evaluate F a))))
 
+(defun evaluate-integral (integral)
+  "Return the numeric value of the definite sym-integral INTEGRAL.
+
+This is the bridge between the data layer's sym-integral shells and the
+numeric evaluator: it unpacks the integrand and bounds and delegates to
+EVALUATE-DEFINITE.
+
+  Example:
+    (evaluate-integral (make-definite-integral p 0 1))   ; => 5.5"
+  (check-type integral sym-integral)
+  (unless (integral-definite-p integral)
+    (error "INTEGRAL is indefinite; only definite integrals have a numeric value."))
+  (assert (polynomial-p (integral-integrand integral))
+          (integral)
+          "INTEGRAL's integrand must be a sym-polynomial, got ~s"
+          (type-of (integral-integrand integral)))
+  (evaluate-definite (integral-integrand integral)
+                     (integral-lower integral)
+                     (integral-upper integral)))
+
 
 ;;;; ─────────────────────────────────────────────────────────────────────────
 ;;;; 4.  Higher-order (iterated) antiderivatives
@@ -139,9 +164,9 @@ N must be a non-negative integer.
 ;;;; ─────────────────────────────────────────────────────────────────────────
 
 (defun make-indefinite-integral (poly)
-  "Create a sym-integral wrapping the antiderivative of POLY (indefinite form).
-The stored integrand is POLY itself; the antiderivative is computed lazily
-by evaluate-definite / integrate.
+  "Create a sym-integral wrapping POLY in indefinite form.
+The stored integrand is POLY itself, not its antiderivative; call
+INTEGRATE to take the antiderivative.
 
   Rendering:  ∫(expr) dx"
   (check-type poly sym-polynomial)
@@ -149,6 +174,8 @@ by evaluate-definite / integrate.
 
 (defun make-definite-integral (poly lower upper)
   "Create a sym-integral wrapping POLY with explicit bounds LOWER and UPPER.
+The stored integrand is POLY itself, not its antiderivative; call
+EVALUATE-INTEGRAL to get the numeric value.
 LOWER and UPPER may be real numbers or sym-constant objects.
 
   Rendering:  ∫[a,b](expr) dx"
@@ -199,7 +226,10 @@ LOWER and UPPER may be real numbers or sym-constant objects.
          ;; sym-integral shells
          (indef-shell (make-indefinite-integral p))
          (def-shell   (make-definite-integral   p 0 1))
-         (pi-shell    (make-definite-integral   p 0 pi-c)))
+         (pi-shell    (make-definite-integral   p 0 pi-c))
+
+         ;; evaluating a shell directly (no need to unpack it by hand)
+         (shell-01    (evaluate-integral def-shell)))
 
     (format t "~%=== Integration Smoke Test ===~%~%")
 
@@ -217,4 +247,6 @@ LOWER and UPPER may be real numbers or sym-constant objects.
     (format t "indef shell    : ~a~%" (integral->string indef-shell))
     (format t "def [0,1]      : ~a~%" (integral->string def-shell))
     (format t "def [0,pi]     : ~a~%" (integral->string pi-shell))
+    (format t "~%")
+    (format t "evaluate shell : ~a  (expected 5.5)~%" shell-01)
     (format t "~%==============================~%")))

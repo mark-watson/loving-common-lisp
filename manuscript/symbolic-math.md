@@ -1,8 +1,13 @@
 # Symbolic Mathematics in Common Lisp
 
-Dear reader, in the early 1970s I earned a Bachelor Of Science degree in Physics from UC Santa Barbara. Although little of my work in the last 50 years has involved either Physics or pure mathematics, I have a long term interest in symbolic math systems, starting when I installed the Reduce system on my Xerox Lisp Machine in 1982. Please note that the material here is for my own Lisp hacking enjoyment.
+Dear reader, in the early 1970s I earned a Bachelor of Science degree in Physics from UC Santa Barbara. Although little of my work in the last 50 years has involved either Physics or pure mathematics, I have a long-term interest in symbolic math systems, starting when I installed the Reduce system on my Xerox Lisp Machine in 1982. Please note that the material here is for my own Lisp hacking enjoyment.
 
 Common Lisp has long been a natural home for symbolic computation. Its homoiconic nature, rich macro system, and first-class support for rational arithmetic make it an ideal language for building systems that manipulate mathematical expressions as data rather than reducing them immediately to floating-point numbers. In this chapter we build a small but complete symbolic mathematics library from scratch. We define data structures for variables, constants, monomials, polynomials, and integrals; implement symbolic differentiation using the power rule; and implement symbolic integration using the reverse power rule together with the Fundamental Theorem of Calculus. The result is a readable, testable, purely functional library that illuminates both the mathematics and the Lisp idioms involved.
+
+The following diagram shows the high-level architecture of the system:
+
+{width: "80%"}
+![Architecture diagram](images/symbolic_math_architecture.png)
 
 ## The Data Layer
 
@@ -14,6 +19,90 @@ The library is deliberately **CLOS-free**. Every type is defined with `defstruct
 
 The entire data layer lives in the `SYMBOLIC-MATH` package and is loaded from a single file, `data.lisp`. The package exports every public name: constructors, predicates, accessors, and helpers so that the differentiation and integration layers can import only what they need with `(:use #:cl #:symbolic-math)`.
 
+### Packages
+
+The three files define three packages. Only the data layer uses `#:cl` alone; the differentiation and integration packages inherit the whole data layer through `:use`, so they can refer to `make-polynomial`, `polynomial->string`, and friends without any package prefix.
+
+```lisp
+(defpackage #:symbolic-math
+  (:use #:cl)
+  (:export
+   ;; Variables
+   #:sym-variable
+   #:make-variable
+   #:variable-p
+   #:variable-name
+   #:variable-domain
+   #:variable=
+   ;; Constants
+   #:sym-constant
+   #:make-constant
+   #:constant-p
+   #:constant-name
+   #:constant-value
+   #:constant-numeric-value
+   ;; Terms (monomials)
+   #:sym-term
+   #:make-term
+   #:term-p
+   #:term-coefficient
+   #:term-variable
+   #:term-exponent
+   #:term=
+   #:term-negate
+   #:term-scale
+   #:term->string
+   ;; Polynomials
+   #:sym-polynomial
+   #:make-polynomial
+   #:polynomial-p
+   #:polynomial-variable
+   #:polynomial-terms
+   #:polynomial-domain
+   #:polynomial-degree
+   #:polynomial-leading-term
+   #:polynomial-add
+   #:polynomial-subtract
+   #:polynomial-negate
+   #:polynomial-scale
+   #:polynomial->string
+   #:polynomial-evaluate
+   #:polynomial-normalize
+   ;; Polynomial convenience constructors
+   #:zero-polynomial
+   #:constant-polynomial
+   #:identity-polynomial
+   ;; Integrals
+   #:sym-integral
+   #:make-integral
+   #:integral-p
+   #:integral-integrand
+   #:integral-variable
+   #:integral-lower
+   #:integral-upper
+   #:integral-definite-p
+   #:integral->string
+   ;; Smoke test
+   #:run-smoke-test))
+```
+
+Both of the dependent packages shadow `run-smoke-test`, and the reason is worth pausing over because it is a classic Common Lisp trap. Because `SYMBOLIC-MATH` exports `run-smoke-test` and the other two packages `:use` it, that symbol is *accessible* in `SYMBOLIC-MATH/DIFF` and `SYMBOLIC-MATH/INTEG` without being *present* in them. A bare `(defun run-smoke-test ...)` would therefore resolve to the inherited `SYMBOLIC-MATH:RUN-SMOKE-TEST` and redefine the data layer's smoke test rather than define a new one. All three modules would then share a single function, and the last file loaded would win. Adding `(:shadow #:run-smoke-test)` to the package definition forces a fresh, package-local symbol so that each module really does have its own test.
+
+The library also ships an ASDF system definition, `symbolic-math.asd`, so it can be loaded with `(asdf:load-system :symbolic-math)` or `(ql:quickload :symbolic-math)` instead of loading the three files by hand:
+
+```lisp
+(asdf:defsystem #:symbolic-math
+  :description "A small, purely functional symbolic mathematics library for Common Lisp: variables, constants, monomials, polynomials, symbolic differentiation, and symbolic integration."
+  :author "Mark Watson"
+  :license "Apache-2.0"
+  :serial t
+  :components ((:file "data")
+               (:file "differentiation")
+               (:file "integration")))
+```
+
+The `:serial t` guarantees that `data.lisp` is compiled and loaded before the two layers that depend on it. When you load `differentiation.lisp` or `integration.lisp` directly instead, the `(unless (find-package '#:symbolic-math) (load ...))` form at the top of each file loads `data.lisp` first, so both workflows work.
+
 ### Variables and Constants
 
 The two most primitive objects in the system are symbolic variables (unknowns like *x* or *t*) and named constants (fixed values like π or *e*). The following listing defines both structs together with their constructors, predicates, and a numeric-evaluation helper for constants.
@@ -21,7 +110,7 @@ The two most primitive objects in the system are symbolic variables (unknowns li
 ```lisp
 (defstruct (sym-variable (:conc-name variable-))
   "A symbolic variable such as x, y, or t.
-   DOMAIN may be :real (default), :complex, or :integer."
+DOMAIN may be :real (default), :complex, or :integer."
   (name   nil :type symbol)
   (domain :real :type keyword))
 
@@ -32,7 +121,6 @@ The two most primitive objects in the system are symbolic variables (unknowns li
   Example:
     (make-variable 'x)              ; => sym-variable x ∈ ℝ
     (make-variable 't :domain :real)"
-    
   (check-type name symbol)
   (assert (member domain '(:real :complex :integer))
           (domain) "DOMAIN must be :real, :complex, or :integer, got ~s" domain)
@@ -44,7 +132,7 @@ The two most primitive objects in the system are symbolic variables (unknowns li
 
 (defun variable= (a b)
   "Return T if variables A and B represent the same symbolic variable.
-   Two variables are equal when their names and domains match."
+Two variables are equal when their names and domains match."
   (and (sym-variable-p a)
        (sym-variable-p b)
        (eq (variable-name a) (variable-name b))
@@ -52,13 +140,18 @@ The two most primitive objects in the system are symbolic variables (unknowns li
 
 (defstruct (sym-constant (:conc-name constant-))
   "A named mathematical constant.
-   VALUE may be a Common Lisp number, :pi, or :e (Euler's number)."
+VALUE may be a Common Lisp number, :pi, or :e (Euler's number)."
   (name  nil :type symbol)
   (value nil))                          ; number | :pi | :e
 
 (defun make-constant (name value)
   "Create a named constant with NAME (symbol) and VALUE.
-   VALUE may be a real number, :pi, or :e."
+VALUE may be a real number, :pi, or :e.
+
+  Examples:
+    (make-constant 'pi :pi)
+    (make-constant 'e  :e)
+    (make-constant 'g  9.80665)"
   (check-type name symbol)
   (assert (or (numberp value) (member value '(:pi :e)))
           (value) "VALUE must be a number, :pi, or :e, got ~s" value)
@@ -70,7 +163,7 @@ The two most primitive objects in the system are symbolic variables (unknowns li
 
 (defun constant-numeric-value (c)
   "Return the numeric (floating-point) value of constant C.
-   :pi → pi, :e → e, numbers are returned as-is."
+:pi → pi, :e → e, numbers are returned as-is."
   (check-type c sym-constant)
   (let ((v (constant-value c)))
     (cond
@@ -81,29 +174,28 @@ The two most primitive objects in the system are symbolic variables (unknowns li
 
 `sym-variable` stores a Lisp symbol as the variable name and a keyword denoting its domain. The `(:conc-name variable-)` option tells `defstruct` to prefix all generated accessor names with `variable-`, so the name slot is reached via `variable-name` rather than the default `sym-variable-name`. The `make-variable` wrapper validates its arguments with `check-type` and `assert` before delegating to the raw struct constructor, ensuring that only well-formed objects enter the system.
 
-`sym-constant` follows the same pattern but its `value` slot is more flexible: it may hold a Common Lisp real number, the keyword `:pi`, or the keyword `:e`. The `constant-numeric-value` function resolves any of these to a `double-float` on demand using a short `cond` dispatch. Storing the symbolic name alongside the numeric value means that bounds such as π can be displayed in human-readable form (as shown later in the integral display code) while still being convertible to a floating-point number when a definite integral must be evaluated numerically.
+`sym-constant` follows the same pattern but its `value` slot is more flexible: it may hold a Common Lisp real number, the keyword `:pi`, or the keyword `:e`. The `constant-numeric-value` function resolves the two keyword cases to a `double-float` on demand using a short `cond` dispatch, and returns a stored number unchanged. Keeping the symbolic value alongside the name means that bounds such as π can be displayed with their mathematical glyph in the integral display code, while still being convertible to a floating-point number when a definite integral must be evaluated numerically.
 
 ### Monomials (Terms)
 
-A monomial is a single product of a coefficient, a variable, and a non-negative integer power is the atom from which polynomials are assembled. The `sym-term` struct and its helpers are shown below.
+A monomial — a single product of a coefficient, a variable, and a non-negative integer power — is the atom from which polynomials are assembled. The `sym-term` struct and its helpers are shown below.
 
 ```lisp
 (defstruct (sym-term (:conc-name term-))
   "A single monomial: COEFFICIENT * VARIABLE ^ EXPONENT.
-  EXPONENT is a non-negative integer (0 gives a constant term)."
+EXPONENT is a non-negative integer (0 gives a constant term)."
   (coefficient 0 :type real)
   (variable    nil)                     ; sym-variable
   (exponent    0 :type (integer 0 *)))
 
 (defun make-term (coefficient variable exponent)
   "Create a monomial: COEFFICIENT * VARIABLE ^ EXPONENT.
-  EXPONENT must be a non-negative integer.
+EXPONENT must be a non-negative integer.
 
   Examples:
     (make-term 3  x 2)   ; 3x²
     (make-term -1 x 1)   ; -x
-    (make-term 5  x 0)   ; constant 5"
-    
+    (make-term 5  x 0)   ; constant 5 (variable ignored for evaluation)"
   (check-type coefficient real)
   (check-type variable sym-variable)
   (check-type exponent  (integer 0 *))
@@ -117,7 +209,7 @@ A monomial is a single product of a coefficient, a variable, and a non-negative 
 
 (defun term= (a b)
   "Return T if terms A and B are structurally equal
-   (same variable, exponent, and coefficient)."
+(same variable, exponent, and coefficient)."
   (and (sym-term-p a) (sym-term-p b)
        (= (term-coefficient a) (term-coefficient b))
        (variable= (term-variable a) (term-variable b))
@@ -138,9 +230,12 @@ A monomial is a single product of a coefficient, a variable, and a non-negative 
 
 (defun term->string (term)
   "Return a human-readable string representation of TERM.
-   Example: 3x^2, -x^1, 5 (for exponent 0)."
+The variable name is down-cased, so the display matches the mathematical
+notation used in this library's documentation.
+
+Example: 3x^2, -1x, 5 (for exponent 0)."
   (let ((c (term-coefficient term))
-        (v (symbol-name (variable-name (term-variable term))))
+        (v (string-downcase (symbol-name (variable-name (term-variable term)))))
         (e (term-exponent term)))
     (cond
       ((zerop e)
@@ -153,7 +248,7 @@ A monomial is a single product of a coefficient, a variable, and a non-negative 
 
 The exponent type specifier `(integer 0 *)` in the struct definition is not merely documentation: Common Lisp compilers can use it to generate better code, and the runtime will signal a type error if anything other than a non-negative integer is stored there. The `term-negate` and `term-scale` functions are pure: they build new `sym-term` structs rather than mutating the original. This purity matters because the polynomial arithmetic functions rely on these helpers and expect their inputs to remain unchanged.
 
-`term->string` uses a three-branch `cond` to handle the three visually distinct cases: a constant term (exponent zero, print only the number), a linear term (exponent one, omit the `^1`), and a higher-degree term (print the full `c v^e` form). The `symbol-name` call converts the Lisp symbol stored in the variable to a plain string so that `format` does not print an unexpected package prefix.
+`term->string` uses a three-branch `cond` to handle the three visually distinct cases: a constant term (exponent zero, print only the number), a linear term (exponent one, omit the `^1`), and a higher-degree term (print the full `c v^e` form). The variable name is printed through `(string-downcase (symbol-name ...))`, which suppresses any package prefix that `format` might otherwise emit and also avoids the upper-case `X` that `symbol-name` alone would produce for a reader symbol. Note that a coefficient of one is *not* elided: the linear term of `x` prints as `1x`, not `x`.
 
 ### Polynomials
 
@@ -169,7 +264,8 @@ DOMAIN is :real (default) or :complex."
   (domain   :real :type keyword))
 
 (defun %sort-and-combine-terms (terms)
-  "Internal: combine like-exponent terms, drop zero coefficients, sort descending."
+  "Internal: combine like-exponent terms, drop zero coefficients, and return
+(exponent . coefficient) pairs sorted by descending exponent."
   (let ((table (make-hash-table :test #'eql)))
     ;; accumulate coefficients by exponent
     (dolist (term terms)
@@ -177,18 +273,24 @@ DOMAIN is :real (default) or :complex."
         (setf (gethash e table)
               (+ (gethash e table 0)
                  (term-coefficient term)))))
-    ;; rebuild term list, drop zeros, sort descending
+    ;; collect the surviving pairs and sort them by descending exponent
     (let ((result '()))
       (maphash (lambda (exp coeff)
                  (unless (zerop coeff)
                    (push (cons exp coeff) result)))
                table)
-      result)))
+      (sort result #'> :key #'car))))
 
 (defun make-polynomial (variable terms &key (domain :real))
-  "Create a polynomial in VARIABLE from a list of TERMS.
+  "Create a polynomial in VARIABLE from a list of TERMS (sym-term objects).
 Like-exponent terms are combined automatically; zero-coefficient terms are dropped.
-Result terms are stored in descending exponent order."
+Result terms are stored in descending exponent order.
+
+  Example:
+    (let ((x (make-variable 'x)))
+      (make-polynomial x (list (make-term 3 x 2)
+                               (make-term -1 x 1)
+                               (make-term 5 x 0))))"
   (check-type variable sym-variable)
   (dolist (term terms)
     (check-type term sym-term)
@@ -200,12 +302,11 @@ Result terms are stored in descending exponent order."
   (assert (member domain '(:real :complex))
           (domain) "DOMAIN must be :real or :complex, got ~s" domain)
   (let* ((pairs   (%sort-and-combine-terms terms))
-         (sorted  (sort pairs #'> :key #'car))
          (new-terms (mapcar (lambda (pair)
                               (make-sym-term :coefficient (cdr pair)
                                              :variable    variable
                                              :exponent    (car pair)))
-                            sorted)))
+                            pairs)))
     (make-sym-polynomial :variable variable
                          :terms    new-terms
                          :domain   domain)))
@@ -218,8 +319,16 @@ Returns -1 for the zero polynomial (no terms)."
       -1
       (term-exponent (first (polynomial-terms poly)))))
 
+(defun %join-domains (a b)
+  "Internal: return the wider of domains A and B (:real ⊂ :complex).
+Arithmetic on polynomials from different domains happens in the wider one:
+a real polynomial plus a complex polynomial is a complex polynomial."
+  (if (or (eq a :complex) (eq b :complex)) :complex :real))
+
 (defun polynomial-add (p q)
-  "Return P + Q as a new polynomial."
+  "Return P + Q as a new polynomial.
+P and Q must share the same variable; the result takes the wider of the
+two domains."
   (check-type p sym-polynomial)
   (check-type q sym-polynomial)
   (assert (variable= (polynomial-variable p) (polynomial-variable q))
@@ -228,7 +337,8 @@ Returns -1 for the zero polynomial (no terms)."
           (variable-name (polynomial-variable q)))
   (make-polynomial (polynomial-variable p)
                    (append (polynomial-terms p) (polynomial-terms q))
-                   :domain (polynomial-domain p)))
+                   :domain (%join-domains (polynomial-domain p)
+                                          (polynomial-domain q))))
 
 (defun polynomial-negate (poly)
   "Return -POLY as a new polynomial."
@@ -251,7 +361,10 @@ Returns -1 for the zero polynomial (no terms)."
                    :domain (polynomial-domain poly)))
 
 (defun polynomial-evaluate (poly value)
-  "Evaluate POLY at VALUE by substituting the variable."
+  "Evaluate POLY at VALUE (a number) by substituting the variable.
+Returns a number.
+
+  Example: (polynomial-evaluate p 2)  ; evaluate p(2)"
   (check-type poly sym-polynomial)
   (check-type value real)
   (reduce #'+
@@ -262,7 +375,11 @@ Returns -1 for the zero polynomial (no terms)."
           :initial-value 0))
 
 (defun polynomial->string (poly)
-  "Return a human-readable string for POLY, e.g. '3x^2 + -1x^1 + 5'."
+  "Return a human-readable string representation of POLY.
+Terms are printed in descending exponent order, separated by ' + '.
+The zero polynomial is rendered as '0'.
+
+  Example: '3x^2 + -1x + 5'"
   (check-type poly sym-polynomial)
   (if (null (polynomial-terms poly))
       "0"
@@ -270,9 +387,9 @@ Returns -1 for the zero polynomial (no terms)."
               (mapcar #'term->string (polynomial-terms poly)))))
 ```
 
-The private helper `%sort-and-combine-terms` performs the normalization work in two passes. The first pass accumulates coefficients into a hash table keyed by exponent, so any duplicate exponents are automatically merged. The second pass walks the table, drops entries whose total coefficient is zero, and collects the survivors as `(exponent . coefficient)` cons cells. The public `make-polynomial` then sorts those pairs in descending order and rebuilds proper `sym-term` structs.
+The private helper `%sort-and-combine-terms` performs the normalization work in two passes. The first pass accumulates coefficients into a hash table keyed by exponent, so any duplicate exponents are automatically merged. The second pass walks the table, drops entries whose total coefficient is zero, collects the survivors as `(exponent . coefficient)` cons cells, and sorts them into descending exponent order. Sorting has to happen here rather than in `make-polynomial`, because `maphash` visits entries in an unspecified order: without an explicit `sort` the pairs would come back out of the table in essentially arbitrary order. The public `make-polynomial` then rebuilds proper `sym-term` structs from those already-sorted pairs.
 
-Polynomial arithmetic is elegantly simple because `make-polynomial` already normalizes. Addition merely appends the two term lists and lets the constructor handle combination and sorting. Subtraction negates `q` (by mapping `term-negate` over its terms) then calls addition. Scaling maps `term-scale` over all terms. Evaluation uses `reduce` with an accumulating `+` over all terms, computing each term's contribution as `c * value^n` with Common Lisp's built-in `expt`.
+Polynomial arithmetic is elegantly simple because `make-polynomial` already normalizes. Addition merely appends the two term lists and lets the constructor handle combination and sorting. It does have to reconcile one piece of metadata, though: the two operands may have different domains, so `%join-domains` returns the wider of the pair (`:real ⊂ :complex`) and the sum is built in that domain. A real polynomial plus a complex polynomial is a complex polynomial, and silently inheriting the left operand's domain would quietly discard that fact. Subtraction negates `q` (by mapping `term-negate` over its terms) and then calls addition, so it inherits the same handling. Scaling maps `term-scale` over all terms. Evaluation uses `reduce` with an accumulating `+` over all terms, computing each term's contribution as `c * value^n` with Common Lisp's built-in `expt`.
 
 ### Integrals as Data
 
@@ -281,18 +398,31 @@ The last data structure in the layer represents an unevaluated integral expressi
 ```lisp
 (defstruct (sym-integral (:conc-name integral-))
   "Represents a definite or indefinite integral.
-INTEGRAND — the expression being integrated
-VARIABLE  — the variable of integration
-LOWER     — lower bound (number, sym-constant, or NIL for indefinite)
-UPPER     — upper bound (number, sym-constant, or NIL for indefinite)"
-  (integrand nil)
-  (variable  nil)
-  (lower     nil)
-  (upper     nil))
+
+Fields:
+  INTEGRAND — the expression being integrated (a sym-polynomial or any form)
+  VARIABLE  — the variable of integration (sym-variable)
+  LOWER     — lower bound (a number, sym-constant, or NIL for indefinite)
+  UPPER     — upper bound (a number, sym-constant, or NIL for indefinite)"
+  (integrand nil)                      ; sym-polynomial | expression
+  (variable  nil)                      ; sym-variable
+  (lower     nil)                      ; number | sym-constant | nil
+  (upper     nil))                     ; number | sym-constant | nil
 
 (defun make-integral (integrand variable &key lower upper)
   "Create a symbolic integral.
-Either both LOWER and UPPER must be provided, or neither."
+
+  INTEGRAND — the expression to integrate (typically a sym-polynomial)
+  VARIABLE  — sym-variable: the variable of integration
+  LOWER     — optional lower bound (number or sym-constant); NIL ⇒ indefinite
+  UPPER     — optional upper bound (number or sym-constant); NIL ⇒ indefinite
+
+  Examples:
+    ;; Indefinite: ∫ (3x² - x + 5) dx
+    (make-integral poly x)
+
+    ;; Definite: ∫₀¹ (3x² - x + 5) dx
+    (make-integral poly x :lower 0 :upper 1)"
   (check-type variable sym-variable)
   (assert (or (and (null lower) (null upper))
               (and lower upper))
@@ -308,19 +438,27 @@ Either both LOWER and UPPER must be provided, or neither."
   (not (null (integral-lower integral))))
 
 (defun %bound->string (bound)
-  "Internal: render a bound (number or sym-constant) as a string."
+  "Internal: render a bound (number or sym-constant) as a string.
+Symbolic constants are rendered with their mathematical glyph where one
+exists (:pi → π, :e → e) and otherwise by their down-cased name."
   (cond
     ((null bound) "")
     ((numberp bound) (format nil "~a" bound))
-    ((sym-constant-p bound) (symbol-name (constant-name bound)))
+    ((sym-constant-p bound)
+     (case (constant-value bound)
+       (:pi "π")
+       (:e  "e")
+       (t   (string-downcase (symbol-name (constant-name bound))))))
     (t (format nil "~a" bound))))
 
 (defun integral->string (integral)
-  "Return a human-readable Unicode string for INTEGRAL.
+  "Return a human-readable string for INTEGRAL.
+
 Indefinite:  ∫(expr) dx
 Definite:    ∫[a,b](expr) dx"
   (check-type integral sym-integral)
-  (let* ((var (symbol-name (variable-name (integral-variable integral))))
+  (let* ((var (string-downcase
+               (symbol-name (variable-name (integral-variable integral)))))
          (body (cond
                  ((sym-polynomial-p (integral-integrand integral))
                   (polynomial->string (integral-integrand integral)))
@@ -333,10 +471,6 @@ Definite:    ∫[a,b](expr) dx"
                      "")))
     (format nil "∫~a(~a) d~a" bounds body var)))
 ```
-
-The `make-integral` constructor enforces the constraint that bounds must come in pairs: you may supply both `lower` and `upper`, or neither, but supplying only one is a programming error caught at runtime with `assert`. This is a small but valuable design choice because it prevents silently constructing a malformed integral whose lower bound is non-nil but whose upper bound is nil.
-
-`integral->string` uses the Unicode integral sign `∫` directly in a format string, which works in any modern Common Lisp environment whose source files are saved in UTF-8. The body of the integral is rendered by dispatching on the integrand's type: if it is a `sym-polynomial` the existing `polynomial->string` is used; anything else falls back to `format`'s default `~a` printer. Bounds are rendered by the private `%bound->string` helper, which knows how to convert both plain numbers and `sym-constant` objects to strings.
 
 ### Data Layer Smoke Test
 
@@ -356,11 +490,17 @@ The file closes with a self-contained smoke test that exercises all five types t
          (q  (make-polynomial x
                               (list (make-term 1 x 1)
                                     (make-term 2 x 0))))
-         (sum    (polynomial-add p q))
-         (diff   (polynomial-subtract p q))
+         ;; p + q  =>  3x² + 7
+         (sum  (polynomial-add p q))
+         ;; p - q  =>  3x² - 2x + 3
+         (diff (polynomial-subtract p q))
+         ;; 2p     =>  6x² - 2x + 10
          (scaled (polynomial-scale p 2))
-         (indef  (make-integral p x))
-         (def    (make-integral p x :lower 0 :upper 1))
+         ;; Indefinite integral of p
+         (indef (make-integral p x))
+         ;; Definite integral ∫₀¹ p dx
+         (def   (make-integral p x :lower 0 :upper 1))
+         ;; Definite integral ∫₀^π p dx  (π as sym-constant bound)
          (pi-int (make-integral p x :lower 0 :upper pi-const)))
 
     (format t "~%=== Symbolic Math Data Layer Smoke Test ===~%~%")
@@ -384,37 +524,62 @@ The smoke test is written as a single large `let*` binding so that every interme
 Running `(run-smoke-test)` after loading `data.lisp` produces output like the following, confirming that polynomial arithmetic, degree computation, evaluation, and integral display all work correctly:
 
 ```
+$ sbcl
+* (load "data.lisp")
+T
+* (in-package #:symbolic-math)
+#<PACKAGE "SYMBOLIC-MATH">
+* (run-smoke-test)
+
 === Symbolic Math Data Layer Smoke Test ===
 
-p         : 3x^2 + -1x^1 + 5
-q         : 1x^1 + 2
+p         : 3x^2 + -1x + 5
+q         : 1x + 2
 p + q     : 3x^2 + 7
-p - q     : 3x^2 + -2x^1 + 3
-2 * p     : 6x^2 + -2x^1 + 10
+p - q     : 3x^2 + -2x + 3
+2 * p     : 6x^2 + -2x + 10
 degree(p) : 2
 p(0)      : 5
 p(1)      : 7
 p(2)      : 15
-indef     : ∫(3x^2 + -1x^1 + 5) dx
-def       : ∫[0,1](3x^2 + -1x^1 + 5) dx
-pi-int    : ∫[0,pi](3x^2 + -1x^1 + 5) dx
+indef     : ∫(3x^2 + -1x + 5) dx
+def       : ∫[0,1](3x^2 + -1x + 5) dx
+pi-int    : ∫[0,π](3x^2 + -1x + 5) dx
 
 ===========================================
+NIL
+* 
 ```
 
 ## Symbolic Differentiation
 
 With the data layer in place we can build the differentiation engine. Polynomial differentiation is driven by two classical rules: the **power rule** for individual terms, and the **sum rule** for multi-term polynomials. Because our polynomial representation is already a list of terms, the sum rule requires no special code and it is a natural consequence of mapping the power rule over every element of the list.
 
-The differentiation package lives in `differentiation.lisp` and declares itself as `SYMBOLIC-MATH/DIFF`, using `(:use #:cl #:symbolic-math)` to inherit the full data layer.
+The differentiation package lives in `differentiation.lisp` and declares itself as `SYMBOLIC-MATH/DIFF`, using `(:use #:cl #:symbolic-math)` to inherit the full data layer:
+
+```lisp
+(defpackage #:symbolic-math/diff
+  (:use #:cl #:symbolic-math)
+  ;; SYMBOLIC-MATH exports RUN-SMOKE-TEST, and :USE makes that symbol
+  ;; accessible here.  Without this SHADOW, the DEFUN below would redefine
+  ;; SYMBOLIC-MATH:RUN-SMOKE-TEST instead of defining a package-local one.
+  (:shadow #:run-smoke-test)
+  (:export
+   ;; Core differentiation
+   #:differentiate-term
+   #:differentiate
+   ;; Higher-order derivatives
+   #:differentiate-n
+   ;; Convenience
+   #:gradient-at
+   #:critical-point-p
+   ;; Smoke test
+   #:run-smoke-test))
+```
+
+The `:shadow` line deserves a second look, because without it the module silently breaks. `SYMBOLIC-MATH` exports `run-smoke-test`, and `:use` makes every exported symbol *accessible* in `SYMBOLIC-MATH/DIFF` — but accessible is not the same as present. A plain `(defun run-smoke-test ...)` would resolve to the inherited symbol and redefine `SYMBOLIC-MATH:RUN-SMOKE-TEST` rather than create a new function. All three files would then define the same symbol, and the last one loaded would win. `:shadow` interposes a fresh package-local symbol so each file gets its own test.
 
 ### The Power Rule on a Single Term
-
-
-The following diagram shows the high-level architecture of the symbolic mathematics system developed in this chapter:
-
-{width: "80%"}
-![Architecture diagram](images/symbolic_math_architecture.png)
 
 The power rule states that `d/dx(c · xⁿ) = n·c · x^(n−1)` for `n ≥ 1`, and that the derivative of a constant is zero. The `differentiate-term` function encodes this directly.
 
@@ -437,7 +602,7 @@ Returns a new sym-term, or NIL when the term differentiates to zero."
 
 The implementation is a two-branch `if`. When the exponent is zero the term is a constant and its derivative is zero; returning `nil` rather than a zero-coefficient term lets the caller use `remove nil` to discard it cleanly without an extra zero in the term list. For any positive exponent the function multiplies the coefficient by the exponent (`n·c`) and decrements the exponent by one (`n−1`), producing a new `sym-term` via `make-term`.
 
-Because the function is pure, it reads three slots from an existing term and constructs a brand-new one and it is trivially testable in isolation. It also composes naturally with `mapcar` since it is a function from one term to one term-or-nil, which is exactly what polynomial-level differentiation needs.
+Because the function is pure, it reads three slots from an existing term and constructs a brand-new one, which makes it trivially testable in isolation. It also composes naturally with `mapcar` since it is a function from one term to one term-or-nil, which is exactly what polynomial-level differentiation needs.
 
 ### Differentiating a Polynomial
 
@@ -459,11 +624,11 @@ Returns a new sym-polynomial (the zero polynomial for a constant input).
                                (mapcar #'differentiate-term
                                        (polynomial-terms poly)))))
     (if (null diff-terms)
-        (zero-polynomial var)
+        (zero-polynomial var :domain (polynomial-domain poly))
         (make-polynomial var diff-terms :domain (polynomial-domain poly)))))
 ```
 
-The sum rule is implicit: `mapcar` applies `differentiate-term` independently to every term, and `remove nil` strips out the constant-term derivatives that returned nil. If all terms were constant the surviving list is empty and `zero-polynomial` is returned explicitly rather than passing an empty list to `make-polynomial`. This edge case matters: differentiating a constant polynomial must yield the zero polynomial, and spelling it out explicitly is clearer than relying on `make-polynomial`'s behaviour for an empty input.
+The sum rule is implicit: `mapcar` applies `differentiate-term` independently to every term, and `remove nil` strips out the constant-term derivatives that returned nil. If all terms were constant the surviving list is empty and `zero-polynomial` is returned explicitly rather than passing an empty list to `make-polynomial`. `make-polynomial` would in fact cope with an empty list, so this branch is about clarity as much as correctness — but it does carry one piece of real information, because `zero-polynomial` is called with `:domain (polynomial-domain poly)`. Differentiating a complex polynomial must yield a *complex* zero polynomial, and the default domain of `zero-polynomial` is `:real`.
 
 ### Higher-Order Derivatives
 
@@ -509,11 +674,9 @@ i.e. |p'(VALUE)| < TOLERANCE.
   (< (abs (gradient-at poly value)) tolerance))
 ```
 
-`gradient-at` is a simple composition: differentiate then evaluate. The symbolic step ensures the derivative is exact; the numeric step converts the exact result to a number. `critical-point-p` compares the absolute value of the gradient against a configurable tolerance, defaulting to `1.0d-9`. Using a tolerance rather than testing for exact equality is important because floating-point arithmetic may introduce small rounding errors even when the true derivative is zero. The `&key` parameter makes the tolerance easy to adjust without changing the call site.
-
 ### Differentiation Smoke Test
 
-The differentiation module includes its own smoke test to verify all four exported functions.
+The differentiation module includes its own smoke test to verify all four exported functions. It is genuinely its own: before the `:shadow` fix described above, this `defun` redefined the data layer's smoke test instead of defining a new one.
 
 ```lisp
 (defun run-smoke-test ()
@@ -524,16 +687,25 @@ The differentiation module includes its own smoke test to verify all four export
          (p  (make-polynomial x (list (make-term  3 x 2)
                                       (make-term -1 x 1)
                                       (make-term  5 x 0))))
-         (dp  (differentiate p))          ; p' = 6x - 1
-         (ddp (differentiate dp))         ; p'' = 6
-         (dddp (differentiate ddp))       ; p''' = 0
+
+         ;; p' = 6x - 1
+         (dp  (differentiate p))
+
+         ;; p'' = 6
+         (ddp (differentiate dp))
+
+         ;; p''' = 0  (zero polynomial)
+         (dddp (differentiate ddp))
 
          ;; q = x^4 - 2x^3 + x
          (q (make-polynomial x (list (make-term  1 x 4)
                                      (make-term -2 x 3)
                                      (make-term  1 x 1))))
-         (dq  (differentiate q))          ; q' = 4x^3 - 6x^2 + 1
-         (ddq (differentiate-n q 2))      ; q'' = 12x^2 - 12x
+         ;; q' = 4x^3 - 6x^2 + 1
+         (dq  (differentiate q))
+
+         ;; q'' = 12x^2 - 12x
+         (ddq (differentiate-n q 2))
 
          ;; Critical point of p: p'(x)=0 → 6x-1=0 → x=1/6
          (cp  (/ 1 6)))
@@ -564,30 +736,31 @@ The test covers differentiation of a quadratic through to the zero polynomial, a
 Here we run the smoke test:
 
 ```
- $ sbcl
+$ sbcl
 * (load "differentiation.lisp")
+T
 * (in-package #:symbolic-math/diff)
-#<package "SYMBOLIC-MATH/DIFF">
+#<PACKAGE "SYMBOLIC-MATH/DIFF">
 * (run-smoke-test)
 
 === Differentiation Smoke Test ===
 
-p            : 3X^2 + -1X + 5
-p'           : 6X + -1
+p            : 3x^2 + -1x + 5
+p'           : 6x + -1
 p''          : 6
 p'''         : 0
 
-q            : 1X^4 + -2X^3 + 1X
-q'           : 4X^3 + -6X^2 + 1
-q'' (via n=2): 12X^2 + -12X
+q            : 1x^4 + -2x^3 + 1x
+q'           : 4x^3 + -6x^2 + 1
+q'' (via n=2): 12x^2 + -12x
 
 gradient-at(p, 0)      : -1  (expected -1)
 gradient-at(p, 1)      : 5  (expected  5)
-critical-point-p(p,1/6): t  (expected T)
-critical-point-p(p,0)  : nil  (expected NIL)
+critical-point-p(p,1/6): T  (expected T)
+critical-point-p(p,0)  : NIL  (expected NIL)
 
 ==================================
-nil
+NIL
 * 
 ```
 
@@ -596,7 +769,30 @@ nil
 
 Integration is the inverse of differentiation. Where differentiation reduces degree by one, integration raises it. The integration package in `integration.lisp` implements the **reverse power rule** for individual terms, extends it to polynomials via the sum rule, evaluates definite integrals numerically using the **Fundamental Theorem of Calculus**, and provides helpers for constructing `sym-integral` shell objects.
 
-The package is `SYMBOLIC-MATH/INTEG`, again using `(:use #:cl #:symbolic-math)`.
+The package is `SYMBOLIC-MATH/INTEG`, again using `(:use #:cl #:symbolic-math)` and again shadowing `run-smoke-test`:
+
+```lisp
+(defpackage #:symbolic-math/integ
+  (:use #:cl #:symbolic-math)
+  ;; SYMBOLIC-MATH exports RUN-SMOKE-TEST, and :USE makes that symbol
+  ;; accessible here.  Without this SHADOW, the DEFUN below would redefine
+  ;; SYMBOLIC-MATH:RUN-SMOKE-TEST instead of defining a package-local one.
+  (:shadow #:run-smoke-test)
+  (:export
+   ;; Core integration
+   #:integrate-term          ; reverse power rule on one sym-term
+   #:integrate               ; antiderivative of a sym-polynomial
+   ;; Definite integral evaluation
+   #:evaluate-definite       ; numeric result of ∫[a,b] p dx
+   #:evaluate-integral       ; numeric result of a definite sym-integral
+   ;; Higher-order / iterated integrals
+   #:integrate-n             ; n-th antiderivative
+   ;; sym-integral shell helpers
+   #:make-indefinite-integral ; wrap an integrand in an indefinite sym-integral
+   #:make-definite-integral   ; wrap an integrand + bounds in a sym-integral
+   ;; Smoke test
+   #:run-smoke-test))
+```
 
 ### The Reverse Power Rule on a Single Term
 
@@ -612,9 +808,9 @@ Returns a new sym-term.  The constant of integration (+C) is handled at
 the polynomial level by the caller.
 
   Examples:
-    (integrate-term (make-term 3 x 2))   ; => (1)x^3  [3/(2+1) = 1]
-    (integrate-term (make-term -1 x 1))  ; => (-1/2)x^2
-    (integrate-term (make-term 5 x 0))   ; => 5x^1"
+    (integrate-term (make-term 3 x 2))   ; => 1x^3  [3/(2+1) = 1]
+    (integrate-term (make-term -1 x 1))  ; => -1/2x^2
+    (integrate-term (make-term 5 x 0))   ; => 5x"
   (check-type term sym-term)
   (let* ((c    (term-coefficient term))
          (v    (term-variable    term))
@@ -635,7 +831,8 @@ The function `integrate` maps `integrate-term` over every term of the polynomial
 ```lisp
 (defun integrate (poly)
   "Return the antiderivative of polynomial POLY (without the constant of
-integration +C).  Applies the reverse power rule to each term.
+integration +C).  Applies the reverse power rule to each term and the sum
+rule across terms.
 
   Examples:
     poly  = 3x² - x + 5
@@ -646,11 +843,12 @@ integration +C).  Applies the reverse power rule to each term.
   (let* ((var  (polynomial-variable poly))
          (new-terms (mapcar #'integrate-term (polynomial-terms poly))))
     (if (null new-terms)
-        (zero-polynomial var)
+        ;; integral of the zero polynomial is still zero
+        (zero-polynomial var :domain (polynomial-domain poly))
         (make-polynomial var new-terms :domain (polynomial-domain poly)))))
 ```
 
-The structure mirrors `differentiate` almost exactly, with `integrate-term` replacing `differentiate-term` and `remove nil` omitted because `integrate-term` never returns nil. The zero-polynomial edge case is still handled: integrating the zero polynomial (no terms) returns the zero polynomial rather than passing an empty list to `make-polynomial`. Notice that the constant of integration `+C` is deliberately omitted. In an indefinite integration context `+C` represents an entire family of functions; adding a zero-exponent term for it would require an arbitrary choice for the constant's coefficient. By leaving it out, the function returns the canonical antiderivative, and callers can add their own constant term if needed.
+The structure mirrors `differentiate` almost exactly, with `integrate-term` replacing `differentiate-term` and `remove nil` omitted because `integrate-term` never returns nil. The zero-polynomial edge case is still handled, and here too the domain is carried through to the result: integrating the complex zero polynomial returns a complex zero polynomial rather than silently resetting it to `:real`. Notice that the constant of integration `+C` is deliberately omitted. In an indefinite integration context `+C` represents an entire family of functions; adding a zero-exponent term for it would require an arbitrary choice for the constant's coefficient. By leaving it out, the function returns the canonical antiderivative, and callers can add their own constant term if needed.
 
 ### Definite Integral Evaluation
 
@@ -675,8 +873,8 @@ Uses the Fundamental Theorem of Calculus:
   ∫[a,b] f dx = F(b) - F(a)   where F = (integrate poly)
 
   Examples:
-    (evaluate-definite p 0 1)
-    (evaluate-definite p 0 (make-constant 'pi :pi))"
+    (evaluate-definite p 0 1)            ; ∫₀¹ p dx
+    (evaluate-definite p 0 (make-constant 'pi :pi)) ; ∫₀^π p dx"
   (check-type poly sym-polynomial)
   (let* ((F  (integrate poly))
          (a  (coerce (%resolve-bound lower) 'double-float))
@@ -685,7 +883,35 @@ Uses the Fundamental Theorem of Calculus:
        (polynomial-evaluate F a))))
 ```
 
-The function `%resolve-bound` is a small dispatch function that converts whichever bound type was supplied: a plain number, `sym-constant`, or an unexpected type to a numeric value or signals an informative error. The two `coerce` calls in `evaluate-definite` ensure the bounds are `double-float` before passing them to `polynomial-evaluate`, which prevents mixed exact/floating-point arithmetic from producing surprising results. The final subtraction `F(b) - F(a)` is the Fundamental Theorem in code, and its simplicity is a direct reflection of the theorem's elegance.
+The function `%resolve-bound` is a small dispatch function. Given a bound it returns a number: plain numbers pass straight through, a `sym-constant` is resolved through `constant-numeric-value`, `nil` raises an error explaining that only definite integrals have a numeric value, and anything else raises an error naming the offending type. The two `coerce` calls in `evaluate-definite` then ensure the bounds are `double-float` before they reach `polynomial-evaluate`, which prevents mixed exact/floating-point arithmetic from producing surprising results. The final subtraction `F(b) - F(a)` is the Fundamental Theorem in code, and its simplicity is a direct reflection of the theorem's elegance.
+
+### Evaluating an Integral Object
+
+The `sym-integral` shells built by `make-definite-integral` are convenient for display, but until now there was no way to get a number back out of one without unpacking it by hand. `evaluate-integral` closes that loop: it checks that the integral is definite, checks that the stored integrand is a polynomial, and hands the pieces to `evaluate-definite`.
+
+```lisp
+(defun evaluate-integral (integral)
+  "Return the numeric value of the definite sym-integral INTEGRAL.
+
+This is the bridge between the data layer's sym-integral shells and the
+numeric evaluator: it unpacks the integrand and bounds and delegates to
+EVALUATE-DEFINITE.
+
+  Example:
+    (evaluate-integral (make-definite-integral p 0 1))   ; => 5.5"
+  (check-type integral sym-integral)
+  (unless (integral-definite-p integral)
+    (error "INTEGRAL is indefinite; only definite integrals have a numeric value."))
+  (assert (polynomial-p (integral-integrand integral))
+          (integral)
+          "INTEGRAL's integrand must be a sym-polynomial, got ~s"
+          (type-of (integral-integrand integral)))
+  (evaluate-definite (integral-integrand integral)
+                     (integral-lower integral)
+                     (integral-upper integral)))
+```
+
+The two guards are what make the shells safe to pass around. An indefinite integral has no numeric value at all, so `evaluate-integral` says so explicitly instead of failing somewhere deep inside `%resolve-bound`; and because the `integrand` slot is intentionally untyped — recall that `sym-integral` accepts "any form" so that it can represent expressions the polynomial layer cannot yet handle — a non-polynomial integrand produces a clear assertion naming the actual type rather than a confusing `check-type` failure. In practice you would call `evaluate-integral` on a shell you had previously displayed with `integral->string`.
 
 ### Iterated Antiderivatives
 
@@ -715,8 +941,9 @@ Two thin wrappers make it convenient to package a polynomial together with its b
 
 ```lisp
 (defun make-indefinite-integral (poly)
-  "Create a sym-integral wrapping POLY (indefinite form).
-The stored integrand is POLY itself.
+  "Create a sym-integral wrapping POLY in indefinite form.
+The stored integrand is POLY itself, not its antiderivative; call
+INTEGRATE to take the antiderivative.
 
   Rendering:  ∫(expr) dx"
   (check-type poly sym-polynomial)
@@ -724,14 +951,14 @@ The stored integrand is POLY itself.
 
 (defun make-definite-integral (poly lower upper)
   "Create a sym-integral wrapping POLY with explicit bounds LOWER and UPPER.
+The stored integrand is POLY itself, not its antiderivative; call
+EVALUATE-INTEGRAL to get the numeric value.
 LOWER and UPPER may be real numbers or sym-constant objects.
 
   Rendering:  ∫[a,b](expr) dx"
   (check-type poly sym-polynomial)
   (make-integral poly (polynomial-variable poly) :lower lower :upper upper))
 ```
-
-These functions exist purely for ergonomics. Without them, a caller would need to separately extract the polynomial's variable and pass it as the second argument to `make-integral` that is a minor but unnecessary repetition. By encapsulating that extraction, the wrappers let calling code read more naturally: `(make-indefinite-integral p)` rather than `(make-integral p (polynomial-variable p))`. Note that these constructors store the original polynomial as the integrand; they do not pre-compute the antiderivative. Evaluation is deferred to an explicit call to `evaluate-definite` or `integrate`.
 
 ### Integration Smoke Test
 
@@ -747,23 +974,43 @@ The integration smoke test verifies each exported function and echoes expected v
          (p   (make-polynomial x (list (make-term  3 x 2)
                                        (make-term -1 x 1)
                                        (make-term  5 x 0))))
-         (ip  (integrate p))          ; x³ - (1/2)x² + 5x
-         (iip (integrate-n p 2))      ; (1/4)x⁴ - (1/6)x³ + (5/2)x²
+
+         ;; ∫p dx = x³ - (1/2)x² + 5x
+         (ip  (integrate p))
+
+         ;; ∫²p dx = (1/4)x⁴ - (1/6)x³ + (5/2)x²
+         (iip (integrate-n p 2))
 
          ;; q = 6x + 2
          (q   (make-polynomial x (list (make-term 6 x 1)
                                        (make-term 2 x 0))))
-         (iq  (integrate q))          ; 3x² + 2x
 
-         (def-01    (evaluate-definite p 0 1))   ; expected 5.5
-         (def-q-01  (evaluate-definite q 0 1))   ; expected 5.0
+         ;; ∫q dx = 3x² + 2x             ← exact antiderivative
+         (iq  (integrate q))
+
+         ;; Definite:  ∫₀¹ p dx  = F(1) - F(0)
+         ;;            F(x) = x³ - (1/2)x² + 5x
+         ;;            F(1) = 1 - 1/2 + 5 = 5.5
+         ;;            F(0) = 0
+         ;;            ⇒  5.5
+         (def-01    (evaluate-definite p 0 1))
+
+         ;; Definite: ∫₀¹ q dx = [3x² + 2x]₀¹ = 3 + 2 = 5
+         (def-q-01  (evaluate-definite q 0 1))
+
+         ;; Definite: ∫₀^π p dx
          (def-pi    (evaluate-definite p 0 pi-c))
 
+         ;; sym-integral shells
          (indef-shell (make-indefinite-integral p))
          (def-shell   (make-definite-integral   p 0 1))
-         (pi-shell    (make-definite-integral   p 0 pi-c)))
+         (pi-shell    (make-definite-integral   p 0 pi-c))
+
+         ;; evaluating a shell directly (no need to unpack it by hand)
+         (shell-01    (evaluate-integral def-shell)))
 
     (format t "~%=== Integration Smoke Test ===~%~%")
+
     (format t "p              : ~a~%" (polynomial->string p))
     (format t "∫p dx          : ~a~%" (polynomial->string ip))
     (format t "∫∫p dx dx      : ~a~%" (polynomial->string iip))
@@ -778,41 +1025,44 @@ The integration smoke test verifies each exported function and echoes expected v
     (format t "indef shell    : ~a~%" (integral->string indef-shell))
     (format t "def [0,1]      : ~a~%" (integral->string def-shell))
     (format t "def [0,pi]     : ~a~%" (integral->string pi-shell))
+    (format t "~%")
+    (format t "evaluate shell : ~a  (expected 5.5)~%" shell-01)
     (format t "~%==============================~%")))
 ```
 
-The test checks the antiderivative of `p` (a quadratic), the second antiderivative of `p`, the antiderivative of `q` (a linear polynomial), two numerical definite integrals with known exact values (5.5 and 5.0), a definite integral with a `sym-constant` bound (`π`), and the string rendering of all three integral shell variants. The `~f` directive for the `π`-bounded result prints a floating-point number whose exact digits will vary by implementation but whose value should be approximately `102.olean` that is a sanity check that the numeric path through `sym-constant` works end-to-end.
+The test checks the antiderivative of `p` (a quadratic), the second antiderivative of `p`, the antiderivative of `q` (a linear polynomial), two numerical definite integrals with known exact values (5.5 and 5.0), a definite integral with a `sym-constant` bound (`π`), the string rendering of all three integral shell variants, and one `evaluate-integral` call that confirms a shell can be evaluated without being unpacked. The `~f` directive for the `π`-bounded result prints a floating-point number whose exact digits vary a little between implementations; the value should be about `41.7794`, which is `π³ − π²/2 + 5π`. That is a sanity check that the numeric path through `sym-constant` works end-to-end.
 
 Here is the output of the smoke test:
 
 ```
 $ sbcl
 * (load "integration.lisp")
-warning: redefining symbolic-math:run-smoke-test in DEFUN
-t
+T
 * (in-package #:symbolic-math/integ)
-#<package "SYMBOLIC-MATH/INTEG">
+#<PACKAGE "SYMBOLIC-MATH/INTEG">
 * (run-smoke-test)
 
 === Integration Smoke Test ===
 
-p              : 3X^2 + -1X + 5
-∫p dx          : 1X^3 + -1/2X^2 + 5X
-∫∫p dx dx      : 1/4X^4 + -1/6X^3 + 5/2X^2
+p              : 3x^2 + -1x + 5
+∫p dx          : 1x^3 + -1/2x^2 + 5x
+∫∫p dx dx      : 1/4x^4 + -1/6x^3 + 5/2x^2
 
-q              : 6X + 2
-∫q dx          : 3X^2 + 2X
+q              : 6x + 2
+∫q dx          : 3x^2 + 2x
 
 ∫₀¹  p dx      : 5.5d0  (expected 5.5)
 ∫₀¹  q dx      : 5.0d0  (expected 5.0)
 ∫₀^π p dx      : 41.77943774770411
 
-indef shell    : ∫(3X^2 + -1X + 5) dX
-def [0,1]      : ∫[0,1](3X^2 + -1X + 5) dX
-def [0,pi]     : ∫[0,PI](3X^2 + -1X + 5) dX
+indef shell    : ∫(3x^2 + -1x + 5) dx
+def [0,1]      : ∫[0,1](3x^2 + -1x + 5) dx
+def [0,pi]     : ∫[0,π](3x^2 + -1x + 5) dx
+
+evaluate shell : 5.5d0  (expected 5.5)
 
 ==============================
-nil
+NIL
 * 
 ```
 
@@ -821,30 +1071,30 @@ nil
 
 In this chapter we built a three-file symbolic mathematics library in Common Lisp that demonstrates how a language designed for symbolic computation can express mathematical concepts cleanly and correctly.
 
-The **data layer** (`data.lisp`) showed how `defstruct` provides a lightweight, functional alternative to CLOS for domain objects. By enforcing invariants at construction time with `check-type` and `assert`, we ensured that ill-formed objects never enter the system. The canonical-form polynomial representation: terms always sorted by descending exponent with like terms combined, removing the need for normalization logic in every downstream consumer.
+The **data layer** (`data.lisp`) showed how `defstruct` provides a lightweight, functional alternative to CLOS for domain objects. By enforcing invariants at construction time with `check-type` and `assert`, we ensured that ill-formed objects never enter the system. The canonical-form polynomial representation — terms always sorted by descending exponent with like terms combined — removes the need for normalization logic in every downstream consumer.
 
 The **differentiation layer** (`differentiation.lisp`) demonstrated that the power rule and sum rule can be encoded almost literally in code. `differentiate-term` is a direct transliteration of `d/dx(cxⁿ) = ncx^(n−1)`; `differentiate` applies it via `mapcar` and `remove nil`, and the sum rule emerges automatically from the polynomial's list structure. Higher-order derivatives and numerical gradient evaluation required only a handful of additional lines.
 
-The **integration layer** (`integration.lisp`) mirrored the differentiation layer but introduced the important advantage of Common Lisp's exact rational arithmetic. Coefficients produced by the reverse power rule, such as the `-1/2` arising from integrating `-x` and are stored as exact rationals, so no precision is lost across multiple integrations. The Fundamental Theorem of Calculus translated into a three-line function that computes an antiderivative symbolically and then performs two numerical evaluations, achieving both symbolic clarity and numeric accuracy.
+The **integration layer** (`integration.lisp`) mirrored the differentiation layer but introduced the important advantage of Common Lisp's exact rational arithmetic. Coefficients produced by the reverse power rule, such as the `-1/2` arising from integrating `-x`, are stored as exact rationals, so no precision is lost across multiple integrations. The Fundamental Theorem of Calculus translated into a three-line function that computes an antiderivative symbolically and then performs two numerical evaluations, achieving both symbolic clarity and numeric accuracy.
 
 Taken together, the three files illustrate a broader lesson: when you model a problem domain faithfully as data, the algorithms that manipulate that data often become nearly self-evident. The mathematics drives the code structure rather than the other way around, and the result is software that is simultaneously easier to understand, easier to test, and easier to extend.
 
 ## Optional Practice Problems
 
 1. **Polynomial Multiplication Support**:
-   The data layer in [data.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/symbolic-math/data.lisp) implements `polynomial-add` and `polynomial-subtract` but does not support multiplication. Write a function `polynomial-multiply` that multiplies two polynomials `p` and `q`. The algorithm should multiply each term of `p` with each term of `q` (adding exponents and multiplying coefficients) and combine the resulting terms using `make-polynomial`.
+   The data layer in [data.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/symbolic-math/data.lisp) implements `polynomial-add` and `polynomial-subtract` but does not support multiplication. Write a function `polynomial-multiply` that multiplies two polynomials `p` and `q`. The algorithm should multiply each term of `p` with each term of `q` (adding exponents and multiplying coefficients) and combine the resulting terms using `make-polynomial`.
 
 2. **The Product Rule for Symbolic Differentiation**:
-   Currently, differentiation in [differentiation.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/symbolic-math/differentiation.lisp) only supports single polynomials by applying the power rule term-by-term. In real calculus, the derivative of a product of two functions is given by `(f \cdot g)' = f' \cdot g + f \cdot g'`$. Write a function `differentiate-product` that takes two `sym-polynomial` structures, computes their derivative using the product rule (leveraging `differentiate` and your new `polynomial-multiply` function), and returns the resulting simplified polynomial.
+   Currently, differentiation in [differentiation.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/symbolic-math/differentiation.lisp) only supports single polynomials by applying the power rule term-by-term. In real calculus, the derivative of a product of two functions is given by `(f·g)' = f'·g + f·g'`. Write a function `differentiate-product` that takes two `sym-polynomial` structures, computes their derivative using the product rule (leveraging `differentiate` and your new `polynomial-multiply` function), and returns the resulting simplified polynomial.
 
 3. **Symbolic Integration by Substitution (Simple Linear Substitution)**:
-   In [integration.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/symbolic-math/integration.lisp), the reverse power rule is applied directly to monomials. Extend the integration engine to support simple u-substitution for linear compositions of the form `\int (ax + b)^n dx = \frac{(ax + b)^{n+1}}{a(n+1)}`$. Represent the composition using a custom structure or by parsing list representation, and return the integrated polynomial.
+   In [integration.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/symbolic-math/integration.lisp), the reverse power rule is applied directly to monomials. Extend the integration engine to support simple u-substitution for linear compositions of the form `∫(ax + b)^n dx = (ax + b)^(n+1) / (a(n+1))`. Represent the composition using a custom structure or by parsing list representation, and return the integrated polynomial.
 
 4. **Finding Roots via Newton's Method**:
-   Using the symbolic differentiation engine, we can compute exact derivatives at any point. Implement Newton's method for finding roots of a polynomial: `x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}`$. Write a function `find-polynomial-root` that takes a polynomial, an initial guess, a tolerance, and a maximum iteration count. Use `polynomial-evaluate` for `f(x_n)`$ and `gradient-at` from [differentiation.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/symbolic-math/differentiation.lisp) for `f'(x_n)`$, and return the root.
+   Using the symbolic differentiation engine, we can compute exact derivatives at any point. Implement Newton's method for finding roots of a polynomial: `x[n+1] = x[n] - f(x[n]) / f'(x[n])`. Write a function `find-polynomial-root` that takes a polynomial, an initial guess, a tolerance, and a maximum iteration count. Use `polynomial-evaluate` for `f(x[n])` and `gradient-at` from [differentiation.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/symbolic-math/differentiation.lisp) for `f'(x[n])`, and return the root.
 
 5. **Definite Integral via Trapezoidal Rule (Numeric Verification)**:
-   In [integration.lisp](file:///Users/markwatson/GITHUB/loving-common-lisp/src/symbolic-math/integration.lisp), definite integrals are computed exactly using the Fundamental Theorem of Calculus. Write a numeric integration function, `evaluate-definite-trapezoidal`, that estimates the definite integral of a polynomial over `[a, b]`$ using the trapezoidal rule with `N`$ subintervals. Compare the numeric result against the exact result returned by `evaluate-definite` to measure estimation error.
+   In [integration.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/symbolic-math/integration.lisp), definite integrals are computed exactly using the Fundamental Theorem of Calculus. Write a numeric integration function, `evaluate-definite-trapezoidal`, that estimates the definite integral of a polynomial over `[a, b]` using the trapezoidal rule with `N` subintervals. Compare the numeric result against the exact result returned by `evaluate-definite` to measure estimation error.
 
 6. **Symbolic Math Parser for Lisp Expressions**:
    The construction of polynomials like `3x² - x + 5` is done using nested constructor calls. Write a macro or helper function, `parse-math-expression`, that takes a standard Lisp S-expression (e.g. `(+ (* 3 (expt x 2)) (- x) 5)`) and parses it into a `sym-polynomial` object. Ensure that variables, exponents, and constant terms are resolved correctly.

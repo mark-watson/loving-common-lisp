@@ -340,7 +340,7 @@ gemini> h
   Ctrl-D         Exit
   ─────────────────────────────────────────
   Model: gemini-3.1-flash-lite
-  Cache: /Users/markwatson/.daily-use-cache.db (0 items)
+  Cache: /Users/markw/.daily-use-cache.db (0 items)
 
 gemini> !what sci-fi movies are playing today in Flagstaff AZ?
   [Searching...]
