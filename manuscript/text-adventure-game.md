@@ -4,7 +4,7 @@ Interactive fiction, text adventure games where the player types commands and th
 
 Large language models change this entirely. Instead of scripting every possible scenario, we can give an LLM a *system prompt* that establishes the world, the rules, and the tone, then lets the model improvise. The player types whatever they want, and the LLM generates a coherent, creative response that respects everything that happened before. There are no hardcoded branches, no "I don't understand that" dead ends. The story emerges from the conversation.
 
-This chapter builds a complete AI text adventure game in Common Lisp. We provide two backends: **Ollama** for running an LLM locally (no API keys, no usage costs) and **Fireworks.ai** for cloud-hosted inference that runs dramatically faster. Both variants use the same conversational architecture; the program is under 60 lines of code, yet it delivers an open-ended interactive storytelling experience.
+This chapter builds a complete AI text adventure game in Common Lisp. We provide two backends: **Ollama** for running an LLM locally (no API keys, no usage costs) and **Fireworks.ai** for cloud-hosted inference that runs dramatically faster. Both variants share the same conversational architecture and the same `chat` function — only the model name changes — yet the program delivers an open-ended interactive storytelling experience.
 
 ## Architecture
 
@@ -16,11 +16,11 @@ The game follows a simple conversation loop:
 4. **LLM call**: the full message history is sent to Ollama's chat API; the assistant's reply is displayed.
 5. **Append and repeat**: the reply is appended to the history so the LLM remembers past events.
 
-The Ollama integration is handled by a small `chat` function defined in the game file itself, which posts multi-turn conversations to the local Ollama server. Only `cl-json` (JSON encoding/decoding) and `uiop` (subprocess management for the external `curl` program) are needed.
+The Ollama integration is handled by a small `chat` function defined in the game file itself, which hands the multi-turn conversation to `litelm:completion` and returns the model's reply. The one dependency is the **litelm** routing library (in `../litelm`), which owns all of the HTTP and JSON work.
 
 ## The System Prompt
 
-Before looking at the code, here is the data that defines the game world. This file is sent as the initial system message:
+Before looking at the code, here is the data that defines the game world — the contents of `story.txt`, sent as the initial system message (its lines are broken here to fit the page):
 
 ```text
 You are a text adventure game master. Create an immersive, interactive story
@@ -49,14 +49,15 @@ This prompt does several things at once. It establishes the LLM's *role* (game m
 
 ## The Game Code
 
-The complete program lives in a single file. We quickload `uiop` and `cl-json`, define our package, and implement a small `chat` function plus two game functions: `load-story` for reading the system prompt file, and `play` for the main game loop.
+The complete program lives in a single file. We load the **litelm** routing library, define our package, and implement a small `chat` function plus two game functions: `load-story` for reading the system prompt file, and `play` for the main game loop. There is no HTTP or JSON code in the game itself: `litelm:completion` builds the request, posts it to Ollama, and hands back the decoded reply.
 
-Here is the full listing of `text-adventure-game.lisp`:
+Here is the full listing of `text-adventure-game_ollama.lisp`:
 
 ```lisp
 ;;;; text-adventure-game_ollama.lisp
 ;;;; Text adventure game using Ollama for AI-driven storytelling.
-;;;; Self-contained: a local chat function posts to Ollama's /api/chat endpoint.
+;;;; Model access goes through the litelm routing library (../litelm), so this
+;;;; file holds no HTTP or JSON code of its own.
 ;;;;
 ;;;; Usage (LispWorks):
 ;;;;   (load "text-adventure-game_ollama.lisp")
@@ -64,8 +65,15 @@ Here is the full listing of `text-adventure-game.lisp`:
 ;;;;
 ;;;; Usage (SBCL):
 ;;;;   sbcl --load text-adventure-game_ollama.lisp --eval '(text-adventure:play)'
+;;;;
+;;;; Requires a local Ollama server with at least one chat model pulled.
 
-(ql:quickload '(:uiop :cl-json))
+(require 'asdf)
+(let ((asd (merge-pathnames "../litelm/litelm.asd"
+                            (or *load-pathname* *default-pathname-defaults*))))
+  (when (probe-file asd)
+    (asdf:load-asd asd)))
+(asdf:load-system :litelm)
 
 (defpackage #:text-adventure
   (:use #:cl)
@@ -73,41 +81,35 @@ Here is the full listing of `text-adventure-game.lisp`:
 
 (in-package #:text-adventure)
 
-(defvar *ollama-endpoint* "http://localhost:11434/api/chat")
-(defvar *ollama-model* "qwen3.5:0.8b")
+(defvar *ollama-model* "qwen3.5:2b"
+  "Ollama model to play with. litelm needs a \"provider/model\" string, so
+   this may be either \"qwen3.5:2b\" or \"ollama/qwen3.5:2b\".")
 
-(defun substitute-subseq (string old new &key (test #'eql))
-  "Single-pass string substitution used to repair cl-json's NIL -> null."
-  (let ((pos (search old string :test test)))
-    (if pos
-        (concatenate 'string
-                     (subseq string 0 pos)
-                     new
-                     (subseq string (+ pos (length old))))
-        string)))
+(defvar *ollama-api-base* nil
+  "Optional override for the Ollama base URL passed to litelm. NIL uses
+   litelm's built-in default, http://localhost:11434/v1.")
 
-(defun chat (messages &key (model-id *ollama-model*))
-  "Send the multi-turn MESSAGES (list of (:|role| . ...) (:|content| . ...)
-alists) to the local Ollama server and return the assistant's text."
-  (let* ((data (list (cons :|model| model-id)
-                      (cons :|stream| nil)
-                      (cons :|messages| messages)))
-         (json-data (cl-json:encode-json-to-string data))
-         (fixed-json-data
-          (substitute-subseq json-data ":null" ":false" :test #'string=))
-         (process (uiop:launch-program
-                   (format nil "curl -s ~a -d ~s" *ollama-endpoint* fixed-json-data)
-                   :output :stream
-                   :error-output :stream))
-         (response (with-output-to-string (out)
-                     (loop for line = (read-line (uiop:process-info-output process) nil nil)
-                           while line
-                           do (write-line line out)))))
-    (with-input-from-string (s response)
-      (let* ((json-as-list (cl-json:decode-json s))
-             (message-resp (cdr (assoc :message json-as-list)))
-             (content (cdr (assoc :content message-resp))))
-        (or content "No response content")))))
+(defparameter *story-file*
+  (merge-pathnames "story.txt"
+                   (make-pathname :name nil :type nil
+                                  :defaults (or *load-truename*
+                                                *default-pathname-defaults*)))
+  "Default system-prompt file: story.txt next to this source file, so the game
+   runs no matter what the REPL's current directory is.")
+
+(defun ensure-model-name (model)
+  "Prefix MODEL with \"ollama/\" unless it already names a provider."
+  (if (find #\/ model)
+      model
+      (concatenate 'string "ollama/" model)))
+
+(defun chat (messages &key (model *ollama-model*))
+  "Send the multi-turn MESSAGES (a list of (role content) pairs) to the local
+   Ollama server through litelm and return the assistant's text."
+  (litelm:response-content
+   (litelm:completion (ensure-model-name model)
+                      :messages messages
+                      :api-base *ollama-api-base*)))
 
 (defun load-story (filepath)
   (handler-case
@@ -120,14 +122,13 @@ alists) to the local Ollama server and return the assistant's text."
       (format t "Error: ~a not found.~%" filepath)
       nil)))
 
-(defun play (&key (story-file "story.txt") (model *ollama-model*))
-  "Start the text adventure game. Reads story-file as the initial prompt
-   and uses Ollama to generate responses to player actions."
+(defun play (&key (story-file *story-file*) (model *ollama-model*))
+  "Start the text adventure game. Reads story-file as the initial prompt and
+   uses the local Ollama model, through litelm, to generate responses."
   (let ((story (load-story story-file)))
     (unless story
       (return-from play))
-    (let ((messages (list (list (cons :|role| "system")
-                                (cons :|content| story)))))
+    (let ((messages (list (list :system story))))
       (format t "~a~%~%" story)
       (format t "Welcome to the Text Adventure!~%")
       (format t "Describe what you want to do, or type 'quit' to exit.~%~%")
@@ -135,31 +136,49 @@ alists) to the local Ollama server and return the assistant's text."
         (format t "> ")
         (force-output)
         (let ((user-input (string-trim '(#\Space #\Tab #\Newline) (read-line))))
-          (when (member user-input '("quit" "exit" "QUIT" "EXIT") :test #'string=)
+          (when (member user-input '("quit" "exit") :test #'string-equal)
             (format t "Goodbye!~%")
             (return))
-          (when (string= user-input "")
-            (go :continue))
-          (setf messages (append messages
-                                 (list (list (cons :|role| "user")
-                                             (cons :|content| user-input)))))
-          (let ((response (chat messages :model-id model)))
-            (when response
-              (format t "~a~%" response)
-              (setf messages (append messages
-                                     (list (list (cons :|role| "assistant")
-                                                 (cons :|content| response))))))))))))
+          ;; An empty line simply re-prompts: the body of the turn is skipped
+          ;; and LOOP goes round again. (An earlier version tried to jump with
+          ;; (go :continue), but LOOP defines no such tag, so pressing Enter
+          ;; signalled "attempt to GO to nonexistent tag".)
+          (unless (string= user-input "")
+            (setf messages (append messages (list (list :user user-input))))
+            (let ((response (chat messages :model model)))
+              (when response
+                (format t "~a~%" response)
+                (setf messages (append messages
+                                       (list (list :assistant response))))))))))))
+
 ```
 
 ### Loading the System
 
 ```lisp
-(ql:quickload '(:uiop :cl-json))
+(require 'asdf)
+(let ((asd (merge-pathnames "../litelm/litelm.asd"
+                            (or *load-pathname* *default-pathname-defaults*))))
+  (when (probe-file asd)
+    (asdf:load-asd asd)))
+(asdf:load-system :litelm)
 ```
 
-This single line pulls in the only two libraries the game needs: `cl-json` for JSON encoding/decoding, and `uiop` for subprocess management of the external `curl` program that performs the HTTP call. All of the HTTP and JSON plumbing lives in the local `chat` function; the game loop never touches it directly.
+Because the example is meant to be loaded straight from the repository with `load`, it registers the sibling `../litelm` system itself before loading it. In a project of your own you would instead declare `:depends-on (#:litelm)` in your `.asd` file and let ASDF resolve it.
 
 ### Reading the Story File
+
+```lisp
+(defparameter *story-file*
+  (merge-pathnames "story.txt"
+                   (make-pathname :name nil :type nil
+                                  :defaults (or *load-truename*
+                                                *default-pathname-defaults*)))
+  "Default system-prompt file: story.txt next to this source file, so the game
+   runs no matter what the REPL's current directory is.")
+```
+
+**\*story-file\*** anchors the default prompt file to the source file, so the game can be started from any directory — the earlier `"story.txt"` relative path only worked if you happened to launch Lisp from this directory.
 
 ```lisp
 (defun load-story (filepath)
@@ -174,20 +193,22 @@ This single line pulls in the only two libraries the game needs: `cl-json` for J
       nil)))
 ```
 
-`load-story` reads the entire contents of a file into a string. It allocates a string exactly the size of the file using `file-length`, then fills it with `read-sequence`. The `handler-case` wraps the operation so that a missing file produces a clean error message instead of dropping into the debugger.
+**load-story** reads the whole file into a string: it allocates a string exactly the size of the file using `file-length`, fills it with `read-sequence`, and wraps the operation in `handler-case` so that a missing file produces a clean error message instead of dropping into the debugger.
 
 ### The Main Game Loop
 
 The `play` function is the heart of the program. Let's walk through it section by section.
 
 ```lisp
-(defun play (&key (story-file "story.txt") (model *ollama-model*))
+(defun play (&key (story-file *story-file*) (model *ollama-model*))
+  "Start the text adventure game. Reads story-file as the initial prompt and
+   uses the local Ollama model, through litelm, to generate responses."
+  (let ((story (load-story story-file)))
 ```
 
-The function accepts two keyword parameters. `story-file` defaults to `"story.txt"` in the current directory. `model` defaults to the local `*ollama-model*` special variable but you can override it to use any model you have pulled locally.
+The function accepts two keyword parameters. `story-file` defaults to `story.txt` beside the source file, and `model` defaults to **\*ollama-model\*** but can be overridden to use any model you have pulled locally.
 
 ```lisp
-  (let ((story (load-story story-file)))
     (unless story
       (return-from play))
 ```
@@ -195,11 +216,10 @@ The function accepts two keyword parameters. `story-file` defaults to `"story.tx
 We load the story file. If it is missing (`load-story` returns `nil`), we exit early. The `unless`/`return-from` pattern is cleaner than nesting the entire game inside an `if`.
 
 ```lisp
-    (let ((messages (list (list (cons :|role| "system")
-                                (cons :|content| story)))))
+    (let ((messages (list (list :system story))))
 ```
 
-This is the critical data structure: the message history. It is a list of association lists, each with a `role` and `content` key. The system message comes first and sets up the game world. The escaped symbol syntax `:|role|` and `:|content|` ensures that `cl-json` encodes these keys in lowercase as `"role"` and `"content"`, which is what Ollama's API expects.
+This is the critical data structure: the message history, a list of `(role content)` pairs in litelm's message format. The system message comes first and sets up the game world; the `:system`, `:user`, and `:assistant` keywords are translated by litelm into the `role` values the API expects, so nothing in the game has to know any JSON.
 
 ```lisp
       (format t "~a~%~%" story)
@@ -219,64 +239,103 @@ We print the system prompt so the player sees the world description, followed by
 The game loop is an infinite `loop` form. We print a `>` prompt, call `force-output` to ensure it appears before the blocking `read-line`, then read and trim the player's input.
 
 ```lisp
-          (when (member user-input '("quit" "exit" "QUIT" "EXIT") :test #'string=)
+          (when (member user-input '("quit" "exit") :test #'string-equal)
             (format t "Goodbye!~%")
             (return))
-          (when (string= user-input "")
-            (go :continue))
 ```
 
-Two early exits: typing "quit" or "exit" (case-insensitive) ends the game via `return`, and empty input restarts the loop via `go :continue`. The `:continue` tag is provided implicitly by the `loop` form.
+Typing `quit` or `exit` ends the game. `string-equal` makes the test case-insensitive, so `Quit` and `QUIT` work too — the older `member` test against four literal spellings quietly missed those.
 
 ```lisp
-          (setf messages (append messages
-                                 (list (list (cons :|role| "user")
-                                             (cons :|content| user-input)))))
+          ;; An empty line simply re-prompts: the body of the turn is skipped
+          ;; and LOOP goes round again. (An earlier version tried to jump with
+          ;; (go :continue), but LOOP defines no such tag, so pressing Enter
+          ;; signalled "attempt to GO to nonexistent tag".)
+          (unless (string= user-input "")
 ```
 
-We append the player's input as a user message to the history. Note that we use `append` rather than a destructive operation: each turn creates a fresh list, which avoids mutation bugs. For a game that runs for dozens of turns the copying overhead is negligible.
+An empty line is simply ignored: the `unless` skips the rest of the turn — no message is appended and the model is not called — and the loop prints the prompt again. The comment in the code is worth reading, because the obvious way to write this is wrong. An earlier draft used `(go :continue)`, assuming that `loop` provides a `:continue` tag. It does not: `loop` does expand into a `block` and a `tagbody`, but the tags it generates are its own, so `(go :continue)` is an error — *attempt to GO to nonexistent tag: :CONTINUE* — and the game died the first time the player pressed Enter on an empty line.
 
 ```lisp
-          (let ((response (chat messages :model-id model)))
-            (when response
-              (format t "~a~%" response)
-              (setf messages (append messages
-                                     (list (list (cons :|role| "assistant")
-                                                 (cons :|content| response))))))))))))
+            (setf messages (append messages (list (list :user user-input))))
 ```
 
-We call `chat` with the full message history and the model ID. The `chat` function serializes the messages to JSON, sends them to Ollama's `/api/chat` endpoint via `curl`, and parses the assistant's response. We print the response and append it to the history as an assistant message, so the LLM remembers what it said on future turns.
+We append the player's input as a user message. Note that we use `append` rather than a destructive operation: each turn creates a fresh list, which avoids mutation bugs. For a game that runs for dozens of turns the copying overhead is negligible.
+
+```lisp
+            (let ((response (chat messages :model model)))
+              (when response
+                (format t "~a~%" response)
+                (setf messages (append messages
+                                       (list (list :assistant response))))))))))))
+```
+
+We call `chat` with the full message history and the model name. `chat` hands the conversation to `litelm:completion`, which posts it to Ollama and returns the reply; we print it and append it to the history as an assistant message, so the model remembers what it said on future turns.
 
 ## The Ollama Chat Function
 
-For completeness, here is the `chat` function our game calls:
+For completeness, here is everything the game does to talk to Ollama:
 
 ```lisp
-(defun chat (messages &key (model-id *ollama-model*))
-  "Send the multi-turn MESSAGES (list of (:|role| . ...) (:|content| . ...)
-alists) to the local Ollama server and return the assistant's text."
-  (let* ((data (list (cons :|model| model-id)
-                      (cons :|stream| nil)
-                      (cons :|messages| messages)))
-         (json-data (cl-json:encode-json-to-string data))
-         (fixed-json-data
-          (substitute-subseq json-data ":null" ":false" :test #'string=))
-         (process (uiop:launch-program
-                   (format nil "curl -s ~a -d ~s" *ollama-endpoint* fixed-json-data)
-                   :output :stream
-                   :error-output :stream))
-         (response (with-output-to-string (out)
-                     (loop for line = (read-line (uiop:process-info-output process) nil nil)
-                           while line
-                           do (write-line line out)))))
-    (with-input-from-string (s response)
-      (let* ((json-as-list (cl-json:decode-json s))
-             (message-resp (cdr (assoc :message json-as-list)))
-             (content (cdr (assoc :content message-resp))))
-        (or content "No response content")))))
+(defvar *ollama-model* "qwen3.5:2b"
+  "Ollama model to play with. litelm needs a \"provider/model\" string, so
+   this may be either \"qwen3.5:2b\" or \"ollama/qwen3.5:2b\".")
+
+(defvar *ollama-api-base* nil
+  "Optional override for the Ollama base URL passed to litelm. NIL uses
+   litelm's built-in default, http://localhost:11434/v1.")
+
+(defparameter *story-file*
+  (merge-pathnames "story.txt"
+                   (make-pathname :name nil :type nil
+                                  :defaults (or *load-truename*
+                                                *default-pathname-defaults*)))
+  "Default system-prompt file: story.txt next to this source file, so the game
+   runs no matter what the REPL's current directory is.")
+
+(defun ensure-model-name (model)
+  "Prefix MODEL with \"ollama/\" unless it already names a provider."
+  (if (find #\/ model)
+      model
+      (concatenate 'string "ollama/" model)))
+
+(defun chat (messages &key (model *ollama-model*))
+  "Send the multi-turn MESSAGES (a list of (role content) pairs) to the local
+   Ollama server through litelm and return the assistant's text."
+  (litelm:response-content
+   (litelm:completion (ensure-model-name model)
+                      :messages messages
+                      :api-base *ollama-api-base*)))
 ```
 
-The function builds a JSON payload with the model ID, `stream` set to `false`, and the message list. It uses `cl-json:encode-json-to-string` for serialization, then fixes a Common Lisp JSON encoding quirk: `cl-json` encodes `nil` as `null`, but Ollama expects `false` for the stream field. The local `substitute-subseq` helper performs a single string substitution. The request is sent via `curl` launched as a subprocess with `uiop:launch-program`, reading the response line by line from the process output stream.
+That is the entire transport layer. litelm addresses models as `"provider/model"` strings, so **ensure-model-name** prefixes a bare Ollama tag with `ollama/` — which also means a fully qualified `"ollama/qwen3.5:4b"` passes through untouched. Everything else belongs to litelm: building the JSON payload, POSTing it to `http://localhost:11434/v1/chat/completions`, decoding the reply, and mapping an HTTP failure onto a Lisp condition. **\*ollama-api-base\*** is there if you need to point at a different host; `nil` means litelm's default.
+
+This is a large simplification over the earlier version of this file, which encoded the request with `cl-json`, patched the result with a string substitution (because `cl-json` writes `nil` as `null` where Ollama wants `false`), and shelled out to `curl` with `uiop:launch-program`. Routing through litelm removes all of it — and has the pleasant side effect that the same `chat` function serves the Fireworks variant, where only the model name changes.
+
+### The Fireworks.ai variant
+
+`text-adventure-game_fireworks.lisp` is the same program pointed at a cloud provider:
+
+```lisp
+(defvar *fireworks-model* "fireworks-ai/accounts/fireworks/models/deepseek-v4-flash"
+  "Fireworks model to play with, written as a litelm \"provider/model\" string.")
+
+(defparameter *story-file*
+  (merge-pathnames "story.txt"
+                   (make-pathname :name nil :type nil
+                                  :defaults (or *load-truename*
+                                                *default-pathname-defaults*)))
+  "Default system-prompt file: story.txt next to this source file, so the game
+   runs no matter what the REPL's current directory is.")
+
+(defun chat (messages &key (model *fireworks-model*))
+  "Send the multi-turn MESSAGES (a list of (role content) pairs) to Fireworks
+   through litelm and return the assistant's text."
+  (litelm:response-content
+   (litelm:completion model :messages messages)))
+```
+
+The differences are only the model string — which already carries its `fireworks-ai/` provider prefix, so `ensure-model-name` is not needed — and the `FIREWORKS_API_KEY` environment variable that litelm reads for that provider. Everything else, including `play` and the game loop, is identical, which is the real payoff of routing through a shared library.
 
 ## Running the Game
 
@@ -288,23 +347,19 @@ ollama pull qwen3.5:2b
 
 Then start your Lisp implementation and load the game:
 
-```lisp
-CL-USER 1 > (load "text-adventure-game.lisp")
+```text
+CL-USER 1 > (load "text-adventure-game_ollama.lisp")
 CL-USER 2 > (text-adventure:play)
 ```
 
-To use a different model, pass the `:model` keyword:
-
-```lisp
-(text-adventure:play :model "mistral:v0.3")
-```
+To use a different model, pass the `:model` keyword: `(text-adventure:play :model "qwen3.5:4b")`.
 
 ## Example Session
 
 Here is a representative playthrough:
 
 ```text
-CL-USER 1 > (load "text-adventure-game.lisp")
+CL-USER 1 > (load "text-adventure-game_ollama.lisp")
 CL-USER 2 > (text-adventure:play)
 You are a text adventure game master. Create an immersive, interactive story
 for the player. Follow these rules:
@@ -364,7 +419,7 @@ The key insight is that the LLM is doing all the creative work (e.g., world-buil
 
 **The message history is the game state.** There is no separate inventory tracker, health counter, or quest log in our code. The LLM tracks these in the conversation itself, for example notice how the assistant response includes "Inventory: {None} | Health: 10/10." This works because each API call includes the full conversation history, so the model can reference anything it (or the player) said previously.
 
-**The system prompt does the heavy lifting.** By telling the model *how* to be a game master, performing tasks like describing scenes, presenting options, tracking state, and maintain consistency. We get structured, game-like responses without any parsing or post-processing. A poorly written system prompt would produce rambling narration without clear choices; a well-written one feels like a real game.
+**The system prompt does the heavy lifting.** By telling the model *how* to be a game master — describing scenes, presenting options, tracking state, maintaining consistency — we get structured, game-like responses without any parsing or post-processing. A poorly written system prompt would produce rambling narration without clear choices; a well-written one feels like a real game.
 
 **Ollama makes it free and private.** Running locally means no API costs, no rate limits, and no data leaving your machine. The trade-off is that smaller models (2B–7B parameters) produce simpler stories than cloud-hosted giants like GPT-4 or Claude. For a fun interactive experience, the smaller models work surprisingly well.
 
@@ -377,7 +432,7 @@ To create your own adventure, edit `story.txt` and change:
 - **Rules**: Add constraints like "The player cannot use violence" or "All puzzles require rhyming solutions."
 - **Tone**: Instruct the model to be humorous, terrifying, mysterious, or whimsical.
 
-You can also experiment with different Ollama models. Larger models like `gemma3:12b` or `mistral:v0.3` produce richer prose and follow complex instructions better. Smaller models like `qwen3.5:2b` are faster but may occasionally forget details from earlier in the conversation.
+You can also experiment with different Ollama models. A larger model such as `qwen3.5:4b` produces richer prose and follows complex instructions better, while the default `qwen3.5:2b` is faster but may occasionally forget details from earlier in the conversation.
 
 ## Wrap Up
 
@@ -388,17 +443,17 @@ The complete source code lives in the `text-adventure-game` directory of the boo
 - `text-adventure-game_ollama.lisp`: uses Ollama for local, private, cost-free inference. Requires Ollama running locally with at least one chat model pulled.
 - `text-adventure-game_fireworks.lisp`: uses the Fireworks.ai cloud API for much faster responses. Requires a `FIREWORKS_API_KEY` environment variable. Fireworks.ai hosts optimized versions of models like DeepSeek and Llama on dedicated GPU infrastructure, delivering sub-second latency that makes the game feel significantly more responsive.
 
-Both files are under 60 lines of Lisp; the real depth comes from the LLM's ability to improvise within the constraints set by your system prompt.
+Both files are under 100 lines of Lisp — most of it the game loop — because the depth comes from the LLM: it improvises within the constraints set by your system prompt.
 
 ## Optional Practice Problems
 
 1. **Custom Adventure:** Create a new `story.txt` file with a completely different setting (space station, underwater city, haunted mansion). Run the game with your custom prompt and play through at least five turns. Observe how the model adapts to the new world. Compare the quality of responses with at least two different Ollama models.
 
-2. **Save and Load:** Extend the game with a `save-game` function that writes the message history to a file (using `cl-json:encode-json`) and a `load-game` function that restores it. Add commands `save` and `load` to the game loop. This reinforces working with JSON serialization and file I/O in Common Lisp.
+2. **Save and Load:** Extend the game with a `save-game` function that writes the message history to a file (using `litelm:json-encode`) and a `load-game` function that restores it. Add commands `save` and `load` to the game loop. This reinforces working with JSON serialization and file I/O in Common Lisp.
 
 3. **Model Switcher:** Add a command `model <name>` that changes the model mid-game without losing the conversation history. Implement this by modifying the `play` function to accept a dynamic model parameter rather than a one-time keyword argument. Consider: does switching models mid-story produce coherent results?
 
-4. **Token Counter:** Add a diagnostic command `tokens` that estimates how many tokens the current message history contains. Since Ollama does not expose a token-counting endpoint directly, implement a simple heuristic: count characters and divide by 4 (a rough approximation for English text). Print the estimate alongside the number of turns played.
+4. **Token Counter:** Add a diagnostic command `tokens` that estimates how many tokens the current message history contains. Ollama reports `prompt_eval_count` and `eval_count` on every response (visible in `litelm:response-raw`), so you can read the real numbers instead of estimating. If you would rather not depend on them, fall back to a heuristic: count characters and divide by 4. Print the estimate alongside the number of turns played.
 
 5. **Multi-NPC Conversations:** Modify the system prompt to introduce two distinct NPCs with different personalities (e.g., a sarcastic goblin and a nervous elf). During play, try addressing each NPC by name and observe whether the model maintains distinct voices for each. Write a brief analysis of how well the model handles this and what prompt engineering techniques improved the results.
 

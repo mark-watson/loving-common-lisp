@@ -1,30 +1,34 @@
 # Text Adventure Game in Common Lisp
 
-An AI-driven text adventure game that uses Ollama for interactive storytelling. You describe what you want to do, and the LLM generates the story in response.
+An AI-driven text adventure game: you describe what you want to do, and a large
+language model generates the story in response. Two backends are provided, and
+they share the same game code — a local **Ollama** model, and **Fireworks.ai**
+for much faster cloud inference. Model access goes through the
+[litelm](../litelm) routing library, so neither game file contains any HTTP or
+JSON code of its own.
 
 ## Prerequisites
 
 - [Ollama](https://ollama.com) running locally with at least one chat model pulled
-- LispWorks (or SBCL with UIOP and cl-json via Quicklisp)
-- [cl-json](https://github.com/sharplispers/cl-json) - loadable via Quicklisp: `(ql:quickload :cl-json)`
-- `curl` available on your PATH
+- The sibling **../litelm** library (the game registers and loads it automatically)
+- For the Fireworks variant: a `FIREWORKS_API_KEY` environment variable
 
 ## Quick Start
 
-1. Make sure Ollama is running and you have a model pulled:
+1. Make sure Ollama is running and you have a chat model pulled:
    ```
-   ollama pull mistral
+   ollama pull qwen3.5:2b
    ```
 
-2. Start LispWorks, then:
+2. Start Lisp, then:
    ```lisp
-   (load "text-adventure-game.lisp")
+   (load "text-adventure-game_ollama.lisp")
    (text-adventure:play)
    ```
 
 3. To use a different model:
    ```lisp
-   (text-adventure:play :model "qwen3.5:2b")
+   (text-adventure:play :model "qwen3.5:4b")
    ```
 
 4. Type your actions at the `>` prompt. Type `quit` or `exit` to stop.
@@ -33,7 +37,8 @@ An AI-driven text adventure game that uses Ollama for interactive storytelling. 
 
 | File | Purpose |
 |------|---------|
-| `text-adventure-game.lisp` | Main game code - defines the `text-adventure` package with Ollama chat API integration |
+| `text-adventure-game_ollama.lisp` | The game, using a local Ollama model |
+| `text-adventure-game_fireworks.lisp` | The same game, using Fireworks.ai (needs `FIREWORKS_API_KEY`) |
 | `story.txt` | System prompt that sets the adventure's world, tone, and rules |
 
 ## How It Works
@@ -42,10 +47,11 @@ The game maintains a growing message history:
 
 1. **System prompt** - `story.txt` is sent as the initial system message, establishing the game world and the LLM's role as game master
 2. **Player input** - each action you type is appended as a user message
-3. **LLM response** - the full conversation history is sent to Ollama's `/api/chat` endpoint, and the assistant's reply is displayed
+3. **LLM response** - the full conversation history is passed to `litelm:completion`, which routes it to Ollama or Fireworks, and the assistant's reply is displayed
 4. **Context grows** - every exchange is appended, so the AI remembers what happened earlier in the adventure
 
-The Ollama API call is made via `curl`, with JSON encoding handled by `cl-json`.
+`story.txt` is resolved relative to the source file, so you can start Lisp from
+any directory.
 
 ## Customizing the Story
 
@@ -58,18 +64,18 @@ Edit `story.txt` to change the setting, characters, or rules. The system prompt 
 
 ## Available Models
 
-Choose any chat model you have pulled in Ollama. Smaller models (2B–4B params) are faster; larger models produce richer stories. Examples:
+Choose any chat model you have pulled in Ollama. Smaller models are faster; larger models produce richer stories. Examples:
 
 ```
-ollama pull mistral
-ollama pull gemma4:12b-it-qat
 ollama pull qwen3.5:2b
+ollama pull qwen3.5:4b
+ollama pull gemma4:e2b-it-qat
 ```
 
 ## Example Run
 
 ```
-CL-USER 1 > (load "text-adventure-game.lisp")
+CL-USER 1 > (load "text-adventure-game_ollama.lisp")
 CL-USER 2 > (text-adventure:play)
 You are a text adventure game master. Create an immersive, interactive story for the player. Follow these rules:
 
@@ -102,5 +108,6 @@ A) Follow the path upward and investigate the cave entrance directly for clues a
 C) Scan the surrounding area with your senses (smell wind patterns) before proceeding further up towards higher ground for better visibility.
 
 *Which do you choose?*
-> 
+> quit
+Goodbye!
 ```

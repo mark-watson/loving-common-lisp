@@ -1,6 +1,7 @@
-;;;; text-adventure-game.lisp
+;;;; text-adventure-game_ollama.lisp
 ;;;; Text adventure game using Ollama for AI-driven storytelling.
-;;;; Self-contained: a local chat function posts to Ollama's /api/chat endpoint.
+;;;; Model access goes through the litelm routing library (../litelm), so this
+;;;; file holds no HTTP or JSON code of its own.
 ;;;;
 ;;;; Usage (LispWorks):
 ;;;;   (load "text-adventure-game_ollama.lisp")
@@ -8,8 +9,15 @@
 ;;;;
 ;;;; Usage (SBCL):
 ;;;;   sbcl --load text-adventure-game_ollama.lisp --eval '(text-adventure:play)'
+;;;;
+;;;; Requires a local Ollama server with at least one chat model pulled.
 
-(ql:quickload '(:uiop :cl-json))
+(require 'asdf)
+(let ((asd (merge-pathnames "../litelm/litelm.asd"
+                            (or *load-pathname* *default-pathname-defaults*))))
+  (when (probe-file asd)
+    (asdf:load-asd asd)))
+(asdf:load-system :litelm)
 
 (defpackage #:text-adventure
   (:use #:cl)
@@ -17,41 +25,35 @@
 
 (in-package #:text-adventure)
 
-(defvar *ollama-endpoint* "http://localhost:11434/api/chat")
-(defvar *ollama-model* "qwen3.5:0.8b")
+(defvar *ollama-model* "qwen3.5:2b"
+  "Ollama model to play with. litelm needs a \"provider/model\" string, so
+   this may be either \"qwen3.5:2b\" or \"ollama/qwen3.5:2b\".")
 
-(defun substitute-subseq (string old new &key (test #'eql))
-  "Single-pass string substitution used to repair cl-json's NIL -> null."
-  (let ((pos (search old string :test test)))
-    (if pos
-        (concatenate 'string
-                     (subseq string 0 pos)
-                     new
-                     (subseq string (+ pos (length old))))
-        string)))
+(defvar *ollama-api-base* nil
+  "Optional override for the Ollama base URL passed to litelm. NIL uses
+   litelm's built-in default, http://localhost:11434/v1.")
 
-(defun chat (messages &key (model-id *ollama-model*))
-  "Send the multi-turn MESSAGES (list of (:|role| . ...) (:|content| . ...)
-alists) to the local Ollama server and return the assistant's text."
-  (let* ((data (list (cons :|model| model-id)
-                      (cons :|stream| nil)
-                      (cons :|messages| messages)))
-         (json-data (cl-json:encode-json-to-string data))
-         (fixed-json-data
-          (substitute-subseq json-data ":null" ":false" :test #'string=))
-         (process (uiop:launch-program
-                   (format nil "curl -s ~a -d ~s" *ollama-endpoint* fixed-json-data)
-                   :output :stream
-                   :error-output :stream))
-         (response (with-output-to-string (out)
-                     (loop for line = (read-line (uiop:process-info-output process) nil nil)
-                           while line
-                           do (write-line line out)))))
-    (with-input-from-string (s response)
-      (let* ((json-as-list (cl-json:decode-json s))
-             (message-resp (cdr (assoc :message json-as-list)))
-             (content (cdr (assoc :content message-resp))))
-        (or content "No response content")))))
+(defparameter *story-file*
+  (merge-pathnames "story.txt"
+                   (make-pathname :name nil :type nil
+                                  :defaults (or *load-truename*
+                                                *default-pathname-defaults*)))
+  "Default system-prompt file: story.txt next to this source file, so the game
+   runs no matter what the REPL's current directory is.")
+
+(defun ensure-model-name (model)
+  "Prefix MODEL with \"ollama/\" unless it already names a provider."
+  (if (find #\/ model)
+      model
+      (concatenate 'string "ollama/" model)))
+
+(defun chat (messages &key (model *ollama-model*))
+  "Send the multi-turn MESSAGES (a list of (role content) pairs) to the local
+   Ollama server through litelm and return the assistant's text."
+  (litelm:response-content
+   (litelm:completion (ensure-model-name model)
+                      :messages messages
+                      :api-base *ollama-api-base*)))
 
 (defun load-story (filepath)
   (handler-case
@@ -64,14 +66,13 @@ alists) to the local Ollama server and return the assistant's text."
       (format t "Error: ~a not found.~%" filepath)
       nil)))
 
-(defun play (&key (story-file "story.txt") (model *ollama-model*))
-  "Start the text adventure game. Reads story-file as the initial prompt
-   and uses the local chat function to generate responses to player actions."
+(defun play (&key (story-file *story-file*) (model *ollama-model*))
+  "Start the text adventure game. Reads story-file as the initial prompt and
+   uses the local Ollama model, through litelm, to generate responses."
   (let ((story (load-story story-file)))
     (unless story
       (return-from play))
-    (let ((messages (list (list (cons :|role| "system")
-                                (cons :|content| story)))))
+    (let ((messages (list (list :system story))))
       (format t "~a~%~%" story)
       (format t "Welcome to the Text Adventure!~%")
       (format t "Describe what you want to do, or type 'quit' to exit.~%~%")
@@ -79,17 +80,17 @@ alists) to the local Ollama server and return the assistant's text."
         (format t "> ")
         (force-output)
         (let ((user-input (string-trim '(#\Space #\Tab #\Newline) (read-line))))
-          (when (member user-input '("quit" "exit" "QUIT" "EXIT") :test #'string=)
+          (when (member user-input '("quit" "exit") :test #'string-equal)
             (format t "Goodbye!~%")
             (return))
-          (when (string= user-input "")
-            (go :continue))
-          (setf messages (append messages
-                                 (list (list (cons :|role| "user")
-                                             (cons :|content| user-input)))))
-          (let ((response (chat messages :model-id model)))
-            (when response
-              (format t "~a~%" response)
-              (setf messages (append messages
-                                     (list (list (cons :|role| "assistant")
-                                                 (cons :|content| response))))))))))))
+          ;; An empty line simply re-prompts: the body of the turn is skipped
+          ;; and LOOP goes round again. (An earlier version tried to jump with
+          ;; (go :continue), but LOOP defines no such tag, so pressing Enter
+          ;; signalled "attempt to GO to nonexistent tag".)
+          (unless (string= user-input "")
+            (setf messages (append messages (list (list :user user-input))))
+            (let ((response (chat messages :model model)))
+              (when response
+                (format t "~a~%" response)
+                (setf messages (append messages
+                                       (list (list :assistant response))))))))))))
