@@ -39,6 +39,7 @@ autocontext.md
 text-adventure-game.md
 symbolic-math.md
 webkit.md
+cache_engine.md
 daily_use.md
 cl-ai-coding-agent.md
 hacking_SBCL_repl.md

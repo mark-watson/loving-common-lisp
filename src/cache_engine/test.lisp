@@ -44,9 +44,41 @@
          (assert (equal (lookup cache '("fox")) '("The quick brown fox jumps over the lazy dog")))
          (assert (equal (length (lookup cache '("the"))) 2))
 
+         ;; LIKE metacharacters must match literally, not as wildcards
+         (add_cache cache "Battery is at 50% charge")
+         (add_cache cache "50 percent off deals")
+         (format t "Lookup '50%': ~A~%" (lookup cache '("50%")))
+         (assert (equal (lookup cache '("50%")) '("Battery is at 50% charge"))
+                 () "50% must not act as a LIKE wildcard")
+         (add_cache cache "file_name convention")
+         (add_cache cache "fileXname convention")
+         (assert (equal (lookup cache '("file_name")) '("file_name convention"))
+                 () "_ must not act as a single-character LIKE wildcard")
+
+         ;; Duplicates are refreshed, not inserted twice
+         (assert (eq (add_cache cache "Hello world") :refreshed))
+         (assert (eq (add_cache cache "A brand new entry") :inserted))
+         (assert (= 1 (length (lookup cache '("Hello world") :limit 10))))
+         (format t "Duplicate add returned :refreshed, row count unchanged.~%")
+
+         ;; Refreshing keeps an entry out of the one-week sweep
+         (sqlite:execute-non-query (cache-engine::db-conn cache)
+                                   "INSERT INTO cache (content, created_at) VALUES (?, datetime('now', '-8 days'))"
+                                   "stale answer")
+         (add_cache cache "stale answer")
+         (clear-cache-older-one-week cache)
+         (assert (plusp (length (lookup cache '("stale answer") :limit 5)))
+                 () "a refreshed entry must survive the one-week sweep")
+
          (clear-cache cache)
          (format t "After clear, count: ~D~%" (count-items cache))
-         (assert (= (count-items cache) 0)))
+         (assert (= (count-items cache) 0))
+
+         ;; close-cache is idempotent: this call and the one in the cleanup
+         ;; below must both be safe
+         (close-cache cache)
+         (close-cache cache)
+         (format t "close-cache is idempotent.~%"))
     (close-cache cache)
     (when (probe-file "test.db")
       (delete-file "test.db"))))
