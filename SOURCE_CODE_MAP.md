@@ -46,7 +46,6 @@ This table maps each chapter file in `./manuscript` to its source code example d
 | `manuscript/autocontext.md` | `src/autocontext` |
 | `manuscript/agent_llm.md` | `src/cl-llm-agent` |
 | `manuscript/text-adventure-game.md` | `src/text-adventure-game` |
-| `manuscript/wolfram.md` | (none) |
 | `manuscript/symbolic-math.md` | `src/symbolic-math` |
 | `manuscript/webkit.md` | `src/webkit-cl` |
 | `manuscript/daily_use.md` | `src/daily_use` |
