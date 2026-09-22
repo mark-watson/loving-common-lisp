@@ -1,20 +1,22 @@
 ;;;; neural.lisp --- The neural integration layer (local Ollama daemon).
 ;;;;
 ;;;; When a symbolic query fails on a ~ predicate, NSK asks the model to infer
-;;;; the missing object. The same layer turns free text into triples. HTTP goes
-;;;; through dexador when it is loaded, otherwise through a native LispWorks
-;;;; socket, so the core keeps no hard dependency on an HTTP library.
+;;;; the missing object. The same layer turns free text into triples.
+;;;;
+;;;; Model access goes through litelm, the book's provider-neutral client, so
+;;;; this file carries no HTTP code and no request envelope of its own. The
+;;;; litelm symbols are resolved at call time, which keeps NSK loadable on an
+;;;; image where litelm is absent: a neural query then reports why it cannot
+;;;; run, and the symbolic engine is unaffected.
 
 (in-package :nsk)
 
 (defparameter *ollama-url* "http://localhost:11434"
-  "Base URL of the local Ollama daemon.")
+  "Base URL of the local Ollama daemon. litelm reaches the daemon through its
+   OpenAI-compatible prefix, so NSK appends /v1 to this when calling out.")
 
 (defparameter *ollama-model* "qwen3.5:4b"
   "Model used for inference and text extraction.")
-
-(defparameter *ollama-timeout* 60
-  "Socket timeout, in seconds, for Ollama requests.")
 
 (defparameter *inference-system*
   "You are a graph database inference node. Given a Subject and a Predicate, infer the single most likely Object. Reply ONLY as JSON: {\"result\": \"value\"}."
@@ -40,124 +42,73 @@
          (clean (substitute #\- #\Space (string-upcase trimmed))))
     (intern clean :keyword)))
 
-;;; HTTP transport
+;;; The litelm bridge
 
-(defun parse-url (url)
-  "Return (values host port path) for a simple http URL."
-  (let* ((mark (search "://" url))
-         (rest (if mark (subseq url (+ mark 3)) url))
-         (slash (position #\/ rest))
-         (authority (if slash (subseq rest 0 slash) rest))
-         (path (if slash (subseq rest slash) "/"))
-         (colon (position #\: authority))
-         (host (if colon (subseq authority 0 colon) authority))
-         (port (if colon (parse-integer authority :start (1+ colon)) 80)))
-    (values host port path)))
+(defun litelm-function (name)
+  "Return the exported LITELM function NAME, or signal if litelm is absent.
 
-(defun http-post-json (url body)
-  "POST BODY (a JSON string) to URL and return the response body string."
-  (let ((dex-post (and (find-package :dexador)
-                       (find-symbol "POST" :dexador))))
-    (cond
-      (dex-post
-       (funcall dex-post url :content body
-                :headers '(("Content-Type" . "application/json"))))
-      ((and (find-package :comm) (find-symbol "OPEN-TCP-STREAM" :comm))
-       (native-http-post-json url body))
-      (t (error "No HTTP client available; load dexador or run on LispWorks.")))))
+   The lookup happens at call time rather than at read time, so this file still
+   compiles and loads on an image where litelm is not installed -- the same
+   trick the server uses for hunchentoot."
+  (let ((symbol (and (find-package :litelm) (find-symbol name :litelm))))
+    (unless (and symbol (fboundp symbol))
+      (error "litelm is not loaded, so NSK cannot reach the local model; ~
+              load it with (ql:quickload :litelm)."))
+    (fdefinition symbol)))
 
-(defun native-http-post-json (url body)
-  "POST using a raw LispWorks TCP socket. Resolved dynamically so this file
-   compiles without the COMM package present."
-  (let ((open-fn (find-symbol "OPEN-TCP-STREAM" :comm))
-        (crlf (coerce (list #\Return #\Linefeed) 'string)))
-    (multiple-value-bind (host port path) (parse-url url)
-      (let ((stream (funcall open-fn host port
-                             :read-timeout *ollama-timeout*
-                             :element-type 'base-char)))
-        (unless stream (error "Cannot connect to ~a:~a" host port))
-        (unwind-protect
-             (progn
-               (write-string (format nil "POST ~a HTTP/1.1~a" path crlf) stream)
-               (write-string (format nil "Host: ~a:~a~a" host port crlf) stream)
-               (write-string (format nil "Content-Type: application/json~a" crlf) stream)
-               (write-string (format nil "Content-Length: ~a~a" (length body) crlf) stream)
-               (write-string (format nil "Connection: close~a~a" crlf crlf) stream)
-               (write-string body stream)
-               (force-output stream)
-               (read-http-body stream))
-          (close stream))))))
+(defun ollama-generate (prompt system)
+  "Send PROMPT, under SYSTEM, to the local Ollama model through litelm.
+   Returns the model's reply text."
+  (let ((response (funcall (litelm-function "COMPLETION")
+                           (format nil "ollama/~a" *ollama-model*)
+                           :messages (list (list :system system)
+                                           (list :user prompt))
+                           :api-base (format nil "~a/v1" *ollama-url*))))
+    (funcall (litelm-function "RESPONSE-CONTENT") response)))
 
-(defun read-http-body (stream)
-  "Read an HTTP response from STREAM and return only the body."
-  (read-line stream nil "")             ; status line
-  (let ((chunked nil) (length nil))
-    (loop for line = (read-line stream nil nil)
-          while line
-          for trimmed = (string-right-trim '(#\Return) line)
-          until (string= trimmed "")
-          do (let ((low (string-downcase trimmed)))
-               (cond ((and (>= (length low) 18)
-                           (string= "transfer-encoding:" low :end2 18)
-                           (search "chunked" low))
-                      (setf chunked t))
-                     ((and (>= (length low) 15)
-                           (string= "content-length:" low :end2 15))
-                      (setf length (parse-integer low :start 15 :junk-allowed t))))))
-    (cond (chunked (read-chunked-body stream))
-          (length (read-n-chars stream length))
-          (t (read-to-eof stream)))))
+;;; Reading the model's JSON
+;;;
+;;; The chat endpoint has no response-format flag that insists on bare JSON the
+;;; way Ollama's native /api/generate does, so a reply can arrive wrapped in a
+;;; Markdown fence or a sentence. JSON-OBJECT-IN walks the text from the first
+;;; { to its matching }, ignoring braces inside strings, and parses that slice,
+;;; which tolerates all three shapes.
 
-(defun read-n-chars (stream n)
-  (let* ((buf (make-string n))
-         (got (read-sequence buf stream)))
-    (subseq buf 0 got)))
-
-(defun read-to-eof (stream)
-  (with-output-to-string (out)
-    (loop for ch = (read-char stream nil nil)
-          while ch do (write-char ch out))))
-
-(defun read-chunked-body (stream)
-  (with-output-to-string (out)
-    (loop
-      (let* ((line (string-right-trim '(#\Return) (read-line stream nil "")))
-             (semi (position #\; line))
-             (size (parse-integer line :radix 16
-                                       :end (or semi (length line))
-                                       :junk-allowed t)))
-        (when (or (null size) (zerop size)) (return))
-        (write-string (read-n-chars stream size) out)
-        (read-line stream nil "")))))    ; trailing CRLF after each chunk
+(defun json-object-in (text)
+  "Return the first complete JSON object in TEXT as an alist, or NIL."
+  (when (stringp text)
+    (let ((start (position #\{ text)))
+      (when start
+        (let ((depth 0) (in-string nil) (end nil) (i start) (n (length text)))
+          (loop while (and (< i n) (null end)) do
+            (let ((ch (char text i)))
+              (cond (in-string
+                     (cond ((char= ch #\\) (incf i))
+                           ((char= ch #\") (setf in-string nil))))
+                    ((char= ch #\") (setf in-string t))
+                    ((char= ch #\{) (incf depth))
+                    ((char= ch #\})
+                     (decf depth)
+                     (when (zerop depth) (setf end (1+ i))))))
+            (incf i))
+          (when end
+            (ignore-errors (json-parse (subseq text start end)))))))))
 
 ;;; Ollama calls
 
-(defun ollama-generate (prompt system)
-  "Send a /api/generate request and return the model's raw response string."
-  (let* ((payload (json-encode
-                   (list :object
-                         (cons "model" *ollama-model*)
-                         (cons "system" system)
-                         (cons "prompt" prompt)
-                         (cons "format" "json")
-                         (cons "stream" :false))))
-         (raw (http-post-json (format nil "~a/api/generate" *ollama-url*) payload))
-         (outer (json-parse raw)))
-    (json-get outer "response")))
-
 (defun query-neural-fallback (subject predicate)
   "Ask the model to infer the object for (SUBJECT PREDICATE). Return a string,
-   or NIL if the daemon is unreachable or gives nothing."
+   or NIL if litelm is unavailable, the daemon is unreachable, or the model
+   gives nothing."
   (handler-case
       (let* ((prompt (format nil "Subject: ~a. Predicate: ~a. What is the Object?"
                              (term-label subject) (term-label predicate)))
-             (response (ollama-generate prompt *inference-system*)))
-        (when (and response (stringp response))
-          (let* ((inner (ignore-errors (json-parse response)))
-                 (result (and (consp inner) (json-get inner "result"))))
-            (cond ((and result (stringp result) (plusp (length result))) result)
-                  ((plusp (length response)) response)
-                  (t nil)))))
+             (reply (ollama-generate prompt *inference-system*))
+             (result (let ((object (json-object-in reply)))
+                       (and object (json-get object "result")))))
+        (cond ((and result (stringp result) (plusp (length result))) result)
+              ((and reply (stringp reply) (plusp (length reply))) reply)
+              (t nil)))
     (error (e)
       (format *error-output* "~&; neural fallback unavailable: ~a~%" e)
       nil)))
@@ -165,9 +116,9 @@
 (defun text->triples (text)
   "Use the model to parse TEXT into a list of (S P O) keyword triples."
   (handler-case
-      (let* ((response (ollama-generate text *extraction-system*))
-             (inner (and response (stringp response) (json-parse response)))
-             (rows (and (consp inner) (json-get inner "triples"))))
+      (let* ((reply (ollama-generate text *extraction-system*))
+             (object (json-object-in reply))
+             (rows (and object (json-get object "triples"))))
         (loop for row in rows
               for s = (json-get row "subject")
               for p = (json-get row "predicate")

@@ -1,8 +1,9 @@
 ;;;; nsk.asd --- System definition for the NSK engine.
 ;;;;
 ;;;; The core has no external dependencies so it loads under a bare LispWorks
-;;;; image. The neural layer uses dexador when present (or a native socket),
-;;;; and the server loads hunchentoot on demand, so neither is required here.
+;;;; image. The neural layer reaches Ollama through litelm, which it resolves
+;;;; at call time, and the server loads hunchentoot on demand, so neither is
+;;;; required here.
 
 (asdf:defsystem "nsk"
   :description "NSK: Neural-Symbolic Knowledge Graph engine."

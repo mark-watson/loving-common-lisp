@@ -29,8 +29,8 @@ service.
 
 - Common Lisp: LispWorks 8 (tested) or SBCL.
 - Optional, for the neural layer: [Ollama](https://ollama.com) running locally
-  with the `qwen3.5:4b` model. NSK reaches it over HTTP with dexador when that
-  library is present, or with a native socket on LispWorks.
+  with the `qwen3.5:4b` model, plus [`litelm`](../litelm/), the provider-neutral
+  client NSK reaches the daemon through. Load it with `(ql:quickload :litelm)`.
 - Optional, for `--serve`: hunchentoot (loaded on demand through Quicklisp).
 
 The graph engine, the query language, and persistence all work with none of
@@ -124,12 +124,22 @@ The default log is `nsk-graph.log` in the working directory. Change it with the
 ## Neural layer
 
 NSK talks to Ollama at `http://localhost:11434` and targets the `qwen3.5:4b`
-model. Change these by binding `nsk:*ollama-url*` and `nsk:*ollama-model*`.
+model, both through [`litelm`](../litelm/), so the engine carries no HTTP client
+of its own. Change the daemon and the model by binding `nsk:*ollama-url*` and
+`nsk:*ollama-model*`; litelm is handed the model as `ollama/qwen3.5:4b`, and the
+daemon's OpenAI-compatible prefix `/v1` is appended for you.
 
 Inference asks for strict JSON (`{"result": "value"}`) and converts the answer
-into a keyword, so `"Common Lisp"` becomes `:COMMON-LISP`. When the daemon is
-down, a neural query returns no solutions and prints a short note instead of
-failing.
+into a keyword, so `"Common Lisp"` becomes `:COMMON-LISP`. Because the chat
+endpoint has no response-format flag, the reply is read by locating the first
+complete JSON object in it, which tolerates a Markdown fence or an extra
+sentence around the JSON. When litelm is not loaded, or the daemon is down, a
+neural query returns no solutions and prints a short note instead of failing.
+
+`qwen3.5:4b` is a thinking model, so it can take a minute or more per call on a
+laptop. litelm's own timeouts apply (120 s read, 60 s connect); bind
+`nsk:*ollama-model*` to a smaller model such as `qwen3.5:0.8b` when you want
+faster turnaround.
 
 ## REST server
 

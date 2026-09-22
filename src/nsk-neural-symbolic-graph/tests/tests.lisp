@@ -137,8 +137,7 @@
 (section "neural fallback (no daemon)")
 
 (let ((*graph* (make-graph))
-      (*ollama-url* "http://127.0.0.1:9")   ; nothing listens here
-      (*ollama-timeout* 2))
+      (*ollama-url* "http://127.0.0.1:9"))   ; nothing listens here
   (add-triple :mark :wrote :nsk)
   (let ((sols (solutions
                (eval (nsk-read-from-string "(ask (?l) [:mark ~:codes-in ?l])")))))

@@ -52,7 +52,7 @@ main.lisp     command-line flags, then serve or start the REPL
 server.lisp   optional REST API (Hunchentoot, loaded on demand)
 repl.lisp     the interactive nsk> prompt
 query.lisp    pattern matching, conjunctions, the neural fallback hook
-neural.lisp   the Ollama client and text-to-triples extraction
+neural.lisp   the litelm bridge and text-to-triples extraction
 reader.lisp   ?var, [triple], and ~neural reader macros
 store.lisp    the triplestore: two indices and an append-only log
 unify.lisp    logic variables, neural predicates, unification
@@ -75,9 +75,10 @@ you type:   [?who :wrote :nsk]
   result  -> printed as  who=:MARK
 ```
 
-The core carries no external dependencies. The neural layer uses an HTTP client
-only when one is present, and the server loads Hunchentoot on demand. So the
-graph, the query language, and persistence all run with nothing else installed.
+The core carries no external dependencies. The neural layer reaches the model
+through litelm, which it resolves at call time, and the server loads Hunchentoot
+on demand. So the graph, the query language, and persistence all run with
+nothing else installed.
 
 ## The package
 
@@ -708,23 +709,23 @@ The neural layer and the REST server both speak JSON, so NSK carries its own
 JSON reader and writer. This keeps the core free of dependencies. The writer
 takes a tagged Lisp form and the reader returns plain Lisp data.
 
-A request to the model looks like this on the wire:
+The model is asked to reply with nothing but a JSON object, and litelm hands
+that text back as a string:
 
 ```json
-{"model":"qwen3.5:4b","system":"...","prompt":"...","format":"json","stream":false}
+{"result": "Tokyo"}
 ```
 
-The daemon answers with an envelope whose `response` field holds another JSON
-string:
+The extraction prompt asks for an array of triples inside an object:
 
 ```json
-{"model":"qwen3.5:4b","response":"{\"result\": \"Tokyo\"}","done":true}
+{"triples": [{"subject": "ada-lovelace", "predicate": "wrote", "object": "first-program"}]}
 ```
 
-So the reader must parse the outer object, pull out `response`, and parse that
-string again to reach `{"result": "Tokyo"}`. The reader returns an object as an
-alist of `(string-key . value)`, an array as a list, and the three literals as
-`:true`, `:false`, and `:null`. Here is the complete `src/json.lisp`.
+Those strings are what NSK parses, and the REST server builds the same kind of
+JSON for its own replies. The reader returns an object as an alist of
+`(string-key . value)`, an array as a list, and the three literals as `:true`,
+`:false`, and `:null`. Here is the complete `src/json.lisp`.
 
 ```lisp
 ;;;; json.lisp --- A small, self-contained JSON reader and writer.
@@ -934,15 +935,20 @@ keyword or symbol that slips in becomes a quoted string rather than an error.
 
 ## The neural fallback layer
 
-This layer turns a missing fact into a question for a language model. It talks
-to a local Ollama daemon over HTTP, sends a strict prompt that demands JSON,
-and converts the reply into a keyword the graph can store. The same layer reads
-free text into triples for the `:ingest` command.
+This layer turns a missing fact into a question for a language model. It asks a
+local Ollama daemon, constrains the prompt to demand JSON, and converts the
+reply into a keyword the graph can store. The same layer reads free text into
+triples for the `:ingest` command.
 
-The engine keeps no hard dependency on an HTTP library. If Dexador is loaded it
-uses that. Otherwise, on LispWorks, it opens a raw socket and writes the HTTP
-request by hand. So the neural layer works on a stock LispWorks image with
-nothing added.
+Model access goes through litelm, the provider-neutral client from earlier in
+the book, so NSK carries no HTTP client and no request envelope of its own. The
+litelm symbols are looked up at call time rather than at read time, which keeps
+this file loadable on a bare image: without litelm the symbolic engine still
+runs, and a neural query explains why it cannot reach a model.
+
+Because litelm names a model as `"provider/model"`, the same call would work
+against OpenAI, Gemini or anything else litelm knows. NSK builds that string
+from `*ollama-model*`, so the default target is the local `ollama/qwen3.5:4b`.
 
 The inference prompt asks the model for one object and constrains the reply to
 JSON of the form `{"result": "value"}`. The extraction prompt asks for a list
@@ -953,20 +959,22 @@ Here is the complete `src/neural.lisp`.
 ;;;; neural.lisp --- The neural integration layer (local Ollama daemon).
 ;;;;
 ;;;; When a symbolic query fails on a ~ predicate, NSK asks the model to infer
-;;;; the missing object. The same layer turns free text into triples. HTTP goes
-;;;; through dexador when it is loaded, otherwise through a native LispWorks
-;;;; socket, so the core keeps no hard dependency on an HTTP library.
+;;;; the missing object. The same layer turns free text into triples.
+;;;;
+;;;; Model access goes through litelm, the book's provider-neutral client, so
+;;;; this file carries no HTTP code and no request envelope of its own. The
+;;;; litelm symbols are resolved at call time, which keeps NSK loadable on an
+;;;; image where litelm is absent: a neural query then reports why it cannot
+;;;; run, and the symbolic engine is unaffected.
 
 (in-package :nsk)
 
 (defparameter *ollama-url* "http://localhost:11434"
-  "Base URL of the local Ollama daemon.")
+  "Base URL of the local Ollama daemon. litelm reaches the daemon through its
+   OpenAI-compatible prefix, so NSK appends /v1 to this when calling out.")
 
 (defparameter *ollama-model* "qwen3.5:4b"
   "Model used for inference and text extraction.")
-
-(defparameter *ollama-timeout* 60
-  "Socket timeout, in seconds, for Ollama requests.")
 
 (defparameter *inference-system*
   "You are a graph database inference node. Given a Subject and a Predicate, infer the single most likely Object. Reply ONLY as JSON: {\"result\": \"value\"}."
@@ -992,124 +1000,73 @@ Here is the complete `src/neural.lisp`.
          (clean (substitute #\- #\Space (string-upcase trimmed))))
     (intern clean :keyword)))
 
-;;; HTTP transport
+;;; The litelm bridge
 
-(defun parse-url (url)
-  "Return (values host port path) for a simple http URL."
-  (let* ((mark (search "://" url))
-         (rest (if mark (subseq url (+ mark 3)) url))
-         (slash (position #\/ rest))
-         (authority (if slash (subseq rest 0 slash) rest))
-         (path (if slash (subseq rest slash) "/"))
-         (colon (position #\: authority))
-         (host (if colon (subseq authority 0 colon) authority))
-         (port (if colon (parse-integer authority :start (1+ colon)) 80)))
-    (values host port path)))
+(defun litelm-function (name)
+  "Return the exported LITELM function NAME, or signal if litelm is absent.
 
-(defun http-post-json (url body)
-  "POST BODY (a JSON string) to URL and return the response body string."
-  (let ((dex-post (and (find-package :dexador)
-                       (find-symbol "POST" :dexador))))
-    (cond
-      (dex-post
-       (funcall dex-post url :content body
-                :headers '(("Content-Type" . "application/json"))))
-      ((and (find-package :comm) (find-symbol "OPEN-TCP-STREAM" :comm))
-       (native-http-post-json url body))
-      (t (error "No HTTP client available; load dexador or run on LispWorks.")))))
+   The lookup happens at call time rather than at read time, so this file still
+   compiles and loads on an image where litelm is not installed -- the same
+   trick the server uses for hunchentoot."
+  (let ((symbol (and (find-package :litelm) (find-symbol name :litelm))))
+    (unless (and symbol (fboundp symbol))
+      (error "litelm is not loaded, so NSK cannot reach the local model; ~
+              load it with (ql:quickload :litelm)."))
+    (fdefinition symbol)))
 
-(defun native-http-post-json (url body)
-  "POST using a raw LispWorks TCP socket. Resolved dynamically so this file
-   compiles without the COMM package present."
-  (let ((open-fn (find-symbol "OPEN-TCP-STREAM" :comm))
-        (crlf (coerce (list #\Return #\Linefeed) 'string)))
-    (multiple-value-bind (host port path) (parse-url url)
-      (let ((stream (funcall open-fn host port
-                             :read-timeout *ollama-timeout*
-                             :element-type 'base-char)))
-        (unless stream (error "Cannot connect to ~a:~a" host port))
-        (unwind-protect
-             (progn
-               (write-string (format nil "POST ~a HTTP/1.1~a" path crlf) stream)
-               (write-string (format nil "Host: ~a:~a~a" host port crlf) stream)
-               (write-string (format nil "Content-Type: application/json~a" crlf) stream)
-               (write-string (format nil "Content-Length: ~a~a" (length body) crlf) stream)
-               (write-string (format nil "Connection: close~a~a" crlf crlf) stream)
-               (write-string body stream)
-               (force-output stream)
-               (read-http-body stream))
-          (close stream))))))
+(defun ollama-generate (prompt system)
+  "Send PROMPT, under SYSTEM, to the local Ollama model through litelm.
+   Returns the model's reply text."
+  (let ((response (funcall (litelm-function "COMPLETION")
+                           (format nil "ollama/~a" *ollama-model*)
+                           :messages (list (list :system system)
+                                           (list :user prompt))
+                           :api-base (format nil "~a/v1" *ollama-url*))))
+    (funcall (litelm-function "RESPONSE-CONTENT") response)))
 
-(defun read-http-body (stream)
-  "Read an HTTP response from STREAM and return only the body."
-  (read-line stream nil "")             ; status line
-  (let ((chunked nil) (length nil))
-    (loop for line = (read-line stream nil nil)
-          while line
-          for trimmed = (string-right-trim '(#\Return) line)
-          until (string= trimmed "")
-          do (let ((low (string-downcase trimmed)))
-               (cond ((and (>= (length low) 18)
-                           (string= "transfer-encoding:" low :end2 18)
-                           (search "chunked" low))
-                      (setf chunked t))
-                     ((and (>= (length low) 15)
-                           (string= "content-length:" low :end2 15))
-                      (setf length (parse-integer low :start 15 :junk-allowed t))))))
-    (cond (chunked (read-chunked-body stream))
-          (length (read-n-chars stream length))
-          (t (read-to-eof stream)))))
+;;; Reading the model's JSON
+;;;
+;;; The chat endpoint has no response-format flag that insists on bare JSON the
+;;; way Ollama's native /api/generate does, so a reply can arrive wrapped in a
+;;; Markdown fence or a sentence. JSON-OBJECT-IN walks the text from the first
+;;; { to its matching }, ignoring braces inside strings, and parses that slice,
+;;; which tolerates all three shapes.
 
-(defun read-n-chars (stream n)
-  (let* ((buf (make-string n))
-         (got (read-sequence buf stream)))
-    (subseq buf 0 got)))
-
-(defun read-to-eof (stream)
-  (with-output-to-string (out)
-    (loop for ch = (read-char stream nil nil)
-          while ch do (write-char ch out))))
-
-(defun read-chunked-body (stream)
-  (with-output-to-string (out)
-    (loop
-      (let* ((line (string-right-trim '(#\Return) (read-line stream nil "")))
-             (semi (position #\; line))
-             (size (parse-integer line :radix 16
-                                       :end (or semi (length line))
-                                       :junk-allowed t)))
-        (when (or (null size) (zerop size)) (return))
-        (write-string (read-n-chars stream size) out)
-        (read-line stream nil "")))))    ; trailing CRLF after each chunk
+(defun json-object-in (text)
+  "Return the first complete JSON object in TEXT as an alist, or NIL."
+  (when (stringp text)
+    (let ((start (position #\{ text)))
+      (when start
+        (let ((depth 0) (in-string nil) (end nil) (i start) (n (length text)))
+          (loop while (and (< i n) (null end)) do
+            (let ((ch (char text i)))
+              (cond (in-string
+                     (cond ((char= ch #\\) (incf i))
+                           ((char= ch #\") (setf in-string nil))))
+                    ((char= ch #\") (setf in-string t))
+                    ((char= ch #\{) (incf depth))
+                    ((char= ch #\})
+                     (decf depth)
+                     (when (zerop depth) (setf end (1+ i))))))
+            (incf i))
+          (when end
+            (ignore-errors (json-parse (subseq text start end)))))))))
 
 ;;; Ollama calls
 
-(defun ollama-generate (prompt system)
-  "Send a /api/generate request and return the model's raw response string."
-  (let* ((payload (json-encode
-                   (list :object
-                         (cons "model" *ollama-model*)
-                         (cons "system" system)
-                         (cons "prompt" prompt)
-                         (cons "format" "json")
-                         (cons "stream" :false))))
-         (raw (http-post-json (format nil "~a/api/generate" *ollama-url*) payload))
-         (outer (json-parse raw)))
-    (json-get outer "response")))
-
 (defun query-neural-fallback (subject predicate)
   "Ask the model to infer the object for (SUBJECT PREDICATE). Return a string,
-   or NIL if the daemon is unreachable or gives nothing."
+   or NIL if litelm is unavailable, the daemon is unreachable, or the model
+   gives nothing."
   (handler-case
       (let* ((prompt (format nil "Subject: ~a. Predicate: ~a. What is the Object?"
                              (term-label subject) (term-label predicate)))
-             (response (ollama-generate prompt *inference-system*)))
-        (when (and response (stringp response))
-          (let* ((inner (ignore-errors (json-parse response)))
-                 (result (and (consp inner) (json-get inner "result"))))
-            (cond ((and result (stringp result) (plusp (length result))) result)
-                  ((plusp (length response)) response)
-                  (t nil)))))
+             (reply (ollama-generate prompt *inference-system*))
+             (result (let ((object (json-object-in reply)))
+                       (and object (json-get object "result")))))
+        (cond ((and result (stringp result) (plusp (length result))) result)
+              ((and reply (stringp reply) (plusp (length reply))) reply)
+              (t nil)))
     (error (e)
       (format *error-output* "~&; neural fallback unavailable: ~a~%" e)
       nil)))
@@ -1117,9 +1074,9 @@ Here is the complete `src/neural.lisp`.
 (defun text->triples (text)
   "Use the model to parse TEXT into a list of (S P O) keyword triples."
   (handler-case
-      (let* ((response (ollama-generate text *extraction-system*))
-             (inner (and response (stringp response) (json-parse response)))
-             (rows (and (consp inner) (json-get inner "triples"))))
+      (let* ((reply (ollama-generate text *extraction-system*))
+             (object (json-object-in reply))
+             (rows (and object (json-get object "triples"))))
         (loop for row in rows
               for s = (json-get row "subject")
               for p = (json-get row "predicate")
@@ -1145,24 +1102,33 @@ text, turns inner spaces into hyphens, and interns the result as a keyword. So
 `"Common Lisp"` becomes `:COMMON-LISP` and `"  Tokyo. "` becomes `:TOKYO`. This
 is what lets a free-text answer join the same index as your hand-typed facts.
 
-`ollama-generate` builds the request with the JSON writer, posts it, parses the
-envelope, and returns the `response` field. Because the request sets
-`"format": "json"`, the daemon constrains the model to emit JSON, and the
-`response` field holds that JSON as a string. `query-neural-fallback` parses it
-a second time to reach the `result` value, and falls back to the raw response
-if the inner shape is missing.
+`ollama-generate` is the whole of the model call. It asks litelm for
+`ollama/qwen3.5:4b`, passes the two prompts as chat messages, and reads the
+reply text out of the response object. Everything else — the JSON envelope, the
+HTTP request, the timeouts, the provider's base URL — belongs to litelm, which
+is why this file no longer contains a line of HTTP.
 
-Both public functions wrap their work in `handler-case`. If the daemon is down,
-or the reply is malformed, they print one short note to the error stream and
-return `nil`. A neural query then simply yields no solutions. The engine never
-crashes because a model is offline. The test suite proves this by pointing the
-client at a dead port and checking that a `~` query fails cleanly.
+`litelm-function` is the one piece of plumbing that remains. It looks the litelm
+symbols up with `find-symbol` at call time instead of referring to them
+directly, so this file still reads and compiles on an image where litelm is not
+installed. The server does the same thing for Hunchentoot. Calling
+`(ql:quickload :litelm)` once removes the need for the trick, but the file keeps
+working either way.
 
-The native HTTP code is a compact HTTP/1.1 client. It writes the request line
-and headers, sends the body, and reads the response, handling both a
-`Content-Length` body and a chunked transfer encoding. It resolves the LispWorks
-`comm:open-tcp-stream` through `find-symbol` at call time, so the file compiles
-even on an image where that package is absent.
+`json-object-in` exists because the chat endpoint has no response-format flag.
+Ollama's native `/api/generate` accepts `"format": "json"` and will return
+nothing but JSON; the OpenAI-compatible endpoint litelm speaks has no such
+switch, so the system prompt asks for JSON and the reply is read by walking from
+the first `{` to its matching `}`, skipping braces inside strings, and parsing
+that slice. A Markdown fence or a stray sentence around the JSON no longer
+breaks extraction.
+
+Both public functions wrap their work in `handler-case`. If litelm is not
+loaded, or the daemon is down, or the reply is malformed, they print one short
+note to the error stream and return `nil`. A neural query then simply yields no
+solutions. The engine never crashes because a model is offline. The test suite
+proves this by pointing the client at a dead port and checking that a `~` query
+fails cleanly.
 
 ## The interactive REPL
 
@@ -1620,8 +1586,8 @@ Bye.
 
 ### A neural fallback
 
-With the Ollama daemon running and the `qwen3.5:4b` model pulled, a `~`
-predicate can answer a fact you never stored. The graph holds nothing about
+With litelm loaded, the Ollama daemon running and the `qwen3.5:4b` model pulled,
+a `~` predicate can answer a fact you never stored. The graph holds nothing about
 Japan, yet the query returns Tokyo:
 
 ```text
@@ -1629,12 +1595,21 @@ nsk> [:japan ~:capital ?city]
 city=:TOKYO
 ```
 
-If the daemon is not running, the same query reports the outage and returns no
-solutions rather than failing:
+If the daemon is not running, or litelm was never loaded, the same query reports
+why and returns no solutions rather than failing. The note is the condition the
+failure signalled:
 
 ```text
 nsk> [:japan ~:capital ?city]
-; neural fallback unavailable: Cannot connect to localhost:11434
+; neural fallback unavailable: Condition USOCKET:INVALID-ARGUMENT-ERROR was signalled.
+#<no solutions>
+```
+
+The likelier first encounter is the other one — you forgot to load litelm:
+
+```text
+nsk> [:japan ~:capital ?city]
+; neural fallback unavailable: litelm is not loaded, so NSK cannot reach the local model; load it with (ql:quickload :litelm).
 #<no solutions>
 ```
 
@@ -1793,7 +1768,9 @@ real file on disk.
 
 The neural section points the client at a dead port and confirms a `~` query
 returns no solutions without error. So you can run the whole suite offline and
-still cover the fallback path.
+still cover the fallback path — and it passes with or without litelm loaded,
+because a missing client is caught by the same `handler-case` as a missing
+daemon.
 
 ## Wrap up
 
@@ -1807,7 +1784,7 @@ Along the way the code showed several Common Lisp techniques worth keeping.
 Reader macros gave the query language a clean surface with no parser. A tagged
 s-expression log gave durability in a few lines, with `*read-eval*` disabled for
 safety. `find-symbol` at call time let the core stay free of Hunchentoot and
-Dexador while still using them when present. And unification, the oldest idea
+litelm while still using them when present. And unification, the oldest idea
 here, turned pattern matching into a dozen lines that the rest of the engine
 builds on.
 
