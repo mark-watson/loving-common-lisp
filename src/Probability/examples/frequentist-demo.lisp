@@ -37,21 +37,10 @@ Returns (TP FP TN FN) as multiple values."
 Contingency table:
              Disease+   Disease−
   Test+        TP         FP
-  Test−        FN         TN"
-  (let* ((n     (+ tp fp tn fn))
-         (nf    (float n 1.0d0))
-         ;; Marginals.
-         (r1 (+ tp fp))   ; test-positive row
-         (r2 (+ fn tn))   ; test-negative row
-         (c1 (+ tp fn))   ; disease-positive column
-         (c2 (+ fp tn))   ; disease-negative column
-         ;; Expected counts under independence: E_ij = (row_i × col_j) / N
-         (e-tp (/ (* r1 c1) nf))
-         (e-fp (/ (* r1 c2) nf))
-         (e-fn (/ (* r2 c1) nf))
-         (e-tn (/ (* r2 c2) nf)))
-    (chi-squared-test (list tp fp fn tn)
-                      (list e-tp e-fp e-fn e-tn))))
+  Test−        FN         TN
+Returns three values: CHI-SQUARED, DF (= 1), and P-VALUE."
+  (chi-squared-independence (list (list tp fp)
+                                  (list fn tn))))
 
 ;;; ---------- main demo entry point -----------------------------------------
 

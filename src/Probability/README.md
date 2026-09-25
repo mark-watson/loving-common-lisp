@@ -22,19 +22,19 @@ The library is a single ASDF system (`probability`) providing four modules that 
 
 1. **Bayesian Inference (`bayes.lisp`)**
    - `make-bayes-model (prior-alist)` — create a model from an alist of `(hypothesis . prior-probability)` pairs. Priors are normalised automatically.
-   - `update (model evidence likelihood-fn)` — apply Bayes' Theorem. `likelihood-fn` is a function `(hypothesis) → P(evidence | hypothesis)`. Returns a new model with posterior probabilities.
+   - `update (model evidence likelihood-fn)` — apply Bayes' Theorem. `likelihood-fn` is a function `(hypothesis evidence) → P(evidence | hypothesis)`. Returns a new model with posterior probabilities.
    - `posterior (model hypothesis)` — look up the posterior for a single hypothesis.
    - `posteriors (model)` — return the full posterior alist.
-   - `maximum-a-posteriori (model)` — return the hypothesis with the highest posterior.
+   - `maximum-a-posteriori (model)` — return `(hypothesis . probability)` for the most probable hypothesis.
 
 2. **Correlation helpers (`correlation.lisp`)**
    - `pearson-r (xs ys)` — Pearson correlation coefficient for two equal-length lists of numbers.
    - `spearman-rho (xs ys)` — Spearman rank-order correlation.
-   - `correlation-matrix (data-alist)` — given an alist of `(name . values)` pairs, return a matrix of pairwise Pearson-r values.
+   - `correlation-matrix (data-alist)` — given an alist of `(name . values)` pairs, return a list of `(name-a name-b . pearson-r)` triples.
    - These functions explicitly measure *association*, not causation. Docstrings include warnings about confounding variables.
 
 3. **Frequentist Statistics (`frequentist.lisp`)**
-   - `z-score`, `z-test-proportion`, `chi-squared-test`, `confidence-interval-proportion` — the classical hypothesis-testing toolkit. Covered in detail in [Experimenting with Frequentist Methods](#experimenting-with-frequentist-methods) below.
+   - `z-score`, `z-test-proportion`, `chi-squared-test`, `chi-squared-independence`, `confidence-interval-proportion` — the classical hypothesis-testing toolkit. Covered in detail in [Experimenting with Frequentist Methods](#experimenting-with-frequentist-methods) below.
 
 4. **Worked examples (`examples/`)**
    - `medical.lisp` — Bayesian screening-test scenario: prior disease prevalence = 0.1 %, test sensitivity = 99 %, false-positive rate = 5 %. Walks through posterior computation after a positive result and shows the posterior probability of disease is only ~1.9 % — a famous counter-intuitive result. Also computes Pearson-r between test results and actual diagnoses to illustrate that correlation can be strong yet misleading about individual risk.
@@ -121,18 +121,19 @@ To give the frequentist perspective equal hands-on treatment, the library includ
 - `z-score (observed expected std-dev)` — compute the standard z-score: (observed − expected) / σ.
 - `z-test-proportion (successes n hypothesised-p)` — one-sample z-test for a proportion. Returns `(z-score p-value)` as multiple values. Tests whether the observed proportion differs significantly from `hypothesised-p`.
 - `chi-squared-test (observed expected)` — Pearson's chi-squared goodness-of-fit test. `observed` and `expected` are equal-length lists of counts. Returns `(chi-squared df p-value)` as multiple values.
+- `chi-squared-independence (table)` — Pearson's chi-squared test of independence for a contingency table (a list of rows). Returns `(chi-squared df p-value)`, with df = (rows − 1) × (cols − 1).
 - `confidence-interval-proportion (successes n &key (confidence 0.95))` — Wilson score interval for a binomial proportion. Returns `(lower upper)` as multiple values.
 
-The p-value computation uses a rational approximation to the standard normal CDF (Abramowitz & Stegun 26.2.17), accurate to ~1.5 × 10⁻⁷ — more than sufficient for exploratory work.
+The p-value computation uses the Abramowitz & Stegun 26.2.17 polynomial approximation to the standard normal CDF, accurate to ~7.5 × 10⁻⁸ — more than sufficient for exploratory work.
 
 ### Worked example — Frequentist Medical Screening (`examples/frequentist-demo.lisp`)
 
 Revisits the same medical-screening scenario from a purely frequentist standpoint:
 
 1. **Simulates a clinical trial** — 100 000 individuals screened; counts true positives, false positives, true negatives, false negatives.
-2. **Chi-squared test of independence** — tests whether the test result and disease status are statistically independent. With N = 100 000 and 5 % false-positive rate, the test overwhelmingly rejects independence (p ≈ 0), but this tells you nothing about the *magnitude* of risk for an individual patient.
+2. **Chi-squared test of independence** — tests whether the test result and disease status are statistically independent (2×2 contingency table, df = 1). With N = 100 000 and 5 % false-positive rate, the test overwhelmingly rejects independence (p ≈ 0), but this tells you nothing about the *magnitude* of risk for an individual patient.
 3. **Confidence interval for positive predictive value (PPV)** — among everyone who tested positive, what fraction actually has the disease? The 95 % Wilson interval is computed, showing the PPV is dismally low (~1–3 %) despite "statistical significance."
-4. **Side-by-side comparison** — prints the Bayesian posterior (from `run-medical-example`) alongside the frequentist CI, demonstrating that the two frameworks reach the same conclusion via different reasoning.
+4. **Side-by-side comparison** — recomputes the Bayesian posterior inline and prints it alongside the frequentist CI, demonstrating that the two frameworks reach the same conclusion via different reasoning.
 
 The example drives home the point from the "Words of Warning" section: a statistically significant association (tiny p-value) does not imply a practically useful prediction for any individual.
 
@@ -150,6 +151,6 @@ sbcl --load probability.asd \
 ### Key output from the frequentist demo
 
 - Chi-squared test rejects independence (p < 10⁻¹⁵) — the association is "highly significant."
-- But PPV is only **1.80 %** (95 % Wilson CI: 1.46 %–2.20 %).
+- But PPV is only **1.97 %** (95 % Wilson CI: 1.62 %–2.38 %).
 - The Bayesian posterior agrees: **1.94 %**.
 - **Lesson:** statistical significance (small p-value) ≠ practical significance (high PPV).

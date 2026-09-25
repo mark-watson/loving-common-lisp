@@ -19,6 +19,7 @@
    #:z-score
    #:z-test-proportion
    #:chi-squared-test
+   #:chi-squared-independence
    #:confidence-interval-proportion
 
    ;; Worked examples

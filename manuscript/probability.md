@@ -1,183 +1,78 @@
 # Overview of Probability
 
-Probability theory provides the mathematical foundation for quantifying uncertainty in stochastic environments. While classical frequentist approaches treat probability as the long-run frequency of repeatable events, Bayesian probability reframes it as a dynamic measure of belief or system state. Through Bayes' Theorem, initial prior assumptions are systematically updated with incoming evidence to compute a posterior distribution, enabling rigorous, continuous inference even when dealing with sparse or evolving data sets.
+A screening test for a rare disease is 99 % accurate. You test positive. What
+is the chance you are actually sick?
 
-Standard probabilistic models, however, fundamentally map correlations rather than causality. While observational probability can determine the likelihood of variables co-occurring, causal inference — often formalized through structural causal models or do-calculus — is required to understand directional influence and counterfactuals. This distinction is critical; calculating the likelihood of observing a specific system state requires entirely different mathematical machinery than predicting the outcome of an active intervention upon that system.
+Most people say "about 99 %." The correct answer is about **2 %**. That gap is
+the reason this chapter exists: probability is not one idea but two traditions
+that answer different questions, and the difference matters the moment you put
+a number in front of a person.
 
-In modern tech stacks, particularly within local-first AI orchestration and agentic frameworks, these mathematical principles are the engine of predictive capabilities. Probabilistic inference drives the fundamental token prediction and weight distribution in small language models (SLMs), while Bayesian methods inform uncertainty quantification, active learning, and dynamic state tracking. The current architectural frontier lies in bridging the remaining gap: pushing these deployment stacks from purely probabilistic pattern-matching toward integrated causal reasoning to enable reliable, autonomous decision-making.
+This is a short tour of both traditions, built around the medical-screening
+example and a small Common Lisp library in **src/Probability**. It is
+deliberately brief. I have written a full book on the subject, *Common Lisp and
+Probability* ([leanpub.com/probability-common-lisp](https://leanpub.com/probability-common-lisp)),
+and this chapter is a doorway to it, not a substitute.
 
-The source code for this chapter is in the directory **src/Probability**.
+## The result that surprises everyone
 
-**Note: I have written an entire book on Common Lisp and Probability: [https://leanpub.com/probability-common-lisp](https://leanpub.com/probability-common-lisp).**
+A disease affects 0.1 % of the population. A test catches 99 % of true cases
+(sensitivity) and flags 5 % of healthy people (false-positive rate).
 
+Walk through 100,000 people:
 
-## Words of Warning
+- 100 have the disease; the test catches 99 of them.
+- 99,900 are healthy; 5 % of them — about 4,995 people — test positive anyway.
+- So roughly 5,094 people test positive, and only 99 of them are sick.
 
-Professor Carissa Véliz says in her excellent book "Prophecy" that when you read a percentage you should first ask yourself if you are being told a fact or a prediction. If a percentage is a prediction, consciously tag it as "not a fact."
+The probability of disease given a positive test — the **positive predictive
+value** — is therefore 99 / 5,094 ≈ **1.94 %**. A 99 %-accurate test is wrong
+about almost everyone it flags, because the false positives come from a
+population a thousand times larger than the true cases. The library computes
+the same number through Bayes' Theorem:
 
-The danger of conflating the two lies in the illusion of precision that numbers naturally provide. A percentage representing a historical measurement — such as a quantified error rate in a static dataset — is a grounded, verifiable reality. A predictive percentage, however, is fundamentally an artifact of a specific model. It is a mathematical expression of uncertainty, heavily dependent on the chosen priors, the limits of the training data, and the structural assumptions baked into the algorithm. When we fail to recognize this distinction, we grant probabilistic forecasts an unearned epistemological weight, treating calculated inferences as though they were empirical truths.
-
-Consciously tagging a predictive percentage as "not a fact" serves as a vital cognitive circuit breaker. It forces a shift from passive acceptance to active, structural critique. Instead of absorbing the number, this tagging prompts you to interrogate the mechanics behind it: What variables is the model blind to? Is it projecting forward based on mere correlation, or does it account for causal mechanics? How fragile is this prediction to out-of-distribution events? By actively demoting these percentages from facts to hypotheses, we maintain agency over our decision-making and avoid becoming captive to the misplaced certainty of an output.
-
-## Glossary of Terms
-
-Before diving into the library and the worked examples, here is a reference for the statistical vocabulary used throughout this chapter. Many of these terms are used casually in data-science writing but have precise technical meanings that matter when interpreting results.
-
-**Prior (prior probability)** — Your initial belief about how likely a hypothesis is *before* you observe any new evidence. In the medical example below, the prior probability of disease is the prevalence rate (0.1 %). Priors can be informative (based on domain knowledge) or uninformative (deliberately vague, to let the data speak).
-
-**Posterior (posterior probability)** — Your updated belief about a hypothesis *after* incorporating observed evidence via Bayes' Theorem. The posterior is the central output of Bayesian inference: P(Hypothesis | Data). In the medical example, the posterior probability of disease given a positive test is approximately 1.9 % — far lower than intuition suggests.
-
-**Likelihood** — The probability of observing the evidence *assuming a specific hypothesis is true*: P(Evidence | Hypothesis). The likelihood is not itself a probability distribution over hypotheses; it is a function that tells you how well each hypothesis explains the data you actually observed. In the medical example, the likelihood of a positive test result given disease is 0.99 (the sensitivity).
-
-**Marginal likelihood (evidence)** — The total probability of the observed evidence across all hypotheses: Σ P(Evidence | H) · P(H). It acts as the normalising constant in Bayes' Theorem, ensuring the posteriors sum to one.
-
-**Bayes' Theorem** — The mathematical rule connecting prior, likelihood, and posterior: P(H | E) = P(E | H) · P(H) / P(E). It is the engine of Bayesian inference and the foundation of the `update` function in this library.
-
-**Maximum a posteriori (MAP)** — The hypothesis with the highest posterior probability. It is the Bayesian analogue of a "best guess" and is returned by the `maximum-a-posteriori` function.
-
-**Prevalence (base rate)** — The proportion of a population that has a particular condition. A critical input to Bayesian reasoning: when the base rate is very low, even a highly accurate test produces many false positives relative to true positives. Ignoring the base rate is one of the most common reasoning errors in applied statistics.
-
-**Sensitivity (true-positive rate)** — The probability that a test correctly identifies a positive case: P(Test+ | Condition+). A sensitivity of 99 % means the test catches 99 out of every 100 truly positive cases.
-
-**Specificity (true-negative rate)** — The probability that a test correctly identifies a negative case: P(Test− | Condition−). Specificity = 1 − false-positive rate.
-
-**False-positive rate** — The probability that a test incorrectly flags a healthy individual as positive: P(Test+ | Condition−). In our medical example this is 5 %.
-
-**Positive predictive value (PPV)** — Among everyone who tested positive, the fraction who actually have the condition: TP / (TP + FP). The PPV depends heavily on prevalence; for rare conditions, PPV can be very low even when sensitivity and specificity are high.
-
-**Z-score (standard score)** — The number of standard deviations a data point lies from the mean: z = (x − μ) / σ. A z-score of 0 means the value equals the mean; ±1.96 corresponds to the outer 5 % of a standard normal distribution. Used in hypothesis testing to determine how extreme an observation is.
-
-**P-value** — The probability of observing data *at least as extreme* as what was measured, *assuming the null hypothesis is true*. A small p-value (e.g. < 0.05) is conventionally taken as evidence against the null hypothesis. Crucially, the p-value is **not** the probability that the hypothesis is true or false — a subtlety that is routinely misunderstood. A p-value of 0.03 means "if nothing interesting were happening, we would see data this extreme only 3 % of the time."
-
-**Null hypothesis (H₀)** — The default assumption of "no effect" or "no difference" that a frequentist test tries to reject. For example, "the positive-test rate equals the disease prevalence."
-
-**Chi-squared test** — A test that compares observed counts against expected counts to determine whether the discrepancy is larger than chance alone would predict. Pearson's chi-squared statistic is Σ (O − E)² / E, summed over all categories. Used here to test whether test results and disease status are independent.
-
-**Degrees of freedom (df)** — The number of independent values that are free to vary in a statistical calculation. For a chi-squared test on a table with k categories, df = k − 1.
-
-**Confidence interval (CI)** — A frequentist range estimate. A 95 % CI means: if you repeated the experiment many times, 95 % of the computed intervals would contain the true parameter. It does *not* mean there is a 95 % probability the parameter is in this particular interval — that is the Bayesian credible interval.
-
-**Wilson score interval** — A method for computing a confidence interval for a binomial proportion that is more accurate than the simple normal-approximation (Wald) interval, especially for small samples or proportions near 0 or 1. Used in this library's `confidence-interval-proportion` function.
-
-**Credible interval (Bayesian)** — The Bayesian counterpart of a confidence interval. A 95 % credible interval means there is a 95 % probability that the parameter lies within this range, given the observed data and priors. This is what most people intuitively think a confidence interval means.
-
-**Pearson correlation coefficient (r)** — A measure of the linear association between two variables, ranging from −1 (perfect negative) to +1 (perfect positive). A value near 0 means no linear relationship. It measures *association*, not causation.
-
-**Spearman rank correlation (ρ)** — A non-parametric measure of monotonic association. It works by ranking the data and then computing Pearson-r on the ranks. More robust to outliers and non-linear but monotonic relationships than Pearson-r.
-
-**Correlation matrix** — A table showing the pairwise Pearson-r values for every combination of variables in a dataset. Useful for a quick overview of which variables move together.
-
-**Confounding variable (confounder)** — A hidden variable that influences both X and Y, creating a spurious correlation between them. Correlation analysis cannot detect confounders; only causal reasoning or controlled experiments can.
-
-**Stochastic** — Involving randomness or uncertainty. A stochastic process is one whose outcomes are not fully determined by its inputs.
-
-**Causal inference** — The process of determining whether and how one variable directly influences another, as opposed to merely being correlated with it. Requires structural causal models, do-calculus, or controlled experiments — standard probability alone is insufficient.
-
-## A Common Lisp Library to Explore Probability
-
-### Design
-
-The library is a single ASDF system (`probability`) providing four modules that span both major schools of statistical reasoning — Bayesian and Frequentist. (For a detailed comparison of the two paradigms, see [Frequentists vs. Bayesians](#frequentists-vs-bayesians) below.)
-
-1. **Bayesian Inference (`bayes.lisp`)**
-   - `make-bayes-model (prior-alist)` — create a model from an alist of `(hypothesis . prior-probability)` pairs. Priors are normalised automatically.
-   - `update (model evidence likelihood-fn)` — apply Bayes' Theorem. `likelihood-fn` is a function `(hypothesis evidence) → P(evidence | hypothesis)`. Returns a new model with posterior probabilities.
-   - `posterior (model hypothesis)` — look up the posterior for a single hypothesis.
-   - `posteriors (model)` — return the full posterior alist.
-   - `maximum-a-posteriori (model)` — return the hypothesis with the highest posterior.
-
-2. **Correlation helpers (`correlation.lisp`)**
-   - `pearson-r (xs ys)` — Pearson correlation coefficient for two equal-length lists of numbers.
-   - `spearman-rho (xs ys)` — Spearman rank-order correlation.
-   - `correlation-matrix (data-alist)` — given an alist of `(name . values)` pairs, return a matrix of pairwise Pearson-r values.
-   - These functions explicitly measure *association*, not causation. Docstrings include warnings about confounding variables.
-
-3. **Frequentist Statistics (`frequentist.lisp`)**
-   - `z-score`, `z-test-proportion`, `chi-squared-test`, `confidence-interval-proportion` — the classical hypothesis-testing toolkit. Covered in detail in [Experimenting with Frequentist Methods](#experimenting-with-frequentist-methods) below.
-
-4. **Worked examples (`examples/`)**
-   - `medical.lisp` — Bayesian screening-test scenario: prior disease prevalence = 0.1 %, test sensitivity = 99 %, false-positive rate = 5 %. Walks through posterior computation after a positive result and shows the posterior probability of disease is only ~1.9 % — a famous counter-intuitive result. Also computes Pearson-r between test results and actual diagnoses to illustrate that correlation can be strong yet misleading about individual risk.
-   - `frequentist-demo.lisp` — revisits the same scenario from the frequentist standpoint (chi-squared test, Wilson CI for PPV), then prints both results side by side to highlight that the two frameworks converge on the same practical conclusion.
-
-### File layout
-
-~~~~~~~~
-Probability/
-├── probability.asd
-├── package.lisp
-├── bayes.lisp                   ;; Bayesian toolkit
-├── correlation.lisp             ;; Correlation toolkit
-├── frequentist.lisp             ;; Frequentist toolkit
-├── examples/
-│   ├── medical.lisp             ;; Bayesian worked example
-│   └── frequentist-demo.lisp    ;; Frequentist worked example
-└── README.md
-~~~~~~~~
-
-### Running the example
-
-~~~~~~~~
-# from the Probability/ directory
-sbcl --load probability.asd \
-     --eval '(asdf:load-system :probability)' \
-     --eval '(probability:run-medical-example)' \
-     --quit
-~~~~~~~~
-
-```
-=== Bayesian Analysis: Medical Screening Test ===
-Prior probabilities:
-  P(disease) = 0.0010
-  P(healthy) = 0.9990
-
-After a POSITIVE test result:
-  P(disease | positive) = 0.0194  (1.94 %)
-  P(healthy | positive) = 0.9806  (98.06 %)
-
-MAP hypothesis: healthy
-
-Key insight: despite 99% sensitivity, a positive test
-only yields about 1.9% probability of disease because the
-disease is so rare (0.1% prevalence).  This is exactly
-the kind of counter-intuitive result Bayes' Theorem reveals.
-
-=== Correlation Analysis (N = 100000) ===
-Pearson r(test-result, disease) = 0.1283
-
-This positive correlation is real but modest.  It shows
-that the test result and disease status are associated,
-but the correlation coefficient alone cannot tell you the
-probability that any *individual* patient is sick — that
-requires Bayesian reasoning with the base rate (prevalence).
-
-Correlation ≠ causation, and here, even correlation ≠
-reliable individual prediction.
-
-=== Done. ===
+```text
+P(disease | positive) = 0.0194  (1.94 %)
 ```
 
-## Walking Through the Bayesian Code
+The base rate, not the accuracy, dominates. This is the most useful lesson in
+applied probability, and it generalises: the rarer the condition, the more a
+positive result means "probably not."
 
-### The Bayes Model
+The same example also computes a Pearson correlation between test result and
+diagnosis — about **0.14** here. The association is real, but it is no help at
+all for a single patient. Association and prediction are different things, and
+neither is causation.
 
-The core data structure is simply a normalised association list of `(hypothesis . probability)` pairs. The constructor ensures priors sum to one:
+## Fact, prediction, or wishful thinking?
 
-{lang="lisp",linenos=off}
-~~~~~~~~
-(defun make-bayes-model (prior-alist)
-  "Create a Bayes model from PRIOR-ALIST, an alist of (HYPOTHESIS . PRIOR).
-Priors are automatically normalised so they sum to 1."
-  (let ((total (reduce #'+ prior-alist :key #'cdr)))
-    (when (zerop total)
-      (error "All priors are zero — cannot normalise."))
-    (mapcar (lambda (pair)
-              (cons (car pair) (/ (cdr pair) total)))
-            prior-alist)))
-~~~~~~~~
+Before trusting any percentage, ask what kind of number it is. In *Prophecy*,
+Carissa Véliz suggests sorting every percentage into two piles: **facts** and
+**predictions**. A measured error rate is a fact. A modelled probability is a
+prediction wearing the costume of precision: it depends on the priors, the
+training data, and the structural assumptions baked into it. Tag predictions
+"not a fact," and instead of absorbing the number you start interrogating it —
+what is the model blind to? Is this correlation or causation? How fragile is it
+outside the data?
 
-### Updating with Evidence
+## Bayes in one line
 
-The `update` function applies Bayes' Theorem. For each hypothesis it multiplies the prior by the likelihood of the observed evidence, then normalises:
+Bayes' Theorem is the arithmetic of changing your mind:
+
+```text
+P(H | E) = P(E | H) · P(H) / P(E)
+```
+
+| Piece | Name | Question it answers |
+|---|---|---|
+| P(H) | prior | How plausible was the hypothesis before the evidence? |
+| P(E \| H) | likelihood | If the hypothesis were true, how likely is this evidence? |
+| P(E) | marginal likelihood | How likely is the evidence under *all* hypotheses? |
+| P(H \| E) | posterior | How plausible is the hypothesis now? |
+
+The library represents a model as a normalised alist of
+`(hypothesis . probability)` pairs, so `update` is a two-step map: multiply
+each prior by its likelihood, then divide by the total.
 
 {lang="lisp",linenos=off}
 ~~~~~~~~
@@ -202,292 +97,135 @@ that returns P(evidence | hypothesis)."
             unnormalised)))
 ~~~~~~~~
 
-The `marginal` variable is the denominator in Bayes' Theorem — the total probability of the evidence across all hypotheses. Dividing by it gives us proper posterior probabilities that sum to one.
+The `marginal` binding is the denominator of Bayes' Theorem; dividing by it
+makes the posteriors sum to one.
 
-### The Medical Screening Example
+## The library
 
-The worked example in `examples/medical.lisp` makes Bayes' Theorem concrete. A rare disease affects 0.1 % of the population. A screening test has 99 % sensitivity and a 5 % false-positive rate. A patient tests positive — what is the probability they are actually sick?
+`probability` is a single ASDF system with four modules:
 
-{lang="lisp",linenos=off}
-~~~~~~~~
-(defun medical-likelihood (hypothesis evidence)
-  "Return P(evidence | HYPOTHESIS)."
-  (declare (ignore evidence))
-  (ecase hypothesis
-    (:disease *sensitivity*)
-    (:healthy *false-positive-rate*)))
+| File | Contents |
+|---|---|
+| `bayes.lisp` | `make-bayes-model`, `update`, `posterior`, `posteriors`, `maximum-a-posteriori` |
+| `correlation.lisp` | `pearson-r`, `spearman-rho`, `correlation-matrix` |
+| `frequentist.lisp` | `z-score`, `z-test-proportion`, `chi-squared-test`, `chi-squared-independence`, `confidence-interval-proportion` |
+| `examples/` | `medical.lisp` (Bayesian), `frequentist-demo.lisp` (frequentist) |
 
-(defun run-bayesian-analysis ()
-  "Compute posterior probability of disease given a positive test."
-  (let* ((prior (make-bayes-model `((:disease . ,*prevalence*)
-                                    (:healthy . ,(- 1.0d0 *prevalence*)))))
-         (updated (update prior :positive-test #'medical-likelihood)))
-    (format t "~%=== Bayesian Analysis: Medical Screening Test ===~%")
-    (format t "Prior probabilities:~%")
-    (dolist (p (posteriors prior))
-      (format t "  P(~A) = ~,4F~%" (car p) (cdr p)))
-    (format t "~%After a POSITIVE test result:~%")
-    (dolist (p (posteriors updated))
-      (format t "  P(~A | positive) = ~,4F  (~,2F %)~%"
-              (car p) (cdr p) (* 100.0d0 (cdr p))))
-    (format t "~%MAP hypothesis: ~A~%" (car (maximum-a-posteriori updated)))
-    (format t "~%Key insight: despite 99% sensitivity, a positive test~%")
-    (format t "only yields about 1.9% probability of disease because the~%")
-    (format t "disease is so rare (0.1% prevalence).  This is exactly~%")
-    (format t "the kind of counter-intuitive result Bayes' Theorem reveals.~%")
-    updated))
-~~~~~~~~
-
-The answer is approximately **1.9 %**. Despite 99 % sensitivity, the disease is so rare that the vast majority of positive results come from the 5 % false-positive rate applied to the enormous healthy population. This is exactly the kind of counter-intuitive result that Bayes' Theorem reveals — and that ignoring the base rate obscures.
-
-### Correlation Analysis
-
-The example also generates a synthetic population of 100,000 individuals and computes the Pearson correlation between test results and actual disease status:
-
-{lang="lisp",linenos=off}
-~~~~~~~~
-(defun run-correlation-analysis ()
-  "Generate a synthetic population and compute Pearson-r between test
-results and actual disease status."
-  (let* ((pop (generate-synthetic-population 100000))
-         (tests     (car pop))
-         (diagnoses (cdr pop))
-         (r (pearson-r tests diagnoses)))
-    (format t "~%=== Correlation Analysis (N = ~D) ===~%" (length tests))
-    (format t "Pearson r(test-result, disease) = ~,4F~%" r)
-    r))
-~~~~~~~~
-
-The correlation is positive but modest. This illustrates a crucial point: a statistically real association does not translate into reliable individual prediction. You need Bayesian reasoning with the base rate for that.
-
-## Frequentists vs. Bayesians
-
-The deepest fault-line in probability runs between two camps that disagree on what a probability *is*.
-
-### What probability means
-
-| | Frequentist | Bayesian |
-|---|---|---|
-| **Definition** | Long-run frequency of an event over (hypothetically) infinite repeated trials. | Degree of belief or confidence in a proposition, updated as evidence arrives. |
-| **Parameters** | Fixed but unknown constants. | Random variables described by probability distributions. |
-| **Data** | A random sample from an infinite population. | Fixed once observed. |
-| **Core question** | "How likely is this data, assuming the hypothesis is true?" — P(Data \| H) | "How likely is the hypothesis, given the data I observed?" — P(H \| Data) |
-
-### Key tools and how they differ
-
-**Frequentist toolkit:** p-values, confidence intervals, maximum-likelihood estimation.  A p-value answers a narrow question: *if the null hypothesis were true, how extreme would this data be?*  It does **not** tell you the probability that the hypothesis is correct — a subtlety that is routinely misunderstood in published research.
-
-**Bayesian toolkit:** prior distributions, likelihood functions, posterior distributions (via Bayes' Theorem), credible intervals.  A 95 % Bayesian credible interval means exactly what most people *think* a confidence interval means: there is a 95 % probability that the parameter lies in this range, given the data and priors.
-
-### Strengths and weaknesses
-
-**Frequentist strengths:**
-- No subjective prior required — results depend only on the data at hand.
-- Standardised, widely accepted in regulatory contexts (e.g., clinical trials, FDA submissions).
-- Computationally cheap for large datasets.
-
-**Frequentist weaknesses:**
-- p-values are chronically misinterpreted; "statistically significant" ≠ "practically important."
-- Cannot directly state the probability that a hypothesis is true.
-- Struggles with small-sample or rare-event problems where prior information could help.
-
-**Bayesian strengths:**
-- Directly answers the question practitioners usually care about: "How probable is my hypothesis?"
-- Naturally incorporates prior knowledge — invaluable with small samples or sequential data.
-- Produces a full posterior distribution, giving richer uncertainty quantification than a single point estimate.
-
-**Bayesian weaknesses:**
-- Choice of prior is subjective; a bad prior can bias results, especially with little data.
-- Posterior computation can be expensive (MCMC, variational inference) for complex models.
-- Less standardised — harder to compare across studies when priors differ.
-
-### The modern pragmatic view
-
-In practice, the two frameworks often converge: with large datasets and uninformative (flat) priors, Bayesian posteriors and frequentist confidence intervals yield nearly identical results.  Most working statisticians and machine-learning engineers are pragmatists — they reach for whichever tool fits the problem.  Frequentist methods dominate formal hypothesis testing and regulatory work; Bayesian methods dominate sequential decision-making, reinforcement learning, and any setting where prior information is too valuable to ignore.
-
-The library in this repository leans Bayesian because Bayes' Theorem is the clearest lens for the medical-screening example: it forces you to confront the base rate, which pure frequentist significance testing can obscure.
-
-## Experimenting with Frequentist Methods
-
-To give the frequentist perspective equal hands-on treatment, the library includes a `frequentist.lisp` module and a companion worked example.
-
-### Frequentist module API (`frequentist.lisp`)
-
-- `z-score (observed expected std-dev)` — compute the standard z-score: (observed − expected) / σ.
-- `z-test-proportion (successes n hypothesised-p)` — one-sample z-test for a proportion. Returns `(z-score p-value)` as multiple values. Tests whether the observed proportion differs significantly from `hypothesised-p`.
-- `chi-squared-test (observed expected)` — Pearson's chi-squared goodness-of-fit test. `observed` and `expected` are equal-length lists of counts. Returns `(chi-squared df p-value)` as multiple values.
-- `confidence-interval-proportion (successes n &key (confidence 0.95))` — Wilson score interval for a binomial proportion. Returns `(lower upper)` as multiple values.
-
-The p-value computation uses a rational approximation to the standard normal CDF (Abramowitz & Stegun 26.2.17), accurate to ~1.5 × 10⁻⁷ — more than sufficient for exploratory work.
-
-### Walking Through the Frequentist Code
-
-The normal CDF approximation is the most mathematically dense piece of the library. It uses a polynomial fit from the classic *Handbook of Mathematical Functions*:
-
-{lang="lisp",linenos=off}
-~~~~~~~~
-(defun phi-approx (z)
-  "Approximate the standard normal CDF Φ(z) using the
-Abramowitz & Stegun 26.2.17 rational approximation."
-  (let* ((p  0.2316419d0)
-         (b1 0.319381530d0)
-         (b2 -0.356563782d0)
-         (b3 1.781477937d0)
-         (b4 -1.821255978d0)
-         (b5 1.330274429d0)
-         (az (abs (float z 1.0d0)))
-         (t-val (/ 1.0d0 (+ 1.0d0 (* p az))))
-         (pdf (/ (exp (* -0.5d0 az az))
-                 (sqrt (* 2.0d0 pi))))
-         (cdf (- 1.0d0
-                 (* pdf
-                    (+ (* b1 t-val)
-                       (* b2 (expt t-val 2))
-                       (* b3 (expt t-val 3))
-                       (* b4 (expt t-val 4))
-                       (* b5 (expt t-val 5)))))))
-    (if (>= z 0.0d0) cdf (- 1.0d0 cdf))))
-~~~~~~~~
-
-The one-sample z-test for a proportion builds on this to answer "is the observed success rate significantly different from a hypothesised value?":
-
-{lang="lisp",linenos=off}
-~~~~~~~~
-(defun z-test-proportion (successes n hypothesised-p)
-  "One-sample z-test for a binomial proportion.
-Tests H₀: p = HYPOTHESISED-P against H₁: p ≠ HYPOTHESISED-P (two-tailed).
-Returns two values: Z-SCORE and P-VALUE."
-  (let* ((p0    (float hypothesised-p 1.0d0))
-         (n     (float n 1.0d0))
-         (p-hat (/ (float successes 1.0d0) n))
-         (se    (sqrt (/ (* p0 (- 1.0d0 p0)) n)))
-         (z     (/ (- p-hat p0) se))
-         (p-val (* 2.0d0 (- 1.0d0 (phi-approx (abs z))))))
-    (values z (min p-val 1.0d0))))
-~~~~~~~~
-
-The Wilson score confidence interval is more accurate than the simple Wald interval for extreme proportions:
-
-{lang="lisp",linenos=off}
-~~~~~~~~
-(defun confidence-interval-proportion (successes n &key (confidence 0.95d0))
-  "Wilson score confidence interval for a binomial proportion.
-Returns two values: LOWER and UPPER bounds."
-  (let* ((n    (float n 1.0d0))
-         (p    (/ (float successes 1.0d0) n))
-         (z    (z-critical confidence))
-         (z2   (* z z))
-         (denom (+ 1.0d0 (/ z2 n)))
-         (centre (/ (+ p (/ z2 (* 2.0d0 n))) denom))
-         (margin (/ (* z (sqrt (+ (/ (* p (- 1.0d0 p)) n)
-                                   (/ z2 (* 4.0d0 n n)))))
-                    denom)))
-    (values (max 0.0d0 (- centre margin))
-            (min 1.0d0 (+ centre margin)))))
-~~~~~~~~
-
-### Worked example — Frequentist Medical Screening (`examples/frequentist-demo.lisp`)
-
-Revisits the same medical-screening scenario from a purely frequentist standpoint:
-
-1. **Simulates a clinical trial** — 100,000 individuals screened; counts true positives, false positives, true negatives, false negatives.
-2. **Chi-squared test of independence** — tests whether the test result and disease status are statistically independent. With N = 100,000 and 5 % false-positive rate, the test overwhelmingly rejects independence (p ≈ 0), but this tells you nothing about the *magnitude* of risk for an individual patient.
-3. **Confidence interval for positive predictive value (PPV)** — among everyone who tested positive, what fraction actually has the disease? The 95 % Wilson interval is computed, showing the PPV is dismally low (~1–3 %) despite "statistical significance."
-4. **Side-by-side comparison** — prints the Bayesian posterior (from `run-medical-example`) alongside the frequentist CI, demonstrating that the two frameworks reach the same conclusion via different reasoning.
-
-The example drives home the point from the "Words of Warning" section: a statistically significant association (tiny p-value) does not imply a practically useful prediction for any individual.
-
-### Running the frequentist example
+Everything is plain Common Lisp with no dependency beyond ASDF. From the
+`Probability/` directory:
 
 ~~~~~~~~
-# from the Probability/ directory
-sbcl --load probability.asd \
+sbcl --eval '(require :asdf)' \
+     --load probability.asd \
      --eval '(asdf:load-system :probability)' \
-     --eval '(probability:run-frequentist-demo)' \
+     --eval '(probability:run-medical-example)' \
      --quit
 ~~~~~~~~
 
-```
-================================================================
-  FREQUENTIST ANALYSIS: Medical Screening Test
-================================================================
+Or, with Quicklisp, put the directory on your local-projects path and call
+`(ql:quickload :probability)`. The Bayesian half prints the result from the
+previous section; the correlation half simulates 100,000 people and reports
+`pearson-r ≈ 0.14`. Because the population is simulated, the last digits move
+between runs; the conclusion does not.
 
---- 1. Simulated Clinical Trial (N = 100,000) ---
-  True  Positives (TP):    102
-  False Positives (FP):   5080
-  True  Negatives (TN):  94818
-  False Negatives (FN):      0
+## Frequentists vs. Bayesians
 
---- 2. Chi-Squared Test of Independence ---
-  chi-squared = 1868.26   df = 3   p-value < 1e-15 (essentially zero)
+The deepest fault line in probability is not mathematical but philosophical:
+what *is* a probability?
 
-  Interpretation: the test result and disease status
-  are NOT independent (we reject H0).  But this only
-  means the *association exists* — it says nothing about
-  how strong it is or what it means for one patient.
+| | Frequentist | Bayesian |
+|---|---|---|
+| **Definition** | Long-run frequency over repeated trials | Degree of belief, updated as evidence arrives |
+| **Parameters** | Fixed but unknown constants | Random variables with distributions |
+| **Core question** | P(Data \| H): how likely is this data? | P(H \| Data): how likely is this hypothesis? |
+| **Signature tool** | p-value, confidence interval | posterior, credible interval |
 
---- 3. Positive Predictive Value (PPV) ---
-  PPV = TP / (TP + FP) = 102 / 5182 = 0.0197  (1.97 %)
-  95% Wilson CI for PPV: [0.0162, 0.0238]  (1.62% – 2.38%)
+A p-value answers only the first question, and it is *not* the probability that
+the hypothesis is true — arguably the most common error in applied statistics.
+A 95 % confidence interval likewise does not mean "a 95 % chance the true value
+is in here"; that is what a Bayesian credible interval means.
 
---- 4. Z-Test: Positive Rate vs. Prevalence ---
-  Observed positive rate: 5.1820%
-  Hypothesised rate (prevalence): 0.1000%
-  z = 508.4543   p-value < 1e-15
+In practice the two converge. Given plenty of data and a vague prior, a
+Bayesian posterior and a frequentist estimate are nearly the same number. The
+choice is mostly about what you need to say: frequentists dominate regulatory
+testing, Bayesians dominate sequential decision-making, and pragmatists use
+both.
 
-  The positive rate far exceeds the disease prevalence
-  because of the 5% false-positive rate — most positives
-  are healthy people.
+## The frequentist check
 
---- 5. Bayesian vs. Frequentist Side-by-Side ---
-  Bayesian posterior P(disease | positive test) = 0.0194  (1.94%)
-  Frequentist PPV from simulation             = 0.0197  (1.97%)
+`examples/frequentist-demo.lisp` re-runs the screening scenario with
+frequentist tools:
 
-  Both frameworks agree: a positive test on a rare disease
-  gives only about 2% probability of actual illness.
-  The chi-squared test's tiny p-value is real but misleading
-  if taken as evidence that the test is *useful* for diagnosis.
+1. simulate 100,000 patients and count true/false positives and negatives;
+2. test whether test result and disease status are independent (a 2×2
+   chi-squared test, `chi-squared-independence`, with df = 1);
+3. put a Wilson score confidence interval on the PPV;
+4. print the Bayesian and frequentist answers side by side.
 
-================================================================
-  Key lesson: statistical significance (small p-value) and
-  practical significance (high PPV) are different things.
-================================================================
-```
+A representative run:
 
-### Key output from the frequentist demo
+| Quantity | Value |
+|---|---|
+| Simulated trial (N = 100,000) | ≈100 true positives, ≈5,000 false positives |
+| Chi-squared (df = 1) | ≈1,800, p < 10⁻¹⁵ |
+| PPV (95 % Wilson CI) | ≈1.9 % (≈1.5 %–2.4 %) |
+| Bayesian posterior P(disease \| positive) | 1.94 % |
 
-- Chi-squared test rejects independence (p < 10⁻¹⁵) — the association is "highly significant."
-- But PPV is only **1.80 %** (95 % Wilson CI: 1.46 %–2.20 %).
-- The Bayesian posterior agrees: **1.94 %**.
-- **Lesson:** statistical significance (small p-value) ≠ practical significance (high PPV).
+The exact counts depend on the random draw; the conclusions do not.
 
-## Wrap Up
+The chi-squared test is screaming that the association is real, and it is. The
+PPV is still about 2 %. **Statistical significance is not practical
+significance:** a tiny p-value says an association exists, not that it is large
+or useful. That is the opening puzzle reached from the other direction.
 
-This chapter explored probability from both the Bayesian and frequentist perspectives, using a medical screening scenario to illustrate a result that surprises almost everyone: a highly accurate test applied to a rare condition produces a dismally low positive predictive value. The Bayesian framework makes this transparent by forcing you to account for the base rate; the frequentist framework confirms it through confidence intervals on the PPV, even as its chi-squared test screams "significant!"
+Note the two different tests. `chi-squared-test` is a goodness-of-fit test for
+a single list of counts; `chi-squared-independence` takes a contingency table
+and uses the correct (rows − 1) × (cols − 1) degrees of freedom.
 
-The key takeaways are:
+## The vocabulary you need
 
-- **Always consider the base rate.** A 99 %-accurate test means little when the condition is rare.
-- **Statistical significance ≠ practical significance.** A tiny p-value tells you an association exists; it does not tell you the association is large or useful.
-- **Correlation ≠ causation, and even correlation ≠ reliable individual prediction.** The Pearson-r between test results and disease is real but insufficient for clinical decision-making.
-- **Both frameworks have their place.** Bayesian methods shine when prior information matters; frequentist methods dominate regulatory and large-sample settings. Pragmatic practitioners use both.
+| Term | Meaning |
+|---|---|
+| Prior | P(H) — belief before evidence |
+| Likelihood | P(E \| H) — how well a hypothesis explains the data |
+| Posterior | P(H \| E) — belief after evidence |
+| Marginal likelihood | P(E) = Σ P(E \| H)·P(H) — the normaliser |
+| MAP | The hypothesis with the highest posterior |
+| Sensitivity | P(test+ \| disease) — true-positive rate |
+| False-positive rate | P(test+ \| healthy) |
+| PPV | TP / (TP + FP) — chance of disease given a positive test |
+| p-value | P(data this extreme \| H₀ true) — not P(H₀) |
+| Confidence interval | Covers the truth in 95 % of repeated experiments |
+| Credible interval | Contains the parameter with 95 % probability, given data and prior |
 
-## Optional Practice Problems
+## Practice problems
 
-1. **Continuous Evidence Support (Bayesian PDF Likelihood)**:
-   In [bayes.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/Probability/bayes.lisp), the `update` function and its `likelihood-fn` parameter assume discrete evidence tokens (such as `:positive-test`). In physical or AI systems, evidence is often continuous (e.g., standard-normal measurements or embedding distances). Write a new likelihood function that computes the probability of a continuous variable under a normal probability density function (PDF). Test this by updating the model's hypothesis probabilities based on a continuous numerical observation.
+1. **Continuous evidence.** `update` takes a discrete evidence token. Write a
+   likelihood function that returns a normal PDF for a continuous observation,
+   then update the model with a numeric measurement. Start in `bayes.lisp`.
+2. **Credible interval.** Given ordered hypotheses, write a function that
+   returns the narrowest set of hypotheses holding at least 95 % of the
+   posterior mass, and compare it with the Wilson interval in `frequentist.lisp`.
+3. **Simpson's paradox.** `pearson-r` can reverse when groups are pooled. Build
+   a small causal model with a confounder Z, compute both P(Y | X) and
+   P(Y | do(X)), and show when adjusting for Z changes the answer.
+4. **Fisher's exact test.** The chi-squared test is asymptotic, so it is shaky
+   with rare events and small counts. Implement Fisher's exact test for a 2×2
+   table and compare its p-value with `chi-squared-independence` on the
+   screening data.
+5. **Sequential updating.** Write `sequential-update`, which folds a list of
+   evidence items through a model one at a time and prints the entropy of the
+   posterior after each step, showing uncertainty collapse as data arrives.
 
-2. **Bayesian Posterior Credible Interval**:
-   Write a function in [bayes.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/Probability/bayes.lisp) that computes a credible interval for a set of hypotheses. Assuming the hypotheses are ordered (e.g., discrete parameter values), calculate the narrowest interval of hypotheses that contains at least a specified cumulative probability (e.g., 95%). Contrast this with the Wilson score interval returned by `confidence-interval-proportion` in [frequentist.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/Probability/frequentist.lisp).
+## Wrap up
 
-3. **Causal Inference with Do-Calculus (Simpson's Paradox)**:
-   Pure probability and correlation coefficients (like `pearson-r` in [correlation.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/Probability/correlation.lisp)) can lead to Simpson's paradox, where an association observed in multiple groups disappears or reverses when the groups are combined. Extend the library by creating a simple causal model representation. Write a function that calculates both the observational probability `P(Y | X)` and the causal probability `P(Y | do(X))` using a confounder `Z`, illustrating how to control for confounding variables dynamically.
+- **Mind the base rate.** A 99 %-accurate test for a 0.1 % condition is wrong
+  about almost every positive it reports.
+- **Facts and predictions are different objects.** A number from a model
+  deserves a different kind of trust from a measured one.
+- **Significance is not usefulness, and correlation is not causation.** The
+  frequentist and Bayesian toolkits agree on the medical example; they simply
+  narrate it differently.
 
-4. **Multi-Category Chi-Squared Contingency Table Test**:
-   The current `chi-squared-test` in [frequentist.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/Probability/frequentist.lisp) only supports a one-dimensional goodness-of-fit test. Implement a two-way contingency table chi-squared test of independence, which accepts a 2D matrix of observed counts and computes expected counts, degrees of freedom, and the p-value. Test this by evaluating whether multiple patient symptoms are independent of multiple diagnostic outcomes in [medical.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/Probability/examples/medical.lisp).
-
-5. **Online Sequential Bayesian Updating**:
-   In dynamic environments, evidence arrives sequentially rather than in a single batch. Write a recursive wrapper function, `sequential-update`, that takes a model, a list of incoming evidence items, and a list of likelihood functions, updating the model iteratively. Implement an option to print/log the entropy of the posterior distribution at each step to show how uncertainty changes as more data points are observed.
-
-6. **Spearman Rank Correlation Speed Optimization**:
-   The `spearman-rho` function in [correlation.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/Probability/correlation.lisp) converts data to ranks by sorting copies of lists, which has an `O(N log N)` complexity. If `N` is large, sorting lists multiple times can be slow. Write an optimized version of `rank-list` that works directly on unboxed arrays using SBCL-specific declarations `(declare (optimize (speed 3) (safety 0)))` and type hints. Compare the execution times on a population size of 1,000,000 using `time`.
+For the mathematics behind these results — conjugate priors, MCMC, decision
+theory, and much more — see *Common Lisp and Probability*.

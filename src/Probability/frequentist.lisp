@@ -15,14 +15,14 @@
 ;;; ======================================================================
 ;;;  Normal CDF approximation (Abramowitz & Stegun 26.2.17)
 ;;;
-;;;  Maximum absolute error: 1.5 × 10⁻⁷
+;;;  Maximum absolute error: 7.5 × 10⁻⁸
 ;;;  Input: z (real number)
 ;;;  Output: Φ(z) = P(Z ≤ z) for Z ~ N(0,1)
 ;;; ======================================================================
 
 (defun phi-approx (z)
   "Approximate the standard normal CDF Φ(z) using the
-Abramowitz & Stegun 26.2.17 rational approximation."
+Abramowitz & Stegun 26.2.17 polynomial approximation."
   (let* ((p  0.2316419d0)
          (b1 0.319381530d0)
          (b2 -0.356563782d0)
@@ -95,6 +95,8 @@ Returns two values: Z-SCORE and P-VALUE."
 (defun chi-squared-test (observed expected)
   "Pearson's chi-squared goodness-of-fit test.
 OBSERVED and EXPECTED are equal-length lists of non-negative counts.
+Use CHI-SQUARED-INDEPENDENCE instead when the counts form a
+contingency table whose marginals were estimated from the data.
 
 Returns three values: CHI-SQUARED statistic, DF, and P-VALUE.
 H₀: observed counts follow the expected distribution."
@@ -111,13 +113,49 @@ H₀: observed counts follow the expected distribution."
     (values chi2 df (max p-val 0.0d0))))
 
 ;;; ======================================================================
+;;;  Pearson's chi-squared test of independence (contingency table)
+;;; ======================================================================
+
+(defun chi-squared-independence (table)
+  "Pearson's chi-squared test of independence for a contingency TABLE,
+a list of rows, each row a list of non-negative counts.  Expected
+counts are estimated from the row and column marginals, so the
+degrees of freedom are (ROWS − 1) × (COLS − 1), not k − 1.
+
+Returns three values: CHI-SQUARED statistic, DF, and P-VALUE.
+H₀: the row and column variables are independent."
+  (let* ((rows (length table))
+         (cols (length (first table))))
+    (assert (and (>= rows 2) (>= cols 2)) ()
+            "TABLE must have at least two rows and two columns.")
+    (assert (every (lambda (row) (= (length row) cols)) table) ()
+            "Every row of TABLE must have the same length.")
+    (let* ((row-totals (mapcar (lambda (row) (reduce #'+ row)) table))
+           (col-totals (loop for j below cols
+                             collect (loop for row in table sum (nth j row))))
+           (n          (reduce #'+ row-totals))
+           (chi2       (loop for row in table
+                             for i from 0
+                             sum (loop for o in row
+                                       for j from 0
+                                       for e = (/ (* (nth i row-totals)
+                                                     (nth j col-totals))
+                                                  n)
+                                       sum (if (zerop e) 0.0d0
+                                               (/ (expt (- (float o 1.0d0) e) 2)
+                                                  e)))))
+           (df         (* (1- rows) (1- cols)))
+           (p-val      (- 1.0d0 (chi-squared-cdf chi2 df))))
+      (values (float chi2 1.0d0) df (max p-val 0.0d0)))))
+
+;;; ======================================================================
 ;;;  Wilson score confidence interval for a proportion
 ;;; ======================================================================
 
 (defun z-critical (confidence)
   "Return the z* critical value for a two-sided confidence level.
-Uses a small lookup + linear interpolation for common levels;
-falls back to a Newton-step refinement of the A&S approximation."
+Common levels come from a small lookup table; other levels are found
+by bisection on the Abramowitz & Stegun normal-CDF approximation."
   ;; Common values hard-coded for accuracy.
   (let ((table '((0.90d0 . 1.6449d0)
                  (0.95d0 . 1.9600d0)
