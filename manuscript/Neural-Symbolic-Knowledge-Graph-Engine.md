@@ -2,7 +2,9 @@
 
 This chapter builds NSK, a small knowledge graph engine that reasons in two
 ways at once. It answers questions by exact logic when the facts are present,
-and it asks a local language model when they are not. The engine  loads under a bare LispWorks or SBCL image, and
+and it asks a local language model when they are not. The neural half is a
+language model consulted as a fallback: the engine trains nothing and has no
+neural network of its own. NSK loads under a bare LispWorks or SBCL image, and
 runs either as an interactive prompt or as a small web service.
 
 By the end you will understand unification, a triplestore backed by an
