@@ -1,93 +1,102 @@
-(ql:quickload '(:drakma :plump :cl-ppcre))
+(unless (fboundp 'fetch-html)
+  (load (merge-pathnames #P"utils.lisp" (or *load-pathname* #P""))))
 
-(defun text-node-p (node)
-  (typep node 'plump:text-node))
+(defun md-boilerplate-p (tag)
+  "Elements removed before Markdown conversion. Unlike page-text.lisp,
+nav/header/footer are kept: their link lists are often the point of the
+conversion. Named apart from TEXT-BOILERPLATE-P so both examples can be
+loaded in one core without clobbering each other."
+  (member (kw tag) '(:script :style :head :noscript :iframe) :test #'eq))
 
-(defun element-node-p (node)
-  (typep node 'plump:element))
+(defun md-heading (level inner)
+  (format nil "~%~A ~A~%~%"
+          (make-string level :initial-element #\#) (trim inner)))
 
-(defun ignore-tag-p (tag)
-  (member tag '("script" "style" "head" "noscript" "iframe")
-          :test #'string-equal))
+(defun whitespace-child-p (child)
+  "Between <li> tags, text nodes are source indentation, not content."
+  (and (text-node-p child) (whitespace-only-p (plump:text child))))
 
-(defun block-element-p (tag)
-  (member tag '("p" "div" "li" "br" "h1" "h2" "h3" "h4" "h5" "h6" "tr" "article" "section" "aside")
-          :test #'string-equal))
-
-(defun html-to-markdown (node)
-  "Recursively converts a plump HTML node into Markdown."
+(defun html-to-markdown (node &optional (depth 0) (ordered nil) (index 1))
+  "Recursively convert the plump HTML node NODE into Markdown.
+DEPTH counts enclosing lists (nested items indent two spaces per level),
+ORDERED is true inside an <ol>, and INDEX is an <li>'s position within its
+list. Text nodes are Markdown-escaped and whitespace-normalized up front;
+block tags contribute the newlines, so CLEAN-WHITESPACE needs no marker
+tokens to protect spacing."
   (cond
     ((text-node-p node)
-     (plump:text node))
+     (normalize-spaces (escape-markdown (plump:text node))))
     ((element-node-p node)
-     (let* ((tag (plump:tag-name node))
-            (inner-md (with-output-to-string (s)
-                        (loop for child across (plump:children node)
-                              do (write-string (html-to-markdown child) s)))))
+     (let ((tag (kw (plump:tag-name node))))
        (cond
-         ((ignore-tag-p tag) "")
-         ((string-equal tag "h1")
-          (format nil "~%__H1__~%# ~A~%__H1__~%" (string-trim '(#\Space #\Tab #\Newline #\Return) inner-md)))
-         ((string-equal tag "h2")
-          (format nil "~%__H2__~%## ~A~%__H2__~%" (string-trim '(#\Space #\Tab #\Newline #\Return) inner-md)))
-         ((string-equal tag "h3") (format nil "~%### ~A~%~%" (string-trim '(#\Space #\Tab) inner-md)))
-         ((string-equal tag "h4") (format nil "~%#### ~A~%~%" (string-trim '(#\Space #\Tab) inner-md)))
-         ((string-equal tag "h5") (format nil "~%##### ~A~%~%" (string-trim '(#\Space #\Tab) inner-md)))
-         ((string-equal tag "h6") (format nil "~%###### ~A~%~%" (string-trim '(#\Space #\Tab) inner-md)))
-         ((string-equal tag "p")  (format nil "~%~A~%~%" (string-trim '(#\Space #\Tab #\Newline #\Return) inner-md)))
-         ((string-equal tag "br") (format nil "~%"))
-         ((string-equal tag "strong") (format nil "**~A**" inner-md))
-         ((string-equal tag "b")      (format nil "**~A**" inner-md))
-         ((string-equal tag "em")     (format nil "*~A*" inner-md))
-         ((string-equal tag "i")      (format nil "*~A*" inner-md))
-         ((string-equal tag "code")   (format nil "`~A`" inner-md))
-         ((string-equal tag "pre")    (format nil "~%```~%~A~%```~%" inner-md))
-         ((string-equal tag "a")
-          (let ((href (plump:attribute node "href")))
-            (if (and href (> (length (string-trim '(#\Space #\Tab) inner-md)) 0))
-                (format nil "[~A](~A)" (string-trim '(#\Space #\Tab #\Newline #\Return) inner-md) href)
-                inner-md)))
-         ((string-equal tag "img")
-          (let ((src (plump:attribute node "src"))
-                (alt (or (plump:attribute node "alt") "image")))
-            (if src
-                (format nil "![~A](~A)" alt src)
-                "")))
-         ((string-equal tag "li")
-          (format nil "* ~A~%" (string-trim '(#\Space #\Tab #\Newline #\Return) inner-md)))
-         ((block-element-p tag)
-          (format nil "~%~A~%" inner-md))
-         (t inner-md))))
+         ((md-boilerplate-p tag) "")
+         ((member tag '(:ul :ol) :test #'eq)
+          (with-output-to-string (s)
+            (let ((item 0))
+              (loop for child across (plump:children node)
+                    unless (whitespace-child-p child)
+                      do (incf item)
+                         (write-string (html-to-markdown child (1+ depth)
+                                                         (eq tag :ol) item)
+                                       s)))))
+         (t
+          (let ((inner (if (member tag '(:pre :code) :test #'eq)
+                           (raw-text node)
+                           (with-output-to-string (s)
+                             (loop for child across (plump:children node)
+                                   do (write-string (html-to-markdown child depth
+                                                                      ordered index)
+                                                    s))))))
+            (case tag
+              (:h1 (md-heading 1 inner))
+              (:h2 (md-heading 2 inner))
+              (:h3 (md-heading 3 inner))
+              (:h4 (md-heading 4 inner))
+              (:h5 (md-heading 5 inner))
+              (:h6 (md-heading 6 inner))
+              ((:p :blockquote)
+               (format nil "~%~A~%~%" (trim inner)))
+              (:br
+               (format nil "~%~A" inner))
+              ((:strong :b)
+               (format nil "**~A**" inner))
+              ((:em :i)
+               (format nil "*~A*" inner))
+              (:code
+               (format nil "`~A`" (trim inner)))
+              (:pre
+               (format nil "~%~%```~%~A~%```~%~%" (trim inner)))
+              (:a
+               (let ((href (plump:attribute node "href")))
+                 (if (and href (plusp (length (trim inner))))
+                     (format nil "[~A](~A)" (trim inner) href)
+                     inner)))
+              (:img
+               (let ((src (plump:attribute node "src"))
+                     (alt (escape-markdown (or (plump:attribute node "alt") ""))))
+                 (if src
+                     (format nil "![~A](~A)" alt src)
+                     "")))
+              (:li
+               (let ((indent (make-string (* 2 (max 0 (1- depth)))
+                                          :initial-element #\Space))
+                     (marker (if ordered (format nil "~D. " index) "* ")))
+                 (format nil "~A~A~A~%" indent marker (trim inner))))
+              ((:div :article :section :aside :main :tr :table :td :th)
+               (format nil "~%~A~%~%" inner))
+              (t inner)))))))
     ((typep node 'plump:nesting-node)
      (with-output-to-string (s)
        (loop for child across (plump:children node)
-             do (write-string (html-to-markdown child) s))))
+             do (write-string (html-to-markdown child depth) s))))
     (t "")))
 
-(defun clean-markdown-whitespace (text)
-  "Cleans up excessive spaces and newlines in the Markdown, preserving spacing for H1/H2."
-  (let* ((n (format nil "~%"))
-         ;; 1. Clean up lines that contain only whitespace
-         (text (cl-ppcre:regex-replace-all "(?m)^[ \\t]+$" text ""))
-         ;; 2. Collapse double spaces
-         (text (cl-ppcre:regex-replace-all "[ \\t]+" text " "))
-         ;; 3. Collapse multiple consecutive newlines to at most 2 newlines (1 blank line)
-         (text (cl-ppcre:regex-replace-all (format nil "~A{3,}" n) text (format nil "~A~A" n n)))
-         ;; 4. Replace __H1__ markers with 4 newlines (3 blank lines)
-         (text (cl-ppcre:regex-replace-all (format nil "~A*__H1__~A*" n n) text (format nil "~A~A~A~A" n n n n)))
-         ;; 5. Replace __H2__ markers with 3 newlines (2 blank lines)
-         (text (cl-ppcre:regex-replace-all (format nil "~A*__H2__~A*" n n) text (format nil "~A~A~A" n n n)))
-         ;; 6. Trim leading/trailing whitespace of the whole text
-         (text (string-trim '(#\Space #\Tab #\Newline #\Return) text)))
-    text))
-
-(defun fetch-and-print-markdown (url)
-  "Fetches the URL and prints content converted to Markdown."
+(defun fetch-and-print-markdown (&optional (url "https://markwatson.com"))
+  "Fetch URL and print the content converted to Markdown."
   (format t "Fetching ~A...~%" url)
-  (let* ((html-content (drakma:http-request url))
-         (parsed-html (plump:parse html-content))
-         (raw-markdown (html-to-markdown parsed-html))
-         (cleaned-markdown (clean-markdown-whitespace raw-markdown)))
-    (format t "~A~%" cleaned-markdown)))
+  (let ((html (fetch-html url)))
+    (when html
+      (format t "~A~%"
+              (clean-whitespace (html-to-markdown (plump:parse html)))))))
 
-(fetch-and-print-markdown "https://markwatson.com")
+(fetch-and-print-markdown)

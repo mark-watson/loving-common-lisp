@@ -1,16 +1,20 @@
-(ql:quickload '(:drakma :plump :clss))
+(unless (fboundp 'fetch-html)
+  (load (merge-pathnames #P"utils.lisp" (or *load-pathname* #P""))))
+(ql:quickload :clss :silent t)
 
-(defun fetch-and-print-headers (url)
-  "Fetches the URL and prints text from H1 to H6 tags using drakma, plump, and clss."
+(defun fetch-and-print-headers (&optional (url "https://markwatson.com"))
+  "Fetch URL and print the text of h1-h6 tags in document order.
+One comma-separated selector beats six round trips through the DOM, and
+NODE-TEXT keeps HTML comments out of the printed headers."
   (format t "Fetching ~A...~%" url)
-  (let* ((html-content (drakma:http-request url))
-         (parsed-html (plump:parse html-content)))
-    (dolist (tag '("h1" "h2" "h3" "h4" "h5" "h6"))
-      (format t "~A sections:~%" tag)
-      (let ((nodes (clss:select tag parsed-html)))
-        (loop for node across nodes do
-          (let ((text (plump:text node)))
-            (when text
-              (format t "  - ~A~%" (string-trim '(#\Space #\Tab #\Newline #\Return) text)))))))))
+  (let ((html (fetch-html url)))
+    (when html
+      (let ((nodes (clss:select "h1,h2,h3,h4,h5,h6" (plump:parse html))))
+        (if (zerop (length nodes))
+            (format t "No h1-h6 headers found.~%")
+            (loop for node across nodes
+                  for text = (trim (normalize-spaces (node-text node)))
+                  unless (string= text "")
+                    do (format t "  [~A] ~A~%" (plump:tag-name node) text)))))))
 
-(fetch-and-print-headers "https://markwatson.com")
+(fetch-and-print-headers)
