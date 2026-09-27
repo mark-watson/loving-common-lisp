@@ -6,8 +6,7 @@ In this chapter we build three example scripts, found in the **src/webscraping/*
 
 ## Shared Utilities: utils.lisp
 
-{lang="lisp",linenos=on}
-~~~~~~~~
+```lisp
 ;;; Shared helpers for the web-scraping examples in this directory.
 ;;; Each example loads this file first:
 ;;;   (load (merge-pathnames #P"utils.lisp" (or *load-pathname* #P"")))
@@ -104,7 +103,7 @@ space-collapse pass is needed here."
     ;; endings collapse the same way Unix ones do.
     (setf text (cl-ppcre:regex-replace-all "(?:\\r\\n|\\r|\\n){3,}" text two-newlines))
     (trim text)))
-~~~~~~~~
+```
 
 A few decisions in this file are worth calling out.
 
@@ -120,8 +119,7 @@ Earlier versions of these examples wrapped headings in marker tokens like `__H1_
 
 Our first example, **html-headers.lisp**, is the simplest: fetch a web page and print the text content of every heading tag, `h1` through `h6`. This is useful for quickly surveying the structure of a page, what sections it contains and how the content is organized.
 
-{lang="lisp",linenos=on}
-~~~~~~~~
+```lisp
 (unless (fboundp 'fetch-html)
   (load (merge-pathnames #P"utils.lisp" (or *load-pathname* #P""))))
 (ql:quickload :clss :silent t)
@@ -142,7 +140,7 @@ NODE-TEXT keeps HTML comments out of the printed headers."
                     do (format t "  [~A] ~A~%" (plump:tag-name node) text)))))))
 
 (fetch-and-print-headers)
-~~~~~~~~
+```
 
 The flow is straightforward. `fetch-html` downloads the raw HTML as a string, `plump:parse` turns it into a DOM tree, and one `clss:select` call with the comma-separated selector `"h1,h2,h3,h4,h5,h6"` finds every heading in a single pass. CLSS returns nodes in document order, so the output follows the order in which the headings appear on the page. Each heading prints with its tag name in brackets, which preserves the hierarchy in the flat output.
 
@@ -150,10 +148,9 @@ The `(unless (fboundp 'fetch-html) ...)` guard appears in all three examples. It
 
 You can run this example from the command line:
 
-{lang="bash",linenos=off}
-~~~~~~~~
+```bash
 sbcl --load html-headers.lisp --eval "(sb-ext:exit)"
-~~~~~~~~
+```
 
 Here is a snippet of the output when run against my personal site:
 
@@ -177,8 +174,7 @@ This tiny script is already quite useful. You could extend it to crawl a list of
 
 Our second example, **page-text.lisp**, goes beyond headers and extracts the full readable text of a web page, stripping out scripts, styles, navigation, footers, and other boilerplate. The result is clean plain text suitable for natural language processing, summarization, or feeding into an LLM.
 
-{lang="lisp",linenos=on}
-~~~~~~~~
+```lisp
 (unless (fboundp 'fetch-html)
   (load (merge-pathnames #P"utils.lisp" (or *load-pathname* #P""))))
 
@@ -242,7 +238,7 @@ newlines; all other text is whitespace-normalized at the node level."
                                 :strip-indent t)))))
 
 (fetch-and-print-text)
-~~~~~~~~
+```
 
 The `text-boilerplate-p` function filters out tags that contain non-content material: `script`, `style`, `head`, `nav`, `header`, `footer`, `iframe`, and `noscript`. `get-element-spacing` maps each HTML element to the appropriate whitespace treatment: headings, paragraphs, and lists get blank lines around them, list items and table rows get one newline after them, and container elements like `div` get a newline only when their text does not already end with one.
 
@@ -289,8 +285,7 @@ All of my recent books are available on Leanpub. Most can be read online at no c
 
 Our third and most complete example, **page-markdown.lisp**, converts a full web page into well-formed Markdown. This is useful for feeding web content into large language models, which process Markdown far more effectively than raw HTML.
 
-{lang="lisp",linenos=on}
-~~~~~~~~
+```lisp
 (unless (fboundp 'fetch-html)
   (load (merge-pathnames #P"utils.lisp" (or *load-pathname* #P""))))
 
@@ -393,7 +388,7 @@ tokens to protect spacing."
               (clean-whitespace (html-to-markdown (plump:parse html)))))))
 
 (fetch-and-print-markdown)
-~~~~~~~~
+```
 
 `html-to-markdown` walks the DOM tree recursively. For each element node it first converts all children to Markdown (the `inner` string), then wraps the result in the appropriate Markdown syntax based on the tag: `#` prefixes for headings, `**...**` for bold, `*...*` for italic, `[text](url)` for links, `![alt](src)` for images, `* ` for list items, and triple backticks for code blocks. `md-heading` builds the heading prefix with `make-string`, so one helper serves all six heading levels.
 
