@@ -16,7 +16,7 @@ Here are the five providers that are built in:
 | `deepseek` | `https://api.deepseek.com/v1` | `DEEPSEEK_API_KEY` |
 | `ollama` | `http://localhost:11434/v1` | none |
 
-Gemini might surprise you in this table: Google serves an OpenAI compatible chat endpoint at that base URL, so it fits right in. Ollama running local models needs no key at all since it runs on your own machine, which makes it perfect for trying out the examples in this chapter for free.
+Gemini might surprise you in this table: Google serves an OpenAI compatible chat endpoint at that base URL, so it fits right in. Ollama running local models needs no key at all since it runs on your own machine, which makes it perfect for trying out the examples in this chapter for free. The local **oMLX** server for Apple Silicon is supported the same way: it speaks the OpenAI API at `http://localhost:8000/v1`, so `omlx/Laguna-XS-2.1-6bit` (the library's default model) works with no API key.
 
 ## The Provider Registry
 

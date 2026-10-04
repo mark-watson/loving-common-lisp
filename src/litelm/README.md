@@ -32,10 +32,44 @@ Models are addressed as `"provider/model-name"` strings:
 | Fireworks AI | `fireworks-ai/` | `FIREWORKS_API_KEY` | `https://api.fireworks.ai/inference/v1` |
 | DeepSeek | `deepseek/` | `DEEPSEEK_API_KEY` | `https://api.deepseek.com/v1` |
 | Ollama (local) | `ollama/` | — | `http://localhost:11434/v1` |
+| oMLX (local) | `omlx/` | `OMLX_API_KEY` (optional) | `http://localhost:8000/v1` |
 
-All five are OpenAI-compatible chat endpoints; the library shares one code path
+All six are OpenAI-compatible chat endpoints; the library shares one code path
 and routes via the prefix. Model names may themselves contain slashes (e.g.
 `"fireworks-ai/accounts/fireworks/models/deepseek-v4-flash-0731"`).
+
+### Local models with oMLX
+
+[oMLX](https://github.com/jundot/omlx) is an MLX inference server for Apple
+Silicon, managed from the macOS menu bar. Start it (default port 8000):
+
+```bash
+omlx serve --model-dir ~/models
+```
+
+It serves an OpenAI-compatible API at `http://localhost:8000/v1`, so no key is
+needed unless you started it with `--api-key` (then set `OMLX_API_KEY`, or pass
+`:api-key`). oMLX reports each model under its directory name or configured
+alias, so `omlx/Laguna-XS-2.1-6bit` addresses the
+[`mlx-community/Laguna-XS-2.1-6bit`](https://huggingface.co/mlx-community/Laguna-XS-2.1-6bit)
+weights. A fully qualified repo id works too as
+`omlx/mlx-community/Laguna-XS-2.1-6bit` (the split is on the first slash only).
+
+### Default model
+
+`*default-model*` is `"omlx/Laguna-XS-2.1-6bit"`, so passing `nil` (or omitting
+the model) routes to the local oMLX server:
+
+```lisp
+(litelm:response-content
+  (litelm:completion nil :messages "What is 2+2?"))   ; local Laguna via oMLX
+```
+
+Rebind it for the session to change the default without touching call sites:
+
+```lisp
+(setf litelm:*default-model* "ollama/qwen3-vl:2b")
+```
 
 Register additional OpenAI-compatible providers at runtime:
 
@@ -83,6 +117,10 @@ Each tool is `(name description ((param-name param-type param-description
                             :messages '((:system "Be terse.")
                                         (:user "What is 2+2?")))))
   (litelm:response-content r))           ; => "4"
+
+;; local oMLX model — also the default (*default-model*)
+(litelm:response-content
+  (litelm:completion "omlx/Laguna-XS-2.1-6bit" :messages "Hello from a local model!"))
 
 ;; string shorthand
 (litelm:response-content
@@ -148,7 +186,9 @@ sbcl --no-userinit --non-interactive \
 
 Offline tests cover JSON encode/decode, message and tool translation, and model
 routing. If an Ollama server is reachable at `localhost:11434`, live tests also
-exercise completion, streaming, and the full two-turn tool-calling protocol.
+exercise completion, streaming, and the full two-turn tool-calling protocol. If
+an oMLX server is reachable at `localhost:8000`, live tests exercise the default
+model, explicit `omlx/` routing, and streaming.
 
 ## File structure
 

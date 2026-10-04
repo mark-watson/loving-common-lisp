@@ -7,6 +7,8 @@
    ;; main entry points
    #:completion
    #:embedding
+   ;; default model (local oMLX by default)
+   #:*default-model*
    ;; provider registry / routing
    #:define-provider
    #:find-provider

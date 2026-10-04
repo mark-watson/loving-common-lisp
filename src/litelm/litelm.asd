@@ -2,10 +2,10 @@
 ;;; MIT License
 
 (asdf:defsystem #:litelm
-  :description "Minimal LLM routing + message translation across providers (gemini, fireworks-ai, ollama, deepseek, openai). Modelled after the Python litelm library, but messages and tool definitions use a Common Lisp friendly nested list format."
+  :description "Minimal LLM routing + message translation across providers (gemini, fireworks-ai, ollama, omlx, deepseek, openai). Modelled after the Python litelm library, but messages and tool definitions use a Common Lisp friendly nested list format. Defaults to a local oMLX model (Laguna-XS-2.1-6bit)."
   :author "Mark Watson"
   :license "MIT"
-  :version "1.0.0"
+  :version "1.1.0"
   :serial t
   :depends-on (#:dexador #:uiop)
   :components ((:file "package")

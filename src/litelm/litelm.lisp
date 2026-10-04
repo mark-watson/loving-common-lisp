@@ -77,6 +77,20 @@ Returns the accumulated content string."
       (close stream))
     (get-output-stream-string acc)))
 
+;;; ---- default model ----
+
+(defvar *default-model* "omlx/Laguna-XS-2.1-6bit"
+  "Model used by COMPLETION and EMBEDDING when MODEL is NIL.
+
+By default this is the local oMLX server (http://localhost:8000) serving
+mlx-community/Laguna-XS-2.1-6bit, so `(completion nil :messages ...)` talks to
+a local model with no API key. Bind or SETF this to route the default
+elsewhere, e.g. (setf litelm:*default-model* \"ollama/qwen3-vl:2b\").")
+
+(defun resolve-model (model)
+  "Return MODEL, or *DEFAULT-MODEL* when MODEL is NIL."
+  (or model *default-model*))
+
 ;;; ---- main entry points ----
 
 (defun completion (model &key messages tools (stream nil) (tool-choice nil)
@@ -84,14 +98,15 @@ Returns the accumulated content string."
                               api-key api-base extra-headers)
   "Send a chat completion to MODEL, a \"provider/model-name\" string.
 
-MESSAGES is a string or a list of (role content &rest options) messages.
-TOOLS is a list of (name description ((param type desc &key required enum) ...)).
-STREAM is nil, t (print deltas), or a function called with each content delta.
-TOOL-CHOICE is nil, :auto, :none, or :required.
+MODEL may be NIL, in which case *DEFAULT-MODEL* is used (the local oMLX server
+by default). MESSAGES is a string or a list of (role content &rest options)
+messages. TOOLS is a list of (name description ((param type desc &key required
+enum) ...)). STREAM is nil, t (print deltas), or a function called with each
+content delta. TOOL-CHOICE is nil, :auto, :none, or :required.
 
 Returns a RESPONSE struct; use RESPONSE-CONTENT and RESPONSE-TOOL-CALLS.
 Tool calls are returned, not executed — execution is the caller's job."
-  (multiple-value-bind (provider model-name) (parse-model model)
+  (multiple-value-bind (provider model-name) (parse-model (resolve-model model))
     (let* ((key (provider-api-key provider api-key))
            (headers (append (provider-headers key) extra-headers))
            (url (provider-url provider "/chat/completions" api-base))
@@ -137,10 +152,11 @@ Tool calls are returned, not executed — execution is the caller's job."
 
 (defun embedding (model input &key api-key api-base dimensions)
   "Compute embeddings for INPUT (a string or list of strings) using MODEL,
-a \"provider/model-name\" string. Returns a list of float lists.
+a \"provider/model-name\" string, or NIL for *DEFAULT-MODEL*.
+Returns a list of float lists.
 DIMENSIONS, when non-nil, asks the provider to return vectors of that
 width (the OpenAI-compatible \"dimensions\" parameter)."
-  (multiple-value-bind (provider model-name) (parse-model model)
+  (multiple-value-bind (provider model-name) (parse-model (resolve-model model))
     (let* ((key (provider-api-key provider api-key))
            (headers (provider-headers key))
            (url (provider-url provider "/embeddings" api-base))

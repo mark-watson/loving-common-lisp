@@ -38,6 +38,15 @@ base URL, ENV-KEYS a list of environment variable names tried in order."
   :env-keys nil
   :requires-key nil)
 
+;; oMLX — local MLX inference server for Apple Silicon, managed from the macOS
+;; menu bar (https://github.com/jundot/omlx, https://omlx.ai). It speaks the
+;; OpenAI API at http://localhost:8000/v1, so local models need no key by
+;; default. When the server is started with `omlx serve --api-key KEY`, set
+;; OMLX_API_KEY (or pass :api-key) and the usual bearer header is sent.
+(define-provider :omlx "http://localhost:8000/v1"
+  :env-keys '("OMLX_API_KEY")
+  :requires-key nil)
+
 (defun find-provider (name)
   (or (gethash name *providers*)
       (error 'litelm-error
