@@ -1,12 +1,11 @@
-# Advanced Reasoning with World Models To Augment LLMs: the llm-reasoning Library
+# Advanced Reasoning with World Models and LLMs: The llm-reasoning Library
 
-**Dear reader, in the litelm chapter we gave our Lisp programs one way to talk to a language model. This chapter asks a different question: what do we do when one call to the model is not enough? We build a small library, llm-reasoning, that turns a reasoning method into a search over states and actions, and we drive it with a local model to solve arithmetic word problems.**
+**Dear reader, in the litelm chapter, we gave our Lisp programs a way to talk to a language model. This chapter asks a different question: what do we do when a single call to the model is not enough? We will build a small library, llm-reasoning, that turns a reasoning method into a search over states and actions, driving it with a local model to solve arithmetic word problems.
+The design is inspired by the Python [llm-reasoners](https://github.com/maitrix-org/llm-reasoners) library. Its central idea is worth stating plainly because it helps to explain everything else in this chapter: a reasoning method is not a prompt. It is a search. By framing the problem with states, transitional actions, and scoring heuristics, we can systematically steer LLMs. Traditional techniques like chain of thought, beam search, best-first search, and Monte Carlo tree search all map to this architecture. They differ primarily in their exploration width and evaluation logic.
 
-By adding reasoning we can help steer LLMs.
+By adding reasoning we can help steer LLMs. In some sense LLMs can perform some reasoning but by monitoring the outputs of an LLM and using complex reasoning, we can improve a LLM’s native (innate) reasoning ability.
 
-The design comes from the Python [llm-reasoners](https://github.com/maitrix-org/llm-reasoners) library. Its central idea is worth stating plainly, because it explains everything else in this chapter: a reasoning method is not a prompt. It is a search. You have a state, you have actions that move you between states, you have some way to score a move, and you explore. Chain of thought, beam search, best first search, and Monte Carlo tree search all fit that shape, and they differ only in how wide they look and how they score.
-
-The source code lives in the directory **loving-common-lisp/src/llm-reasoners**. It has two files and no `.asd` system definition:
+The source code lives in the directory **loving-common-lisp/src/llm-reasoners**. It has two files and no `ASD` system definition:
 
 | File | What it is |
 |---|---|
@@ -145,7 +144,7 @@ Pass `:verbose t` to **make-beam-search** and it prints the winning path when th
 
 ## The Reasoner
 
-With the three pieces in place, a reasoner is almost nothing:
+With the three pieces in place, a reasoner is short:
 
 ```lisp
 (defmethod solve ((r reasoner) example &key prompt)
@@ -158,7 +157,7 @@ With the three pieces in place, a reasoner is almost nothing:
 
 Bind the problem onto both components, then search. **solve** returns the best **search-node**, so you get the final state, its score, and the action trace that produced it.
 
-Here is a complete reasoning method with no model in it at all. Add 1, 2, or 3 until you reach 10:
+Here is a complete reasoning method for testing purposes with no model in it at all. Add 1, 2, or 3 until you reach 10:
 
 ```lisp
 (defclass count-to-five-world-model (llm-reasoning:world-model) ())
@@ -211,7 +210,7 @@ That reward function deserves a comment, because it looks odd. Landing exactly o
 
 ## Making the World Model Call the Model
 
-Everything above is pure Lisp. To get the RAP pattern, where the model itself proposes the next state, you put a **generate** call inside **step**:
+Everything above is pure Lisp. To get the Reasoning via Planning (RAP) pattern, where the model itself proposes the next state, you put a **generate** call inside **step**:
 
 ```lisp
 (defmethod llm-reasoning:step ((wm my-world-model) state action)
