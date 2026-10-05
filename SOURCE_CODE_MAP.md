@@ -33,6 +33,7 @@ This table maps each chapter file in `./manuscript` to its source code example d
 | `manuscript/kgn_capi_ui.md` | `src/kgn-capi-ui`<br>`src/lw-grapher` |
 | `manuscript/karpathy.md` | `src/Karpathy_MicroGPT` |
 | `manuscript/litelm.md` | `src/litelm` |
+| `manuscript/llm-reasoners.md` | `src/llm-reasoners` |
 | `manuscript/ollama.md` | `src/ollama` |
 | `manuscript/ollama_image_processing.md` | `src/ollama_images` |
 | `manuscript/knowledge-navigator.md` | `src/knowledge-base-navigator` |

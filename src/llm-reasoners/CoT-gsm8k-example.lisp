@@ -3,17 +3,24 @@
 ;;;; Chain-of-thought on GSM8K, answered by a local oMLX model through litelm
 ;;;; and llm-reasoning-lib.
 ;;;;
-;;;; Run it:
+;;;; Run it (from this directory):
 ;;;;
-;;;;   sbcl --script common-lisp/CoT-gsm8k-example.lisp            # all 6 questions
-;;;;   sbcl --script common-lisp/CoT-gsm8k-example.lisp 2          # first 2
-;;;;   sbcl --script common-lisp/CoT-gsm8k-example.lisp 6 5        # 5-sample self-consistency
+;;;;   sbcl --script CoT-gsm8k-example.lisp            # all 6 questions
+;;;;   sbcl --script CoT-gsm8k-example.lisp 2          # first 2
+;;;;   sbcl --script CoT-gsm8k-example.lisp 6 5        # 5-sample self-consistency
 ;;;;
 ;;;; (--script skips ~/.sbclrc; llm-reasoning-lib loads Quicklisp itself, so that
 ;;;; still works as long as Quicklisp is in ~/quicklisp.)
 ;;;;
-;;;; Loading this file interactively also runs it -- bind
-;;;; cot-gsm8k-example:*run-on-load* to NIL first if you would rather not.
+;;;; Loading this file runs MAIN once.  To load it without answering anything,
+;;;; pre-create the switch -- it lives in a package this file defines, so it
+;;;; cannot simply be bound beforehand:
+;;;;
+;;;;   (setf (symbol-value (intern "*RUN-ON-LOAD*"
+;;;;                                 (or (find-package :cot-gsm8k-example)
+;;;;                                     (make-package :cot-gsm8k-example))))
+;;;;         nil)
+;;;;   (load "CoT-gsm8k-example.lisp")
 ;;;;
 ;;;; The model comes from litelm, so it is just a "provider/model-name" string:
 ;;;;
@@ -102,8 +109,9 @@
 ;;; The example itself
 ;;; ---------------------------------------------------------------------------
 
-(defparameter *run-on-load* t
-  "When true, loading this file runs MAIN once.")
+(defvar *run-on-load* t
+  "When true, loading this file runs MAIN once.  DEFPARAMETER would clobber a
+pre-established NIL binding, so this has to be DEFVAR.")
 
 (defparameter *answer-instruction*
   "Your response need to be ended with \"So the answer is\"\n\n"

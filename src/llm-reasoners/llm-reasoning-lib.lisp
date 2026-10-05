@@ -39,7 +39,7 @@
 ;;;;
 ;;;;   (let ((*print-case* :upcase)) (asdf:load-system :dexador :force t))
 ;;;;
-;;;; See AGENTS.md for the full write-up.
+;;;; See the "Gotchas" section of README.md for the full write-up.
 
 (defpackage #:llm-reasoning
   (:use #:cl)
@@ -367,9 +367,16 @@ Retries with a linear backoff, since a local server may be loading the model."
 
 (defun normalize-answer (answer)
   "Normalise ANSWER for comparison: drop $, commas and spaces, and any trailing
-period.  Returns NIL for NIL or for an empty result."
+period.  Returns NIL for NIL or for an empty result.
+
+ANSWER may be a string, symbol, character or number -- dataset golds are often
+read as numbers, and STRING would reject those.  STRING is still used for
+symbols so that *PRINT-CASE* cannot fold their names."
   (when answer
-    (let* ((s (string-trim '(#\Space #\Tab #\Newline #\Return) (string answer)))
+    (let* ((raw (if (typep answer '(or string symbol character))
+                    (string answer)
+                    (princ-to-string answer)))
+           (s (string-trim '(#\Space #\Tab #\Newline #\Return) raw))
            (s (remove-if (lambda (c) (member c '(#\$ #\, #\Space))) s))
            (s (string-right-trim "." s)))
       (if (plusp (length s)) s nil))))
@@ -577,6 +584,12 @@ Returns T when everything passes, otherwise signals an error."
       ;; --- answer handling ---
       (check "normalize-answer strips $ , and trailing period"
              (lambda () (equal (normalize-answer "$1,000.") "1000")))
+      (check "normalize-answer accepts a number"
+             (lambda () (equal (normalize-answer 18) "18")))
+      (check "answer-equal compares a numeric gold to a string answer"
+             (lambda () (and (answer-equal "18" 18) (answer-equal 18.0 "18"))))
+      (check "accuracy accepts numeric golds"
+             (lambda () (= (accuracy '("18" "3") '(18 4)) 0.5)))
       (check "answer-equal ignores a trailing period"
              (lambda () (answer-equal "18." "18")))
       (check "answer-equal compares numerically"
