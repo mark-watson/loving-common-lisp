@@ -1,6 +1,6 @@
 # Common Lisp Package System  {#package_system}
 
-In later chapters we will see two complete applications that are defined as Quicklisp projects: the [chapter on the Knowledge Graph Creator](#kgcreator) and the [chapter on the Knowledge Graph Navigator](#kgn). Another example for setting up a Quicklib project can be seen in the chapter **Plotting Data**.
+In later chapters we will see two complete applications that are defined as Quicklisp projects: the [chapter on the Knowledge Graph Creator](#kgcreator) and the chapter "on the "Knowledge Graph Navigator." Another example for setting up a Quicklib project can be seen in the chapter **Plotting Data**.
 
 While these later chapters provide practical examples for bundling up your own projects in packages, the material here will give you general background information that you should know.
 
@@ -80,4 +80,4 @@ What about the error on line 28 where **my-new-package:foo1** is undefined becau
 
 When you are writing very large Common Lisp programs, it is useful to be able to break up the program into different modules and place each module and all its required data in different name spaces by creating new packages. Remember that all symbols, including variables, generated symbols, CLOS methods, functions, and macros are in some package.
 
-For small packages I sometimes put a **defpackage** expression at the top of the file immediately followed by an in-package expression to switch to the new package. In the general case, please properly use separate **project** and **asdf** files as I do in the later chapters [Knowledge Graph Creator](#kgcreator) and [Knowledge Graph Navigator](#kgn).
+For small packages I sometimes put a **defpackage** expression at the top of the file immediately followed by an in-package expression to switch to the new package. In the general case, please properly use separate **project** and **asdf** files as I do in the later chapters [Knowledge Graph Creator](#kgcreator) and "Knowledge Graph Navigator."

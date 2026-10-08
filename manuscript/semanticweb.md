@@ -330,7 +330,7 @@ SELECT ?subject ?object
 
 It is important for you to understand what is happening when we apply the last SPARQL query to our sample data. Conceptually, all the triples in the sample data are scanned, keeping the ones where the predicate part of a triple is equal to **<http://knowledgebooks.com/ontology#containsCountry>**. In practice RDF data stores supporting SPARQL queries index RDF data so a complete scan of the sample data is not required. This is analogous to relational databases where indices are created to avoid needing to perform complete scans of database tables.
 
-In practice, when you are exploring a Knowledge Graph like DBPedia or WikiData (that are just very large collections of RDF triples), you might run a query and discover a useful or interesting entity URI in the triple store, then drill down to find out more about the entity. In a later chapter [Knowledge Graph Navigator](#kgn) we attempt to automate this exploration process using the DBPedia data as a Knowledge Graph.
+In practice, when you are exploring a Knowledge Graph like DBPedia or WikiData (that are just very large collections of RDF triples), you might run a query and discover a useful or interesting entity URI in the triple store, then drill down to find out more about the entity. In a later chapter "Knowledge Graph Navigator" we attempt to automate this exploration process using the DBPedia data as a Knowledge Graph.
 
 We will be using the same code to access the small example of RDF statements in our sample data as we will for accessing DBPedia or WikiData.
 
@@ -346,7 +346,7 @@ SELECT ?subject ?object
 ~~~~~~~~
 
 
-Later in the chapter [Knowledge Graph Navigator](#kgn) we will write an application that automatically generates SPARQL queries for the DBPedia public knowledge Graph. These queries will be be more complex than the simpler examples here. Reading this chapter before [Knowledge Graph Navigator](#kgn) is recommended.
+Later in the chapter "Knowledge Graph Navigator" we will write an application that automatically generates SPARQL queries for the DBPedia public knowledge Graph. These queries will be be more complex than the simpler examples here. Reading this chapter before "Knowledge Graph Navigator" is recommended.
 
 ## Case Study: Using SPARQL to Find Information about Board of Directors Members of Corporations and Organizations
 
