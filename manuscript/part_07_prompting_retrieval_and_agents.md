@@ -1,0 +1,3 @@
+-# Part 7: Prompting, Retrieval, and Agentic Applications
+
+This part is about turning language models into applications. We begin with a local vector database for semantically querying your own documents and build an agentic RAG system on top of it, then cover prompt engineering, the Google Gemini client library, and AutoContext for assembling better prompts. Next comes an AI-powered text adventure game, followed by the tooling I use every day: a persistent SQLite cache for LLM calls, a daily-use Gemini REPL with search grounding, an AI coding assistant for Common Lisp, and the SBCL REPL integration that makes the assistant convenient to reach from the editor.
