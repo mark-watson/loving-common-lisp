@@ -70,5 +70,6 @@ hacking_SBCL_repl.md
 part_08_macos_specific_code_experiments.md
 
 webkit.md
+macOS_osascript.md
 
 book_wrapup.md
