@@ -29,12 +29,14 @@
   "Fetch URL, returning the body as a string, or NIL on failure.
 Drakma's default User-Agent is blocked by many sites, so we set our own.
 When a server omits the charset, Drakma decodes the body with
-*DRAKMA-DEFAULT-EXTERNAL-FORMAT* (Latin-1), which garbles UTF-8 text."
+*DRAKMA-DEFAULT-EXTERNAL-FORMAT* (Latin-1), which garbles UTF-8 text, so
+we bind it to UTF-8, by far the most common encoding on the web."
   (handler-case
-      (drakma:http-request url
-                           :user-agent "Mozilla/5.0 (compatible; CL-scraping-example)"
-                           :connection-timeout 10
-                           :redirect 5)
+      (let ((drakma:*drakma-default-external-format* :utf-8))
+        (drakma:http-request url
+                             :user-agent "Mozilla/5.0 (compatible; CL-scraping-example)"
+                             :connection-timeout 10
+                             :redirect 5))
     (error (c)
       (format *error-output* "~&Could not fetch ~A: ~A~%" url c)
       nil)))

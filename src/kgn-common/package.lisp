@@ -1,7 +1,7 @@
 ;;;; package.lisp
 
 (defpackage #:kgn-common
-  (:use #:cl #:alexandria #:myutils  #:myutils #:sparql-cache
+  (:use #:cl #:alexandria #:myutils #:sparql-cache
    #:entities #:entity-uris #:kbnlp)
   (:export #:kgn-common #:remove-stop-words #:entity-results->relationship-links
            #:get-entity-data-helper #:handle-URIs-in-query

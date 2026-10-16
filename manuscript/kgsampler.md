@@ -39,7 +39,7 @@ The code is in the directory **src/kgsampler**. As seen in the configuration fil
 
 The program starts with a list of entities and tries to find links on DBPedia between the entities. A small sample graph of the input entities and any discovered links is written to a file. The function **dbpedia-as-nt** spawns a process to use the *curl* utility to make a HTTP request to DBPedia. The function **construct-from-dbpedia** takes a list of entities and writes SPARQL CONSTRUCT statements with the entity as the subject and the object filtered to a string value in the English language to an output stream. The function **find-relations** runs at **O(N^2)** where **N** is the number of input entities so you should avoid using this program with a large number of input entities.
 
-I offer this code with little explanation since much of it is similar to the techniques you saw in the previous chapter Knowledge Graph Navigator.
+I offer this code with little explanation since much of it is similar to the techniques you saw in the previous chapter Knowledge Graph Navigator. For each entity, **construct-from-dbpedia** fetches the English language literal values and then the values of each predicate in the list **\*construct-predicates\***. It writes the N-Triples text that DBPedia returns with **write-string**, not **format**: the data is not a format control string, and a **~** character in a URI or a literal would make **format** signal an error or garble the output.
 
 {lang="lisp",linenos=off}
 ~~~~~~~~
@@ -48,25 +48,46 @@ I offer this code with little explanation since much of it is similar to the tec
 (in-package #:kgsampler)
 
 (defun dbpedia-as-nt (query)
+  "Query DBpedia and return results in N-Triples format."
   (print query)
   (uiop:run-program 
    (list
     "curl" 
     (concatenate 'string
-                 "https://dbpedia.org/sparql?format=text/ntriples&query="
-                 ;; formats that work: csv, text/ntriples, text/ttl
+                 "https://dbpedia.org/sparql?format=text/ntriples&query=" ;; formats that work: csv, text/ntriples, text/ttl
                  (drakma:url-encode query :utf-8)))
    :output :string))
 
+(defparameter *construct-predicates*
+  '("<http://purl.org/dc/terms/subject>"
+    "<http://dbpedia.org/ontology/occupation>"
+    "<http://dbpedia.org/ontology/industry>"
+    "<http://dbpedia.org/ontology/keyPerson>"
+    "<http://dbpedia.org/ontology/product>"
+    "<http://dbpedia.org/ontology/service>"
+    "<http://dbpedia.org/property/wordnet_type>")
+  "Predicates (in addition to English language literals) fetched for each entity.")
+
 (defun construct-from-dbpedia (entity-uri-list &key (output-stream t))
+  "For a list of DBpedia entity URIs, fetch all triples for each and write to a stream."
+  ;; note: use write-string, not format, since the N-Triples data may contain ~ characters
   (dolist (entity-uri entity-uri-list)
     (format output-stream "~%~%# ENTITY NAME: ~A~%~%" entity-uri)
-    (format
-     output-stream
+    (write-string
      (dbpedia-as-nt
-      (format nil
-              "CONSTRUCT { ~A ?p ?o } where { ~A ?p ?o  . FILTER(lang(?o) = 'en') }"  
-              entity-uri entity-uri)))))
+      (format
+       nil
+       "CONSTRUCT { ~A ?p ?o } where { ~A ?p ?o  . FILTER (lang(?o) = 'en') }"
+       entity-uri entity-uri))
+     output-stream)
+    (dolist (predicate *construct-predicates*)
+      (write-string
+       (dbpedia-as-nt
+        (format
+         nil
+         "CONSTRUCT { ~A ~A ?o } where { ~A ~A ?o  }"
+         entity-uri predicate entity-uri predicate))
+       output-stream))))
 
 (defun ensure-angle-brackets (s)
   "make sure URIs have angle brackets"
@@ -75,23 +96,27 @@ I offer this code with little explanation since much of it is similar to the tec
       (concatenate 'string "<" s ">")))
 
 (defun find-relations (entity-uri-list &key (output-stream t))
+  "Discover relationships between pairs of entities in a list of URIs and write them to a stream."
+  (format output-stream "~%~%# DISCOVERED RELATIONSHIPS~%~%")
   (dolist (entity-uri1 entity-uri-list)
     (dolist (entity-uri2 entity-uri-list)
       (if (not (equal entity-uri1 entity-uri2))
           (let ((possible-relations
                  (mapcar #'cadar
-                         (sparql::dbpedia
+                         (sparql:dbpedia
                           (format nil 
                                   "select ?p where { ~A ?p ~A . filter(!regex(str(?p), \"page\", \"i\"))} limit 50"
                                   entity-uri1 entity-uri2)))))
             (print "** possible-relations:") (print possible-relations)
             (dolist (pr possible-relations)
-              (format output-stream "~A ~A ~a .~%"
+              (print pr)
+              (format output-stream "~%~A ~A ~a .~%"
 		      entity-uri1
 		      (ensure-angle-brackets pr)
 		      entity-uri2)))))))
 
 (defun sample (entity-uri-list output-filepath)
+  "Generate a sample knowledge graph from a list of DBpedia entities and save to a file."
   (with-open-file (ostream  (pathname output-filepath) :direction :output :if-exists :supersede)
     (construct-from-dbpedia entity-uri-list :output-stream ostream)
     (find-relations entity-uri-list :output-stream ostream)))

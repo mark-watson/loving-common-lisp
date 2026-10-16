@@ -163,8 +163,16 @@ The following function runs the Python script and is found in the file **main.li
   "Calls the Python script to generate embeddings for a list of strings.
    The command is passed as a list of arguments (it never goes through a
    shell), and :DIRECTORY pins uv's working directory so it finds both
-   pyproject.toml and generate_embeddings.py."
-  (let* ((input-string (format nil "~{~a~%~}" text-list))
+   pyproject.toml and generate_embeddings.py.
+   The Python script embeds one input line per text, so newlines inside a
+   text are replaced by spaces; otherwise a multi-line chunk would produce
+   several embedding rows and misalign rows with chunks."
+  (let* ((input-string (format nil "~{~a~%~}"
+                               (mapcar (lambda (text)
+                                         (substitute-if #\Space
+                                                        (lambda (ch) (member ch '(#\Newline #\Return)))
+                                                        text))
+                                       text-list)))
          (command (list "uv" "run" "generate_embeddings.py"))
          (json-output (uiop:run-program command
                                         :directory *system-directory*
@@ -176,6 +184,8 @@ The following function runs the Python script and is found in the file **main.li
            (flat-data (apply #'append parsed)))
       (magicl:from-list flat-data (list num-embeddings embedding-dim) :type 'double-float))))
 ```
+
+The Python script reads one text per input line and writes one embedding per line. A chunk often spans several lines of the source document, so **generate-embeddings** replaces the newlines inside each text with spaces before it sends the texts. Without this step a three line chunk would come back as three embedding rows, and every row after it would line up with the wrong chunk.
 
 ### Why a matrix library?
 
@@ -252,7 +262,9 @@ The **auto-context** class manages the entire lifecycle of loading, processing, 
 
 (defun tokenize (text)
   "Simple whitespace tokenizer."
-  (split-sequence:split-sequence #\Space text :remove-empty-subseqs t))
+  (split-sequence:split-sequence-if
+   (lambda (ch) (member ch '(#\Space #\Tab #\Newline #\Return)))
+   text :remove-empty-subseqs t))
 
 (defun list-txt-files-in-directory (dir-path)
   "Return a list of pathnames for *.txt files in the directory given by DIR-PATH (a string or pathname)."
@@ -299,14 +311,24 @@ The **auto-context** class manages the entire lifecycle of loading, processing, 
                                   nconcing (chunk-text (uiop:read-file-string file))))))
     (format t "~&Loaded ~d text chunks." (length chunks))
     ;;(format t "&load-and-chunk-documents: chunks=~A~%~%" chunks)
-    chunks));;; Embedding Generation (Interface to Python)
+    chunks))
+
+;;; Embedding Generation (Interface to Python)
 
 (defun generate-embeddings (text-list)
   "Calls the Python script to generate embeddings for a list of strings.
    The command is passed as a list of arguments (it never goes through a
    shell), and :DIRECTORY pins uv's working directory so it finds both
-   pyproject.toml and generate_embeddings.py."
-  (let* ((input-string (format nil "~{~a~%~}" text-list))
+   pyproject.toml and generate_embeddings.py.
+   The Python script embeds one input line per text, so newlines inside a
+   text are replaced by spaces; otherwise a multi-line chunk would produce
+   several embedding rows and misalign rows with chunks."
+  (let* ((input-string (format nil "~{~a~%~}"
+                               (mapcar (lambda (text)
+                                         (substitute-if #\Space
+                                                        (lambda (ch) (member ch '(#\Newline #\Return)))
+                                                        text))
+                                       text-list)))
          (command (list "uv" "run" "generate_embeddings.py"))
          (json-output (uiop:run-program command
                                         :directory *system-directory*

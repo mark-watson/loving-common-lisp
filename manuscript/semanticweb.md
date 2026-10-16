@@ -521,7 +521,7 @@ Here is an example of using the same library to query the public DBPedia SPARQL 
 ~~~~~~~~
 * (sparql:dbpedia "select ?s ?p { ?s ?p \"Bill Gates\"@en }")
 
-("ndbpeia SPARQL:n" "select ?s ?p { ?s ?p \"Bill Gates\"@en }" "n") 
+("dbpedia SPARQL:" "select ?s ?p { ?s ?p \"Bill Gates\"@en }") 
 (((:s "http://dbpedia.org/resource/Category:Bill_Gates")
   (:p "http://www.w3.org/2000/01/rdf-schema#label"))
  ((:s "http://www.wikidata.org/entity/Q5284")

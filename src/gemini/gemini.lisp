@@ -1,8 +1,16 @@
 (in-package #:gemini)
 
-(defvar *google-api-key* (uiop:getenv "GOOGLE_API_KEY"))
+(defvar *google-api-key* nil
+  "Google API key. When NIL, the GOOGLE_API_KEY environment variable is read
+   at call time (so a key set after this library is loaded is still found).")
 
 (defvar *model* "gemini-3-flash-preview") ;; model used in this file.
+
+(defun google-api-key ()
+  "Return the Google API key, signaling an error if none is configured."
+  (or *google-api-key*
+      (uiop:getenv "GOOGLE_API_KEY")
+      (error "Set the GOOGLE_API_KEY environment variable (or gemini::*google-api-key*)")))
 
 (defun %post-json (url headers payload-hash)
   "Helper function to perform an HTTP POST request with a JSON payload using Dexador."
@@ -12,32 +20,42 @@
 
 ;;; ---- generateContent API ----
 
-(defun generate (prompt &optional (model-id *model*))
-  "Generates text from a given prompt using the Gemini generateContent API.
-   Uses *model* defined at the top of this file as default.
-   PROMPT: The text prompt to generate content from.
-   MODEL-ID: Optional. The ID of the model to use.
-   Returns the generated text as a string."
+(defun %generate-content (prompt model-id &key google-search-p)
+  "POST PROMPT to the generateContent API for MODEL-ID, optionally enabling
+   Google Search grounding. Returns the first candidate of the decoded response."
   (let* ((payload (make-hash-table :test 'equal))
          (part-ht (make-hash-table :test 'equal))
          (content-ht (make-hash-table :test 'equal)))
     (setf (gethash "text" part-ht) prompt)
     (setf (gethash "parts" content-ht) (list part-ht))
     (setf (gethash "contents" payload) (list content-ht))
+    (when google-search-p
+      (let ((google-search-tool (make-hash-table :test 'equal)))
+        (setf (gethash "google_search" google-search-tool) (make-hash-table :test 'equal))
+        (setf (gethash "tools" payload) (list google-search-tool))))
     (let* ((url (concatenate 'string
                              "https://generativelanguage.googleapis.com/v1beta/models/"
                              model-id ":generateContent"))
            (headers (list '("Content-Type" . "application/json")
-                          (cons "X-goog-api-key" *google-api-key*)))
+                          (cons "X-goog-api-key" (google-api-key))))
            (response-string (%post-json url headers payload))
-           (decoded-response (cl-json:decode-json-from-string response-string))
-           (candidates (cdr (assoc :CANDIDATES decoded-response)))
-           (first-candidate (first candidates))
-           (content (cdr (assoc :CONTENT first-candidate)))
-           (parts (cdr (assoc :PARTS content)))
-           (first-part (first parts)))
-      (cdr (assoc :TEXT first-part)))))
-  
+           (decoded-response (cl-json:decode-json-from-string response-string)))
+      (first (cdr (assoc :CANDIDATES decoded-response))))))
+
+(defun %candidate-text (candidate)
+  "Return the text of the first part of a generateContent CANDIDATE."
+  (let* ((content (cdr (assoc :CONTENT candidate)))
+         (parts (cdr (assoc :PARTS content))))
+    (cdr (assoc :TEXT (first parts)))))
+
+(defun generate (prompt &optional (model-id *model*))
+  "Generates text from a given prompt using the Gemini generateContent API.
+   Uses *model* defined at the top of this file as default.
+   PROMPT: The text prompt to generate content from.
+   MODEL-ID: Optional. The ID of the model to use.
+   Returns the generated text as a string."
+  (%candidate-text (%generate-content prompt model-id)))
+
 ;; (gemini:generate "In one sentence, explain how AI works to a child.")
 ;; (gemini:generate "Write a short, four-line poem about coding in Python.")
 
@@ -60,7 +78,7 @@
                                 part)))
                   contents)))
     (let* ((headers (list '("Content-Type" . "application/json")
-                          (cons "x-goog-api-key" *google-api-key*)))
+                          (cons "x-goog-api-key" (google-api-key))))
            (response-string (%post-json api-url headers payload))
            (decoded-response (cl-json:decode-json-from-string response-string))
            (total-tokens-pair (assoc :TOTAL-TOKENS decoded-response)))
@@ -82,51 +100,31 @@
 ;; Running the test
 ;; (gemini::run-tests)
 
-(defparameter *chat-history* '())
-
 (defun chat ()
-  (let ((*chat-history* ""))
+  "Simple REPL chat; the conversation so far is sent with each new prompt."
+  (let ((chat-history ""))
    (loop
      (princ "Enter a prompt: ")
      (finish-output)
      (let ((user-prompt (read-line)))
        (when (member user-prompt '("exit" "quit") :test #'string-equal)
          (return))
-       (let ((gemini-response (gemini:generate
-                (concatenate 'string *chat-history* "\nUser: " user-prompt))))
+       (let ((gemini-response
+               (or (generate (concatenate 'string chat-history "User: " user-prompt))
+                   "")))
          (format t "~A~%" gemini-response)
          (finish-output)
-         (setf *chat-history*
-               (concatenate 'string "User: " user-prompt "\n" "Gemini: "
-			    gemini-response
-                            "\n" *chat-history* "\n\n")))))))
+         ;; append so the history stays in chronological order:
+         (setf chat-history
+               (concatenate 'string chat-history
+                            "User: " user-prompt (string #\Newline)
+                            "Gemini: " gemini-response (string #\Newline))))))))
 
 ;; (gemini::chat)
 
 (defun generate-with-search (prompt &optional (model-id *model*))
   "Generates text with Google Search grounding via the generateContent API."
-  (let* ((payload (make-hash-table :test 'equal))
-         (part-ht (make-hash-table :test 'equal))
-         (content-ht (make-hash-table :test 'equal))
-         (google-search-tool (make-hash-table :test 'equal)))
-    (setf (gethash "text" part-ht) prompt)
-    (setf (gethash "parts" content-ht) (list part-ht))
-    (setf (gethash "contents" payload) (list content-ht))
-    (setf (gethash "google_search" google-search-tool) (make-hash-table :test 'equal))
-    (setf (gethash "tools" payload) (list google-search-tool))
-    (let* ((url (concatenate 'string
-                             "https://generativelanguage.googleapis.com/v1beta/models/"
-                             model-id ":generateContent"))
-           (headers (list '("Content-Type" . "application/json")
-                          (cons "X-goog-api-key" *google-api-key*)))
-           (response-string (%post-json url headers payload))
-           (decoded-response (cl-json:decode-json-from-string response-string))
-           (candidates (cdr (assoc :CANDIDATES decoded-response)))
-           (first-candidate (first candidates))
-           (content (cdr (assoc :CONTENT first-candidate)))
-           (parts (cdr (assoc :PARTS content)))
-           (first-part (first parts)))
-      (cdr (assoc :TEXT first-part)))))
+  (%candidate-text (%generate-content prompt model-id :google-search-p t)))
 
 ;; (gemini:generate-with-search "Consultant Mark Watson has written Common Lisp, semantic web, Clojure, Java, and AI books. What musical instruments does he play?")
 ;; (gemini:generate-with-search "What sci-fi movies are playing at Harkins 16 in Flagstaff today?")
@@ -136,36 +134,16 @@
 (defun generate-with-search-and-citations (prompt &optional (model-id *model*))
   "Generates text with Google Search grounding and returns citations via the generateContent API.
    Returns two values: the response text and a list of (title . url) citation pairs."
-  (let* ((payload (make-hash-table :test 'equal))
-         (part-ht (make-hash-table :test 'equal))
-         (content-ht (make-hash-table :test 'equal))
-         (google-search-tool (make-hash-table :test 'equal)))
-    (setf (gethash "text" part-ht) prompt)
-    (setf (gethash "parts" content-ht) (list part-ht))
-    (setf (gethash "contents" payload) (list content-ht))
-    (setf (gethash "google_search" google-search-tool) (make-hash-table :test 'equal))
-    (setf (gethash "tools" payload) (list google-search-tool))
-    (let* ((url (concatenate 'string
-                             "https://generativelanguage.googleapis.com/v1beta/models/"
-                             model-id ":generateContent"))
-           (headers (list '("Content-Type" . "application/json")
-                          (cons "X-goog-api-key" *google-api-key*)))
-           (response-string (%post-json url headers payload))
-           (decoded-response (cl-json:decode-json-from-string response-string))
-           (candidates (cdr (assoc :CANDIDATES decoded-response)))
-           (first-candidate (first candidates))
-           (content (cdr (assoc :CONTENT first-candidate)))
-           (parts (cdr (assoc :PARTS content)))
-           (first-part (first parts))
-           (text (cdr (assoc :TEXT first-part)))
-           (grounding-metadata (cdr (assoc :GROUNDINGMETADATA first-candidate)))
-           (grounding-chunks (cdr (assoc :GROUNDINGCHUNKS grounding-metadata)))
-           (citations (loop for chunk in grounding-chunks
-                            for web = (cdr (assoc :WEB chunk))
-                            when web
-                            collect (cons (cdr (assoc :TITLE web))
-                                          (cdr (assoc :URI web))))))
-      (values text citations))))
+  (let* ((first-candidate (%generate-content prompt model-id :google-search-p t))
+         (text (%candidate-text first-candidate))
+         (grounding-metadata (cdr (assoc :GROUNDING-METADATA first-candidate)))
+         (grounding-chunks (cdr (assoc :GROUNDING-CHUNKS grounding-metadata)))
+         (citations (loop for chunk in grounding-chunks
+                          for web = (cdr (assoc :WEB chunk))
+                          when web
+                          collect (cons (cdr (assoc :TITLE web))
+                                        (cdr (assoc :URI web))))))
+    (values text citations)))
 
 #|
 (multiple-value-bind (response sources)

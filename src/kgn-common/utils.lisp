@@ -4,12 +4,10 @@
 
 (defvar *stop-words* (make-hash-table :test #'equal :size 4000))
 (defvar *base-pathname* #.(or *compile-file-truename* *load-truename*))
-(defvar a1 (write-to-string *base-pathname*))
-(defvar *current-directory* (subseq a1 3 (- (length a1) 11)))
 
 (let (line)
     (with-open-file
-        (in (concatenate 'string *current-directory* "data/stopwords.txt"))
+        (in (merge-pathnames "data/stopwords.txt" *base-pathname*))
       (dotimes (i 50000)
         (setq line (read-line in nil nil))
         (if (null line) (return))
@@ -22,7 +20,7 @@
        (gethash (string-downcase x) *stop-words*)
        (let ((q nil))
          (ignore-errors
-           (if (numberp (read-from-string x))
+           (if (numberp (let ((*read-eval* nil)) (read-from-string x)))
                (setf q t)))
          q)))
    word-list))
@@ -32,7 +30,7 @@
   (read-line))
 
 (defun string-shorten (str len &key (first-remove-stop-words nil)) ;; inspired by function "shorten" in package https://github.com/vindarel/cl-str
-  (if (equal (type-of str) 'cons) (setf str (cadr str))) ; kluge: sometimes an association list is passed - fix.
+  (if (consp str) (setf str (cadr str))) ; kluge: sometimes an association list is passed - fix.
   (if first-remove-stop-words
       (let* ((words (myutils:tokenize-string str))
              (words2 (kgn-common:remove-stop-words words))
@@ -80,7 +78,7 @@
        (if (equal ch #\>) (setf in-uri nil)))
     (coerce (reverse ret) 'string)))
 
-(print (remove-uris-from-query "<http://dbpedia.org/resource/Bill_Gates> visited <http://dbpedia.org/resource/Apple_Inc.>"))
+;;(print (remove-uris-from-query "<http://dbpedia.org/resource/Bill_Gates> visited <http://dbpedia.org/resource/Apple_Inc.>"))
 
 (defun handle-URIs-in-query (query)
   (let* ((uris (get-URIs-in-query query))
@@ -166,8 +164,7 @@
 
 (defun entity-results->relationship-links (results &key (message-stream t))
   (let (all-uris
-        relationship-statements
-        (sep " -> "))
+        relationship-statements)
     (dolist (r results)
       (dolist (entity-data (cdr r))
         (dolist (ed entity-data)
@@ -193,7 +190,7 @@
             (format message-stream "  ~43A~%" (first rs) )
             (format message-stream "    ~43A~%" (third rs))
             (format message-stream "    ~A .~%~%" (second rs))
-            (terpri) message-stream)))
+            (terpri message-stream))))
     relationship-statements))
 
 ;; Unused utility for future use:

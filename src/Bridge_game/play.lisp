@@ -203,20 +203,31 @@
 
       ;; CAN'T follow suit — can trump or discard
       (t
-       (let ((trumps (when trump-suit
-                       (remove-if-not (lambda (c) (= (card-suit c) trump-suit)) legal)))
-             (non-trumps (if trump-suit
-                             (remove-if (lambda (c) (= (card-suit c) trump-suit)) legal)
-                             legal)))
+       (let* ((trumps (when trump-suit
+                        (remove-if-not (lambda (c) (= (card-suit c) trump-suit)) legal)))
+              (non-trumps (if trump-suit
+                              (remove-if (lambda (c) (= (card-suit c) trump-suit)) legal)
+                              legal))
+              ;; Only trumps that beat the current winner (which may itself
+              ;; be a trump) actually win the trick
+              (winner (when trick (current-winning-card trick lead-player trump-suit)))
+              (winning-trumps
+                (remove-if-not (lambda (c)
+                                 (or (null winner)
+                                     (/= (card-suit winner) trump-suit)
+                                     (> (card-rank c) (card-rank winner))))
+                               trumps)))
          (cond
            ;; Defending: trump if possible and partner isn't winning
-           ((and defending trumps (not partner-winning))
-            (lowest-card trumps)) ; Use lowest trump to win
+           ((and defending winning-trumps (not partner-winning))
+            (lowest-card winning-trumps)) ; Use lowest trump that wins
            ;; Declaring: trump when beneficial
-           ((and (not defending) trumps (not partner-winning))
-            (lowest-card trumps))
+           ((and (not defending) winning-trumps (not partner-winning))
+            (lowest-card winning-trumps))
            ;; Discard — throw away lowest card from weakest suit
-           (t (best-discard non-trumps trump-suit))))))))
+           ;; (or the lowest trump when holding nothing but trumps)
+           (t (or (best-discard non-trumps trump-suit)
+                  (lowest-card trumps)))))))))
 
 (defun trick-winner-partial (trick lead-player trump-suit)
   "Determine the current winner of a partial trick."
@@ -251,30 +262,29 @@
   "Return the highest-ranking card."
   (reduce (lambda (a b) (if (> (card-rank a) (card-rank b)) a b)) cards))
 
+(defun current-winning-card (trick lead-player trump-suit)
+  "The card currently winning the partial TRICK."
+  (nth (mod (- (trick-winner-partial trick lead-player trump-suit) lead-player) 4)
+       trick))
+
+(defun beats-current-winner-p (card trick lead-player trump-suit)
+  "Would CARD, which follows the lead suit, beat the current winner of TRICK?
+   It can only win if the trick has not been trumped (or the lead suit is
+   trump) and it outranks the winning card."
+  (let ((winner (current-winning-card trick lead-player trump-suit)))
+    (and (= (card-suit card) (card-suit winner))
+         (> (card-rank card) (card-rank winner)))))
+
 (defun can-win-trick (in-suit-cards trick lead-player trump-suit)
   "Can any of our in-suit cards beat the current trick winner?"
-  (declare (ignore lead-player))
-  (let* ((lead-suit (card-suit (first trick)))
-         (winning-rank
-           (loop for i from 0 below (length trick)
-                 for card = (nth i trick)
-                 when (or (and trump-suit (= (card-suit card) trump-suit))
-                          (= (card-suit card) lead-suit))
-                 maximize (card-rank card))))
-    (some (lambda (c) (> (card-rank c) winning-rank)) in-suit-cards)))
+  (some (lambda (c) (beats-current-winner-p c trick lead-player trump-suit))
+        in-suit-cards))
 
 (defun cheapest-winner (in-suit-cards trick lead-player trump-suit)
   "Play the cheapest card that can win the trick."
-  (declare (ignore lead-player))
-  (let* ((lead-suit (card-suit (first trick)))
-         (winning-rank
-           (loop for i from 0 below (length trick)
-                 for card = (nth i trick)
-                 when (or (and trump-suit (= (card-suit card) trump-suit))
-                          (= (card-suit card) lead-suit))
-                 maximize (card-rank card)))
-         (winners (remove-if-not (lambda (c) (> (card-rank c) winning-rank))
-                                 in-suit-cards)))
+  (let ((winners (remove-if-not
+                  (lambda (c) (beats-current-winner-p c trick lead-player trump-suit))
+                  in-suit-cards)))
     (if winners
         (lowest-card winners)
         (lowest-card in-suit-cards))))
@@ -345,7 +355,7 @@
                (loop for i from 0 below 4
                      for player = (mod (+ leader i) 4)
                      for hand = (aref hands player)
-                     for card = (ai-select-card hand trick leader lead-suit
+                     for card = (ai-select-card hand (reverse trick) leader lead-suit
                                                 trump-suit player declarer
                                                 ns-tricks ew-tricks tricks-played)
                      do (progn

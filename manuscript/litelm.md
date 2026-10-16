@@ -145,7 +145,7 @@ The file **messages.lisp** is where the Common Lisp friendly format gets transla
 ;;;              :enum ("celsius" "fahrenheit")))))
 ```
 
-Symbols like `get_weather` are downcased to strings, a plain string as the whole `messages` argument becomes a single user turn, and tool parameters default to being required unless you say `:required nil`. On the way back, the reply parser turns `tool_calls` into plists with keyword keys, and turns the `usage` object into a plist of `(:prompt-tokens n :completion-tokens n :total-tokens n)`.
+Symbols like `get_weather` are downcased to strings, a plain string as the whole `messages` argument becomes a single user turn, and tool parameters default to being required unless you say `:required nil`. A tool with an empty parameter list still gets a `"properties": {}` object in its JSON schema, because providers reject an empty array there; the encoder writes the keyword `:empty-object` as `{}` for this case. On the way back, the reply parser turns `tool_calls` into plists with keyword keys. Most servers send a tool call's arguments as a JSON string, but some send an object that is already decoded, or an empty string for a call with no arguments, and the parser accepts all three. It also turns the `usage` object into a plist of `(:prompt-tokens n :completion-tokens n :total-tokens n)`.
 
 Since every provider reports those same three usage fields, your token accounting code never has to branch on provider either: prompt tokens plus completion tokens equals total tokens, everywhere.
 

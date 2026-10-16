@@ -7,16 +7,7 @@
 
 ;; one time only: create empty cache database: sqlite3 ~/.kgn_cache.db
 
-;;; command line arguments:
-
-(defun command-line-args ()
-  (or 
-   #+SBCL *posix-argv*  
-   #+LISPWORKS system:*line-arguments-list*
-   #+CMU extensions:*command-line-words*
-   nil))
-
-;;; SqList caching for SPARQL queries:
+;;; SQLite caching for SPARQL queries:
 
 ;;(defvar *db-path* (pathname "~/.kgn_cache.db"))
 (defvar *db-path* (pathname "kgn_cache.db"))
@@ -59,93 +50,53 @@
 
 ;;; SPARQL query code:
 
-(ql:quickload "cl-json")
-(ql:quickload "drakma")
+(defun fetch-sparql-json (endpoint query)
+  "Run QUERY against the SPARQL ENDPOINT URL and return the JSON response string."
+  (replace-all
+   (replace-all
+    (uiop:run-program
+     (list
+      "curl"
+      (concatenate 'string
+                   endpoint
+                   "?query="
+                   (drakma:url-encode query :utf-8)
+                   "&format=json"))
+     :output :string)
+    "\\u2013" " ")
+   "\\u" " "))
+
+(defun json-bindings->lists (response)
+  "Decode a SPARQL JSON result string into a list of rows, each row a list of
+(variable-keyword value) pairs."
+  (with-input-from-string (s response)
+    (let* ((json-as-list (json:decode-json s))
+           (bindings (cdr (assoc :bindings
+                                 (cdr (assoc :results json-as-list))))))
+      ;;(pprint json-as-list)  ; uncomment this to see how following expression works:
+      (mapcar #'(lambda (x)
+                  (mapcar #'(lambda (y)
+                              (list (car y) (cdr (assoc :value (cdr y))))) x))
+              bindings))))
 
 (defun wikidata (query)
   (let* ((cr (fetch-result-wikidata query))
-         (response
-          (or
-           cr
-           (replace-all
-            (replace-all
-             (uiop:run-program 
-              (list
-               "curl" 
-               (concatenate
-                'string
-                "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query="
-                (drakma:url-encode query :utf-8)
-                "&format=json"))
-              :output :string)
-             "\\u2013" " ")
-            "\\u" " "))))
-    (save-query-result-wikidata query response)
-    (with-input-from-string
-	(s response)
-      (let ((json-as-list (json:decode-json s)))
-         ;;(pprint json-as-list)  ; uncomment this to see how following expression works:
-         (mapcar #'(lambda (x)
-                     (mapcar #'(lambda (y)
-                                 (list (car y) (cdaddr y))) x))  (cdr (cadadr json-as-list)))))))
+         (response (or cr (fetch-sparql-json "https://query.wikidata.org/bigdata/namespace/wdq/sparql" query))))
+    (unless cr (save-query-result-wikidata query response))
+    (json-bindings->lists response)))
 
 (defun dbpedia (query)
-  ;;(print (list "\n\n" query "\n"))
-  (let* (ret
-         (cr (fetch-result-dbpedia query))
-         (response
-          (or
-           cr
-           (replace-all
-            (replace-all
-             (uiop:run-program 
-              (list
-               "curl" 
-               (concatenate 'string
-                            "https://dbpedia.org/sparql?query="
-                            (drakma:url-encode query :utf-8)
-                            "&format=json"))
-              :output :string)
-             "\\u2013" " ")
-            "\\u" " "))))
-    ;;(print (list "\n\n**** response:" response "\n\n"))
-    (save-query-result-dbpedia query response)
-    (ignore-errors
-      (with-input-from-string
-          (s response)
-        (let ((json-as-list (json:decode-json s)))
-          ;;(pprint json-as-list)  ; uncomment this to see how following expression works:
-          (setf
-           ret
-           (mapcar #'(lambda (x)
-                       ;;(pprint x)
-                       (mapcar #'(lambda (y)
-                                   (list (car y) (cdr (assoc :value (cdr y))))) x))
-                   (cdr (cadddr (cadr json-as-list))))))))
-    ret))
-
+  (let* ((cr (fetch-result-dbpedia query))
+         (response (or cr (fetch-sparql-json "https://dbpedia.org/sparql" query))))
+    (unless cr (save-query-result-dbpedia query response))
+    (ignore-errors (json-bindings->lists response))))
 
 (defun ask-dbpedia (query)
   (let* ((cr (fetch-result-dbpedia query))
-         (response
-          (or
-           cr
-           (replace-all
-            (replace-all
-             (uiop:run-program 
-              (list
-               "curl" 
-               (concatenate 'string
-                            "https://dbpedia.org/sparql?query="
-                            (drakma:url-encode query :utf-8)
-                            "&format=json"))
-              :output :string)
-             "\\u2013" " ")
-            "\\u" " "))))
-    (save-query-result-dbpedia query response)
-    (if  (search "true" response)
-        t
-      nil)))
+         (response (or cr (fetch-sparql-json "https://dbpedia.org/sparql" query))))
+    (unless cr (save-query-result-dbpedia query response))
+    (if (search "true" response) t nil)))
+
 (defun sparql-manual ()
   (princ "Package sparql examples:")
   (terpri) (terpri)

@@ -49,7 +49,7 @@ The `gpt` function serves as the central processing unit of the model. It implem
 
 ### Training the Model: Learning from Data
 
-The `run-training` function orchestrates the intricate dance of the learning process. The model trains by reading lines of text—in our specific example, from a file called `names.txt`—processing it character by character. 
+The `run-training` function runs the learning process. The model trains on lines of text, in our example from the file `names.txt`, and processes them character by character. The variable `*names-file*` locates `names.txt` next to the source file, using `*load-truename*`, so the program finds its data no matter what the current directory is, and `run-microgpt` signals an error if the file is missing or empty. 
 
 The training loop proceeds iteratively over many steps:
 1. **The Forward Pass:** The model ingests a sequence of characters and attempts to predict the subsequent character for every position in the sequence simultaneously.
@@ -104,6 +104,11 @@ The following diagram shows the high-level architecture of the MicroGPT implemen
       (loop for line = (read-line s nil) while line
             for tr = (string-trim '(#\Space #\Tab #\Newline #\Return) line)
             when (plusp (length tr)) collect tr))))
+
+;; names.txt lives next to this source file; resolve it from the load path so
+;; the program works no matter what the current directory is.
+(defparameter *names-file*
+  (merge-pathnames "names.txt" (or *load-truename* *default-pathname-defaults*)))
 
 (defparameter *docs* nil) (defparameter *uchars* nil) (defparameter *bos* nil)
 (defparameter *vocab-size* nil) (defparameter *n-layer* 1) (defparameter *n-embd* 16)
@@ -270,7 +275,9 @@ The following diagram shows the high-level architecture of the MicroGPT implemen
 ;;; Main
 (defun run-microgpt ()
   (setf *random-state* (make-random-state t)
-        *docs* (shuffle-list (read-lines "names.txt")))
+        *docs* (shuffle-list (read-lines *names-file*)))
+  (unless *docs*
+    (error "No training data: ~A is missing or empty" *names-file*))
   (format t "num docs: ~A~%" (length *docs*))
   (let ((chars nil))
     (dolist (doc *docs*) (loop for ch across doc do (pushnew ch chars)))

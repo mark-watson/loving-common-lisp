@@ -81,6 +81,8 @@
 (defun graph-layout (self &key force)
   (declare (ignore force))
   (let* ((nodes (capi:graph-pane-nodes self))
+         (in-progress (make-hash-table :test 'eq))
+         (x-in-progress (make-hash-table :test 'eq))
          (last-y 0)
          ;;(height 30)
          ;;(width 80)
@@ -92,10 +94,14 @@
        (capi:graph-node-x node) 0
        (capi:graph-node-y node) 0))
     (labels
+        ;; A child still needs layout while its y is 0. Nodes whose layout is
+        ;; in progress are skipped too, so a cycle in the graph (e.g. links
+        ;; A->B and B->A) can not recurse forever.
         ((get-unlaid-out-child-nodes (a-node)
            (let (ret)
              (dolist (x (capi:graph-node-children a-node))
-               (if (equal  (capi:graph-node-children x) 0)
+               (if (and (equal (capi:graph-node-y x) 0)
+                        (not (gethash x in-progress)))
                    (setf ret (cons x ret))))
              (reverse ret)))
          (get-average-Y-of-node-list (a-node-list)
@@ -119,6 +125,7 @@
                  ;; check in node n has any unlayed-out child nodes
                  (if (> (length children-needing-layout) 0)
                      (let ()
+                       (setf (gethash a-node in-progress) t)
                        (dolist (child-node children-needing-layout)
                          (layout-Y child-node))
                        (setf (capi:graph-node-y a-node) (get-average-Y-of-node-list children)))
@@ -140,10 +147,12 @@
                    (setf ret (cons node ret))))
              (reverse ret)))
          (layout-X (a-node)
-           (if (equal (capi:graph-node-x a-node) 0)
+           (if (and (equal (capi:graph-node-x a-node) 0)
+                    (not (gethash a-node x-in-progress))) ; guard against cycles
                (let ((parents (get-parents a-node)))
                  (if (> (length parents) 0)
                      (let ((max-val 0))
+                       (setf (gethash a-node x-in-progress) t)
                        (dolist (parent parents)
                          (layout-X parent))
                        (dolist (parent parents)

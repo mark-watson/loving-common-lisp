@@ -8,7 +8,8 @@
 ;;;;
 ;;;; Environment:
 ;;;;   OLLAMA_MODEL — optional model override (default: qwen3.5:0.8b)
-;;;;   OLLAMA_HOST  — optional OpenAI-compatible base URL override
+;;;;   OLLAMA_HOST  — optional Ollama host override, either host:port as
+;;;;                  Ollama uses it or a full base URL
 ;;;;                  (default: http://localhost:11434/v1)
 ;;;;
 ;;;; Transport, JSON encoding/decoding, and error mapping are delegated to the
@@ -28,7 +29,19 @@
 (defvar *model-name* (or (uiop:getenv "OLLAMA_MODEL") "qwen3.5:0.8b")
   "Default vision-capable model for image queries.")
 
-(defvar *ollama-host* (or (uiop:getenv "OLLAMA_HOST") "http://localhost:11434/v1")
+(defun ollama-host-from-env ()
+  "Build the base URL from OLLAMA_HOST. Ollama itself uses that variable as a
+   bare host:port (e.g. 127.0.0.1:11434), so add the scheme and the /v1 path
+   of the OpenAI-compatible API when they are missing."
+  (let ((host (string-right-trim "/" (or (uiop:getenv "OLLAMA_HOST")
+                                         "http://localhost:11434/v1"))))
+    (unless (search "://" host)
+      (setf host (concatenate 'string "http://" host)))
+    (unless (uiop:string-suffix-p host "/v1")
+      (setf host (concatenate 'string host "/v1")))
+    host))
+
+(defvar *ollama-host* (ollama-host-from-env)
   "OpenAI-compatible Ollama API base URL; litelm appends /chat/completions.")
 
 (defun encode-image (image-path)

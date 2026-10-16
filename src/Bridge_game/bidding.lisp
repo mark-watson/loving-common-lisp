@@ -142,20 +142,21 @@
   (let ((final-bid nil)
         (final-bidder nil)
         (doubled 0))
-    ;; Walk backward through bid history to find the last suit bid
+    ;; Walk backward (newest first) through the bid history to the last
+    ;; suit bid. Only a double/redouble made AFTER that bid applies to the
+    ;; contract, i.e. one seen before reaching it in this walk; doubles of
+    ;; earlier bids were cancelled by the later suit bid.
     (loop for i from 0 below (length bid-history)
           for bid = (nth i bid-history)
           do (cond
                ((bid-suit-p bid)
-                (when (null final-bid)
-                  (setf final-bid bid
-                        final-bidder (mod (+ dealer (- (length bid-history) 1 i)) 4))))
-               ((bid-double-p bid)
-                (when (and final-bid (= doubled 0))
-                  (setf doubled 1)))
+                (setf final-bid bid
+                      final-bidder (mod (+ dealer (- (length bid-history) 1 i)) 4))
+                (return))
                ((bid-redouble-p bid)
-                (when (= doubled 1)
-                  (setf doubled 2)))))
+                (setf doubled 2))
+               ((bid-double-p bid)
+                (setf doubled (max doubled 1)))))
     ;; Find the actual declarer — the first player on the declaring side
     ;; who bid the contract strain (walking chronologically, oldest first)
     (when final-bid

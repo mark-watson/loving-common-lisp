@@ -92,7 +92,7 @@ CL-USER 3 > (kgn:kgn)
 
 Please note that I assume you have configured all of the examples for this book for discoverability by Quicklisp as per the section **Setup for Local Quicklisp Projects** in Appendix A.
 
-When the KGN application starts a sample query is randomly chosen. Queries with many entities can take a while to process, especially when you first start using this application. Every time KGN makes a web service call to DBPedia the query and response are cached in a SQLite database in **~/.kgn_cache.db** which can greatly speed up the program, especially in development mode when testing a set of queries. This caching also takes some load off of the public DBPedia endpoint, which is a polite thing to do.
+When the KGN application starts a sample query is randomly chosen. Queries with many entities can take a while to process, especially when you first start using this application. Every time KGN makes a web service call to DBPedia the query and response are cached in the SQLite database file **kgn_cache.db** in the current directory, which can greatly speed up the program, especially in development mode when testing a set of queries. This caching also takes some load off of the public DBPedia endpoint, which is a polite thing to do.
 
 I use LispWorks Professional and add two utility functions to the bottom on my **~/.lispworks** configuration file (you can't do this with LispWorks Personal):
 
@@ -209,8 +209,9 @@ select ?s ?p where {
     (format nil "* user shift-clicked on node: ~A - OPEN WEB BROWSER~%" selected-node-name)))
 
 (defun cache-callback (&rest x) (declare (ignore x))
-  (if *USE-CACHING*
-      (capi:display (make-instance 'options-panel-interface))))
+  ;; sparql-cache always caches query results, so always offer the panel
+  ;; (*USE-CACHING* was never defined in this package):
+  (capi:display (make-instance 'options-panel-interface)))
 
 (defun website-callback (&rest x) (declare (ignore x)) (trivial-open-browser:open-browser "http://www.knowledgegraphnavigator.com/"))
 
@@ -332,8 +333,8 @@ select ?s ?p where {
 ;; This function runs in a separate thread.
 
 (defun run-and-monitor-progress-background-thread (text text-pane2 text-pane3)
-  (unwind-protect
-      (setf (capi:editor-pane-text text-pane2) "")
+  (progn
+    (setf (capi:editor-pane-text text-pane2) "")
     (setf (capi:editor-pane-text text-pane3) "")
     ;;(capi:display-message "done")
     (let ((message-stream (capi:collector-pane-stream text-pane2))
@@ -481,18 +482,15 @@ In the following listing we define functions to implement CAPI menus:
 
 (defvar *width-options-panel* 800)
 
+;; The SPARQL query cache is the SQLite file written by the sparql-cache package.
 (defun get-cache-disk-space ()
-  (let ((x (ignore-errors
-             (floor
-               (/
-                (with-open-file
-                  (file "~/Downloads/knowledge_graph_navigator_cache.db")
-                 (file-length file)) 1000)))))
-    (or x  0))) ;; units in megabytes
+  (let ((x (ignore-errors (floor (with-open-file (file sparql-cache::*db-path*) (file-length file))
+                                 1000))))
+    (or x  0))) ;; units in kilobytes
 
 (defun clear-cache-callback (&rest val)
   (declare (ignore val))
-  (ignore-errors (delete-file "~/Downloads/knowledge_graph_navigator_cache.db")))
+  (ignore-errors (delete-file sparql-cache::*db-path*)))
 
 (defvar *code-snippet-language* nil)
 (defun set-prog-lang (&rest val)
@@ -521,17 +519,7 @@ In the following listing we define functions to implement CAPI menus:
     'set-prog-lang)|#
    (disk-space-pane
      capi:text-input-pane
-    :text (format nil "~A (megabytes)"
-                  (let ((x
-                         (ignore-errors
-                           (floor
-                             (/
-                               (with-open-file (file "~/.kgn_cache.db")
-                                 (file-length file))
-                                1000)))))
-                    (if x
-                        x
-                      0)))
+    :text (format nil "~A (kilobytes)" (get-cache-disk-space))
     :title "Current size of cache:"
     :min-width 170
     :max-width *width-options-panel*)
@@ -543,9 +531,12 @@ In the following listing we define functions to implement CAPI menus:
     :selection-callback 
     #'(lambda (&rest val)
         (declare (ignore val))
-        (ignore-errors (delete-file "~/.kgn_cache.db"))
+        (clear-cache-callback)
+        ;; sparql-cache creates its tables when loaded, so recreate them:
+        (ignore-errors (sparql-cache::create-dbpedia))
+        (ignore-errors (sparql-cache::create-wikidata))
         (ignore-errors (setf (capi:text-input-pane-text disk-space-pane)
-                             "0 (megabytes)"))))
+                             "0 (kilobytes)"))))
    (toggle-graph-display
     capi:option-pane
     :items '("Show Graph Info Pane Browser" "Hide Graph Info Pane Browser")
@@ -600,7 +591,7 @@ The following figure shows a popup window displaying a graph of discovered entit
 {width=70%}
 ![UI for info-pane-grapher](images/info-pane-browser.png)
 
-Since I just showed the **info-pane-grapher** this is a good time to digress to its implementation. This is in a different package and you will find the source code in **src/lw-grapher/info-pane-grapher.lisp**. I used the graph layout algorithm from [ISI-Grapher Manual (by Gabriel Robbins)](http://www.cs.virginia.edu/~robins/papers/The_ISI_Grapher_Manual.pdf). There is another utility in **src/lw-grapher/lw-grapher.lisp** that also displays a graph without mouse support and an attached information pane that is not used here but you might prefer it for reuse in your projects if you don't need mouse interactions.
+Since I just showed the **info-pane-grapher** this is a good time to digress to its implementation. This is in a different package and you will find the source code in **src/lw-grapher/info-pane-grapher.lisp**. I used the graph layout algorithm from [ISI-Grapher Manual (by Gabriel Robbins)](http://www.cs.virginia.edu/~robins/papers/The_ISI_Grapher_Manual.pdf). The function **make-grapher** in **src/lw-grapher/grapher.lisp** also displays a graph, without mouse support and an attached information pane. It is not used here but you might prefer it for reuse in your projects if you don't need mouse interactions.
 
 The graph nodes are derived from the class **capi:pinboard-object**:
  
@@ -608,6 +599,7 @@ The graph nodes are derived from the class **capi:pinboard-object**:
 ~~~~~~~~
 (defclass text-node (capi:pinboard-object)
   ((text :initarg :text :reader text-node-text)
+   (full-text :initarg :full-text :reader text-node-full-text)
    (string-x-offset :accessor text-node-string-x-offset)
    (string-y-offset :accessor text-node-string-y-offset)))
 ~~~~~~~~
@@ -657,9 +649,11 @@ The following code snippets show the method signature for the layout algorithm f
     ...
 ~~~~~~~~
 
+The layout works in two passes. The first pass assigns each node a y position: a leaf node goes below the last leaf placed, and a parent node goes at the average y position of its children. The second pass assigns each node an x position to the right of its parents. Both passes recurse through the graph, and the relationship links that KGN discovers often form cycles (entity A links to B and B links back to A). The layout code records the nodes whose layout is in progress in hash tables and skips them, so a cycle can not cause infinite recursion.
+
 The CAPI graph node model uses a function that is passed a node object and returns a list of this node's child node objects. There are several examples of this in the CAPI graph examples that are included with LispWorks (see the CAPI documentation).
 
-In **src/lw-grapher/lw-grapher.lisp** I wrote a function that builds a graph layout and instead of passing in a "return children" function I found it more convenient to wrap this process, accepting a list of graph nodes and graph edges as function arguments:
+In **src/lw-grapher/info-pane-grapher.lisp** I wrote a function that builds a graph layout and instead of passing in a "return children" function I found it more convenient to wrap this process, accepting a list of graph nodes and graph edges as function arguments:
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
@@ -685,9 +679,10 @@ In **src/lw-grapher/lw-grapher.lisp** I wrote a function that builds a graph lay
                      (setf last-selected-node object)
                      (capi:highlight-pinboard-object pane object)
                      (let ((c-stream (collector-pane-stream output-pane))) 
-                       (format c-stream
+                       (write-string
                          (funcall node-callback-click
-                           (text-node-full-text object)))
+                           (text-node-full-text object))
+                         c-stream)
                        (terpri c-stream)))))))
          (handle-mouse-click-shift-on-pane (pane x y)
            (ignore-errors
@@ -702,9 +697,10 @@ In **src/lw-grapher/lw-grapher.lisp** I wrote a function that builds a graph lay
                      (capi:highlight-pinboard-object pane object)
                      (let ((c-stream
                              (collector-pane-stream output-pane)))
-                       (format c-stream
+                       (write-string
                          (funcall node-callback-click-shift
-                           (text-node-full-text object)))
+                           (text-node-full-text object))
+                         c-stream)
                        (terpri c-stream)))))))
          
          (info-panel-node-children-helper (node-text)
@@ -784,6 +780,8 @@ In **src/lw-grapher/lw-grapher.lisp** I wrote a function that builds a graph lay
         h-edge-list h-callback-function-click
         h-callback-function-shift-click))))
   ~~~~~~~~
+
+The two mouse click handlers print the string that the callback returns with **write-string**, not **format**. The node text is often a URI, and a **~** character in a URI would make **format** treat the text as format directives.
 
 
 ## Wrap-up

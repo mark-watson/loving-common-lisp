@@ -25,8 +25,8 @@
                                   :element-type t)))
             (loop for i below (length parts) do
               (setf (aref vec i)
-                    (coerce (read-from-string
-                             (nth i parts))
+                    (coerce (let ((*read-eval* nil))
+                              (read-from-string (nth i parts)))
                             'double-float)))
             vec))))
 
@@ -93,7 +93,7 @@
                        (floor (* 0.99d0
                                  (- x min-val)
                                  num-bins)
-                              max-val))))
+                              (- max-val min-val)))))
         (incf (aref bins idx))))
     (format t "~%~A~%" title)
     (loop for i below num-bins do

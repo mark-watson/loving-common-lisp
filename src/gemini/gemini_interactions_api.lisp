@@ -112,10 +112,12 @@
      INTERACTION-ID   - the interaction ID for use in follow-up turns."
   (let* ((payload (make-hash-table :test 'equal)))
     (setf (gethash "model" payload) model-id
-          (gethash "input" payload) prompt
-          (gethash "tools" payload) (%make-tools-list function-declarations google-search-p))
+          (gethash "input" payload) prompt)
+    (let ((tools (%make-tools-list function-declarations google-search-p)))
+      (when tools ; cl-json would encode an empty list as null
+        (setf (gethash "tools" payload) tools)))
     (let* ((headers (list '("Content-Type" . "application/json")
-                          (cons "x-goog-api-key" *google-api-key*)
+                          (cons "x-goog-api-key" (google-api-key))
                           '("Api-Revision" . "2026-05-20")))
            (response-string  (%post-json *interactions-api-url* headers payload))
            (decoded-response (cl-json:decode-json-from-string response-string))
@@ -138,7 +140,8 @@
    :GOOGLE-SEARCH-P: whether to include the Google Search tool (match Turn 1 setting).
    :MODEL-ID: model to use (defaults to *model*).
 
-   Returns the model's final text response string."
+   Returns three values, as GENERATE-WITH-TOOLS does: the model's text reply,
+   any further FUNCTION-CALLS, and the new INTERACTION-ID."
   (let* ((payload (make-hash-table :test 'equal))
          (fn-results (mapcar (lambda (fr)
                                (let ((result-ht (make-hash-table :test 'equal))
@@ -153,10 +156,12 @@
                              function-responses)))
     (setf (gethash "model" payload) model-id
           (gethash "previous_interaction_id" payload) interaction-id
-          (gethash "input" payload) fn-results
-          (gethash "tools" payload) (%make-tools-list function-declarations google-search-p))
+          (gethash "input" payload) fn-results)
+    (let ((tools (%make-tools-list function-declarations google-search-p)))
+      (when tools ; cl-json would encode an empty list as null
+        (setf (gethash "tools" payload) tools)))
     (let* ((headers (list '("Content-Type" . "application/json")
-                          (cons "x-goog-api-key" *google-api-key*)
+                          (cons "x-goog-api-key" (google-api-key))
                           '("Api-Revision" . "2026-05-20")))
            (response-string  (%post-json *interactions-api-url* headers payload))
            (decoded-response (cl-json:decode-json-from-string response-string))

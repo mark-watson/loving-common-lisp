@@ -98,7 +98,7 @@
                 (return (reverse patterns))))
 
 (defun parse-sparql-query (query-string)
-  (let* ((tokens (remove-if (lambda (token) (member token '("{" "}") :test #'string=))
+  (let* ((tokens (remove-if (lambda (token) (member token '("" "{" "}") :test #'string=))
                             (split-string query-string)))
          (select-index (position "select" tokens :test #'string-equal))
          (where-index (position "where" tokens :test #'string-equal))
@@ -140,23 +140,8 @@
                       new-bindings))))))
 
 (defun execute-where-patterns (patterns)
-  ;;(format t "Executing where patterns: ~A~%" patterns)
-  (if (null patterns)
-      (list nil)
-      (let* ((pattern (first patterns))
-             (remaining-patterns (rest patterns))
-             (matching-triples (apply #'query-triples pattern)))
-        ;;(format t "Matching triples for pattern ~A: ~A~%" pattern matching-triples)
-        (let ((bindings (mapcar (lambda (triple) (triple-to-binding triple pattern)) matching-triples)))
-          ;;(format t "Initial bindings: ~A~%" bindings)
-          (if (null remaining-patterns)
-              bindings
-              (mapcan (lambda (binding)
-                        (let ((results (execute-where-patterns-with-bindings remaining-patterns binding)))
-                          (mapcar (lambda (result)
-                                    (merge-bindings binding result))
-                                  results)))
-                      bindings))))))
+  ;; start with no variable bindings:
+  (execute-where-patterns-with-bindings patterns nil))
 
 
 (defun execute-sparql-query (query-string)
@@ -171,6 +156,18 @@
     ;;(format t "Results before projection: ~A~%" results)
     projected-results))
 
+(defun print-query-results (query-string)
+  (format t "Query: ~A~%" query-string)
+  (let ((results (execute-sparql-query query-string)))
+    (format t "Final Results:~%")
+    (if results
+        (dolist (result results)
+          (format t "  ~{~A: ~A~^, ~}~%"
+                  (loop for (var . value) in result
+                        collect var collect value)))
+        (format t "  No results~%"))
+    (format t "~%")))
+
 (defun test ()
   (setf *rdf-store* nil)
 
@@ -182,18 +179,6 @@
   (add-triple "Bob" "likes" "burger")
 
   (print-all-triples)
-
-  (defun print-query-results (query-string)
-    (format t "Query: ~A~%" query-string)
-    (let ((results (execute-sparql-query query-string)))
-      (format t "Final Results:~%")
-      (if results
-          (dolist (result results)
-            (format t "  ~{~A: ~A~^, ~}~%"
-                    (loop for (var . value) in result
-                          collect var collect value)))
-          (format t "  No results~%"))
-      (format t "~%")))
 
   (print-query-results "select * where { ?name age ?age . ?name likes ?food }")
   (print-query-results "select ?s ?o where { ?s likes ?o }")

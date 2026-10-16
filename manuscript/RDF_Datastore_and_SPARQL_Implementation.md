@@ -5,6 +5,18 @@ This chapter explores a Common Lisp implementation of a basic RDF (Resource Desc
 Before we look at the implementation let’s look at code for an example use case and run it:
 
 ```lisp
+(defun print-query-results (query-string)
+  (format t "Query: ~A~%" query-string)
+  (let ((results (execute-sparql-query query-string)))
+    (format t "Final Results:~%")
+    (if results
+        (dolist (result results)
+          (format t "  ~{~A: ~A~^, ~}~%"
+                  (loop for (var . value) in result
+                        collect var collect value)))
+        (format t "  No results~%"))
+    (format t "~%")))
+
 (defun test ()
   (setf *rdf-store* nil)
 
@@ -16,18 +28,6 @@ Before we look at the implementation let’s look at code for an example use cas
   (add-triple "Bob" "likes" "burger")
 
   (print-all-triples)
-
-  (defun print-query-results (query-string)
-    (format t "Query: ~A~%" query-string)
-    (let ((results (execute-sparql-query query-string)))
-      (format t "Final Results:~%")
-      (if results
-          (dolist (result results)
-            (format t "  ~{~A: ~A~^, ~}~%"
-                    (loop for (var . value) in result
-                          collect var collect value)))
-          (format t "  No results~%"))
-      (format t "~%")))
 
   (print-query-results "select * where { ?name age ?age . ?name likes ?food }")
   (print-query-results "select ?s ?o where { ?s likes ?o }")
@@ -280,15 +280,12 @@ This structure represents a simplified SPARQL query with select variables and wh
 
 ## 6. SPARQL Query Parsing
 
-The **parse-sparql-query** function takes a SPARQL query string as input and processes it to extract its main components: the variables to be selected and the patterns in the WHERE clause. It starts by splitting the query string into individual tokens and removes curly braces ({ and }), which are not needed for the parsing. It then identifies the positions of the "select" and "where" keywords within the tokenized list using position. Using these indices, the function extracts the variables listed after the "select" keyword up to the "where" keyword, storing them in the **select-vars** variable. Next, it extracts the tokens following the "where" keyword, storing them as where-clause. This where-clause is further processed using a helper function, **parse-where-patterns**, which converts the clause into a structured list of patterns that represent the triple patterns in the query. Finally, the function returns a new **sparql-query** object (constructed using **make-sparql-query**) that encapsulates both the extracted variables and parsed patterns, making it suitable for further evaluation against an RDF datastore:
+The **parse-sparql-query** function takes a SPARQL query string as input and processes it to extract its main components: the variables to be selected and the patterns in the WHERE clause. It starts by splitting the query string into individual tokens and removes curly braces ({ and }), which are not needed for the parsing, and empty strings, which **split-string** returns when the query has two spaces in a row. The library defines its own small **split-string** function, so the package uses only **common-lisp**: the UIOP package also exports a function named **split-string**, and if our package used UIOP, our **defun** would redefine UIOP's function for every program running in the Lisp image. It then identifies the positions of the "select" and "where" keywords within the tokenized list using position. Using these indices, the function extracts the variables listed after the "select" keyword up to the "where" keyword, storing them in the **select-vars** variable. Next, it extracts the tokens following the "where" keyword, storing them as where-clause. This where-clause is further processed using a helper function, **parse-where-patterns**, which converts the clause into a structured list of patterns that represent the triple patterns in the query. Finally, the function returns a new **sparql-query** object (constructed using **make-sparql-query**) that encapsulates both the extracted variables and parsed patterns, making it suitable for further evaluation against an RDF datastore:
 
 ```lisp
 (defun parse-sparql-query (query-string)
-  (let* ((tokens
-          (remove-if
-            (lambda (token)
-              (member token '("{" "}") :test #'string=))
-            (split-string query-string)))
+  (let* ((tokens (remove-if (lambda (token) (member token '("" "{" "}") :test #'string=))
+                            (split-string query-string)))
          (select-index (position "select" tokens :test #'string-equal))
          (where-index (position "where" tokens :test #'string-equal))
          (select-vars (subseq tokens (1+ select-index) where-index))
@@ -302,35 +299,32 @@ This function parses a SPARQL query string into a structured representation.
 
 ## 7. Query Execution
 
-The **execute-where-patterns** function recursively evaluates a list of SPARQL WHERE patterns against an RDF datastore, returning a list of variable bindings that satisfy the entire pattern sequence. If the patterns list is empty, it returns a list containing an empty binding ((list nil)), indicating that no more patterns need to be matched. Otherwise, it starts by extracting the first pattern and the remaining patterns, and uses **query-triples** to find triples in the RDF datastore that match the first pattern. It then generates a set of initial bindings for each matching triple using the **triple-to-binding** function. If there are no more patterns left to evaluate, it returns these bindings as the final results. If there are remaining patterns, it recursively processes the rest of the patterns by invoking **execute-where-patterns-with-bindings**, using each binding to constrain the search for subsequent patterns. For each binding in the current level, it combines the results of the recursive call using **mapcan** and merges the bindings (merge-bindings) to form a unified set of results that meets all the patterns in sequence, thereby producing a comprehensive solution for the entire WHERE clause:
+The function **execute-where-patterns-with-bindings** recursively evaluates a list of SPARQL WHERE patterns against the RDF datastore, returning a list of variable bindings that satisfy the entire pattern sequence. If the patterns list is empty, it returns a list holding the bindings found so far. Otherwise, it substitutes any variables that earlier patterns already bound into the first pattern (**apply-bindings**), and uses **query-triples** to find the triples that match it. For each matching triple, **triple-to-binding** binds the pattern's variables and **merge-bindings** adds them to the bindings so far. If no patterns remain, these extended bindings are the result. Otherwise, the function calls itself on the remaining patterns once for each extended binding and joins the results with **mapcan**. The top level function **execute-where-patterns** starts this recursion with no bindings:
 
 
 ```lisp
-(defun execute-where-patterns (patterns)
+(defun execute-where-patterns-with-bindings (patterns bindings)
   (if (null patterns)
-      (list nil)
+      (list bindings)
       (let* ((pattern (first patterns))
              (remaining-patterns (rest patterns))
-             (matching-triples (apply #'query-triples pattern)))
-        (let ((bindings
-               (mapcar
-                 (lambda (triple)
-                   (triple-to-binding triple pattern))
-                 matching-triples)))
+             (bound-pattern (apply-bindings pattern bindings))
+             (matching-triples (apply #'query-triples bound-pattern)))
+        (let ((new-bindings (mapcar (lambda (triple)
+                                      (merge-bindings bindings (triple-to-binding triple pattern)))
+                                    matching-triples)))
           (if (null remaining-patterns)
-              bindings
-              (mapcan
-                (lambda (binding)
-                  (let ((results
-                         (execute-where-patterns-with-bindings
-                            remaining-patterns binding)))
-                    (mapcar (lambda (result)
-                              (merge-bindings binding result))
-                            results)))
-                      bindings))))))
+              new-bindings
+              (mapcan (lambda (binding)
+                        (execute-where-patterns-with-bindings remaining-patterns binding))
+                      new-bindings))))))
+
+(defun execute-where-patterns (patterns)
+  ;; start with no variable bindings:
+  (execute-where-patterns-with-bindings patterns nil))
 ```
 
-This function executes the WHERE patterns of a SPARQL query, finding matching triples and generating bindings.
+These functions execute the WHERE patterns of a SPARQL query, finding matching triples and generating bindings.
 
 ## 8. Result Projection
 

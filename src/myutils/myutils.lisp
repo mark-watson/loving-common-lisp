@@ -48,44 +48,25 @@
     (let ((tokens nil)
           token delimiterp)
       (loop (multiple-value-setq (token start delimiterp) (get-token start))
-         (unless (and delimiterp omit-delimiters)
+         (unless (or (null token) (and delimiterp omit-delimiters))
            (let ((tok (string-trim discard token)))
-             ;;(print (list "tok:" tok))
-             (if (not (find tok discard))
-                 (if (> (length tok) 0)
-                     (push tok tokens)))))
+             (if (> (length tok) 0)
+                 (push tok tokens))))
          (unless start (return-from tokenize-string (nreverse tokens)))))))
 
 (defun file-to-string (filename)
   (with-open-file (stream filename)
-    (let ((contents (make-string (file-length stream))))
-      (read-sequence contents stream)
-      contents)))
+    ;; file-length is in bytes; multi-byte UTF-8 characters mean fewer chars
+    ;; are actually read, so trim to the number of characters read:
+    (let* ((contents (make-string (file-length stream)))
+           (n (read-sequence contents stream)))
+      (subseq contents 0 n))))
 
-;; really baroque: improve this:
+;; Map a URI to a string usable as a node name. Replacements are applied
+;; in order (e.g., "https://" must be removed before "/" is replaced):
 (defun node-name-from-uri (uri)
-  (replace-all
-   (replace-all
-    (replace-all
-     (replace-all
-      (replace-all
-       (replace-all
-	(replace-all
-	 (replace-all
-	  (replace-all
-	   (replace-all
-	    (replace-all
-	     (replace-all
-	      (replace-all uri "https://" "")
-	      "http://" "")
-	     "/" "_")
-	    "." "_")
-	   " " "_")
-	  "-" "_")
-	 "(" "")
-	")" "")
-       "<" "")
-      ">" "")
-     "?" "")
-    "=" "_")
-   "'" ""))
+  (reduce (lambda (str pair) (replace-all str (car pair) (cdr pair)))
+          '(("https://" . "") ("http://" . "") ("/" . "_") ("." . "_")
+            (" " . "_") ("-" . "_") ("(" . "") (")" . "") ("<" . "")
+            (">" . "") ("?" . "") ("=" . "_") ("'" . ""))
+          :initial-value uri))

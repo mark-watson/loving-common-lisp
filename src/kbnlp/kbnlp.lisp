@@ -2,8 +2,6 @@
 ;; License: AGPL version 3 (http://www.gnu.org/licenses/agpl-3.0.txt)
 ;; Alternative license: you may also use this software under the Apache 2 License.
 ;; This copyright notice should not be removed from this file and in files derived from this file.
-;;
-;; Common Lisp stemming code in this file was written by Steven M. Haflich based on the work of Martin Porter.
 
 
 (in-package :kbnlp)
@@ -36,6 +34,14 @@
 (defvar *last-name-hash* (make-hash-table :test #'equal :size 4000))
 (defvar *company-name-hash* (make-hash-table :test #'equal :size 400))
 (defvar *product-name-hash* (make-hash-table :test #'equal :size 400))
+
+;; These are defined in the data files loaded below; declare them special here
+;; so that the compiler knows about them:
+(defvar place-hash)
+(defvar stop-word-hash)
+(defvar categoryHashtables)
+(defvar categoryNames)
+(defvar categoryToHash)
 
 (defvar *base-pathname* #.(or *compile-file-truename* *load-truename*))
 (defvar *current-directory* (uiop:pathname-directory-pathname *base-pathname*))
@@ -95,38 +101,6 @@
 ;;;   done loading data
 
 
-(defun words-from-string (str)
-  (let ((ss (myutils:tokenize-string str)))
-    (make-array (list (length ss)) :initial-contents ss)))
-
-;; e.g.:
-;;
-;; (defun test5 (x) (not (equal x #\ )))
-;; (tokens "the dog ran" #'test5 0)
-
-
-
-
-;;  utility for string replacement:
-
-;; http://cl-cookbook.sourceforge.net/strings.html#manip:
-(defun replace-all (string part replacement &key (test #'char=))
-  "Returns a new string in which all the occurrences of the part 
-is replaced with replacement."
-  (with-output-to-string (out)
-    (loop with part-length = (length part)
-       for old-pos = 0 then (+ pos part-length)
-       for pos = (search part string
-                         :start2 old-pos
-                         :test test)
-       do (write-string string out
-                        :start old-pos
-                        :end (or pos (length string)))
-       when pos do (write-string replacement out)
-       while pos))) 
-
-
-
 
 ;;          DETECT NAMES IN TEXT:
 
@@ -136,19 +110,15 @@ is replaced with replacement."
     "Premier" "Senator" "Congressman" "Prince" "King" "Representative" "Sen" "St" "Dr"))
 
 
-(defun not-in-list-find-names-helper (a-list start end &aux (rval t))
-  (dolist (x a-list)
-    (let ((i1 (car x))
-          (i2 (cadr x)))
-      (if (or
-           (and
-            (>= start i1)
-            (<= start i2))
-           (and
-            (>= end i1)
-            (<= end i2)))
-          (setq rval nil))))
-  rval)
+;; Return T if the index range [start, end] does not overlap any of the
+;; (start end) ranges in a-list:
+(defun not-in-list-helper (a-list start end)
+  (notany (lambda (x)
+            (let ((i1 (car x))
+                  (i2 (cadr x)))
+              (or (<= i1 start i2)
+                  (<= i1 end i2))))
+          a-list))
 
 (defun string-starts-with (str test-prefix)
   (let ((len (length test-prefix))
@@ -176,11 +146,11 @@ is replaced with replacement."
     (dotimes (i len)
       (setq word (aref words i))
       ;; process 4 word names:
-      (if (< i (- len 3))
+      (when (< i (- len 3))
           ;; case #1: single element from '*name-prefix-list*'
           (if (and
-               (not-in-list-find-names-helper ret i (+ i 4))
-               (not-in-list-find-names-helper exclusion-list i (+ i 4))
+               (not-in-list-helper ret i (+ i 4))
+               (not-in-list-helper exclusion-list i (+ i 4))
                (member word *name-prefix-list* :test #'equal)
                (equal "." (aref words (1+ i)))
                (gethash (aref words (+ i 2)) *first-name-hash*)
@@ -189,10 +159,10 @@ is replaced with replacement."
                    (string-starts-with (aref tags (+ i 2)) "NN")
                    (string-starts-with (aref tags (+ i 3)) "NN"))
                   (setq ret (cons (list i (+ i 4)) ret))))
-          ;; case #1: two elements from '*name-prefix-list*'
+          ;; case #2: two elements from '*name-prefix-list*'
           (if (and
-               (not-in-list-find-names-helper ret i (+ i 4))
-               (not-in-list-find-names-helper exclusion-list i (+ i 4))
+               (not-in-list-helper ret i (+ i 4))
+               (not-in-list-helper exclusion-list i (+ i 4))
                (member word *name-prefix-list* :test #'equal)
                (member (aref words (1+ i)) *name-prefix-list* :test #'equal)
                (gethash (aref words (+ i 2)) *first-name-hash*)
@@ -204,8 +174,8 @@ is replaced with replacement."
       ;; process 3 word names:
       (if (< i (- len 2))
           (if (and
-               (not-in-list-find-names-helper ret i (+ i 3))
-               (not-in-list-find-names-helper exclusion-list i (+ i 3)))
+               (not-in-list-helper ret i (+ i 3))
+               (not-in-list-helper exclusion-list i (+ i 3)))
               (if (or
                    (and
                     (member word *name-prefix-list* :test #'equal)
@@ -235,8 +205,8 @@ is replaced with replacement."
       ;; process 2 word names:
       (if (< i (1- len))
           (if (and
-               (not-in-list-find-names-helper ret i (+ i 2))
-               (not-in-list-find-names-helper exclusion-list i (+ i 2)))
+               (not-in-list-helper ret i (+ i 2))
+               (not-in-list-helper exclusion-list i (+ i 2)))
               (if (or
                    (and
                     (member word '("Mr" "Mrs" "Ms" "Doctor" "President" "Premier") :test #'equal)
@@ -252,8 +222,8 @@ is replaced with replacement."
       (if (gethash word *last-name-hash*)
           (if (and
                (string-starts-with (aref tags i) "NN")
-               (not-in-list-find-names-helper ret i (1+ i))
-               (not-in-list-find-names-helper exclusion-list i (1+ i)))
+               (not-in-list-helper ret i (1+ i))
+               (not-in-list-helper exclusion-list i (1+ i)))
               (setq ret (cons (list i (1+ i)) ret)))))
     (reverse ret)))
 
@@ -270,25 +240,9 @@ is replaced with replacement."
 
 
 ;; count number of places
-(defun count-places (&aux (count 0))
-  (maphash
-   #'(lambda (key value) (setq count (1+ count)))
-   place-hash)
-  count)
+(defun count-places ()
+  (hash-table-count place-hash))
 
-(defun not-in-list-find-places-helper (a-list start end &aux (rval t))
-  (dolist (x a-list)
-    (let ((i1 (car x))
-          (i2 (cadr x)))
-      (if (or
-           (and
-            (>= start i1)
-            (<= start i2))
-           (and
-            (>= end i1)
-            (<= end i2)))
-          (setq rval nil))))
-  rval)
 
 
 ;;
@@ -307,23 +261,23 @@ is replaced with replacement."
       ;; process 3 word place names:
       (if (< i (- len 2))
           (if (and
-               (not-in-list-find-places-helper ret i (+ i 3))
-               (not-in-list-find-places-helper exclusion-list i (+ i 3)))
+               (not-in-list-helper ret i (+ i 3))
+               (not-in-list-helper exclusion-list i (+ i 3)))
               (let ((words (concatenate 'string word " " (aref words (1+ i)) " " (aref words (+ i 2)))))
                 (if (gethash words place-hash)
                     (setq ret (cons (list i (+ i 3)) ret))))))
       ;; process 2 word place names:
       (if (< i (1- len))
           (if (and
-               (not-in-list-find-places-helper ret i (+ i 2))
-               (not-in-list-find-places-helper exclusion-list i (+ i 2)))
+               (not-in-list-helper ret i (+ i 2))
+               (not-in-list-helper exclusion-list i (+ i 2)))
               (let ((words (concatenate 'string word " " (aref words (1+ i)))))
                 (if (gethash words place-hash)
                     (setq ret (cons (list i (+ i 2)) ret))))))
       ;; 1 word place names:
       (if (and
-           (not-in-list-find-places-helper ret i (+ i 1))
-           (not-in-list-find-places-helper exclusion-list i (+ i 1)))
+           (not-in-list-helper ret i (+ i 1))
+           (not-in-list-helper exclusion-list i (+ i 1)))
           (if (gethash word place-hash)
               (setq ret (cons (list i (1+ i)) ret)))))
     ;;(print (list "debug: places:" (reverse ret)))
@@ -352,41 +306,28 @@ is replaced with replacement."
       ;; process 3 word company names:
       (if (< i (- len 2))
           (if (and
-               (not-in-list-find-companies-helper ret i (+ i 3))
-               (not-in-list-find-companies-helper exclusion-list i (+ i 3)))
+               (not-in-list-helper ret i (+ i 3))
+               (not-in-list-helper exclusion-list i (+ i 3)))
               (let ((words (concatenate 'string word " " (aref words (1+ i)) " " (aref words (+ i 2)))))
                 (if (gethash words *company-name-hash*)
                     (setq ret (cons (list i (+ i 3)) ret))))))
       ;; process 2 word company names:
       (if (< i (1- len))
           (if (and
-               (not-in-list-find-companies-helper ret i (+ i 2))
-               (not-in-list-find-companies-helper exclusion-list i (+ i 2)))
+               (not-in-list-helper ret i (+ i 2))
+               (not-in-list-helper exclusion-list i (+ i 2)))
               (let ((words (concatenate 'string word " " (aref words (1+ i)))))
                 (if (gethash words *company-name-hash*)
                     (setq ret (cons (list i (+ i 2)) ret))))))
       ;; 1 word company names:
       (if (and
-           (not-in-list-find-companies-helper ret i (+ i 1))
-           (not-in-list-find-companies-helper exclusion-list i (+ i 1)))
+           (not-in-list-helper ret i (+ i 1))
+           (not-in-list-helper exclusion-list i (+ i 1)))
           (if (gethash word *company-name-hash*)
               (setq ret (cons (list i (1+ i)) ret)))))
     ;;(print (list "debug: companies:" (reverse ret)))
     (reverse ret)))
 
-(defun not-in-list-find-companies-helper (a-list start end &aux (rval t))
-  (dolist (x a-list)
-    (let ((i1 (car x))
-          (i2 (cadr x)))
-      (if (or
-           (and
-            (>= start i1)
-            (<= start i2))
-           (and
-            (>= end i1)
-            (<= end i2)))
-          (setq rval nil))))
-  rval)
 
 
 
@@ -476,13 +417,6 @@ is replaced with replacement."
          (num-categories (length categoryHashtables))
          (category-score-accumulation-array
           (make-array num-categories :initial-element 0)))
-
-    (defun list-sort (list-to-sort)
-      ;;(pprint list-to-sort)
-      (sort list-to-sort
-            #'(lambda (list-element-1 list-element-2)
-                (> (cadr list-element-1) (cadr list-element-2)))))
-
     (do ((k 0 (+ k 1)))
         ((equal k len))
       (setf word (string-downcase (aref words k)))
@@ -505,7 +439,7 @@ is replaced with replacement."
              (nth i categoryNames)
              (round (* (aref category-score-accumulation-array i) 10)))
             ss))))
-    (setf ss (list-sort ss))
+    (setf ss (sort ss #'> :key #'cadr))
     (let ((cutoff (/ (or (cadar ss) 0) 2))
           (results-array '()))
       (dolist (hit ss)
@@ -537,7 +471,7 @@ is replaced with replacement."
       (let* ((word (svref words i)))
         (dolist (cat cats)
           (let* ((hash (gethash (car cat) categoryToHash))
-                 (value (gethash word hash)))
+                 (value (gethash (string-downcase word) hash)))
             (if value
                 (setq score (+ score (* 0.01 value (cadr cat)))))))
         (push word sentence)
@@ -546,7 +480,7 @@ is replaced with replacement."
               (setq sentence (reverse sentence))
               (setq score (/ score (1+ (length sentence))))
               (setq sentence-count (1+ sentence-count))
-              (format t "~%~A : ~A~%" sentence score)
+              ;;(format t "~%~A : ~A~%" sentence score)
               ;; process this sentence:
               (if (and
                    (> score 0.4)

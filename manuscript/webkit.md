@@ -162,7 +162,9 @@ Each `invoke()` call returns a Promise. The Objective-C handler calls the C call
 
 ## CFFI Bindings
 
-The FFI layer maps the C API to Common Lisp. The library is loaded from the same directory as the source files:
+The FFI layer maps the C API to Common Lisp. We load the library from the same directory as the source files.
+
+Finding that directory takes care. When ASDF loads a system, it compiles each source file to a fasl in its output cache (under **~/.cache/common-lisp/**) and loads the fasl, so at load time `*load-pathname*` names the cached fasl, not the source file. The `#.` reader macro in `*source-directory*` instead reads `*compile-file-truename*` while the file compiles, so the fasl stores the source file's path:
 
 {lang="lisp",linenos=off}
 ~~~~~~~~
@@ -171,18 +173,19 @@ The FFI layer maps the C API to Common Lisp. The library is loaded from the same
                 (:default "libwebkit_cl")))
   (t (:default "libwebkit_cl")))
 
+(defparameter *source-directory*
+  ;; Read at compile time, so this is the directory of the .lisp source (where
+  ;; `make` puts the dylib). At load time *LOAD-PATHNAME* would instead be the
+  ;; compiled .fasl in ASDF's output cache, where the dylib is never found.
+  (make-pathname :name nil :type nil :version nil
+                 :defaults #.(or *compile-file-truename* *load-truename*))
+  "Directory containing the webkit-cl sources and libwebkit_cl.dylib.")
+
 (defun load-native-library ()
-  "Load the webkit-cl native library."
-  (let* ((this-file (or *compile-file-pathname* *load-pathname*))
-         (lib-dir (when this-file
-                    (namestring
-                     (make-pathname
-                      :directory (pathname-directory this-file))))))
-    (when lib-dir
-      (pushnew (pathname lib-dir)
-               cffi:*foreign-library-directories*
-               :test #'equal))
-    (cffi:use-foreign-library libwebkit-cl)))
+  "Load the webkit-cl native library. Searches the source directory first."
+  ;; Push the source directory onto the search path
+  (pushnew *source-directory* cffi:*foreign-library-directories* :test #'equal)
+  (cffi:use-foreign-library libwebkit-cl))
 
 (load-native-library)
 ~~~~~~~~

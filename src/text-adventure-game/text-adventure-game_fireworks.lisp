@@ -43,10 +43,9 @@
 
 (defun load-story (filepath)
   (handler-case
-      (with-open-file (f filepath :direction :input)
-        (let ((content (make-string (file-length f))))
-          (read-sequence content f)
-          content))
+      ;; read-file-string, not a FILE-LENGTH sized buffer: file-length counts
+      ;; bytes, so non-ASCII UTF-8 text would leave trailing NUL characters.
+      (uiop:read-file-string filepath)
     (file-error (e)
       (declare (ignore e))
       (format t "Error: ~a not found.~%" filepath)

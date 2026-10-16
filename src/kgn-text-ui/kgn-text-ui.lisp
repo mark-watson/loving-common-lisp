@@ -1,4 +1,4 @@
-;; Compyright 2021-2022 Mark Watson All Rights Reserved.
+;; Copyright 2021-2022 Mark Watson All Rights Reserved.
 ;; License: Apache 2
 
 (in-package #:kgn-text-ui)
@@ -22,9 +22,10 @@
         (let* ((line (read-line))
                (indices
                 (if (> (length line) 0)
-                    (mapcar
-                     #'parse-integer
-                     (myutils:tokenize-string line)))))
+                    (remove nil
+                            (mapcar
+                             #'(lambda (s) (parse-integer s :junk-allowed t))
+                             (myutils:tokenize-string line))))))
           (print indices)
     ;(dolist (index indices)
     ;  (setf ret (cons (nth index str-list)
@@ -54,7 +55,8 @@
         (let (ret2
               (dialog-results (multiple-selections choice-list))) ;; (mapcar #'(lambda (x) (cadr (assoc :comment x))) choice-list))))
           (dolist (index dialog-results)
-            (setf ret2 (cons (car (nth index choice-list)) ret2)))
+            (if (< -1 index (length choice-list)) ; ignore out of range user input
+                (setf ret2 (cons (car (nth index choice-list)) ret2))))
           (if (> (length ret2) 0)
               (setf ret (cons (list topic-type (reverse ret2)) ret))))))
     (reverse ret)))
@@ -64,16 +66,14 @@
 
 (defun colorize-sparql (str &key (stream t))
   " this could be used to colorize text (as it is in kgn-capi-ui example)"
-  ;;(declare (ignore message-stream))
-  (declare (ignore stream))
-  (format t "~%~S~%" str))
+  (format stream "~%~S~%" str))
 
 (defun get-string-from-user (text-prompt)
   (format t "~%~S:~%" text-prompt)
   (read-line))
 
 
-;; Main funtion
+;; Main function
 
 (defun kgn-text-ui ()
   (let (prompt

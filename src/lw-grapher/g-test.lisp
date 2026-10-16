@@ -9,5 +9,5 @@
   (format nil "* user clicked on node: ~A~%" selected-node-name))
 
 (defun t2 ()
-  (make-info-panel-grapher '("n1") '(("n1" "n2") ("n1" "n3")) 'test-callback-2))
+  (make-info-panel-grapher '("n1") '(("n1" "n2") ("n1" "n3")) 'test-callback-2 'test-callback-2))
 

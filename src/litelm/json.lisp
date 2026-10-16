@@ -7,6 +7,7 @@
 ;;;   string                              -> JSON string
 ;;;   integer / float                     -> JSON number
 ;;;   t  :false  :null                    -> true / false / null
+;;;   :empty-object                       -> {}
 ;;;   alist with string or keyword keys   -> JSON object
 ;;;                                          (:max-tokens -> "max_tokens")
 ;;;   any other list                      -> JSON array
@@ -64,6 +65,7 @@
     ((eq x t) (write-string "true" out))
     ((eq x :false) (write-string "false" out))
     ((eq x :null) (write-string "null" out))
+    ((eq x :empty-object) (write-string "{}" out))
     ((integerp x) (princ x out))
     ((floatp x) (%write-json-float x out))
     ((realp x) (%write-json-float (coerce x 'double-float) out))
@@ -119,14 +121,23 @@ numbers, t (true) and nil (false/null)."
                               (#\r (write-char #\Return out))
                               (#\b (write-char #\Backspace out))
                               (#\f (write-char #\Page out))
-                              (#\u (write-char (code-char (parse-integer string
-                                                                          :start pos
-                                                                          :end (+ pos 4)
-                                                                          :radix 16))
-                                               out)
-                                   (incf pos 4))
+                              (#\u (write-char (code-char (parse-unicode-escape)) out))
                               (t (write-char esc out)))))
                          (t (write-char ch out) (advance))))))
+             (parse-hex4 ()
+               (prog1 (parse-integer string :start pos :end (+ pos 4) :radix 16)
+                 (incf pos 4)))
+             (parse-unicode-escape ()
+               ;; Called just after "\u". Characters outside the BMP (e.g. emoji)
+               ;; are escaped as a UTF-16 surrogate pair: "\uD83D\uDE00".
+               (let ((code (parse-hex4)))
+                 (if (and (<= #xD800 code #xDBFF)
+                          (<= (+ pos 6) len)
+                          (char= (char string pos) #\\)
+                          (char= (char string (1+ pos)) #\u))
+                     (let ((low (progn (incf pos 2) (parse-hex4))))
+                       (+ #x10000 (ash (- code #xD800) 10) (- low #xDC00)))
+                     code)))
              (parse-number ()
                (let ((start pos))
                  (when (eql (peek) #\-) (advance))

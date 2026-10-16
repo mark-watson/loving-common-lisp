@@ -50,16 +50,26 @@ We need the function **post** in the external library **dexador**:
 ```
 ### gemini.lisp
 
-This code defines functions for generating content and counting tokens. Rather than spawning an external `curl` process, it executes native HTTP POST requests using the `Dexador` client via the helper function `%post-json`.
+This code defines functions for generating content and counting tokens. Rather than spawning an external `curl` process, it sends native HTTP POST requests with the `Dexador` client through the helper function `%post-json`.
 
-To generate text, the `generate` function calls the standard `generateContent` action at `https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent`. It sends a JSON payload whose `contents` array holds one content object containing a single `parts` entry with the prompt text, then decodes the response and pulls the generated text out of the first candidate's first part. The `count-tokens` function queries the companion `countTokens` action on the same models endpoint, using the same native HTTP post helper.
+The function `google-api-key` reads the GOOGLE_API_KEY environment variable each time it runs, unless you set `*google-api-key*` yourself. Reading the variable at call time, and not when the library loads, means a key that you set after loading the library (or in a saved Lisp image) still works, and a missing key signals a clear error.
+
+The helper `%generate-content` calls the standard `generateContent` action at `https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent`. It sends a JSON payload whose `contents` array holds one content object containing a single `parts` entry with the prompt text, decodes the response, and returns the first candidate. The helper `%candidate-text` pulls the generated text out of that candidate's first part, so `generate` is a one line function. Plain generation and the search grounded functions later in this chapter share these two helpers. The `count-tokens` function queries the companion `countTokens` action on the same models endpoint, using the same HTTP post helper.
 
 ```lisp
 (in-package #:gemini)
 
-(defvar *google-api-key* (uiop:getenv "GOOGLE_API_KEY"))
+(defvar *google-api-key* nil
+  "Google API key. When NIL, the GOOGLE_API_KEY environment variable is read
+   at call time (so a key set after this library is loaded is still found).")
 
 (defvar *model* "gemini-3-flash-preview") ;; model used in this file.
+
+(defun google-api-key ()
+  "Return the Google API key, signaling an error if none is configured."
+  (or *google-api-key*
+      (uiop:getenv "GOOGLE_API_KEY")
+      (error "Set the GOOGLE_API_KEY environment variable (or gemini::*google-api-key*)")))
 
 (defun %post-json (url headers payload-hash)
   "Helper function to perform an HTTP POST request with a JSON payload using Dexador."
@@ -69,31 +79,41 @@ To generate text, the `generate` function calls the standard `generateContent` a
 
 ;;; ---- generateContent API ----
 
-(defun generate (prompt &optional (model-id *model*))
-  "Generates text from a given prompt using the Gemini generateContent API.
-   Uses *model* defined at the top of this file as default.
-   PROMPT: The text prompt to generate content from.
-   MODEL-ID: Optional. The ID of the model to use.
-   Returns the generated text as a string."
+(defun %generate-content (prompt model-id &key google-search-p)
+  "POST PROMPT to the generateContent API for MODEL-ID, optionally enabling
+   Google Search grounding. Returns the first candidate of the decoded response."
   (let* ((payload (make-hash-table :test 'equal))
          (part-ht (make-hash-table :test 'equal))
          (content-ht (make-hash-table :test 'equal)))
     (setf (gethash "text" part-ht) prompt)
     (setf (gethash "parts" content-ht) (list part-ht))
     (setf (gethash "contents" payload) (list content-ht))
+    (when google-search-p
+      (let ((google-search-tool (make-hash-table :test 'equal)))
+        (setf (gethash "google_search" google-search-tool) (make-hash-table :test 'equal))
+        (setf (gethash "tools" payload) (list google-search-tool))))
     (let* ((url (concatenate 'string
                              "https://generativelanguage.googleapis.com/v1beta/models/"
                              model-id ":generateContent"))
            (headers (list '("Content-Type" . "application/json")
-                          (cons "X-goog-api-key" *google-api-key*)))
+                          (cons "X-goog-api-key" (google-api-key))))
            (response-string (%post-json url headers payload))
-           (decoded-response (cl-json:decode-json-from-string response-string))
-           (candidates (cdr (assoc :CANDIDATES decoded-response)))
-           (first-candidate (first candidates))
-           (content (cdr (assoc :CONTENT first-candidate)))
-           (parts (cdr (assoc :PARTS content)))
-           (first-part (first parts)))
-      (cdr (assoc :TEXT first-part)))))
+           (decoded-response (cl-json:decode-json-from-string response-string)))
+      (first (cdr (assoc :CANDIDATES decoded-response))))))
+
+(defun %candidate-text (candidate)
+  "Return the text of the first part of a generateContent CANDIDATE."
+  (let* ((content (cdr (assoc :CONTENT candidate)))
+         (parts (cdr (assoc :PARTS content))))
+    (cdr (assoc :TEXT (first parts)))))
+
+(defun generate (prompt &optional (model-id *model*))
+  "Generates text from a given prompt using the Gemini generateContent API.
+   Uses *model* defined at the top of this file as default.
+   PROMPT: The text prompt to generate content from.
+   MODEL-ID: Optional. The ID of the model to use.
+   Returns the generated text as a string."
+  (%candidate-text (%generate-content prompt model-id)))
 
 ;; (gemini:generate "In one sentence, explain how AI works to a child.")
 ;; (gemini:generate "Write a short, four-line poem about coding in Python.")
@@ -117,7 +137,7 @@ To generate text, the `generate` function calls the standard `generateContent` a
                                 part)))
                   contents)))
     (let* ((headers (list '("Content-Type" . "application/json")
-                          (cons "x-goog-api-key" *google-api-key*)))
+                          (cons "x-goog-api-key" (google-api-key))))
            (response-string (%post-json api-url headers payload))
            (decoded-response (cl-json:decode-json-from-string response-string))
            (total-tokens-pair (assoc :TOTAL-TOKENS decoded-response)))
@@ -149,38 +169,17 @@ CL-USER 5 > (gemini:count-tokens "How many tokens is this sentence?")
 
 ## Using Google’s “Grounding Search”
 
-Google’s “Grounding with Google Search” is a powerful feature that connects the Gemini model to real-time web information, allowing it to answer queries about current events and reducing the likelihood of "hallucinations" by anchoring responses in verifiable external data. The following Common Lisp program utilizes this feature by defining a function, generate-with-search, which builds a JSON payload that specifically includes a tools configuration. By inserting an empty Google Search object into this configuration, the code explicitly instructs the API to perform a web search—such as looking up the winner of a recent tournament like Euro 2024—and synthesize those findings into the final response, which is then parsed and returned as a string. The following code snippet is near the bottom of the file **gemini.lisp**:
+Google’s “Grounding with Google Search” connects the Gemini model to real-time web information. The model can then answer queries about current events, and basing answers on search results reduces "hallucinations." The function **generate-with-search** asks the helper **%generate-content** to add a Google Search tool to the request. With this tool, the API runs a web search (for example, to look up the winner of a recent tournament like Euro 2024) and uses the results to write its answer, which the function returns as a string. The following code is near the bottom of the file **gemini.lisp**:
 
 ```lisp
 (defun generate-with-search (prompt &optional (model-id *model*))
   "Generates text with Google Search grounding via the generateContent API."
-  (let* ((payload (make-hash-table :test 'equal))
-         (part-ht (make-hash-table :test 'equal))
-         (content-ht (make-hash-table :test 'equal))
-         (google-search-tool (make-hash-table :test 'equal)))
-    (setf (gethash "text" part-ht) prompt)
-    (setf (gethash "parts" content-ht) (list part-ht))
-    (setf (gethash "contents" payload) (list content-ht))
-    (setf (gethash "google_search" google-search-tool) (make-hash-table :test 'equal))
-    (setf (gethash "tools" payload) (list google-search-tool))
-    (let* ((url (concatenate 'string
-                             "https://generativelanguage.googleapis.com/v1beta/models/"
-                             model-id ":generateContent"))
-           (headers (list '("Content-Type" . "application/json")
-                          (cons "X-goog-api-key" *google-api-key*)))
-           (response-string (%post-json url headers payload))
-           (decoded-response (cl-json:decode-json-from-string response-string))
-           (candidates (cdr (assoc :CANDIDATES decoded-response)))
-           (first-candidate (first candidates))
-           (content (cdr (assoc :CONTENT first-candidate)))
-           (parts (cdr (assoc :PARTS content)))
-           (first-part (first parts)))
-      (cdr (assoc :TEXT first-part)))))
+  (%candidate-text (%generate-content prompt model-id :google-search-p t)))
 ```
 
-The core mechanism of this implementation relies on the payload hash table construction, specifically where the `"tools"` key is populated. Unlike a standard generation request, this payload includes a list containing a Google Search tool definition; the presence of this specific configuration acts as a switch, granting the model permission to query Google's search index before formulating its answer. This is particularly critical for questions regarding current events, as the model's static training data would otherwise be outdated.
+The work happens in the helper `%generate-content` that we saw in the last section. When we pass `:google-search-p t`, it adds a `"tools"` key to the payload holding a Google Search tool definition (a `google_search` key with an empty object as its value). This tool definition lets the model query Google's search index before it writes an answer. This matters most for questions about current events, where the model's static training data is out of date.
 
-Because this goes to the standard `generateContent` endpoint, the request body keeps the same `contents` → `parts` shape as plain generation, with the search tool added under `"tools"`, and the reply arrives in the usual `candidates` array — the text is read from the first candidate's first part. Declaring the `google_search` tool is what authorizes the model to consult Google's search index before answering; without it, the same prompt would be answered from static training data alone.
+Because the request goes to the standard `generateContent` endpoint, the request body keeps the same `contents` and `parts` shape as plain generation, with the search tool added under `"tools"`. The reply arrives in the usual `candidates` array and `%candidate-text` reads the text from the first candidate's first part. Without the `google_search` tool, the model answers the same prompt from its static training data alone.
 
 Here is example output:
 
@@ -222,37 +221,19 @@ Here is the code:
 (defun generate-with-search-and-citations (prompt &optional (model-id *model*))
   "Generates text with Google Search grounding and returns citations via the generateContent API.
    Returns two values: the response text and a list of (title . url) citation pairs."
-  (let* ((payload (make-hash-table :test 'equal))
-         (part-ht (make-hash-table :test 'equal))
-         (content-ht (make-hash-table :test 'equal))
-         (google-search-tool (make-hash-table :test 'equal)))
-    (setf (gethash "text" part-ht) prompt)
-    (setf (gethash "parts" content-ht) (list part-ht))
-    (setf (gethash "contents" payload) (list content-ht))
-    (setf (gethash "google_search" google-search-tool) (make-hash-table :test 'equal))
-    (setf (gethash "tools" payload) (list google-search-tool))
-    (let* ((url (concatenate 'string
-                             "https://generativelanguage.googleapis.com/v1beta/models/"
-                             model-id ":generateContent"))
-           (headers (list '("Content-Type" . "application/json")
-                          (cons "X-goog-api-key" *google-api-key*)))
-           (response-string (%post-json url headers payload))
-           (decoded-response (cl-json:decode-json-from-string response-string))
-           (candidates (cdr (assoc :CANDIDATES decoded-response)))
-           (first-candidate (first candidates))
-           (content (cdr (assoc :CONTENT first-candidate)))
-           (parts (cdr (assoc :PARTS content)))
-           (first-part (first parts))
-           (text (cdr (assoc :TEXT first-part)))
-           (grounding-metadata (cdr (assoc :GROUNDINGMETADATA first-candidate)))
-           (grounding-chunks (cdr (assoc :GROUNDINGCHUNKS grounding-metadata)))
-           (citations (loop for chunk in grounding-chunks
-                            for web = (cdr (assoc :WEB chunk))
-                            when web
-                            collect (cons (cdr (assoc :TITLE web))
-                                          (cdr (assoc :URI web))))))
-      (values text citations))))
+  (let* ((first-candidate (%generate-content prompt model-id :google-search-p t))
+         (text (%candidate-text first-candidate))
+         (grounding-metadata (cdr (assoc :GROUNDING-METADATA first-candidate)))
+         (grounding-chunks (cdr (assoc :GROUNDING-CHUNKS grounding-metadata)))
+         (citations (loop for chunk in grounding-chunks
+                          for web = (cdr (assoc :WEB chunk))
+                          when web
+                          collect (cons (cdr (assoc :TITLE web))
+                                        (cdr (assoc :URI web))))))
+    (values text citations)))
 ```
+
+The citations come from the `groundingMetadata` object in the first candidate. Note the keyword names in the code: when **cl-json** decodes a JSON object, it converts camel case keys like `groundingMetadata` and `groundingChunks` into the Lisp keywords `:GROUNDING-METADATA` and `:GROUNDING-CHUNKS`. Looking up `:GROUNDINGMETADATA` instead would silently return an empty list of citations.
 
 Here is the sample output (output shortened: redirect URIs shortened for brevity):
 
@@ -403,10 +384,12 @@ When you call `generate-with-tools` on "Turn 1," the API returns the model's out
      INTERACTION-ID   - the interaction ID for use in follow-up turns."
   (let* ((payload (make-hash-table :test 'equal)))
     (setf (gethash "model" payload) model-id
-          (gethash "input" payload) prompt
-          (gethash "tools" payload) (%make-tools-list function-declarations google-search-p))
+          (gethash "input" payload) prompt)
+    (let ((tools (%make-tools-list function-declarations google-search-p)))
+      (when tools ; cl-json would encode an empty list as null
+        (setf (gethash "tools" payload) tools)))
     (let* ((headers (list '("Content-Type" . "application/json")
-                          (cons "x-goog-api-key" *google-api-key*)
+                          (cons "x-goog-api-key" (google-api-key))
                           '("Api-Revision" . "2026-05-20")))
            (response-string  (%post-json *interactions-api-url* headers payload))
            (decoded-response (cl-json:decode-json-from-string response-string))
@@ -429,7 +412,8 @@ When you call `generate-with-tools` on "Turn 1," the API returns the model's out
    :GOOGLE-SEARCH-P: whether to include the Google Search tool (match Turn 1 setting).
    :MODEL-ID: model to use (defaults to *model*).
 
-   Returns the model's final text response string."
+   Returns three values, as GENERATE-WITH-TOOLS does: the model's text reply,
+   any further FUNCTION-CALLS, and the new INTERACTION-ID."
   (let* ((payload (make-hash-table :test 'equal))
          (fn-results (mapcar (lambda (fr)
                                (let ((result-ht (make-hash-table :test 'equal))
@@ -444,10 +428,12 @@ When you call `generate-with-tools` on "Turn 1," the API returns the model's out
                              function-responses)))
     (setf (gethash "model" payload) model-id
           (gethash "previous_interaction_id" payload) interaction-id
-          (gethash "input" payload) fn-results
-          (gethash "tools" payload) (%make-tools-list function-declarations google-search-p))
+          (gethash "input" payload) fn-results)
+    (let ((tools (%make-tools-list function-declarations google-search-p)))
+      (when tools ; cl-json would encode an empty list as null
+        (setf (gethash "tools" payload) tools)))
     (let* ((headers (list '("Content-Type" . "application/json")
-                          (cons "x-goog-api-key" *google-api-key*)
+                          (cons "x-goog-api-key" (google-api-key))
                           '("Api-Revision" . "2026-05-20")))
            (response-string  (%post-json *interactions-api-url* headers payload))
            (decoded-response (cl-json:decode-json-from-string response-string))
@@ -460,7 +446,9 @@ When you call `generate-with-tools` on "Turn 1," the API returns the model's out
 
 This implementation is structured around two primary public functions: **generate-with-tools** and **continue-with-function-responses**. The first function initiates the dialogue, accepting a natural language prompt and a list of tool definitions created via `make-function-declaration`. If the model determines that it needs more information than it currently possesses, such as real-time weather data or a specific database query, it returns a list of function calls. The programmer is then responsible for executing these functions locally and passing the outputs to the second function, which targets the same interaction context using the `interaction-id` to provide the model with the context needed to conclude the interaction.
 
-Under the hood, the helper `%make-tools-list` builds a tool declaration matching the expected structure of the Interactions API. The helper `%extract-function-calls-from-steps` extracts the model's requested function calls and returns them as a structured Lisp property list.
+Both functions return three values: the model's text, any further function calls, and the new interaction ID. A second turn can ask for more tools, so you can keep calling `continue-with-function-responses` until the function call list is empty.
+
+Under the hood, the helper `%make-tools-list` builds a tool declaration matching the expected structure of the Interactions API. Both public functions add the `"tools"` key to the payload only when this list is not empty, because **cl-json** encodes an empty list as JSON `null`, which the API rejects as a value for `"tools"`. The helper `%extract-function-calls-from-steps` extracts the model's requested function calls and returns them as a structured Lisp property list.
 
 Here is sample code for testing:
 
@@ -529,6 +517,6 @@ nil
 
 4. **Citation Formatter:** Write a function `print-sourced-answer` that wraps `gemini:generate-with-search-and-citations`. It should use `multiple-value-bind` to capture both the response text and the citations list, then print the answer followed by a numbered bibliography of sources. Each source line should display its index, title, and URL using `format`. This exercise practices working with Common Lisp multiple return values.
 
-5. **Custom Tool: Calculator:** Using `gemini:make-function-declaration`, define a `calculate` tool that accepts two parameters: `expression` (a string like "2 + 3") and `precision` (an integer for decimal places). Write the full two-turn interaction: call `gemini:generate-with-tools` with a math question, parse the returned function call from the `:ARGS` alist, evaluate the expression locally (you can use a simple `read-from-string` and `eval` approach), and pass the result back via `gemini:continue-with-function-responses` to get the model's final answer.
+5. **Custom Tool: Calculator:** Using `gemini:make-function-declaration`, define a `calculate` tool that accepts two parameters: `expression` (a string like "2 + 3") and `precision` (an integer for decimal places). Write the full two-turn interaction: call `gemini:generate-with-tools` with a math question, parse the returned function call from the `:ARGS` alist, evaluate the expression locally (do not pass model output to `eval`; see the safe `calculate` tool in the Ollama chapter for a small arithmetic parser), and pass the result back via `gemini:continue-with-function-responses` to get the model's final answer.
 
 6. **Multi-Tool Agent:** Extend the weather tool example from the chapter by registering two function declarations: `getWeather` (as shown) and a new `getPopulation` that takes a `city` parameter. Write a single prompt that asks about both the weather and the population of a city. Observe how the model returns multiple entries in the `function-calls` list, and write code that iterates over all of them, builds simulated responses for each, and passes the full list to `continue-with-function-responses` in a single Turn 2 call.

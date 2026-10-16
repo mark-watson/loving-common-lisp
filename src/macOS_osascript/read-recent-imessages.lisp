@@ -17,6 +17,8 @@
 ;;
 
 (defun read-recent-imessages (&optional (limit 5))
+  ;; LIMIT is spliced into the SQL text, so only accept a positive integer:
+  (check-type limit (integer 1))
   (let* ((db-path (namestring (merge-pathnames "Library/Messages/chat.db" 
                                                (user-homedir-pathname))))
          ;; Join the message table with the handle table to get the sender's phone/email

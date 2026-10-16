@@ -113,10 +113,9 @@ Here is the full listing of `text-adventure-game_ollama.lisp`:
 
 (defun load-story (filepath)
   (handler-case
-      (with-open-file (f filepath :direction :input)
-        (let ((content (make-string (file-length f))))
-          (read-sequence content f)
-          content))
+      ;; read-file-string, not a FILE-LENGTH sized buffer: file-length counts
+      ;; bytes, so non-ASCII UTF-8 text would leave trailing NUL characters.
+      (uiop:read-file-string filepath)
     (file-error (e)
       (declare (ignore e))
       (format t "Error: ~a not found.~%" filepath)
@@ -183,17 +182,16 @@ Because the example is meant to be loaded straight from the repository with `loa
 ```lisp
 (defun load-story (filepath)
   (handler-case
-      (with-open-file (f filepath :direction :input)
-        (let ((content (make-string (file-length f))))
-          (read-sequence content f)
-          content))
+      ;; read-file-string, not a FILE-LENGTH sized buffer: file-length counts
+      ;; bytes, so non-ASCII UTF-8 text would leave trailing NUL characters.
+      (uiop:read-file-string filepath)
     (file-error (e)
       (declare (ignore e))
       (format t "Error: ~a not found.~%" filepath)
       nil)))
 ```
 
-**load-story** reads the whole file into a string: it allocates a string exactly the size of the file using `file-length`, fills it with `read-sequence`, and wraps the operation in `handler-case` so that a missing file produces a clean error message instead of dropping into the debugger.
+**load-story** reads the whole file into a string with `uiop:read-file-string` and wraps the operation in `handler-case` so that a missing file produces a clean error message instead of dropping into the debugger. A common alternative allocates a string with `file-length` and fills it with `read-sequence`, but `file-length` counts bytes, not characters. For a UTF-8 file with any non-ASCII characters the string comes out too long, with NUL characters at the end.
 
 ### The Main Game Loop
 

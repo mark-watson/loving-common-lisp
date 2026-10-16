@@ -5,13 +5,7 @@
 
 
 (defvar *base-pathname* #.(or *compile-file-truename* *load-truename*))
-(defvar a1 (write-to-string *base-pathname*))
-(print a1)
-(print (length a1))
-(defvar *current-directory* (subseq a1 3 (- (length a1) 18)))
-
-(print "current directory:")
-(print *current-directory*)
+(defvar *data-directory* (merge-pathnames "data/" *base-pathname*))
 
 ;;                    INITIALIZE DATA - this may take a minute or two
 
@@ -40,9 +34,9 @@
      collect token until (not space)))
 
 (defun load-line-file (hash-table file-name)
-  (setf *EntityNames* (cons (myutils:replace-all file-name "NamesDbPedia.txt" "") *EntityNames*))
+  (pushnew (myutils:replace-all file-name "NamesDbPedia.txt" "") *EntityNames* :test #'equal)
   (let (line)
-    (with-open-file (in (concatenate 'string *current-directory* "/data/" file-name))
+    (with-open-file (in (merge-pathnames file-name *data-directory*))
       (dotimes (i 50000)
 	(setq line (read-line in nil nil))
 	(if (null line) (return)
@@ -66,17 +60,15 @@
 
 ;;;   done loading data
 
-;; Conversion of KnowledgeBooks.com Java FastTag to Common Lisp
-
 (defun find-entities-in-string (entity-hash str)
     (let* ((words (myutils:words-from-string str)))
-      (find-entities-word-list entity-hash words)))
+      (find-entities-in-word-list entity-hash words)))
 
 ;; make sure that URIs have < > brackets:
 (defun ensure-uri-brackets (a-uri)
-  (if (equal (type-of a-uri) 'cons)
+  (if (consp a-uri)
     (setf a-uri (cadr a-uri)))
-  (if (string-equal (subseq a-uri 0 1) "<")
+  (if (and (plusp (length a-uri)) (char= (char a-uri 0) #\<))
       a-uri
     (concatenate 'string "<" a-uri ">")))
 ;;
@@ -162,7 +154,7 @@
 
 #|
 
-(find-entities *people* "Bill Clinton and George Bush")
+(find-entities-in-string *people* "Bill Clinton and George Bush")
 
 (find-entities-in-text "Bill Clinton and George Bush went to Mexico and England and watched Univision. They enjoyed Dakbayan sa Dabaw and shoped at Best Buy and listened to Al Stewart. They agree on República de Nicaragua and support Sweden Democrats and Leicestershire Miners Association and both sent their kids to Darul Uloom Deoband.")
 

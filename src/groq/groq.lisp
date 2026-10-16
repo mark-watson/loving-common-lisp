@@ -3,6 +3,8 @@
 (defvar *groq-model* "openai/gpt-oss-120b") ;; or "llama3-70b-8192"
 
 (defun groq-helper (curl-command)
+  "CURL-COMMAND is a list of program arguments; running curl without a shell
+   means quotes in the prompt text can not break (or inject into) the command."
   (let ((response
           (uiop:run-program
            curl-command
@@ -13,7 +15,8 @@
 
 (defun groq-completion (content)
   (let* ((url "https://api.groq.com/openai/v1/chat/completions")
-         (api-key (uiop:getenv "GROQ_API_KEY"))
+         (api-key (or (uiop:getenv "GROQ_API_KEY")
+                      (error "Set the GROQ_API_KEY environment variable")))
          (data
            (cl-json:encode-json-to-string
             `((:model . ,*groq-model*)
@@ -22,12 +25,10 @@
                             ((:role . "user")
                              (:content . ,content)))))))
          (curl-command
-           (concatenate
-            'string
-            "curl -s " url
-            " -H \"Content-Type: application/json\""
-            " -H \"Authorization: Bearer " api-key "\" "
-            " -d '" data "'")))
+           (list "curl" "-s" url
+                 "-H" "Content-Type: application/json"
+                 "-H" (concatenate 'string "Authorization: Bearer " api-key)
+                 "-d" data)))
     (groq-helper curl-command)))
 
 #|
@@ -39,7 +40,10 @@
 |#
 
 (defun groq-extract-content (resp)
-  (cdr (nth 2 (cadr (cadr (assoc :choices resp))))))
+  "Return the text content of the first choice in a decoded Groq response."
+  (let* ((first-choice (first (cdr (assoc :choices resp))))
+         (message (cdr (assoc :message first-choice))))
+    (cdr (assoc :content message))))
 
 (defun testg ()
   (let ((resp (groq-completion "Write a Common Lisp framework for LLM MCP: write three things: 1. server side MCP hub. 2. client library. 3. an example program. Note that MCP is Model Context Protocol.")))

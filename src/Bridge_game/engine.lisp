@@ -347,8 +347,10 @@
                                     (prompt-for-card gs player lead-suit))
                                    ;; AI plays
                                    (t
+                                    ;; TRICK is built newest-first; the AI
+                                    ;; expects play order (lead card first)
                                     (let ((c (ai-select-card
-                                              hand trick leader lead-suit
+                                              hand (reverse trick) leader lead-suit
                                               (game-state-trump-suit gs)
                                               player
                                               (game-state-declarer gs)
@@ -416,14 +418,17 @@
 
     (if rubber-state
         ;; Rubber bridge scoring
-        (let ((deal-score (score-rubber-deal level suit tricks-won declarer
-                                             doubled rubber-state)))
+        (let* ((games-before (+ (rubber-state-ns-games rubber-state)
+                                (rubber-state-ew-games rubber-state)))
+               (deal-score (score-rubber-deal level suit tricks-won declarer
+                                              doubled rubber-state)))
           (display-deal-result level suit tricks-won declarer doubled deal-score)
           (display-rubber-score rubber-state)
 
-          ;; Check if a game was just won
-          (when (or (rubber-state-ns-vulnerable rubber-state)
-                    (rubber-state-ew-vulnerable rubber-state))
+          ;; Check if a game was just won by this deal
+          (when (> (+ (rubber-state-ns-games rubber-state)
+                      (rubber-state-ew-games rubber-state))
+                   games-before)
             (format t "~%  *** GAME! ***~%"))
 
           deal-score)
@@ -556,7 +561,7 @@
                          for player = (mod (+ leader i) 4)
                          for hand = (aref (game-state-hands gs) player)
                          for card = (ai-select-card
-                                     hand trick leader lead-suit
+                                     hand (reverse trick) leader lead-suit
                                      (game-state-trump-suit gs)
                                      player declarer
                                      (game-state-tricks-ns gs)

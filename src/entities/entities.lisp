@@ -3,8 +3,6 @@
 ;; Alternative license: you may also use this software under the Apache 2 License.
 ;; This copyright notice should not be removed from this file and in files derived from this file.
 ;;
-;; Common Lisp stemming code in this file was written by Steven M. Haflich based on the work of Martin Porter.
-;;
 ;; entities.lisp — Named-entity recognition for Common Lisp
 ;;
 ;; This file provides a simple dictionary-based named-entity recognition (NER)
@@ -82,16 +80,6 @@
 (print "....done loading data.")
 
 ;; ============================================================================
-;; Utility
-;; ============================================================================
-;; words-from-string tokenizes a string into a vector of word strings.
-;; Uses the myutils:tokenize-string function for the actual splitting.
-
-(defun words-from-string (str)
-  (let ((ss (myutils:tokenize-string str)))
-    (make-array (list (length ss)) :initial-contents ss)))
-
-;; ============================================================================
 ;; Entity Recognition
 ;; ============================================================================
 ;; text->entities — the main entry point for named-entity recognition.
@@ -114,51 +102,27 @@
   ;; If a raw string was passed, tokenize it into a word vector first.
   (if (typep words 'string) (setf words (words-from-string words)))
   (let* ((eo (make-entities)) ;; create empty 'entities' struct to collect results
-         (len (length words))
-         word)
-    (dotimes (i len)
-      (setq word (aref words i))
-
-      ;; --- 3-word entity check ---
-      ;; Only attempt if at least 3 words remain from position i.
-      (if (< i (- len 2))
-          (let* ((words (concatenate 'string word " " (aref words (1+ i)) " " (aref words (+ i 2))))
-                 (lookup-entity-type-list (gethash words *entities*)))
-            (dolist (lookup lookup-entity-type-list)
-                (case lookup
-                  (:cities (setf (entities-cities eo) (cons words (entities-cities eo))))
-                  (:companies (setf (entities-companies eo) (cons words (entities-companies eo))))
-                  (:countries (setf (entities-countries eo) (cons words (entities-countries eo))))
-                  (:people (setf (entities-people eo) (cons words (entities-people eo))))
-                  (:products (setf (entities-products eo) (cons words (entities-products eo))))
-                  (:universities (setf (entities-universities eo) (cons words (entities-universities eo))))))))
-
-      ;; --- 2-word entity check ---
-      ;; Only attempt if at least 2 words remain from position i.
-      (if (< i (1- len))
-          (let* ((words (concatenate 'string word " " (aref words (1+ i))))
-                 (lookup-entity-type-list (gethash words *entities*)))
-            (dolist (lookup lookup-entity-type-list)
-                (case lookup
-                  (:cities (setf (entities-cities eo) (cons words (entities-cities eo))))
-                  (:companies (setf (entities-companies eo) (cons words (entities-companies eo))))
-                  (:countries (setf (entities-countries eo) (cons words (entities-countries eo))))
-                  (:people (setf (entities-people eo) (cons words (entities-people eo))))
-                  (:products (setf (entities-products eo) (cons words (entities-products eo))))
-                  (:universities (setf (entities-universities eo) (cons words (entities-universities eo))))))))
-
-      ;; --- 1-word entity check ---
-      ;; Always attempted for every word position.
-      (let* ((words word)
-             (lookup-entity-type-list (gethash words *entities*)))
-        (dolist (lookup lookup-entity-type-list)
-            (case lookup
-              (:cities (setf (entities-cities eo) (cons words (entities-cities eo))))
-              (:companies (setf (entities-companies eo) (cons words (entities-companies eo))))
-              (:countries (setf (entities-countries eo) (cons words (entities-countries eo))))
-              (:people (setf (entities-people eo) (cons words (entities-people eo))))
-              (:products (setf (entities-products eo) (cons words (entities-products eo))))
-              (:universities (setf (entities-universities eo) (cons words (entities-universities eo))))))))
+         (len (length words)))
+    (flet ((add-matches (phrase)
+             ;; Record phrase under every entity type it is known to belong to.
+             (dolist (lookup (gethash phrase *entities*))
+               (case lookup
+                 (:cities (push phrase (entities-cities eo)))
+                 (:companies (push phrase (entities-companies eo)))
+                 (:countries (push phrase (entities-countries eo)))
+                 (:people (push phrase (entities-people eo)))
+                 (:products (push phrase (entities-products eo)))
+                 (:universities (push phrase (entities-universities eo)))))))
+      (dotimes (i len)
+        (let ((word (aref words i)))
+          ;; --- 3-word entity check (only if at least 3 words remain) ---
+          (if (< i (- len 2))
+              (add-matches (concatenate 'string word " " (aref words (1+ i)) " " (aref words (+ i 2)))))
+          ;; --- 2-word entity check (only if at least 2 words remain) ---
+          (if (< i (1- len))
+              (add-matches (concatenate 'string word " " (aref words (1+ i)))))
+          ;; --- 1-word entity check ---
+          (add-matches word))))
     eo))
 
 (defun make-entities-object (text)

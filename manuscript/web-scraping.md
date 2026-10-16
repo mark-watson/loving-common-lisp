@@ -38,12 +38,14 @@ In this chapter we build three example scripts, found in the **src/webscraping/*
   "Fetch URL, returning the body as a string, or NIL on failure.
 Drakma's default User-Agent is blocked by many sites, so we set our own.
 When a server omits the charset, Drakma decodes the body with
-*DRAKMA-DEFAULT-EXTERNAL-FORMAT* (Latin-1), which garbles UTF-8 text."
+*DRAKMA-DEFAULT-EXTERNAL-FORMAT* (Latin-1), which garbles UTF-8 text, so
+we bind it to UTF-8, by far the most common encoding on the web."
   (handler-case
-      (drakma:http-request url
-                           :user-agent "Mozilla/5.0 (compatible; CL-scraping-example)"
-                           :connection-timeout 10
-                           :redirect 5)
+      (let ((drakma:*drakma-default-external-format* :utf-8))
+        (drakma:http-request url
+                             :user-agent "Mozilla/5.0 (compatible; CL-scraping-example)"
+                             :connection-timeout 10
+                             :redirect 5))
     (error (c)
       (format *error-output* "~&Could not fetch ~A: ~A~%" url c)
       nil)))
@@ -107,7 +109,7 @@ space-collapse pass is needed here."
 
 A few decisions in this file are worth calling out.
 
-`fetch-html` sets a custom User-Agent because Drakma's default is blocked by many sites. It catches errors and returns NIL so one failed page does not stop a larger job. Note that when a server omits the charset from its `Content-Type` header, Drakma decodes the body with Latin-1, which garbles UTF-8 text; see the practice problems at the end of this chapter for one way to recover.
+`fetch-html` sets a custom User-Agent because Drakma's default is blocked by many sites. It catches errors and returns NIL so one failed page does not stop a larger job. When a server omits the charset from its `Content-Type` header, Drakma decodes the body with the external format in `drakma:*drakma-default-external-format*`, which is Latin-1 by default and garbles UTF-8 text. `fetch-html` binds this variable to `:utf-8` around the request, since most web pages use UTF-8. Pages in other encodings that also omit the charset still decode wrong; see the practice problems at the end of this chapter for one way to handle them.
 
 `node-text` walks the subtree by hand instead of calling `plump:text` on an element. The deep walk inside `plump:text` also collects comment contents, so text hidden behind HTML comments leaks into the output.
 
@@ -459,4 +461,4 @@ Here are some project ideas that build on this web scraping code:
    Build a recursive site crawler in [page-text.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/webscraping/page-text.lisp) that starts from a seed URL, extracts all internal links (using your link extraction function), and recursively scrapes pages up to a maximum depth limit (e.g. depth 2). Store the scraped pages as individual Markdown files, keeping track of visited URLs in a hash table to avoid infinite recursion.
 
 6. **Automatic Encoding Detection and Recovery**:
-   `fetch-html` in [utils.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/webscraping/utils.lisp) notes that Drakma falls back to Latin-1 when a server omits the charset, which garbles UTF-8 text. Write a wrapper function `fetch-html-with-encoding-recovery` that requests the body as bytes (`:want-stream nil` combined with a Latin-1 external format, or `drakma:http-request` with `:external-format` overridden), searches the raw bytes for `<meta charset="...">` tags, and re-decodes the byte array using `flexi-streams:octets-to-string` with the detected encoding.
+   `fetch-html` in [utils.lisp](file:///Users/markw/GITHUB/loving-common-lisp/src/webscraping/utils.lisp) assumes UTF-8 when a server omits the charset, which garbles pages in other encodings such as Windows-1252 or Shift JIS. Write a wrapper function `fetch-html-with-encoding-recovery` that requests the body as bytes (`:want-stream nil` combined with a Latin-1 external format, or `drakma:http-request` with `:external-format` overridden), searches the raw bytes for `<meta charset="...">` tags, and re-decodes the byte array using `flexi-streams:octets-to-string` with the detected encoding.

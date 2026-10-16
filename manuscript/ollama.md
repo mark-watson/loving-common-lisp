@@ -210,7 +210,7 @@ Listing of ollama.asd that defines a *defsystem* for this package:
   :description "Library for using the ollama APIs via litelm"
   :author "Mark Watson"
   :license "Apache 2"
-  :depends-on (#:litelm #:uiop)
+  :depends-on (#:litelm #:quri #:uiop)
   :components ((:file "package")
                (:file "ollama-helper")
                (:file "ollama-tools") 
@@ -623,20 +623,29 @@ Listing of ollama-cloud-search.lisp:
       (error "OLLAMA_API_KEY environment variable is not set")))
 
 ;;; Tool execution
+;;;
+;;; The query and URL arguments come from the model, so curl is run with an
+;;; argument list (no shell) and the query is URL-encoded; otherwise text like
+;;; "$(...)" in a tool argument would be executed by the shell.
+
+(defun run-curl (args)
+  "Run curl with the list of string ARGS and return its output as a string."
+  (uiop:run-program (cons "curl" args)
+                    :output :string
+                    :error-output :string
+                    :ignore-error-status t))
 
 (defun execute-web-search (args)
   "Search the web via DuckDuckGo. ARGS is an alist with :query key."
   (let* ((query (or (cdr (assoc :query args :test #'string-equal))
                     (cdr (assoc "query" args :test #'string-equal))
                     ""))
-         (encoded (substitute #\+ #\Space query))
          (url (format nil
                       "https://api.duckduckgo.com/?q=~a&format=json&no_html=1&skip_disambig=1"
-                      encoded))
-         (curl-cmd (format nil "curl -s --max-time 10 ~s" url)))
+                      (quri:url-encode query))))
     (format t "  [web_search] query: ~a~%" query)
     (handler-case
-        (let ((result (uiop:run-program curl-cmd :output :string :error-output :string)))
+        (let ((result (run-curl (list "-s" "--max-time" "10" url))))
           (format t "  [web_search] got ~a chars~%" (length result))
           result)
       (error (e) (format nil "web_search error: ~a" e)))))
@@ -645,11 +654,13 @@ Listing of ollama-cloud-search.lisp:
   "Fetch the content of a URL. ARGS is an alist with :url key."
   (let* ((url (or (cdr (assoc :url args :test #'string-equal))
                   (cdr (assoc "url" args :test #'string-equal))
-                  ""))
-         (curl-cmd (format nil "curl -s -L --max-time 15 ~s" url)))
+                  "")))
     (format t "  [web_fetch] url: ~a~%" url)
     (handler-case
-        (let ((result (uiop:run-program curl-cmd :output :string :error-output :string)))
+        (let ((result (if (or (uiop:string-prefix-p "http://" url)
+                              (uiop:string-prefix-p "https://" url))
+                          (run-curl (list "-s" "-L" "--max-time" "15" "--" url))
+                          (error "only http:// and https:// URLs can be fetched"))))
           (format t "  [web_fetch] got ~a chars~%" (length result))
           ;; Limit size to avoid overwhelming the model context
           (subseq result 0 (min 4000 (length result))))
@@ -705,7 +716,9 @@ Listing of ollama-cloud-search.lisp:
 
 The core of the implementation lies in the `cloud-search-agent` loop, which manages the stateful conversation history between the user and the assistant. When the model determines that a query requires current information (such as the price of a cryptocurrency or recent corporate news), it returns tool calls instead of a final text response. The Lisp code parses these calls, dispatches the appropriate local functions (`execute-web-search` or `execute-web-fetch`), and appends the results to the message list with the `:tool` role. This enables the model to see the results of its requested actions in the subsequent turn.
 
-Additionally, the `execute-web-fetch` function enforces a character limit on the returned HTML/text content to prevent overwhelming the model's context window.
+Additionally, the `execute-web-fetch` function limits the returned HTML or text to 4000 characters so a large page does not fill the model's context window.
+
+The tool functions receive arguments that the model wrote, so we must treat the query and the URL as untrusted input. The helper `run-curl` passes curl an argument list instead of a shell command string. No shell parses the arguments, so a tool argument such as `$(rm -rf ~)` reaches curl as plain text and never runs as a command. `execute-web-search` URL-encodes the query with `quri:url-encode` (this is why **ollama.asd** depends on **quri**), and `execute-web-fetch` only fetches URLs that start with `http://` or `https://`. The `--` argument tells curl that the URL is not an option, even if it starts with a dash. With `:ignore-error-status t`, a failed request returns curl's output instead of signaling an error.
 
 Here is an example search tool session:
 

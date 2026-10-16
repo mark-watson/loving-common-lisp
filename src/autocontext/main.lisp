@@ -49,7 +49,9 @@
 
 (defun tokenize (text)
   "Simple whitespace tokenizer."
-  (split-sequence:split-sequence #\Space text :remove-empty-subseqs t))
+  (split-sequence:split-sequence-if
+   (lambda (ch) (member ch '(#\Space #\Tab #\Newline #\Return)))
+   text :remove-empty-subseqs t))
 
 (defun list-txt-files-in-directory (dir-path)
   "Return a list of pathnames for *.txt files in the directory given by DIR-PATH (a string or pathname)."
@@ -96,14 +98,24 @@
                                   nconcing (chunk-text (uiop:read-file-string file))))))
     (format t "~&Loaded ~d text chunks." (length chunks))
     ;;(format t "&load-and-chunk-documents: chunks=~A~%~%" chunks)
-    chunks));;; Embedding Generation (Interface to Python)
+    chunks))
+
+;;; Embedding Generation (Interface to Python)
 
 (defun generate-embeddings (text-list)
   "Calls the Python script to generate embeddings for a list of strings.
    The command is passed as a list of arguments (it never goes through a
    shell), and :DIRECTORY pins uv's working directory so it finds both
-   pyproject.toml and generate_embeddings.py."
-  (let* ((input-string (format nil "~{~a~%~}" text-list))
+   pyproject.toml and generate_embeddings.py.
+   The Python script embeds one input line per text, so newlines inside a
+   text are replaced by spaces; otherwise a multi-line chunk would produce
+   several embedding rows and misalign rows with chunks."
+  (let* ((input-string (format nil "~{~a~%~}"
+                               (mapcar (lambda (text)
+                                         (substitute-if #\Space
+                                                        (lambda (ch) (member ch '(#\Newline #\Return)))
+                                                        text))
+                                       text-list)))
          (command (list "uv" "run" "generate_embeddings.py"))
          (json-output (uiop:run-program command
                                         :directory *system-directory*

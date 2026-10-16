@@ -64,6 +64,10 @@
   ;; Below the line: trick points toward game
   (ns-below      0)    ; N-S points below the line (current game)
   (ew-below      0)    ; E-W points below the line (current game)
+  ;; Below-the-line points over the whole rubber; NS-BELOW / EW-BELOW are
+  ;; reset after each game but every trick point counts in the final total
+  (ns-below-total 0)
+  (ew-below-total 0)
   ;; Above the line: bonuses and penalties
   (ns-above      0)    ; N-S points above the line (cumulative)
   (ew-above      0)    ; E-W points above the line (cumulative)
@@ -132,19 +136,22 @@
             (1 (incf above-score 50))
             (2 (incf above-score 100)))
 
-          ;; Slam bonus (above the line)
-          (when (slam-p level)
-            (incf above-score (if vul 750 500)))
-          (when (grand-slam-p level)
-            (incf above-score (if vul 1500 1000)))
+          ;; Slam bonus (above the line): a grand slam earns the grand slam
+          ;; bonus instead of (not in addition to) the small slam bonus
+          (cond ((grand-slam-p level)
+                 (incf above-score (if vul 1500 1000)))
+                ((slam-p level)
+                 (incf above-score (if vul 750 500))))
 
           ;; Record scores
           (if ns-side
               (progn
                 (incf (rubber-state-ns-below rubber-state) below-score)
+                (incf (rubber-state-ns-below-total rubber-state) below-score)
                 (incf (rubber-state-ns-above rubber-state) above-score))
               (progn
                 (incf (rubber-state-ew-below rubber-state) below-score)
+                (incf (rubber-state-ew-below-total rubber-state) below-score)
                 (incf (rubber-state-ew-above rubber-state) above-score)))
 
           ;; Check if this side made game (below >= 100)
@@ -211,11 +218,12 @@
     (t (values 0 nil))))
 
 (defun rubber-total-scores (rs)
-  "Calculate final rubber totals for each side.
+  "Calculate final rubber totals for each side: all points scored above
+   and below the line, plus the rubber bonus.
    Returns (values ns-total ew-total)."
   (multiple-value-bind (bonus winner) (rubber-bonus rs)
-    (let ((ns-total (+ (rubber-state-ns-above rs)))
-          (ew-total (+ (rubber-state-ew-above rs))))
+    (let ((ns-total (+ (rubber-state-ns-above rs) (rubber-state-ns-below-total rs)))
+          (ew-total (+ (rubber-state-ew-above rs) (rubber-state-ew-below-total rs))))
       (case winner
         (:ns (incf ns-total bonus))
         (:ew (incf ew-total bonus)))

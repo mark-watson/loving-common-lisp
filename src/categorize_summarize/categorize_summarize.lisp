@@ -2,17 +2,6 @@
 ;; License: AGPL version 3 (http://www.gnu.org/licenses/agpl-3.0.txt)
 ;; Alternative license: you may also use this software under the Apache 2 License.
 ;; This copyright notice should not be removed from this file and in files derived from this file.
-;;
-;; Common Lisp stemming code in this file was written by Steven M. Haflich based on the work of Martin Porter.
-
-(defpackage categorize_summarize
-  ;;(:use :cls :asdf)
-  (:export
-   :summarize
-   :categorize
-   :get-cat-tag-names)
-  (:documentation
-   "Mark Watson's NLP utilities released under the AGPL and Apache 2 Licenses"))
 
 (in-package :categorize_summarize)
 
@@ -46,6 +35,7 @@
 
 (defvar categoryHashtables)
 (defvar categoryNames)
+(defvar categoryToHash)
 
 (defun get-cat-tag-names ()
   categoryNames)
@@ -90,11 +80,9 @@
                (round (* (aref category-score-accumulation-array i) 10)))
               ss))))
       (setf ss (remove-duplicates ss :test #'equal)) ;; new bug? not sure why this is now required.
-      (print (list "______ categorize  ss:" ss))
       (setf ss (list-sort ss))
       (let ((cutoff (/ (or (cadar ss) 0) 1.25))
             (results-array '()))
-        (print (list "______ cutoff=" cutoff))
         (dolist (hit ss)
           (if (> (cadr hit) cutoff)
               (setf results-array (cons hit results-array))))
@@ -117,7 +105,7 @@
       (let* ((word (svref words i)))
         (dolist (cat cats)
           (let* ((hash (gethash (car cat) categoryToHash))
-                 (value (gethash word hash)))
+                 (value (gethash (string-downcase word) hash)))
             (if value
                 (setq score (+ score (* 0.01 value (cadr cat)))))))
         (push word sentence)

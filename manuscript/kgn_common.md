@@ -41,7 +41,7 @@ The application prints out automatically generated SPARQL queries. For the above
 
 {linenos=off}
 ~~~~~~~~
-Trying to get entity by name = Steve Jobs using SPARQL with type:
+Trying to get entity by name = Steve Jobs using SPARQL with type <http://dbpedia.org/ontology/Person>:
 ~~~~~~~~
 {lang="sparql",linenos=off}
 ~~~~~~~~
@@ -55,7 +55,7 @@ select distinct ?s ?comment { ?s ?p "Steve Jobs"@en .
 
 {linenos=off}
 ~~~~~~~~
-Trying to get entity by name = San Francisco using SPARQL with type:
+Trying to get entity by name = San Francisco using SPARQL with type <http://dbpedia.org/ontology/City>:
 ~~~~~~~~
 {lang="sparql",linenos=off}
 ~~~~~~~~
@@ -265,13 +265,13 @@ Hopefully after reading through sample output and seeing the screen shot of the 
 
 ## Project Configuration and Running the Application
 
-The following listing of **kgn.asd** shows the ten packages this example depends on (five of these are also examples in this book, and five are in the public Quicklisp repository):
+The following listing of **kgn.asd** shows the nine packages this example depends on (five of these are also examples in this book, and four are in the public Quicklisp repository):
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
 ;;;; knowledgegraphnavigator.asd
 
-((asdf:defsystem #:kgn-common
+(asdf:defsystem #:kgn-common
   :description "common utilities for Knowledge Graph Navigator"
   :author "Mark Watson <markw@markwatson.com>"
   :license "Apache 2"
@@ -288,7 +288,7 @@ Listing of **package.lisp**:
 ;;;; package.lisp
 
 (defpackage #:kgn-common
-(:use #:cl #:alexandria #:myutils  #:myutils #:sparql-cache
+(:use #:cl #:alexandria #:myutils #:sparql-cache
    #:entities #:entity-uris #:kbnlp)
 (:export #:kgn-common #:remove-stop-words        
          #:entity-results->relationship-links
@@ -414,87 +414,73 @@ The following diagram shows the high-level architecture of the Knowledge Graph N
 
 I use the standard command line **curl** utility program with the Common Lisp package **uiop** to make HTML GET requests to the DBPedia public Knowledge Graph and the package **drakma** to url-encode parts of a query. The source code is in a separate Quicklisp library located in **src/sparql-cache/sparql.lisp**. A non-caching library is also available in **src/sparql/sparql.lisp**.
 
-In the following listing of **src/sparql-cache/sparql.lisp**, lines 8, 24, 39, and 55 I use some caching code that we will look at later. The nested **replace-all** statements in lines 12-13 are a kluge to remove Unicode characters that occasionally caused runtime errors in the KGN application.
+The following listing shows the query code in **src/sparql-cache/sparql.lisp**. The function **fetch-sparql-json** in lines 3 through 17 runs **curl** to send a query to a SPARQL endpoint and returns the JSON response as a string. The nested **replace-all** calls in lines 5, 6, 16, and 17 are a kluge to remove Unicode escape sequences that occasionally caused runtime errors in the KGN application.
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
-(in-package #:kgn)
+(in-package #:sparql-cache)
 
-(ql:quickload "cl-json")
-(ql:quickload "drakma")
+(defun fetch-sparql-json (endpoint query)
+  "Run QUERY against the SPARQL ENDPOINT URL and return the JSON response string."
+  (replace-all
+   (replace-all
+    (uiop:run-program
+     (list
+      "curl"
+      (concatenate 'string
+                   endpoint
+                   "?query="
+                   (drakma:url-encode query :utf-8)
+                   "&format=json"))
+     :output :string)
+    "\\u2013" " ")
+   "\\u" " "))
 
-(defun sparql-dbpedia (query)
-  (let* (ret
-         (cr (fetch-result-dbpedia query))
-         (response
-          (or
-           cr
-           (replace-all
-            (replace-all
-             (uiop:run-program 
-              (list
-               "curl" 
-               (concatenate 'string
-                            "https://dbpedia.org/sparql?query="
-                            (drakma:url-encode query :utf-8)
-                            "&format=json"))
-              :output :string)
-             "\\u2013" " ")
-            "\\u" " "))))
-    (save-query-result-dbpedia query response)
-    (ignore-errors
-      (with-input-from-string
-          (s response)
-        (let ((json-as-list (json:decode-json s)))
-          (setf
-           ret
-           (mapcar #'(lambda (x)
-                       ;;(pprint x)
-                       (mapcar #'(lambda (y)
-                                   (list (car y) (cdr (assoc :value (cdr y))))) x))
-                   (cdr (cadddr (cadr json-as-list))))))))
-    ret))
+(defun json-bindings->lists (response)
+  "Decode a SPARQL JSON result string into a list of rows, each row a list of
+(variable-keyword value) pairs."
+  (with-input-from-string (s response)
+    (let* ((json-as-list (json:decode-json s))
+           (bindings (cdr (assoc :bindings
+                                 (cdr (assoc :results json-as-list))))))
+      ;;(pprint json-as-list)  ; uncomment this to see how following expression works:
+      (mapcar #'(lambda (x)
+                  (mapcar #'(lambda (y)
+                              (list (car y) (cdr (assoc :value (cdr y))))) x))
+              bindings))))
 
-(defun sparql-ask-dbpedia (query)
+(defun dbpedia (query)
   (let* ((cr (fetch-result-dbpedia query))
-         (response
-          (or
-           cr
-           (replace-all
-            (replace-all
-             (uiop:run-program 
-              (list
-               "curl" 
-               (concatenate 'string
-                            "https://dbpedia.org/sparql?query="
-                            (drakma:url-encode query :utf-8)
-                            "&format=json"))
-              :output :string)
-             "\\u2013" " ")
-            "\\u" " "))))
-    (save-query-result-dbpedia query response)
-    (if  (search "true" response)
-        t
-      nil)))
+         (response (or cr (fetch-sparql-json "https://dbpedia.org/sparql" query))))
+    (unless cr (save-query-result-dbpedia query response))
+    (ignore-errors (json-bindings->lists response))))
+
+(defun ask-dbpedia (query)
+  (let* ((cr (fetch-result-dbpedia query))
+         (response (or cr (fetch-sparql-json "https://dbpedia.org/sparql" query))))
+    (unless cr (save-query-result-dbpedia query response))
+    (if (search "true" response) t nil)))
 ~~~~~~~~
 
-The code for replacing Unicode characters is messy but prevents problems later when we are using the query results in the example application.
+The code for replacing Unicode characters is messy but prevents problems later when we use the query results in the example application.
 
-The code **(json-as-list (json:decode-json s))** on line 28 converts a deeply nested JSON response to nested Common Lisp lists. You may want to print out the list to  better understand the **mapcar** expression on lines 31-35. There is no magic to writing expressions like this, in a repl I set **json-as-list** to the results of one query, and I spent a minute or two experimenting with the nested **mapcar** expression to get it to work with my test case.
+The function **json-bindings->lists** in lines 19 through 30 parses a SPARQL JSON response. The code **(json:decode-json s)** on line 23 converts the deeply nested JSON response to nested Common Lisp lists. Lines 24 and 25 use **assoc** to find the **results** object and then the list of **bindings** inside it, one binding per result row. Looking up keys by name, instead of using a fixed chain of **car** and **cdr** calls, keeps the code working when an endpoint returns the JSON keys in a different order. You may want to print out the list (uncomment line 26) to better understand the nested **mapcar** expression on lines 27 through 30 that turns each row into a list of variable names and values.
 
-The implementation for **sparql-ask-dbpedia** in lines 38-58 is simpler because we don't have to fully parse the returned SPARQL query results. A SPARQL **ask** type query returns a true/false answer to a query. We will use this to determine the types of entities in query text. While our NLP library identifies entity types, making additional **ask** queries to DBPedia to verify entity types will provide better automated results.
+The functions **dbpedia** (lines 32 through 36) and **ask-dbpedia** (lines 38 through 42) first look for the query in the cache that we will look at in the next section. Only when the cache has no entry do they call **fetch-sparql-json** and save the new response. **ask-dbpedia** is simpler because we don't have to parse the returned SPARQL query results. A SPARQL **ask** type query returns a true/false answer. We use this to find the types of entities in query text. While our NLP library identifies entity types, making additional **ask** queries to DBPedia to check entity types gives better automated results.
+
+The file also defines the function **wikidata** that works like **dbpedia** but sends queries to the WikiData SPARQL endpoint.
 
 ## Implementing the Caching Layer
 
-While developing KGN and also using it as an end user, many SPARQL queries to DBPedia contain repeated entity names so it makes sense to write a caching layer.  We use a SQLite database "~/.kgn_cache.db" to store queries and responses.
+While developing KGN and also using it as an end user, many SPARQL queries to DBPedia contain repeated entity names so it makes sense to write a caching layer.  We use the SQLite database file **kgn_cache.db** in the current directory to store queries and responses.
 
 The caching layer is implemented in the file **src/sparql-cache/sparql.lisp** and some of the relevant code is listed here:
 
 {lang="lisp",linenos=on}
 ~~~~~~~~
-;;; SqList caching for SPARQL queries:
+;;; SQLite caching for SPARQL queries:
 
-(defvar *db-path* (pathname "~/.kgn_cache.db"))
+(defvar *db-path* (pathname "kgn_cache.db"))
 
 (defun create-dbpedia ()
   (sqlite:with-open-database (d *db-path*)
@@ -536,7 +522,7 @@ The utilities in the file **src/kgn-common/kgn-common.lisp** can be seen in this
 
 (defun check-uri (uri)
   "sloppy code fix: URIs have different forms - normalize these"
-  (if (equal (type-of uri) 'cons) (setf uri (second uri)))
+  (if (consp uri) (setf uri (second uri)))
   (entity-uris:ensure-uri-brackets uri))
 
 (defun clean-comment (comment-string)
@@ -606,10 +592,9 @@ The utilities in the file **src/kgn-common/kgn-common.lisp** can be seen in this
    ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ~A . @@ ~
 } LIMIT 15" name dbpedia-type))
          (results (sparql-cache:dbpedia (replace-all sparql "@@" " "))))
-    (print results)
     (terpri message-stream)
     (format message-stream
-      "Trying to get entity by name = ~A using SPARQL with type:"
+      "Trying to get entity by name = ~A using SPARQL with type ~A:"
       name dbpedia-type)
     (terpri message-stream)
     (apply colorize-sparql-function (list sparql :stream message-stream))
@@ -622,13 +607,13 @@ The utilities in the file **src/kgn-common/kgn-common.lisp** can be seen in this
     ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ~A . @@ ~
 } LIMIT 15" name schema-org-type)))
           (format
-           t
+           message-stream
            "No results for ~A for last SPARQL query using type ~A so trying type ~A" name dbpedia-type schema-org-type)
           (terpri message-stream)
           (setf results (sparql-cache:dbpedia (replace-all sparql2 "@@" " ")))
           (if (null results)
               (format
-               t
+               message-stream
                "No results for ~A for last SPARQL query using type ~A"
                name schema-org-type)
               (let* ((filtered (remove-if
@@ -645,8 +630,10 @@ The utilities in the file **src/kgn-common/kgn-common.lisp** can be seen in this
                               #'(lambda (x)
                                 (list (concatenate 'string "<" (cadar x) ">") (cadadr x)))
                                  filtered) :test #'equal)))
-                (format t "~%~%********** dbpedia-get-entities-by-name: uris:~%")
-                (pprint uris) (terpri)
+                (format message-stream
+                        "~%~%********** dbpedia-get-entities-by-name: uris:~%")
+                (pprint uris message-stream)
+                (terpri message-stream)
                 uris))))
     results))
 
@@ -722,7 +709,7 @@ The utilities in the file **src/kgn-common/kgn-common.lisp** can be seen in this
   OPTIONAL { ~A <http://dbpedia.org/ontology/populationDensity> ?populationDensity } .@@  ~
   OPTIONAL { ~A <http://www.w3.org/2000/01/rdf-schema#label> ?label . }@@ ~
 } LIMIT 30@@"
-                   country-uri country-uri country-uri country-uri country-uri))
+                   country-uri country-uri country-uri country-uri))
          (results (sparql-cache:dbpedia  (replace-all query "@@" " "))))
     (format message-stream "~%SPARQL to get COUNTRY data for ~A:~%~%" country-uri)
     (apply colorize-sparql-function (list query :stream message-stream))

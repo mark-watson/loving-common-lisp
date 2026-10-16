@@ -1,5 +1,5 @@
 (in-package :lw-grapher)
-;; Compyright 2021-2022 Mark Watson All Rights Reserved.
+;; Copyright 2021-2022 Mark Watson All Rights Reserved.
 ;; License: Apache 2
 
 ;; A Grapher (using the layout algorithm from the ISI-Grapher user guide) with an info panel
@@ -18,7 +18,9 @@
                      (setf last-selected-node object)
                      (capi:highlight-pinboard-object pane object)
                      (let ((c-stream (collector-pane-stream output-pane))) 
-                       (format c-stream (funcall node-callback-click (text-node-full-text object)))
+                       ;; WRITE-STRING, not FORMAT: node text (often a URI)
+                       ;; may contain ~ characters
+                       (write-string (funcall node-callback-click (text-node-full-text object)) c-stream)
                        (terpri c-stream)))))))
          (handle-mouse-click-shift-on-pane (pane x y)
            (ignore-errors
@@ -30,7 +32,7 @@
                      (setf last-selected-node object)
                      (capi:highlight-pinboard-object pane object)
                      (let ((c-stream (collector-pane-stream output-pane)))
-                       (format c-stream (funcall node-callback-click-shift (text-node-full-text object)))
+                       (write-string (funcall node-callback-click-shift (text-node-full-text object)) c-stream)
                        (terpri c-stream)))))))
          
          (info-panel-node-children-helper (node-text)

@@ -80,7 +80,7 @@ The following code snippets are part of the file **knowledge-base-navigator.lisp
 The tokenizer parses user input into individual tokens:
 
 ```lisp
-(defun tokenize-string (string &key (separators '(#\Space #\Tab #\Newline #\Return)))
+(defun tokenize-string (string &key (separators '(#\Space #\Tab #\Newline #\Return #\,)))
   (let ((tokens '())
         (current-word (make-string-output-stream)))
     (loop for char across string
@@ -107,34 +107,31 @@ This function uses a character-by-character approach:
 
 ### HTTP Communication via curl
 
-Rather than using Common Lisp HTTP libraries (which can have SSL/Certificate issues), this project invokes `curl` directly:
+Rather than using Common Lisp HTTP libraries (which can have SSL/Certificate issues), this project runs `curl` directly:
 
 ```lisp
-(defun run-curl-command-with-json (url json-payload)
-  (let ((temp-file (uiop:run-program "mktemp" :output :string)))
-    (setf temp-file (string-trim '(#\Space #\Tab #\Newline #\Return) temp-file))
+(defun run-curl-command-with-json (url json-payload &optional headers)
+  "POST JSON-PAYLOAD to URL with curl. HEADERS is a list of \"Name: value\"
+   strings. Returns the response body string."
+  (uiop:with-temporary-file (:pathname temp-file :type "json")
     (with-open-file (stream temp-file :direction :output :if-exists :supersede)
       (write-string json-payload stream))
-    (let* ((curl-cmd
-            (format nil "curl -s -X POST \"~A\" -H \"Content-Type: application/json\" -d @~A"
-                    url temp-file))
-           (response-body
-            (multiple-value-bind (output error-output exit-code)
-                (uiop:run-program curl-cmd :output :string :error-output :string :ignore-error-status t)
-              (declare (ignore exit-code error-output))
-              output)))
-      (uiop:run-program (format nil "rm -f ~A" temp-file) :ignore-error-status t)
-      response-body)))
+    (uiop:run-program (append (list "curl" "-s" "-X" "POST" url
+                                    "-H" "Content-Type: application/json")
+                              (loop for h in headers append (list "-H" h))
+                              (list "-d" (concatenate 'string "@" (namestring temp-file))))
+                      :output :string
+                      :error-output :string
+                      :ignore-error-status t)))
 ```
 
-**Key technique**: JSON payload is written to a temporary file, then passed to curl with `-d @filename`. This avoids complex shell escaping issues with embedded quotes and special characters. 
+**Key technique**: we write the JSON payload to a temporary file and pass it to curl with `-d @filename`. We also pass curl an argument list instead of a shell command string, so no shell ever parses the payload, the URL, or the headers. Quotes and other special characters in a prompt can not break the command.
 
 The flow:
-1. Create temp file with `mktemp`
-2. Write JSON payload to file
-3. Execute curl with `@filename` syntax
-4. Clean up temp file
-5. Return response body
+1. `uiop:with-temporary-file` creates a temporary file and deletes it when the body exits, even after an error
+2. Write the JSON payload to the file
+3. Run curl with the `@filename` syntax, adding a `-H` argument for each extra header in HEADERS
+4. Return the response body
 
 ### Gemini API Integration
 
@@ -142,51 +139,57 @@ The main API function constructs requests and parses responses:
 
 ```lisp
 (defun get-gemini-chat-completion (user-prompt)
-  "Sends a prompt to the Gemini API and returns the content of the response."
-  (let* ((api-key (uiop:getenv "GEMINI_API_KEY"))
-         (model-name "models/gemini-3-flash-preview")
-         (base-url (format nil "https://generativelanguage.googleapis.com/v1beta/~A:generateContent?key=~A" 
-                           model-name api-key))
+  "Sends a prompt to the Gemini Interactions API and returns the content of the response."
+  (let* ((api-key (or (uiop:getenv "GEMINI_API_KEY") (uiop:getenv "GOOGLE_API_KEY")))
+         (model-name "gemini-3-flash-preview")
+         (base-url "https://generativelanguage.googleapis.com/v1beta/interactions")
          (payload
-           `((:contents . ,(vector
-                            `((:parts . ,(vector `((:text . ,user-prompt)))))))))
+           `((:model . ,model-name)
+             (:input . ,user-prompt)))
          (json-payload (json:encode-json-to-string payload)))
     
     (unless (and api-key (not (string= api-key "")))
-      (error "GEMINI_API_KEY environment variable is not set."))
+      (error "GEMINI_API_KEY (or GOOGLE_API_KEY) environment variable is not set."))
 
     (handler-case
-        (let* ((response-body (run-curl-command-with-json base-url json-payload))
+        ;; the API key is sent in a header rather than in the URL so that it
+        ;; does not show up in process listings:
+        (let* ((response-body
+                 (run-curl-command-with-json
+                  base-url json-payload
+                  (list (concatenate 'string "x-goog-api-key: " api-key)
+                        "Api-Revision: 2026-05-20")))
                (parsed-response (json:decode-json-from-string response-body))
-               (candidates (cdr (assoc :candidates parsed-response))))
-          (if candidates
-              (let* ((first-candidate (first candidates))
-                     (content (cdr (assoc :content first-candidate)))
-                     (parts (cdr (assoc :parts content)))
-                     (first-part (first parts))
-                     (text (cdr (assoc :text first-part))))
-                text)
+               (steps (cdr (assoc :steps parsed-response))))
+          (if steps
+              ;; Find the last model_output step and extract its text
+              (loop for step in (reverse steps)
+                    when (string-equal (cdr (assoc :type step)) "model_output")
+                    return (let* ((content (cdr (assoc :content step)))
+                                  (first-content (first content)))
+                             (cdr (assoc :text first-content))))
               (progn
-                (format *error-output* "~%[Error] Gemini API response did not contain candidates: ~A~%" 
-                        parsed-response)
+                (format *error-output* "~%[Error] Gemini Interactions API response did not contain steps: ~A~%" parsed-response)
                 nil)))
       (error (e)
         (format *error-output* "An unexpected error occurred: ~A~%" e)
         nil))))
 ```
 
-**API Structure Notes**:
-
-
 The following diagram shows the high-level architecture of the Knowledge Base Navigator system developed in this chapter:
 
 {width: "80%"}
 ![Architecture diagram](images/knowledge_navigator_architecture.png)
 
+**API Structure Notes**:
+
+- The code uses the Gemini Interactions API. The request is a JSON object with the model name and the user input.
+- The function reads the API key from GEMINI_API_KEY, or from GOOGLE_API_KEY when the first is not set.
+- The key goes in the `x-goog-api-key` header, not in the URL, so it does not show up in process listings.
 - Backquote (`) is used for template construction, with comma (,) for evaluation
-- Gemini expects a nested JSON structure: contents -> parts -> text
 - `json:encode-json-to-string` converts Lisp data to JSON
 - `json:decode-json-from-string` parses the response
+- The response holds a list of steps. The loop walks the steps from last to first and returns the text of the last `model_output` step.
 - `handler-case` provides error handling, returning nil on failure
 
 **Response parsing pattern**: The Gemini response has nested associative lists (alists). Navigate with:
@@ -231,9 +234,9 @@ The `kbn-ui` function implements an interactive text user interface:
 The entity extraction creates a prompt that instructs Gemini to return ONLY a numbered list:
 
 ```lisp
-(format nil "Analyze the following user text: \"~A\".~
-Identify potential encyclopedic entities (people, companies, countries, cities, products, concepts, etc.) mentioned.~
-Categorize them if necessary. Return them as a neatly formatted numbered list (1., 2., 3., etc.) with a short 1-sentence description for each.~
+(format nil "Analyze the following user text: \"~A\".~%~
+Identify potential encyclopedic entities (people, companies, countries, cities, products, concepts, etc.) mentioned.~%~
+Categorize them if necessary. Return them as a neatly formatted numbered list (1., 2., 3., etc.) with a short 1-sentence description for each.~%~
 DO NOT return any other conversational text, ONLY the numbered list so the user can see their options." prompt)
 ```
 
@@ -325,7 +328,7 @@ Bill Gates co-founded Microsoft with Paul Allen in 1975. He served as CEO until 
 ## Environment Setup
 
 ```bash
-# Set API key before starting Lisp
+# Set API key before starting Lisp (GOOGLE_API_KEY also works)
 export GEMINI_API_KEY="your_api_key_here"
 
 # Start SBCL

@@ -27,20 +27,29 @@
       (error "OLLAMA_API_KEY environment variable is not set")))
 
 ;;; Tool execution
+;;;
+;;; The query and URL arguments come from the model, so curl is run with an
+;;; argument list (no shell) and the query is URL-encoded; otherwise text like
+;;; "$(...)" in a tool argument would be executed by the shell.
+
+(defun run-curl (args)
+  "Run curl with the list of string ARGS and return its output as a string."
+  (uiop:run-program (cons "curl" args)
+                    :output :string
+                    :error-output :string
+                    :ignore-error-status t))
 
 (defun execute-web-search (args)
   "Search the web via DuckDuckGo. ARGS is an alist with :query key."
   (let* ((query (or (cdr (assoc :query args :test #'string-equal))
                     (cdr (assoc "query" args :test #'string-equal))
                     ""))
-         (encoded (substitute #\+ #\Space query))
          (url (format nil
                       "https://api.duckduckgo.com/?q=~a&format=json&no_html=1&skip_disambig=1"
-                      encoded))
-         (curl-cmd (format nil "curl -s --max-time 10 ~s" url)))
+                      (quri:url-encode query))))
     (format t "  [web_search] query: ~a~%" query)
     (handler-case
-        (let ((result (uiop:run-program curl-cmd :output :string :error-output :string)))
+        (let ((result (run-curl (list "-s" "--max-time" "10" url))))
           (format t "  [web_search] got ~a chars~%" (length result))
           result)
       (error (e) (format nil "web_search error: ~a" e)))))
@@ -49,11 +58,13 @@
   "Fetch the content of a URL. ARGS is an alist with :url key."
   (let* ((url (or (cdr (assoc :url args :test #'string-equal))
                   (cdr (assoc "url" args :test #'string-equal))
-                  ""))
-         (curl-cmd (format nil "curl -s -L --max-time 15 ~s" url)))
+                  "")))
     (format t "  [web_fetch] url: ~a~%" url)
     (handler-case
-        (let ((result (uiop:run-program curl-cmd :output :string :error-output :string)))
+        (let ((result (if (or (uiop:string-prefix-p "http://" url)
+                              (uiop:string-prefix-p "https://" url))
+                          (run-curl (list "-s" "-L" "--max-time" "15" "--" url))
+                          (error "only http:// and https:// URLs can be fetched"))))
           (format t "  [web_fetch] got ~a chars~%" (length result))
           ;; Limit size to avoid overwhelming the model context
           (subseq result 0 (min 4000 (length result))))

@@ -1,9 +1,9 @@
 ;;;; knowledgegraphnavigator.asd
 
 (asdf:defsystem #:sparql
-  :description "Describe dbpedia here"
-  :author "Your Name <your.name@example.com>"
-  :license "Specify license here"
+  :description "SPARQL queries against DBpedia, Wikidata, and local RDF stores"
+  :author "Mark Watson"
+  :license "Apache 2"
   :depends-on (#:uiop #:drakma #:cl-json #:myutils)
   :components ((:file "package")
                (:file "sparql")))

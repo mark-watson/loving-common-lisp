@@ -1,5 +1,5 @@
 (in-package :lw-grapher)
-;; Compyright 2021-2022 Mark Watson All Rights Reserved.
+;; Copyright 2021-2022 Mark Watson All Rights Reserved.
 ;; License: Apache 2
 
 ;; A text node class for use with simple Grapher and info panel Grapher
@@ -42,7 +42,7 @@
 (defun make-text-node (graph-pane node)
   (declare (ignorable graph-pane))
   (let* ((node-name (format nil "~A" node))
-         (last-index (search "/" node :from-end t)))
+         (last-index (search "/" node-name :from-end t)))
     (if last-index
         (make-instance 'text-node :text (myutils:replace-all (myutils:replace-all (subseq node-name (1+ last-index)) "_" " ") ">" "") :full-text node-name)
         (make-instance 'text-node :text node-name :full-text node-name))))

@@ -5,26 +5,18 @@
 ;;
 ;; Common Lisp stemming code in this file was written by Steven M. Haflich based on the work of Martin Porter.
 
-(defpackage fasttag
-  ;;(:use :cls :asdf)
-  (:export
-   :part-of-speech-tagger)
-  (:documentation
-   "Mark Watson's NLP utilities released under the AGPL and Apache 2 Licenses"))
-
 (in-package :fasttag)
 
-(defvar *base-pathname* #.(or *compile-file-truename* *load-truename*))
-(defvar a1 (write-to-string *base-pathname*))
-(defvar *current-directory* (subseq a1 3 (- (length a1) 13)))
+;; lex-hash is defined and filled in linguistic_data/FastTagData.lisp, which is
+;; loaded at load time; declare it special here so the compiler knows about it.
+(defvar lex-hash)
 
-(load (concatenate 'string *current-directory* "linguistic_data/FastTagData"))
-(defun words-from-string (str)
-  (let ((ss (myutils:tokenize-string str)))
-    (make-array (list (length ss)) :initial-contents ss)))
+(defvar *base-pathname* #.(or *compile-file-truename* *load-truename*))
+
+(load (merge-pathnames "linguistic_data/FastTagData.lisp" *base-pathname*))
 
 (defun part-of-speech-tagger (words &aux lcw r w)
-  (if (typep words 'string) (setq words (words-from-string words)))
+  (if (typep words 'string) (setq words (myutils:words-from-string words)))
   (let* ((len (length words))
          (ret (make-array (list len)))
          lastRet
@@ -59,7 +51,7 @@
               (setq r "NN")))
 
                                         ; rule 2: convert a noun to a number if a "." appears in the word (but not if the token is just ".")
-      (if (and (search "." w) (> (length w) 1)) (setq r "CD"))
+      (if (and (equal (search "N" r) 0) (search "." w) (> (length w) 1)) (setq r "CD"))
 
                                         ; rule 3: convert a noun to a past participle if word ends with "ed"
       (if (equal (search "N" r) 0)
@@ -79,7 +71,7 @@
            (equal r "NNS"))
           (let ((i (search "al" w :from-end t)))
             (if (equal i (- (length w) 2))
-                (setq r "RB"))))
+                (setq r "JJ"))))
 
                                         ; rule 6: convert a noun to a verb if the receeding word is "would"
       (if (equal (search "NN" r) 0)
@@ -100,7 +92,7 @@
             (if (equal i (- (length w) 3))
                 (setq r "VBG"))))
 
-      (setq lastRet ret)
+      (setq lastRet r)
       (setq lastWord w)
       (setf (aref ret k) r))
     ret))

@@ -214,6 +214,8 @@ The function `read-recent-imessages` joins the `message` table with the `handle`
 
 ```lisp
 (defun read-recent-imessages (&optional (limit 5))
+  ;; LIMIT is spliced into the SQL text, so only accept a positive integer:
+  (check-type limit (integer 1))
   (let* ((db-path (namestring (merge-pathnames "Library/Messages/chat.db" 
                                                (user-homedir-pathname))))
          ;; Join the message table with the handle table to get the sender's phone/email
@@ -234,6 +236,8 @@ The SQL query extracts three fields:
 - `m.is_from_me`: an integer (1 if sent by the user, 0 if received).
 - `h.id`: the identifier of the sender (phone number or Apple Account email).
 - `m.text`: the text body of the message.
+
+The function splices `limit` into the SQL text with `format`, so `check-type` first makes sure it is a positive integer. A string such as `"5; DROP TABLE message"` would otherwise become part of the query.
 
 The `-json` argument instructs `sqlite3` to output a JSON array of objects. Common Lisp programs can pass this string directly to a JSON parser such as `cl-json` or `shasht`.
 

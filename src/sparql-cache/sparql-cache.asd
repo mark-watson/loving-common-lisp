@@ -3,9 +3,9 @@
 ;; one time only: create empty cache database: sqlite3 ~/.kgn_cache.db
 
 (asdf:defsystem #:sparql-cache
-  :description "Describe dbpedia here"
-  :author "Your Name <your.name@example.com>"
-  :license "Specify license here"
+  :description "SPARQL queries against DBpedia and Wikidata with a SQLite result cache"
+  :author "Mark Watson"
+  :license "Apache 2"
   :depends-on (#:uiop #:drakma #:sqlite #:cl-json #:myutils)
   :components ((:file "package")
                (:file "sparql")))

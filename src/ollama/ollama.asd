@@ -4,7 +4,7 @@
   :description "Library for using the ollama APIs via litelm"
   :author "Mark Watson"
   :license "Apache 2"
-  :depends-on (#:litelm #:uiop)
+  :depends-on (#:litelm #:quri #:uiop)
   :components ((:file "package")
                (:file "ollama-helper")
                (:file "ollama-tools") 

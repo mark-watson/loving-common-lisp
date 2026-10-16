@@ -19,6 +19,11 @@
             for tr = (string-trim '(#\Space #\Tab #\Newline #\Return) line)
             when (plusp (length tr)) collect tr))))
 
+;; names.txt lives next to this source file; resolve it from the load path so
+;; the program works no matter what the current directory is.
+(defparameter *names-file*
+  (merge-pathnames "names.txt" (or *load-truename* *default-pathname-defaults*)))
+
 (defparameter *docs* nil) (defparameter *uchars* nil) (defparameter *bos* nil)
 (defparameter *vocab-size* nil) (defparameter *n-layer* 1) (defparameter *n-embd* 16)
 (defparameter *block-size* 16) (defparameter *n-head* 4) (defparameter *head-dim* 4)
@@ -186,7 +191,9 @@
 ;;; Main
 (defun run-microgpt ()
   (setf *random-state* (make-random-state t)
-        *docs* (shuffle-list (read-lines "names.txt")))
+        *docs* (shuffle-list (read-lines *names-file*)))
+  (unless *docs*
+    (error "No training data: ~A is missing or empty" *names-file*))
   (format t "num docs: ~A~%" (length *docs*))
   (let ((chars nil))
     (dolist (doc *docs*) (loop for ch across doc do (pushnew ch chars)))

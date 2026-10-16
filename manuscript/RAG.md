@@ -367,8 +367,14 @@ The **norm** slot and the custom printer live in the same struct for related rea
          (norm (vector-magnitude vec)))
     (when (zerop norm)
       (error "Zero-magnitude embedding for chunk from ~A; cannot normalize" source))
-    (make-document-chunk :text text :source source :embedding vec :norm norm)))
+    ;; Store the unit vector: SCORE-CHUNKS divides only by the query norm.
+    ;; (Not every provider returns unit vectors, e.g. reduced-dimension
+    ;; Gemini embeddings.)
+    (make-document-chunk :text text :source source
+                         :embedding (normalize-vector vec) :norm 1.0)))
 ```
+
+The constructor stores the unit vector that **normalize-vector** returns and sets the **norm** slot to 1.0. Do not assume that a provider returns unit vectors: Gemini embeddings at the default 3072 dimensions are normalized, but reduced-dimension embeddings (see **\*embedding-dimension\***) are not. Storing the raw vector would make every score depend on the chunk's length as well as its direction.
 
 Each chunk also gets a stable identity, used for deduplication later:
 

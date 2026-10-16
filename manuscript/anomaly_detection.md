@@ -136,7 +136,7 @@ The heart of the algorithm is the `gaussian-p` function. For a given data sample
                           (* 2.0d0 s2))))
         (incf sum (* (/ 1.0d0 (* +sqrt-2-pi+ sigma))
                      (exp exponent)))))
-    (/ sum num-features)))
+    (/ sum (1- num-features))))
 ~~~~~~~~
 
 Let's trace through what happens for one feature:
@@ -145,7 +145,13 @@ Let's trace through what happens for one feature:
 2. We compute `diff` — how far this sample's value is from the mean.
 3. The exponent is `-(diff²) / (2 · σ²)`. When `diff` is large (the value is far from the mean), this exponent becomes a large negative number, making `exp(exponent)` very small.
 4. We multiply by the normalization constant `1 / (√(2π) · σ)` to get a proper probability density.
-5. We sum these per-feature probabilities and divide by the number of features to get an average.
+5. We sum these per-feature probabilities and divide by the number of measured features to get an average. The last column holds the target label, so with `n`$ columns the loop covers `n-1`$ features and the function divides by `n-1`$, not `n`$.
+
+Written as a formula, with `\mu_f`$ and `\sigma_f^2`$ the mean and variance of feature `f`$:
+
+```$
+p(x) = \frac{1}{n-1} \sum_{f=0}^{n-2} \frac{1}{\sqrt{2\pi}\,\sigma_f} \exp\left(-\frac{(x_f - \mu_f)^2}{2\sigma_f^2}\right)
+```
 
 A normal sample will have values close to the mean across most features, producing a relatively high average probability. An anomalous sample will have unusual values in several features, producing a low average probability.
 

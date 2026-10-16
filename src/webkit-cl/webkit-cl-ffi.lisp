@@ -15,16 +15,19 @@
             (:default "libwebkit_cl")))
   (t (:default "libwebkit_cl")))
 
+(defparameter *source-directory*
+  ;; Read at compile time, so this is the directory of the .lisp source (where
+  ;; `make` puts the dylib). At load time *LOAD-PATHNAME* would instead be the
+  ;; compiled .fasl in ASDF's output cache, where the dylib is never found.
+  (make-pathname :name nil :type nil :version nil
+                 :defaults #.(or *compile-file-truename* *load-truename*))
+  "Directory containing the webkit-cl sources and libwebkit_cl.dylib.")
+
 (defun load-native-library ()
   "Load the webkit-cl native library. Searches the source directory first."
-  (let* ((this-file (or *compile-file-pathname* *load-pathname*))
-         (lib-dir (when this-file
-                    (namestring (make-pathname :directory (pathname-directory this-file))))))
-    ;; Push the source directory onto the search path
-    (when lib-dir
-      (pushnew (pathname lib-dir) cffi:*foreign-library-directories*
-               :test #'equal))
-    (cffi:use-foreign-library libwebkit-cl)))
+  ;; Push the source directory onto the search path
+  (pushnew *source-directory* cffi:*foreign-library-directories* :test #'equal)
+  (cffi:use-foreign-library libwebkit-cl))
 
 (load-native-library)
 

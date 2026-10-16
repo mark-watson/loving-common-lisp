@@ -36,8 +36,8 @@
 
 (defun split-data (examples num-features)
   "Split EXAMPLES into training / cross-validation / test.
-   Training gets ~60 %% of rows, preferring normal (target
-   < 0.5) rows but allowing ~10 %% anomalies through.
+   Training gets ~60 % of rows, preferring normal (target
+   < 0.5) rows but allowing ~10 % anomalies through.
    Returns (values training cv test)."
   (let ((train-list nil)
         (cv-list    nil)
@@ -94,7 +94,8 @@
   "Compute average Gaussian PDF p(x) across features.
    p(x_i) = (1/(sqrt(2*pi)*sigma))
              * exp(-(x_i - mu_i)^2 / (2*sigma_i^2))
-   Returns the mean across all feature dimensions."
+   Returns the mean across all feature dimensions
+   (the last column is the target label, not a feature)."
   (let ((sum 0.0d0))
     (loop for f below (1- num-features) do
       (let* ((s2 (aref sigma-sq f))
@@ -104,7 +105,7 @@
                           (* 2.0d0 s2))))
         (incf sum (* (/ 1.0d0 (* +sqrt-2-pi+ sigma))
                      (exp exponent)))))
-    (/ sum num-features)))
+    (/ sum (1- num-features))))
 
 ;;; ---- public API ----
 

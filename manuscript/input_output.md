@@ -48,18 +48,20 @@ NIL
 
 Note: the string "the cat bit the rat" prints as a string (with quotes) because we used a ~S  instead of a ~A  in the format string in the call to function **format**.
 
-In this last example, we passed the file name as a string to the macro **with-open-file**. This is not generally portable across all operating systems. Instead, we could have created a pathname object and passed that instead. The **pathname** function can take eight different keyword arguments, but we will use only the two most common in the example in the file **read-test-2.lisp** in the **src** directory. The following listing shows just the differences between this example and the last:
+In this last example, we passed the file name as a string to the macro **with-open-file**. This is not generally portable across all operating systems. Instead, we could have created a pathname object and passed that instead. The **make-pathname** function can take eight different keyword arguments, but we will use only three in the example in the file **read-test-2.lisp** in the **src** directory. The following listing shows just the differences between this example and the last:
 
 {lang="lisp",linenos=off}
 ~~~~~~~~
   (let ((a-path-name
-          (make-pathname :directory "testdata"
-                         :name "test.dat")))
+          ;; a bare string :directory means (:absolute "testdata"), i.e.
+          ;; /testdata/; use a :relative list for the testdata subdirectory:
+          (make-pathname :directory '(:relative "testdata")
+                         :name "test" :type "dat")))
     (with-open-file
      (input-stream a-path-name :direction :input)))
 ~~~~~~~~
 
-Here, we are specifying that we want to use the file **test.dat** in the subdirectory **testdata**. Note: I almost never use pathnames. Instead, I specify files using a string and the character / as a directory delimiter. I find this to be portable for the Macintosh, Windows, and Linux operating systems using all Common Lisp implementations.
+Here, we are specifying that we want to use the file **test.dat** in the subdirectory **testdata** of the current directory. The **:relative** keyword matters: if you pass a plain string such as "testdata" as the **:directory** argument, Common Lisp treats it as the absolute directory **/testdata/**. We also pass the file name and file type as separate **:name** and **:type** arguments. Note: I almost never use pathnames. Instead, I specify files using a string and the character / as a directory delimiter. I find this to be portable for the Macintosh, Windows, and Linux operating systems using all Common Lisp implementations.
 
 The file **readline-test.lisp** is identical to the file **read-test-1.lisp** except that we call function **readline** instead of the function **read** and we change the output format message to indicate that an entire line of text has been read
 

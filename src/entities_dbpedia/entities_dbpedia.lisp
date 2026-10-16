@@ -4,17 +4,11 @@
 (in-package :entities_dbpedia)
 
 (defvar *base-pathname* #.(or *compile-file-truename* *load-truename*))
-(defvar a1 (write-to-string *base-pathname*))
-(print a1)
-(print (length a1))
-(defvar *current-directory* (subseq a1 3 (- (length a1) 22)))
-
-(print "current directory:")
-(print *current-directory*)
+(defvar *data-directory* (merge-pathnames "data/" *base-pathname*))
 
 ;;                    INITIALIZE DATA - this may take a minute or two
 
-(print "Startng to load data....")
+(print "Starting to load data....")
 
 (defvar *broadcast* (make-hash-table :test #'equal :size 4000))
 (defvar *cities* (make-hash-table :test #'equal :size 4000))
@@ -39,9 +33,9 @@
      collect token until (not space)))
 
 (defun load-line-file (hash-table file-name)
-  (setf *EntityNames* (cons (myutils:replace-all file-name "NamesDbPedia.txt" "") *EntityNames*))
+  (pushnew (myutils:replace-all file-name "NamesDbPedia.txt" "") *EntityNames* :test #'equal)
   (let (line)
-    (with-open-file (in (concatenate 'string *current-directory* "/data/" file-name))
+    (with-open-file (in (merge-pathnames file-name *data-directory*))
       (dotimes (i 50000)
 	(setq line (read-line in nil nil))
 	(if (null line) (return)
@@ -65,41 +59,10 @@
 
 ;;;   done loading data
 
-;; Conversion of KnowledgeBooks.com Java FastTag to Common Lisp
-
-
-(defun words-from-string (str)
-  (let ((ss (tokenize-string str)))
-    (make-array (list (length ss)) :initial-contents ss)))
-
-(defun tokenize-string (string 
-                        &key 
-                          (delimiters '(#\Space #\Return #\Linefeed #\Newline #\. #\, #\; #\: #\! #\" #\'
-                                        #\? #\/ #\( #\) #\- #\< #\>))
-                          (discard '(#\Space #\Return #\Linefeed #\Newline #\, #\" #\' #\- #\< #\>))
-                          (test (lambda (c) (find c delimiters)))
-                          (start 0) (end (length string)) (omit-delimiters nil))
-  (flet ((get-token (start)
-           (if (< start end)
-               (let* ((delimiterp (funcall test (char string start)))
-                      (end-of-token (funcall (if delimiterp #'position-if-not #'position-if)
-                                             test string :start start)))
-                 (values (subseq string start end-of-token) end-of-token delimiterp))
-               (values nil nil nil))))
-    (let ((tokens nil)
-          token delimiterp)
-      (loop (multiple-value-setq (token start delimiterp) (get-token start))
-         (unless (and delimiterp omit-delimiters)
-           (let ((tok (string-trim discard token)))
-             ;;(print (list "tok:" tok))
-             (if (not (find tok discard))
-                 (if (> (length tok) 0)
-                     (push tok tokens)))))
-         (unless start (return-from tokenize-string (nreverse tokens)))))))
 
 (defun find-entities-in-string (entity-hash str)
-    (let* ((words (words-from-string str)))
-      (find-entities-word-list entity-hash words)))
+    (let* ((words (myutils:words-from-string str)))
+      (find-entities-in-word-list entity-hash words)))
 ;;
 ;; utility for detecting entities in a word list
 ;;
@@ -141,7 +104,7 @@
 
 
 (defun find-entities-in-text (str)
-  (let* ((words (words-from-string str))
+  (let* ((words (myutils:words-from-string str))
 	 (bc (find-entities-in-word-list *broadcast* words))
 	 (ci (find-entities-in-word-list *cities* words))
 	 (co (find-entities-in-word-list *companys* words))
@@ -183,7 +146,7 @@
 
 #|
 
-(find-entities *people* "Bill Clinton and George Bush")
+(find-entities-in-string *people* "Bill Clinton and George Bush")
 
 (find-entities-in-text "Bill Clinton and George Bush went to Mexico and England and watched Univision. They enjoyed Dakbayan sa Dabaw and shoped at Best Buy and listened to Al Stewart. They agree on República de Nicaragua and support Sweden Democrats and Leicestershire Miners Association and both sent their kids to Darul Uloom Deoband.")
 

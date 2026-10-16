@@ -3,57 +3,48 @@
 
 (in-package #:sparql)
 
+(defun fetch-sparql-json (endpoint query)
+  "Run QUERY against the SPARQL ENDPOINT URL and return the JSON response string."
+  (myutils:replace-all
+   (myutils:replace-all
+    (uiop:run-program
+     (list
+      "curl"
+      (concatenate 'string
+                   endpoint
+                   "?query="
+                   (drakma:url-encode query :utf-8)
+                   "&format=json"))
+     :output :string)
+    "\\u2013" " ")
+   "\\u" " "))
+
+(defun json-bindings->lists (response)
+  "Decode a SPARQL JSON result string into a list of rows, each row a list of
+  (variable-keyword value) pairs."
+  (with-input-from-string (s response)
+    (let* ((json-as-list (json:decode-json s))
+           (bindings (cdr (assoc :bindings
+                                 (cdr (assoc :results json-as-list))))))
+      ;;(pprint json-as-list)  ; uncomment this to see how following expression works:
+      (mapcar #'(lambda (x)
+                  (mapcar #'(lambda (y)
+                              (list (car y) (cdr (assoc :value (cdr y))))) x))
+              bindings))))
+
 (defun wikidata (query)
   "Query Wikidata SPARQL endpoint.
   : Returns list of bindings from JSON response."
-  (let ((response
-         (myutils:replace-all
-          (myutils:replace-all
-           (uiop:run-program 
-            (list
-             "curl" 
-             (concatenate 'string
-                          "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query="
-                          (drakma:url-encode query :utf-8)
-                          "&format=json"))
-            :output :string)
-           "\\u2013" " ")
-          "\\u" " ")))
-    (with-input-from-string
-	(s response)
-      (let ((json-as-list (json:decode-json s)))
-        ;;(pprint json-as-list)  ; uncomment this to see how following expression works:
-        (mapcar #'(lambda (x)
-                    (mapcar #'(lambda (y)
-                                (list (car y) (cdaddr y))) x))  (cdr (cadadr json-as-list)))))))
+  (json-bindings->lists
+   (fetch-sparql-json "https://query.wikidata.org/bigdata/namespace/wdq/sparql" query)))
 
 
 (defun dbpedia (query)
   "Query DBpedia SPARQL endpoint.
-  : Prints query and response for debugging.
+  : Prints query for debugging.
   : Returns list of bindings from JSON response."
-  (print (list "dbpeia SPARQL:" query "\n"))
-  (let ((response
-         (myutils:replace-all
-          (myutils:replace-all
-           (uiop:run-program 
-            (list
-             "curl" 
-             (concatenate 'string
-                          "https://dbpedia.org/sparql?query="
-                          (drakma:url-encode query :utf-8)
-                          "&format=json"))
-            :output :string)
-             "\\u2013" " ")
-            "\\u" " ")))
-    (print (list "dbpedia response:" response "\n"))
-    (with-input-from-string
-        (s response)
-      (let ((json-as-list (json:decode-json s)))
-        (mapcar #'(lambda (x)
-                    (mapcar #'(lambda (y)
-                                (list (car y) (cdr (assoc :value (cdr y))))) x))
-                (cdr (cadddr (cadr json-as-list))))))))
+  (print (list "dbpedia SPARQL:" query))
+  (json-bindings->lists (fetch-sparql-json "https://dbpedia.org/sparql" query)))
 
 (defun fuseki (query &key (host "http://127.0.0.1") (port 3030) (suffix "/news/sparql"))
   "Query Fuseki SPARQL endpoint.
@@ -72,13 +63,7 @@
 			"&format=json"))
 	     :output :string)))
       ;;(print response)
-      (with-input-from-string
-          (s response)
-	(let ((json-as-list (json:decode-json s)))
-          (mapcar #'(lambda (x)
-                      (mapcar #'(lambda (y)
-                                  (list (car y) (cdr (assoc :value (cdr y))))) x))
-                  (cdr (cadadr json-as-list)))))))
+      (json-bindings->lists response)))
 
 ;(defun graphdb (graph-name query &key (host "http://127.0.0.1") (port 7200) 
 ;                      (suffix (concatenate 'string "/repositories/" graph-name)))
@@ -163,22 +148,9 @@
   "Boolean SPARQL query to DBpedia.
   : Searches response for 'true' string.
   : Returns T/F based on boolean result."
-  (let* ((response
-           (myutils:replace-all
-            (myutils:replace-all
-             (uiop:run-program
-              (list
-               "curl"
-               (concatenate 'string
-                            "https://dbpedia.org/sparql?query="
-                            (drakma:url-encode query :utf-8)
-                            "&format=json"))
-              :output :string)
-             "\\u2013" " ")
-            "\\u" " ")))
-    (if  (search "true" response)
-        t
-      nil)))
+  (if (search "true" (fetch-sparql-json "https://dbpedia.org/sparql" query))
+      t
+      nil))
 
 (defun sparql-manual ()
   "Print example SPARQL queries for all endpoints."

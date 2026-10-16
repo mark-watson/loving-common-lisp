@@ -72,7 +72,8 @@
         ("description" . ,description)
         ("parameters" .
          (("type" . "object")
-          ("properties" . ,(mapcar #'translate-parameter parameters))
+          ;; an empty alist would encode as [], but JSON schema needs {} here:
+          ("properties" . ,(or (mapcar #'translate-parameter parameters) :empty-object))
           ("required" . ,(loop for p in parameters
                                when (getf (cdddr p) :required t)
                                  collect (%name-string (first p)))))))))))
@@ -91,10 +92,16 @@
   "Parse a wire-format tool call into a plist
 (:id id :name name :arguments keyword-alist)."
   (let* ((fn (aget tc "function"))
-         (args-json (aget fn "arguments")))
+         (args-json (aget fn "arguments"))
+         ;; arguments are normally a JSON string, but some servers send an
+         ;; already-decoded object (or an empty string for no arguments):
+         (args (if (stringp args-json)
+                   (and (plusp (length (string-trim " " args-json)))
+                        (json-decode args-json))
+                   args-json)))
     (list :id (aget tc "id")
           :name (aget fn "name")
-          :arguments (and args-json (%keywordize-arguments (json-decode args-json))))))
+          :arguments (and (consp args) (%keywordize-arguments args)))))
 
 (defun parse-usage (usage)
   (when usage

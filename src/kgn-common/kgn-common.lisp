@@ -1,4 +1,4 @@
-;; Compyright 2019-2022 Mark Watson All Rights Reserved.
+;; Copyright 2019-2022 Mark Watson All Rights Reserved.
 ;; License: Apache 2
 
 (in-package #:kgn-common)
@@ -12,7 +12,7 @@
 
 (defun check-uri (uri)
   "sloppy code fix: URIs have different forms - normalize these"
-  (if (equal (type-of uri) 'cons) (setf uri (second uri)))
+  (if (consp uri) (setf uri (second uri)))
   (entity-uris:ensure-uri-brackets uri))
 
 (defun clean-comment (comment-string)
@@ -71,9 +71,8 @@
                          ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ~A . @@ ~
                      } LIMIT 15" name dbpedia-type))
          (results (sparql-cache:dbpedia (replace-all sparql "@@" " "))))
-    (print results)
     (terpri message-stream)
-    (format message-stream "Trying to get entity by name = ~A using SPARQL with type:" name dbpedia-type)
+    (format message-stream "Trying to get entity by name = ~A using SPARQL with type ~A:" name dbpedia-type)
     ;;     '(:highlight :compiler-warning-highlight) message-stream)
     (terpri message-stream)
     (apply colorize-sparql-function (list sparql :stream message-stream))
@@ -84,13 +83,13 @@
                          ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ~A . @@ ~
                      } LIMIT 15" name schema-org-type)))
           (format
-           t
+           message-stream
            "No results for ~A for last SPARQL query using type ~A so trying type ~A" name dbpedia-type schema-org-type)
           (terpri message-stream)
           (setf results (sparql-cache:dbpedia (replace-all sparql2 "@@" " ")))
           (if (null results)
               (format
-               t
+               message-stream
                "No results for ~A for last SPARQL query using type ~A" name schema-org-type)
               (let* ((filtered (remove-if
                                 #'(lambda (x)
@@ -103,7 +102,9 @@
                      (uris (remove-duplicates
                             (map 'list #'(lambda (x) (list (concatenate 'string "<" (cadar x) ">") (cadadr x)))
                                  filtered) :test #'equal)))
-                (format t "~%~%********** dbpedia-get-entities-by-name: uris:~%") (pprint uris) (terpri)
+                (format message-stream "~%~%********** dbpedia-get-entities-by-name: uris:~%")
+                (pprint uris message-stream)
+                (terpri message-stream)
                 uris))))
     results))
 
@@ -170,7 +171,7 @@
                      OPTIONAL { ~A <http://dbpedia.org/ontology/populationDensity> ?populationDensity } .@@  ~
                      OPTIONAL { ~A <http://www.w3.org/2000/01/rdf-schema#label> ?label . }@@ ~
                    } LIMIT 30@@"
-                   country-uri country-uri country-uri country-uri country-uri))
+                   country-uri country-uri country-uri country-uri))
          (results (sparql-cache:dbpedia  (replace-all query "@@" " "))))
     (format message-stream "~%SPARQL to get COUNTRY data for ~A:~%~%" country-uri)
     (apply colorize-sparql-function (list query :stream message-stream))

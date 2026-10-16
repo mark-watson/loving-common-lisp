@@ -41,7 +41,7 @@ When possible, return the type of an entity using the Wikipedia class system.\n
 Extract all relevant relationships between identified entities.\n
 The relationships should follow the Wikipedia schema type.
 The output of a relationship should be in a form of a triple Head, Relationship, Tail, for example
-Bill Gates, BORN_AT, Seatle.\n
+Bill Gates, BORN_AT, Seattle.\n
 As an example "Bill Gates worked at Microsoft" should have an output with the following format:\n
 entity
 Bill Gates, person

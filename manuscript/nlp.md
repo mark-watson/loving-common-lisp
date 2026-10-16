@@ -309,21 +309,14 @@ This file was created by a simple Ruby script (not included with the book's exam
 {lang="lisp",linenos=on}
 ~~~~~~~~
 (defun get-word-list-category (words)
-  (let ((x nil)
-        (ss nil)
-        (cat-hash nil)
-        (word nil)
-        (len (length words))
-        (num-categories (length categoryHashtables))
-        (category-score-accumulation-array
+  (let* ((x nil)
+         (ss nil)
+         (cat-hash nil)
+         (word nil)
+         (len (length words))
+         (num-categories (length categoryHashtables))
+         (category-score-accumulation-array
           (make-array num-categories :initial-element 0)))
-
-    (defun list-sort (list-to-sort)
-      ;;(pprint list-to-sort)
-      (sort list-to-sort
-	    #'(lambda (list-element-1 list-element-2)
-		(> (cadr list-element-1) (cadr list-element-2)))))
-
     (do ((k 0 (+ k 1)))
         ((equal k len))
       (setf word (string-downcase (aref words k)))
@@ -333,21 +326,21 @@ This file was created by a simple Ruby script (not included with the book's exam
         (setf x (gethash word cat-hash))
         (if x
             (setf 
-              (aref category-score-accumulation-array i)
-              (+ x (aref category-score-accumulation-array i))))))
+             (aref category-score-accumulation-array i)
+             (+ x (aref category-score-accumulation-array i))))))
     (setf ss '())
     (do ((i 0 (+ i 1)))
         ((equal i num-categories))
       (if (> (aref category-score-accumulation-array i) 0.01)
           (setf
-            ss
-            (cons
-              (list
-                (nth i categoryNames)
-                (round (* (aref category-score-accumulation-array i) 10)))
-              ss))))
-    (setf ss (list-sort ss))
-    (let ((cutoff (/ (cadar ss) 2))
+           ss
+           (cons
+            (list
+             (nth i categoryNames)
+             (round (* (aref category-score-accumulation-array i) 10)))
+            ss))))
+    (setf ss (sort ss #'> :key #'cadr))
+    (let ((cutoff (/ (or (cadar ss) 0) 2))
           (results-array '()))
       (dolist (hit ss)
         (if (> (cadr hit) cutoff)
@@ -355,13 +348,11 @@ This file was created by a simple Ruby script (not included with the book's exam
       (reverse results-array))))
 ~~~~~~~~
 
-On thing to notice in this listing is lines 11 through 15 where I define a nested function **list-sort** that takes a list of sub-lists and sorts the sublists based on the second value (which is a number) in the sublists. I often nest functions when the "inner" functions are only used in the "outer" function.
+Lines 2 through 9 define local variables. The global variable **categoryHashtables** is a list of word weighting score hash tables, one for each category. The local variable **category-score-accumulation-array** starts as an array of zeros and keeps a running score for each category. The highest scored categories are the return value.
 
-Lines 2 through 9 define several local variables used in the outer function. The global variable **categoryHashtables** is a list of word weighting score hash tables, one for each category. The local variable **category-score-accumulation-array** is initialized to an array containing the number zero in each element and will be used to "keep score" of each category. The highest scored categories will be the return value for the outer function.
+Lines 10 through 20 are two nested loops. The outer loop is over each word in the input word array. The inner loop is over the categories. The logic is simple: for each word, check if it has a weighting score in each category's hash table and if it does, add that weight to the category's score.
 
-Lines 17 through 27 are two nested loops. The outer loop is over each word in the input word array. The inner loop is over the number of categories. The logic is simple: for each word check to see if it has a weighting score in each category's word weighting score hash table and if it is, increment the matching category's score.
-
-The local variable **ss** is set to an empty list on line 28 and in the loop in lines 29 through 38 I am copying over categories and their scores when the score is over a threshold value of 0.01. We sort the list in **ss** on line 39 using the inner function and then return the categories with a score greater than the median category score.
+Line 21 sets the local variable **ss** to an empty list and the loop in lines 22 through 31 copies over categories and their scores when the score is over a threshold value of 0.01. Line 32 sorts **ss** with the built-in function **sort**, using **:key #'cadr** to compare the scores stored as the second element of each sub-list. Lines 33 through 38 return the categories with a score greater than half the top score. The **(or (cadar ss) 0)** handles text that matches no category.
 
 
 ## Detecting People's Names and Place Names
@@ -378,9 +369,8 @@ The code for detecting people and place names is in the top level API code in th
 The functions that support identifying people's names and place names in text are in the Common Lisp package **kb nlp:**:
 
 - find-names (words tags exclusion-list) -- words is an array of strings for the words in text, tags are the parts of speech tags (from FastTag), and the exclusion list is a an array of words that you want to exclude from being considered as parts of people's names. The list of found names records starting and stopping indices for names in the array words.
--  not-in-list-find-names-helper (a-list start end) -- returns true if a found name is not already been added to a list for saving people's names in text
+- not-in-list-helper (a-list start end) -- returns true if the word index range from start to end does not overlap a range already in a-list. Both find-names and find-places use it to avoid recording the same words twice.
 - find-places (words exclusion-list) -- this is similar to find-names, but it finds place names.  The list of found place names records starting and stopping indices for place names in the array words.
-- not-in-list-find-places-helper (a-list start end) -- returns true if a found place name is not already been added to a list for saving place names in text
 - build-list-find-name-helper (v indices) -- This converts lists of start/stop word indices to strings containing the names
 - find-names-places (txt-object) -- this is the top level function that your application will call. It takes a **defstruct** **text** object as input and modifies the **defstruct** **text** by adding people's and place names it finds in the text. You saw an example of this earlier in this chapter.
 
@@ -455,10 +445,10 @@ This category data is saved in the local variable **cats** on line 4 of the foll
          best-sentences sentence (score 0))
     ;; loop over sentences:
     (dotimes (i num-words)
-      (let ((word (svref words i)))
+      (let* ((word (svref words i)))
         (dolist (cat cats)
           (let* ((hash (gethash (car cat) categoryToHash))
-                 (value (gethash word hash)))
+                 (value (gethash (string-downcase word) hash)))
             (if value
                 (setq score (+ score (* 0.01 value (cadr cat)))))))
         (push word sentence)
@@ -467,7 +457,7 @@ This category data is saved in the local variable **cats** on line 4 of the foll
               (setq sentence (reverse sentence))
               (setq score (/ score (1+ (length sentence))))
               (setq sentence-count (1+ sentence-count))
-              (format t "~%~A : ~A~%" sentence score)
+              ;;(format t "~%~A : ~A~%" sentence score)
               ;; process this sentence:
               (if (and
                    (> score 0.4)
@@ -493,7 +483,7 @@ This category data is saved in the local variable **cats** on line 4 of the foll
         "<no summary>")))
 ~~~~~~~~
 
-The nested loops in lines 8 through 33 look a little complicated, so let's walk through it. Our goal is to calculate an importance score for each word token in the input text and to then select a few sentences containing highly scored words. The outer loop is over the word tokens in the input text. For each word token we loop over the list of categories, looking up the current word in each category hash and incrementing the score for the current word token. As we increment the word token scores we also look for sentence breaks and save sentences.
+The nested loops in lines 8 through 33 look a little complicated, so let's walk through it. Our goal is to calculate an importance score for each word token in the input text and to then select a few sentences containing highly scored words. The outer loop is over the word tokens in the input text. For each word token we loop over the list of categories, looking up the current word in each category hash and incrementing the score for the current word token. Line 12 downcases the word before the lookup because the category tables store lowercase words. As we increment the word token scores we also look for sentence breaks and save sentences.
 
 The complicated bit of code in lines 16 through 32 where I construct sentences and their scores, and store sentences with a score above a threshold value in the list **best-sentences**. After the two nested loops, in lines 34 through 44 we simply sort the sentences by score and select the "best" sentences for the summary. The extracted sentences are no longer in their original order, which can have strange effects, but I like seeing the most relevant sentences first. 
 

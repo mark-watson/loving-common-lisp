@@ -10,6 +10,23 @@
 ;;; simple for clarity — production systems would use a dedicated
 ;;; vector database.
 
+;; The structs come first so their accessors are known (and can be inlined)
+;; in the printer functions below.
+
+(defstruct (document-chunk (:print-function %print-document-chunk))
+  "A chunk of text with its source file, embedding vector (a normalized
+    simple-vector), and precomputed L2 norm (1.0 for normalized chunks)."
+  text
+  source
+  embedding
+  (norm 1.0 :type float))
+
+(defstruct (corpus (:print-function %print-corpus))
+  "A named collection of document chunks for retrieval."
+  name
+  description
+  (chunks nil))
+
 (defun %print-embedding-preview (vector stream)
   "Print up to 10 leading values of VECTOR plus a dimension count."
   (format stream "#(")
@@ -31,14 +48,6 @@
   (%print-embedding-preview (document-chunk-embedding chunk) stream)
   (format stream ">"))
 
-(defstruct (document-chunk (:print-function %print-document-chunk))
-  "A chunk of text with its source file, embedding vector (a normalized
-    simple-vector), and precomputed L2 norm (1.0 for normalized chunks)."
-  text
-  source
-  embedding
-  (norm 1.0 :type float))
-
 (defun document-chunk-key (chunk)
   "Stable identity for a chunk across corpora: (source . text). The
     same text in different source files is a different chunk."
@@ -52,12 +61,6 @@
           (corpus-name corpus)
           (corpus-description corpus)
           (length (corpus-chunks corpus))))
-
-(defstruct (corpus (:print-function %print-corpus))
-  "A named collection of document chunks for retrieval."
-  name
-  description
-  (chunks nil))
 
 (defun corpus-chunk-count (corpus)
   "Number of document chunks currently stored in CORPUS."
@@ -117,7 +120,11 @@
          (norm (vector-magnitude vec)))
     (when (zerop norm)
       (error "Zero-magnitude embedding for chunk from ~A; cannot normalize" source))
-    (make-document-chunk :text text :source source :embedding vec :norm norm)))
+    ;; Store the unit vector: SCORE-CHUNKS divides only by the query norm.
+    ;; (Not every provider returns unit vectors, e.g. reduced-dimension
+    ;; Gemini embeddings.)
+    (make-document-chunk :text text :source source
+                         :embedding (normalize-vector vec) :norm 1.0)))
 
 (defun add-document (corpus filepath &key (chunk-size *default-chunk-size*))
   "Read a text file, split it into chunks, compute embeddings (in

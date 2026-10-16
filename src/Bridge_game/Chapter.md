@@ -6,7 +6,7 @@ Contract bridge is one of the greatest challenges in game AI. Unlike chess or Go
 
 Bridge is a trick-taking card game for four players in two partnerships: North-South versus East-West. A standard 52-card deck is dealt evenly — 13 cards per player.
 
-**The Auction.** Starting with the dealer, players bid clockwise. A bid like "2 Hearts" is a contract to win at least 8 tricks (6 + the bid level) with hearts as the trump suit. Each bid must be higher than the previous one (either a higher level, or a higher-ranking suit at the same level). Suits rank: clubs (lowest), diamonds, hearts, spades, no trump (highest). Players may also pass, double an opponent's bid, or redouble. The auction ends after three consecutive passes following at least one suit bid. The final bid becomes the *contract*.
+**The Auction.** Starting with the dealer, players bid clockwise. A bid like "2 Hearts" is a contract to win at least 8 tricks (6 + the bid level) with hearts as the trump suit. Each bid must be higher than the previous one (either a higher level, or a higher-ranking suit at the same level). Suits rank: clubs (lowest), diamonds, hearts, spades, no trump (highest). Players may also pass, double an opponent's bid, or redouble. The auction ends after three consecutive passes following at least one suit bid. The final bid becomes the *contract*. A double or redouble applies to the contract only when it comes after the final bid; a later bid cancels any double of an earlier bid.
 
 **Declarer, Dummy, and Defenders.** The first player on the winning side to bid the contract's suit becomes the *declarer*. Declarer's partner is the *dummy*, whose hand is laid face-up on the table after the opening lead. Declarer plays both hands. The opposing pair are the *defenders*.
 
@@ -14,7 +14,7 @@ Bridge is a trick-taking card game for four players in two partnerships: North-S
 
 **Hand Evaluation.** Players estimate hand strength using *High Card Points* (HCP): Ace=4, King=3, Queen=2, Jack=1. The deck contains 40 total HCP. Distribution adds value: long suits earn length points (+1 per card beyond four), and after finding a trump fit, short suits earn shortness points (void=3, singleton=2, doubleton=1). Game typically requires 25-26 combined points between partners.
 
-**Rubber Bridge Scoring.** A *rubber* is a race to win two *games*. Points scored for tricks bid and made go "below the line" — when they total 100 or more, that side wins a game and becomes *vulnerable* (higher penalties and bonuses). Overtricks, slam bonuses, and penalties go "above the line." The side that wins the rubber earns a bonus of 700 (2-0 sweep) or 500 (2-1). Final scores are the sum of all above-the-line points plus the rubber bonus.
+**Rubber Bridge Scoring.** A *rubber* is a race to win two *games*. Points scored for tricks bid and made go "below the line." When they total 100 or more, that side wins a game and becomes *vulnerable* (higher penalties and bonuses). Overtricks, slam bonuses, and penalties go "above the line." The side that wins the rubber earns a bonus of 700 (2-0 sweep) or 500 (2-1). Final scores are the sum of all points scored above and below the line plus the rubber bonus.
 
 ## Design of the Bidding Strategy
 
@@ -245,6 +245,27 @@ When *following*, the AI applies classical rules: play second-hand low, third-ha
       (t ...))))
 ```
 
+The engine builds the current trick with `push`, so its list holds the newest card first. The play AI expects the trick in play order, with the lead card first, so the engine passes `(reverse trick)` to `ai-select-card`. Getting this order wrong makes `trick-winner-partial` treat the last card played as the lead.
+
+A card that follows suit can win the trick only if it outranks the card that is winning now, and only if that card is in the same suit. Once an opponent ruffs, no card in the led suit can win, however high. The helpers compare against the current winning card:
+
+```lisp
+(defun current-winning-card (trick lead-player trump-suit)
+  "The card currently winning the partial TRICK."
+  (nth (mod (- (trick-winner-partial trick lead-player trump-suit) lead-player) 4)
+       trick))
+
+(defun beats-current-winner-p (card trick lead-player trump-suit)
+  "Would CARD, which follows the lead suit, beat the current winner of TRICK?
+   It can only win if the trick has not been trumped (or the lead suit is
+   trump) and it outranks the winning card."
+  (let ((winner (current-winning-card trick lead-player trump-suit)))
+    (and (= (card-suit card) (card-suit winner))
+         (> (card-rank card) (card-rank winner)))))
+```
+
+`can-win-trick` and `cheapest-winner` both use `beats-current-winner-p`. The same check applies when the AI can not follow suit: it ruffs only with a trump that beats the current winner, and otherwise discards.
+
 ### Monte Carlo Simulation
 
 For stronger play, the engine includes a prototype Perfect Information Monte Carlo (PIMC) module. It works by:
@@ -347,6 +368,8 @@ The rubber state tracks everything needed across multiple deals:
 (defstruct rubber-state
   (ns-below      0)    ; N-S points below the line (current game)
   (ew-below      0)    ; E-W points below the line (current game)
+  (ns-below-total 0)   ; N-S points below the line (whole rubber)
+  (ew-below-total 0)   ; E-W points below the line (whole rubber)
   (ns-above      0)    ; N-S points above the line (cumulative)
   (ew-above      0)    ; E-W points above the line (cumulative)
   (ns-games      0)    ; N-S games won in this rubber
@@ -377,11 +400,12 @@ The `score-rubber-deal` function handles both made and defeated contracts. When 
       (case doubled
         (1 (incf above-score 50))
         (2 (incf above-score 100)))
-      ;; Slam bonuses
-      (when (slam-p level)
-        (incf above-score (if vul 750 500)))
-      (when (grand-slam-p level)
-        (incf above-score (if vul 1500 1000)))
+      ;; Slam bonuses: a grand slam earns the grand slam bonus
+      ;; instead of (not in addition to) the small slam bonus
+      (cond ((grand-slam-p level)
+             (incf above-score (if vul 1500 1000)))
+            ((slam-p level)
+             (incf above-score (if vul 750 500))))
       ;; Record scores and check for game
       ...)
 
@@ -401,7 +425,9 @@ The `score-rubber-deal` function handles both made and defeated contracts. When 
       ...))
 ```
 
-When a side's below-the-line total reaches 100, they win a game, become vulnerable, and *both* sides' below-the-line scores reset to zero. The rubber is complete when one side wins two games.
+Note the `cond` for slam bonuses. `slam-p` is true for levels 6 and 7, so two separate `when` forms would give a grand slam both bonuses.
+
+When a side's below-the-line total reaches 100, they win a game, become vulnerable, and *both* sides' below-the-line scores for the current game reset to zero. The slots `ns-below-total` and `ew-below-total` keep the running totals for the whole rubber, because the final score counts every trick point, not only those of the game in progress. The rubber is complete when one side wins two games.
 
 ## Design of the UI
 

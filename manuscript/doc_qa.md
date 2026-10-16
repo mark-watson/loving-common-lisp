@@ -21,7 +21,7 @@ At the end of this chapter we will extend our code for single queries with a con
 
 ## Implementing a Local Vector Database for Document Embeddings
 
-In the following listing of the file **docs-qa.lisp** we start with the two model variables and the two functions that reach a model through **litelm**: **embeddings** calls `litelm:embedding` for the document and query vectors, and **answer-question** calls `litelm:completion`. Because the provider prefix is part of the model string, both calls route through litelm without any provider-specific client code. After those come a few string utility functions we will need: **write-floats-to-string** (which stores an embedding vector as JSON text using `litelm:json-encode`), **read-file**, **join-strings**, and **break-into-chunks**.
+In the following listing of the file **docs-qa.lisp** we start with the two model variables and the two functions that reach a model through **litelm**: **embeddings** calls `litelm:embedding` for the document and query vectors, and **answer-question** calls `litelm:completion`. Because the provider prefix is part of the model string, both calls route through litelm without any provider-specific client code. After those come a few string utility functions we will need: **write-floats-to-string** (which stores an embedding vector as JSON text using `litelm:json-encode`), **read-file**, **join-strings**, and **break-into-chunks**. Note that **read-file** trims its buffer to the number of characters that **read-sequence** returns: **file-length** counts bytes, and a UTF-8 file with non-ASCII characters holds fewer characters than bytes.
 
 The function **break-into-chunks** is a work in progress. For now we simply cut long input texts into specific chunk lengths, often cutting words in half. A future improvement will be detecting sentence boundaries and breaking text on sentences. The Python libraries LangChain and LlamaIndex have multiple chunking strategies.
 
@@ -76,9 +76,11 @@ The function **decode-row** takes data from a SQL query to fetch a database tabl
                             :direction :input
                             :if-does-not-exist nil)
     (when instream
-      (let ((string (make-string (file-length instream))))
-        (read-sequence string instream)
-        string))))
+      ;; file-length counts bytes; with multi-byte UTF-8 characters fewer
+      ;; characters are read, so trim the unused tail of the buffer:
+      (let* ((string (make-string (file-length instream)))
+             (n (read-sequence string instream)))
+        (subseq string 0 n)))))
 
 (defun join-strings (separator list)
   (if list
@@ -104,7 +106,6 @@ The next listing shows of parts of **docs-qa.lisp** that contain code to use SqL
 (defvar *db* (connect ":memory:"))
 ;;(defvar *db* (connect "test.db"))
 
-(pprint *db*)
 (handler-case
     (progn
       (execute-non-query
@@ -199,15 +200,14 @@ The next listing showing of parts of **docs-qa.lisp** interfaces with the OpenAI
 
 ## Testing Local Embeddings Vector Database With OpenAI GPT APIs
 
-In the next part of the listing of **docs-qa.lisp** we write a test function to create two documents. The two calls to **create-document** actually save text and embeddings for about 20 text chunks in the database.
+In the next part of the listing of **docs-qa.lisp** we write a test function to create two documents. The two calls to **create-document** save text and embeddings for about 20 text chunks in the database. **asdf:system-relative-pathname** finds the data files relative to the **docs-qa** system directory, so the test works no matter what the current directory is.
 ```lisp
 (defun test()
-  "Test code for Semantic Document Search Using
-   OpenAI GPT APIs and local vector database"
-  (create-document "data/sports.txt")
-  (create-document "data/chemistry.txt")
+  "Test code for Semantic Document Search Using OpenAI GPT APIs and local vector database"
+  (create-document (asdf:system-relative-pathname :docs-qa "data/sports.txt"))
+  (create-document (asdf:system-relative-pathname :docs-qa "data/chemistry.txt"))
   (QA "What is the history of the science of chemistry?")
-  (QA "What are the advantages of engainging in sports?"))
+  (QA "What are the advantages of engaging in sports?"))
 ```
 
 The following output is heavily edited for brevity, long output often removed and replaced by **...**:
@@ -232,7 +232,7 @@ semantic-search: ret=( ... )
 
 semantic-search: ret=( ... )
 
-** query: What are the advantages of engainging in sports?
+** query: What are the advantages of engaging in sports?
 ** answer: The provided context does not state the advantages of engaging in sports; it only defines the term and traces its etymology.
 
 "The provided context does not state the advantages of engaging in sports; it only defines the term and traces its etymology."
@@ -252,8 +252,7 @@ In the last part of the listing of **docs-qa.lisp** we experiment with supportin
        (let ((string (read-line))
              response)
          (cond ((or (string= string "STOP") (< (length string) 1)) (return))
-               (t (let (prompt
-                        custom-context)
+               (t (let (custom-context)
                     (setf custom-context
                           (concatenate
                            'string
@@ -262,7 +261,6 @@ In the last part of the listing of **docs-qa.lisp** we experiment with supportin
                                           (reverse messages))))
                     (push string messages)
                     (print messages) ;; (print responses)
-                    (print prompt)
                     (setf response (semantic-match string custom-context))
                     (push response responses)
                     (format t "~%Response: ~A~%" response))))))
@@ -283,7 +281,6 @@ To load "docs-qa":
   Load 1 ASDF system:
     sqlite
 ; Loading "sqlite"
-#<sqlite-handle {7005D9B9D3}>
 * (in-package :docs-qa)
 #<package "DOCS-QA">
 * (create-document "data/chemistry.txt")

@@ -48,9 +48,11 @@
                             :direction :input
                             :if-does-not-exist nil)
     (when instream
-      (let ((string (make-string (file-length instream))))
-        (read-sequence string instream)
-        string))))
+      ;; file-length counts bytes; with multi-byte UTF-8 characters fewer
+      ;; characters are read, so trim the unused tail of the buffer:
+      (let* ((string (make-string (file-length instream)))
+             (n (read-sequence string instream)))
+        (subseq string 0 n)))))
 
 (defun join-strings (separator list)
   (if list
@@ -71,7 +73,6 @@
 (defvar *db* (connect ":memory:"))
 ;;(defvar *db* (connect "test.db"))
 
-(pprint *db*)
 (handler-case
     (progn
       (execute-non-query
@@ -153,8 +154,7 @@
        (let ((string (read-line))
              response)
          (cond ((or (string= string "STOP") (< (length string) 1)) (return))
-               (t (let (prompt
-                        custom-context)
+               (t (let (custom-context)
                     (setf custom-context
                           (concatenate
                            'string
@@ -163,7 +163,6 @@
                                           (reverse messages))))
                     (push string messages)
                     (print messages) ;; (print responses)
-                    (print prompt)
                     (setf response (semantic-match string custom-context))
                     (push response responses)
                     (format t "~%Response: ~A~%" response))))))
@@ -173,10 +172,10 @@
 
 (defun test()
   "Test code for Semantic Document Search Using OpenAI GPT APIs and local vector database"
-  (create-document "data/sports.txt")
-  (create-document "data/chemistry.txt")
+  (create-document (asdf:system-relative-pathname :docs-qa "data/sports.txt"))
+  (create-document (asdf:system-relative-pathname :docs-qa "data/chemistry.txt"))
   (QA "What is the history of the science of chemistry?")
-  (QA "What are the advantages of engainging in sports?"))
+  (QA "What are the advantages of engaging in sports?"))
 
 ;; test()
     

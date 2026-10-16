@@ -3,12 +3,10 @@
 ;;;; A Knowledge Base Navigator utilizing the Gemini 3 Flash LLM API.
 ;;;; This replaces the legacy SPARQL/DBPedia backend of KGN with an immersive AI-driven pipeline.
 
-(ql:quickload '("cl-json" "uiop" "alexandria"))
-
 (in-package #:knowledge-base-navigator)
 
 ;; Tokenizer utility for parsing user selection space-separated integers
-(defun tokenize-string (string &key (separators '(#\Space #\Tab #\Newline #\Return #\Comma)))
+(defun tokenize-string (string &key (separators '(#\Space #\Tab #\Newline #\Return #\,)))
   (let ((tokens '())
         (current-word (make-string-output-stream)))
     (loop for char across string
@@ -23,26 +21,26 @@
         (push word tokens)))
     (nreverse tokens)))
 
-;; safely execute curl by passing a temp json file rather than quotes in bash string
-(defun run-curl-command-with-json (url json-payload)
-  (let ((temp-file (uiop:run-program "mktemp" :output :string)))
-    (setf temp-file (string-trim #(#\Space #\Tab #\Newline #\Return) temp-file))
+;; Safely execute curl: the JSON payload is passed in a temporary file and
+;; curl is run with an argument list (no shell), so quotes in the payload or
+;; headers can not break the command.
+(defun run-curl-command-with-json (url json-payload &optional headers)
+  "POST JSON-PAYLOAD to URL with curl. HEADERS is a list of \"Name: value\"
+   strings. Returns the response body string."
+  (uiop:with-temporary-file (:pathname temp-file :type "json")
     (with-open-file (stream temp-file :direction :output :if-exists :supersede)
       (write-string json-payload stream))
-    (let* ((curl-cmd
-            (format nil "curl -s -X POST \"~A\" -H \"Content-Type: application/json\" -d @~A"
-                    url temp-file))
-           (response-body
-            (multiple-value-bind (output error-output exit-code)
-                (uiop:run-program curl-cmd :output :string :error-output :string :ignore-error-status t)
-              (declare (ignore exit-code error-output))
-              output)))
-      (uiop:run-program (format nil "rm -f ~A" temp-file) :ignore-error-status t)
-      response-body)))
+    (uiop:run-program (append (list "curl" "-s" "-X" "POST" url
+                                    "-H" "Content-Type: application/json")
+                              (loop for h in headers append (list "-H" h))
+                              (list "-d" (concatenate 'string "@" (namestring temp-file))))
+                      :output :string
+                      :error-output :string
+                      :ignore-error-status t)))
 
 (defun get-gemini-chat-completion (user-prompt)
   "Sends a prompt to the Gemini Interactions API and returns the content of the response."
-  (let* ((api-key (uiop:getenv "GEMINI_API_KEY"))
+  (let* ((api-key (or (uiop:getenv "GEMINI_API_KEY") (uiop:getenv "GOOGLE_API_KEY")))
          (model-name "gemini-3-flash-preview")
          (base-url "https://generativelanguage.googleapis.com/v1beta/interactions")
          (payload
@@ -51,34 +49,28 @@
          (json-payload (json:encode-json-to-string payload)))
     
     (unless (and api-key (not (string= api-key "")))
-      (error "GEMINI_API_KEY environment variable is not set."))
+      (error "GEMINI_API_KEY (or GOOGLE_API_KEY) environment variable is not set."))
 
     (handler-case
-        (let* ((temp-file (uiop:run-program "mktemp" :output :string)))
-          (setf temp-file (string-trim #(#\Space #\Tab #\Newline #\Return) temp-file))
-          (with-open-file (stream temp-file :direction :output :if-exists :supersede)
-            (write-string json-payload stream))
-          (let* ((curl-cmd
-                  (format nil "curl -s -X POST \"~A?key=~A\" -H \"Content-Type: application/json\" -H \"Api-Revision: 2026-05-20\" -d @~A"
-                          base-url api-key temp-file))
-                 (response-body
-                  (multiple-value-bind (output error-output exit-code)
-                      (uiop:run-program curl-cmd :output :string :error-output :string :ignore-error-status t)
-                    (declare (ignore exit-code error-output))
-                    output)))
-            (uiop:run-program (format nil "rm -f ~A" temp-file) :ignore-error-status t)
-            (let* ((parsed-response (json:decode-json-from-string response-body))
-                   (steps (cdr (assoc :steps parsed-response))))
-              (if steps
-                  ;; Find the last model_output step and extract its text
-                  (loop for step in (reverse steps)
-                        when (string-equal (cdr (assoc :type step)) "model_output")
-                        return (let* ((content (cdr (assoc :content step)))
-                                      (first-content (first content)))
-                                 (cdr (assoc :text first-content))))
-                  (progn
-                    (format *error-output* "~%[Error] Gemini Interactions API response did not contain steps: ~A~%" parsed-response)
-                    nil)))))
+        ;; the API key is sent in a header rather than in the URL so that it
+        ;; does not show up in process listings:
+        (let* ((response-body
+                 (run-curl-command-with-json
+                  base-url json-payload
+                  (list (concatenate 'string "x-goog-api-key: " api-key)
+                        "Api-Revision: 2026-05-20")))
+               (parsed-response (json:decode-json-from-string response-body))
+               (steps (cdr (assoc :steps parsed-response))))
+          (if steps
+              ;; Find the last model_output step and extract its text
+              (loop for step in (reverse steps)
+                    when (string-equal (cdr (assoc :type step)) "model_output")
+                    return (let* ((content (cdr (assoc :content step)))
+                                  (first-content (first content)))
+                             (cdr (assoc :text first-content))))
+              (progn
+                (format *error-output* "~%[Error] Gemini Interactions API response did not contain steps: ~A~%" parsed-response)
+                nil)))
       (error (e)
         (format *error-output* "An unexpected error occurred: ~A~%" e)
         nil))))

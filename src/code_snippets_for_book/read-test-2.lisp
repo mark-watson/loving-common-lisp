@@ -1,5 +1,7 @@
 (let ((a-path-name
-          (make-pathname :directory "testdata"
-                         :name "test.dat")))
+          ;; a bare string :directory means (:absolute "testdata"), i.e.
+          ;; /testdata/; use a :relative list for the testdata subdirectory:
+          (make-pathname :directory '(:relative "testdata")
+                         :name "test" :type "dat")))
     (with-open-file
      (input-stream a-path-name :direction :input)))

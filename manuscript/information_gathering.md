@@ -18,32 +18,10 @@ Wikipedia is a great resource to have on hand but I am going to show you in this
 ~~~~~~~~
 (in-package #:dbpedia)
 
-;; utility from http://cl-cookbook.sourceforge.net/strings.html#manip:
-(defun replace-all (string part replacement &key (test #'char=))
-  "Returns a new string in which all the occurrences of the part
-is replaced with replacement."
-  (with-output-to-string (out)
-    (loop with part-length = (length part)
-       for old-pos = 0 then (+ pos part-length)
-       for pos = (search part string
-                         :start2 old-pos
-                         :test test)
-       do (write-string string out
-                        :start old-pos
-                        :end (or pos (length string)))
-       when pos do (write-string replacement out)
-       while pos)))
-
 (defstruct dbpedia-data uri label description)
 
 (defun dbpedia-lookup (search-string)
-  (let* ((s-str (replace-all search-string " " "+"))
-         (s-uri
-          (concatenate
-           'string
-           "https://lookup.dbpedia.org/api/search?query="
-           s-str))
-         (response-body nil)
+  (let* ((response-body nil)
          (response-status nil)
          (response-headers nil)
          (xml nil)
@@ -51,7 +29,8 @@ is replaced with replacement."
     (multiple-value-setq
         (response-body response-status response-headers)
       (drakma:http-request
-       s-uri
+       "https://lookup.dbpedia.org/api/search"
+       :parameters (list (cons "query" search-string)) ; drakma URL-encodes this
        :method :get
        :accept "application/xml"))
     (unless (= response-status 200)
@@ -82,7 +61,9 @@ is replaced with replacement."
 ;; (dbpedia:dbpedia-lookup "berlin")
 ~~~~~~~~
 
-I am only capturing the attributes for DBPedia URI, label and description in this example code. If you uncomment line 41 and look at the entire response body from the call to DBPedia Lookup, you can see other attributes that you might want to capture in your applications.
+The **:parameters** argument passes the search string to Drakma, which URL-encodes it and appends it to the URL as the **query** parameter. This handles spaces and characters such as **&** that would otherwise break the URL.
+
+I am only capturing the attributes for DBPedia URI, label and description in this example code. If you print the variable **response-body** after the call to DBPedia Lookup returns, you can see other attributes that you might want to capture in your applications.
 
 
 The following diagram shows the high-level architecture of the information gathering tools developed in this chapter:

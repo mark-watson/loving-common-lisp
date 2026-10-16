@@ -193,9 +193,10 @@ We will skip looking at the **kgn-text-ui.asd** and **package.lisp** files for t
         (let* ((line (read-line))
                (indices
                 (if (> (length line) 0)
-                    (mapcar
-                     #'parse-integer
-                     (myutils:tokenize-string line)))))
+                    (remove nil
+                            (mapcar
+                             #'(lambda (s) (parse-integer s :junk-allowed t))
+                             (myutils:tokenize-string line))))))
           (print indices)
     ;(dolist (index indices)
     ;  (setf ret (cons (nth index str-list)
@@ -226,7 +227,8 @@ We will skip looking at the **kgn-text-ui.asd** and **package.lisp** files for t
         (let (ret2
               (dialog-results (multiple-selections choice-list)))
           (dolist (index dialog-results)
-            (setf ret2 (cons (nth index choice-list) ret2)))
+            (if (< -1 index (length choice-list)) ; ignore out of range user input
+                (setf ret2 (cons (car (nth index choice-list)) ret2))))
           (if (> (length ret2) 0)
               (setf ret (cons (list topic-type (reverse ret2)) ret))))))
     (reverse ret)))
@@ -239,16 +241,14 @@ We will skip looking at the **kgn-text-ui.asd** and **package.lisp** files for t
 
 (defun colorize-sparql (str &key (stream t))
   " this could be used to colorize text (as it is in kgn-capi-ui example)"
-  ;;(declare (ignore message-stream))
-  (declare (ignore stream))
-  (format t "~%~S~%" str))
+  (format stream "~%~S~%" str))
 
 (defun get-string-from-user (text-prompt)
   (format t "~%~S:~%" text-prompt)
   (read-line))
 
 
-;; Main funtion
+;; Main function
 
 (defun kgn-text-ui ()
   (let (prompt
@@ -304,9 +304,9 @@ We will skip looking at the **kgn-text-ui.asd** and **package.lisp** files for t
 ;; (kgn-text-ui:kgn-text-ui)
 ~~~~~~~~
 
-The utility function **multiple-selections** listed in lines 10-29 displays a list of user choices, adding a zero-based index for each list item. The user can enter zero or more indices to indicate their choices using the function **prompt-selection-list** listed in lines 35-59.
+The utility function **multiple-selections** listed in lines 10-30 displays a list of user choices, adding a zero-based index for each list item. The user can enter zero or more indices to indicate their choices using the function **prompt-selection-list** listed in lines 36-61. Typing mistakes do not crash the program: **parse-integer** with **:junk-allowed t** returns **nil** for a token that is not a number and **remove nil** drops it (lines 22-26), and line 57 ignores an index outside the list of choices.
 
-The commented out code in lines 61-65 can be used to test these two functions.
+The commented out code in lines 63-67 can be used to test these two functions.
 
 The main function **kgn-text-ui** is listed in lines 80-129.
 

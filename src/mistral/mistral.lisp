@@ -6,32 +6,36 @@
 (defvar *model-host* "https://api.mistral.ai/v1/chat/completions")
 (defvar *default-model* "mistral-small-latest") ;; Latest small model as of 2026
 
-(defun mistral-helper (curl-command)
-  (let ((response
-          (uiop:run-program
-           curl-command
-           :output :string
-           :error-output :string)))
-    (with-input-from-string
-        (s response)
-      (let* ((json-as-list (json:decode-json s)))
-        ;; More robust JSON path traversal
-        (cdr (assoc :content (cdr (assoc :message (car (cdr (assoc :choices json-as-list)))))))))))
+(defun mistral-api-key ()
+  (or (uiop:getenv "MISTRAL_API_KEY")
+      (error "Set the MISTRAL_API_KEY environment variable")))
+
+(defun curl-post-json (url json-data)
+  "POST the JSON-DATA string to URL using curl and return the response string.
+   curl is run with an argument list (no shell), so quotes in the data are safe."
+  (uiop:run-program
+   (list "curl" "-s" url
+         "-H" "Content-Type: application/json"
+         "-H" (concatenate 'string "Authorization: Bearer " (mistral-api-key))
+         "-d" json-data)
+   :output :string
+   :error-output :string))
+
+(defun mistral-helper (response)
+  "Extract the message content from a chat completion RESPONSE string."
+  (with-input-from-string
+      (s response)
+    (let* ((json-as-list (json:decode-json s)))
+      ;; More robust JSON path traversal
+      (cdr (assoc :content (cdr (assoc :message (car (cdr (assoc :choices json-as-list))))))))))
 
 (defun completions (starter-text &optional (max-tokens 100) (model *default-model*))
   (let* ((d
           (cl-json:encode-json-to-string
            `((:messages . (((:role . "user") (:content . ,starter-text))))
              (:model . ,model)
-             (:max_tokens . ,max-tokens))))
-         (curl-command
-          (concatenate
-           'string
-           "curl " *model-host*
-           " -H \"Content-Type: application/json\""
-           " -H \"Authorization: Bearer " (uiop:getenv "MISTRAL_API_KEY") "\" " 
-           " -d '" d "'")))
-    (mistral-helper curl-command)))
+             (:max_tokens . ,max-tokens)))))
+    (mistral-helper (curl-post-json *model-host* d))))
 
 (defun summarize (some-text &optional (max-tokens 100) (model *default-model*))
   (completions (concatenate 'string "Summarize: " some-text) max-tokens model))
@@ -40,23 +44,14 @@
   (let ((q-text
           (concatenate
            'string
-           "\nQ: " question-text "\nA:")))
+           (string #\Newline) "Q: " question-text (string #\Newline) "A:")))
     (completions q-text max-tokens model)))
 
 
 (defun embeddings (text &optional (model "mistral-embed"))
-  (let* ((curl-command
-          (concatenate
-           'string
-           "curl https://api.mistral.ai/v1/embeddings "
-           " -H \"Content-Type: application/json\""
-           " -H \"Authorization: Bearer " (uiop:getenv "MISTRAL_API_KEY") "\" " 
-           " -d '{\"input\": [\"" text "\"], \"model\": \"" model "\"}'")))
-    (let ((response
-           (uiop:run-program
-            curl-command
-            :output :string
-            :error-output :string)))
+  (let ((data (cl-json:encode-json-to-string
+               `((:input . ,(list text)) (:model . ,model)))))
+    (let ((response (curl-post-json "https://api.mistral.ai/v1/embeddings" data)))
       (with-input-from-string
           (s response)
         (let ((json-as-list (json:decode-json s)))

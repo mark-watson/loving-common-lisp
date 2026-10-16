@@ -182,7 +182,12 @@ Every provider speaks JSON, so the library carries its own codec instead of depe
 (defun %write-json-float (f out)
   (if (and (<= -1.0d15 f 1.0d15) (= f (truncate f)))
       (format out "~D.0" (truncate f))
-      (let ((s (string-right-trim " " (format nil "~G" f))))
+      ;; ~G prints the shortest round-trip representation (Burger-Dybvig), but
+      ;; for a double-float it uses a "d" exponent marker (e.g. 1.0d-5), which
+      ;; is not valid JSON. JSON requires "e"/"E", so rewrite the marker.
+      (let ((s (substitute #\e #\D
+                           (substitute #\e #\d
+                                       (string-right-trim " " (format nil "~G" f))))))
         (write-string s out)
         (when (char= (char s (1- (length s))) #\.)
           (write-char #\0 out)))))
@@ -251,14 +256,23 @@ numbers, t (true) and nil (false/null)."
                               (#\r (write-char #\Return out))
                               (#\b (write-char #\Backspace out))
                               (#\f (write-char #\Page out))
-                              (#\u (write-char (code-char (parse-integer string
-                                                                          :start pos
-                                                                          :end (+ pos 4)
-                                                                          :radix 16))
-                                               out)
-                                   (incf pos 4))
+                              (#\u (write-char (code-char (parse-unicode-escape)) out))
                               (t (write-char esc out)))))
                          (t (write-char ch out) (advance))))))
+             (parse-hex4 ()
+               (prog1 (parse-integer string :start pos :end (+ pos 4) :radix 16)
+                 (incf pos 4)))
+             (parse-unicode-escape ()
+               ;; Called just after "\u". Characters outside the BMP (e.g. emoji)
+               ;; are escaped as a UTF-16 surrogate pair: "\uD83D\uDE00".
+               (let ((code (parse-hex4)))
+                 (if (and (<= #xD800 code #xDBFF)
+                          (<= (+ pos 6) len)
+                          (char= (char string pos) #\\)
+                          (char= (char string (1+ pos)) #\u))
+                     (let ((low (progn (incf pos 2) (parse-hex4))))
+                       (+ #x10000 (ash (- code #xD800) 10) (- low #xDC00)))
+                     code)))
              (parse-number ()
                (let ((start pos))
                  (when (eql (peek) #\-) (advance))
@@ -292,7 +306,7 @@ numbers, t (true) and nil (false/null)."
                    (loop collect (let ((k (parse-string)))
                                    (skip-ws) (expect #\:) (skip-ws)
                                    (cons k (parse-value)))
-                         into pairs
+                           into pairs
                          do (skip-ws)
                             (cond ((eql (peek) #\,) (advance) (skip-ws))
                                   ((eql (peek) #\}) (advance) (return pairs))
@@ -324,6 +338,8 @@ numbers, t (true) and nil (false/null)."
 ```
 
 Two details matter for the provider code. The encoder writes **:false** as **false** and **:null** as **null**, which lets a provider send a JSON boolean or a JSON null. The decoder returns **t** for **true** and **nil** for both **false** and **null**, so a provider that needs to tell them apart reads the **raw** slot. The **aget** helper looks up a string key in a decoded object.
+
+Two more details handle edge cases in real API traffic. Common Lisp prints a double-float with a **d** exponent marker (for example **1.0d-5**), which is not valid JSON, so **%write-json-float** rewrites the marker as **e**. In the other direction, JSON escapes a character outside the Basic Multilingual Plane, such as an emoji, as a pair of **\u** escapes called a UTF-16 surrogate pair. The local function **parse-unicode-escape** in **json-decode** combines the two halves into one character code.
 
 ### search-apis.lisp
 

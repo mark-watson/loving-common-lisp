@@ -32,8 +32,9 @@
     (format nil "* user shift-clicked on node: ~A - OPEN WEB BROWSER~%" selected-node-name)))
 
 (defun cache-callback (&rest x) (declare (ignore x))
-  (if *USE-CACHING*
-      (capi:display (make-instance 'options-panel-interface))))
+  ;; sparql-cache always caches query results, so always offer the panel
+  ;; (*USE-CACHING* was never defined in this package):
+  (capi:display (make-instance 'options-panel-interface)))
 
 (defun website-callback (&rest x) (declare (ignore x)) (trivial-open-browser:open-browser "http://www.knowledgegraphnavigator.com/"))
 
@@ -155,8 +156,10 @@
 ;; This function runs in a separate thread.
 
 (defun run-and-monitor-progress-background-thread (text text-pane2 text-pane3)
-  (unwind-protect
-      (setf (capi:editor-pane-text text-pane2) "")
+  ;; PROGN, not UNWIND-PROTECT: the original put all of the work in the
+  ;; cleanup forms of an UNWIND-PROTECT whose protected form only cleared a pane.
+  (progn
+    (setf (capi:editor-pane-text text-pane2) "")
     (setf (capi:editor-pane-text text-pane3) "")
     ;;(capi:display-message "done")
     (let ((message-stream (capi:collector-pane-stream text-pane2))
