@@ -1,6 +1,6 @@
 ;;;; bridge.asd — ASDF System Definition for Bridge Game
 
-(asdf:defsystem #:bridge-game
+(asdf:defsystem #:bridge
   :description "Contract Bridge AI — text-based bridge game with AI opponents"
   :author "Mark Watson"
   :license "Apache-2.0"

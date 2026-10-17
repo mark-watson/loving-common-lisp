@@ -23,7 +23,7 @@ Four players form two teams: North-South and East-West. The dealer deals the 52-
 The ASDF system lists the source files in load order:
 
 ```lisp
-(asdf:defsystem #:bridge-game
+(asdf:defsystem #:bridge
   :description "Contract Bridge AI — text-based bridge game with AI opponents"
   :author "Mark Watson"
   :license "Apache-2.0"
@@ -41,9 +41,9 @@ The ASDF system lists the source files in load order:
 Load the system and start a game from the REPL:
 
 ```lisp
-(asdf:load-system :bridge-game)
-(bridge-game:play-bridge)   ; play a full rubber as South
-(bridge-game:auto-play)     ; one deal with four AI players
+(asdf:load-system :bridge)
+(bridge:play-bridge)   ; play a full rubber as South
+(bridge:auto-play)     ; one deal with four AI players
 ```
 
 At a bid prompt you type `1H`, `3NT`, `PASS` (or `P`), `DBL` (or `X`), or `RDBL` (or `XX`). At a card prompt you type a card name such as `AS`, `KH`, or `10C`, or the number of a card in the list of legal plays. Type `Q` at any prompt to quit.
@@ -121,7 +121,7 @@ The code has six layers. Each file depends only on files that load before it:
 
 | File | Role |
 |---|---|
-| `package.lisp` | Defines the `bridge-game` package and its exports |
+| `package.lisp` | Defines the `bridge` package and its exports |
 | `cards.lisp` | Cards, the deck, shuffle and deal, hand analysis |
 | `bidding.lisp` | Bids, auction rules, and the bidding AI |
 | `display.lisp` | Text rendering of hands, the table, and the auction |
@@ -703,7 +703,7 @@ The function returns the below-the-line score for a made contract and the penalt
 Here is a short REPL test. South makes 4♥ with one overtrick, which wins a game. Then East goes down one in 2♠:
 
 ```lisp
-(in-package :bridge-game)
+(in-package :bridge)
 (let ((rs (make-rubber-state)))
   (score-rubber-deal 4 +hearts+ 11 +south+ 0 rs)
   (score-rubber-deal 2 +spades+ 7 +east+ 0 rs)
