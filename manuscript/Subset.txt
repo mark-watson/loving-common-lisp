@@ -33,6 +33,7 @@ probability.md
 backprop_nn.md
 hopfield_nn.md
 anomaly_detection.md
+Bridge_game.md
 
 part_05_knowledge_graphs_and_the_semantic_web.md
 
