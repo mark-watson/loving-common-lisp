@@ -1,6 +1,6 @@
 ;;;; package.lisp — Bridge Game Package Definition
 
-(defpackage #:bridge
+(defpackage #:bridge-game
   (:use #:cl)
   (:export
    ;; Card structures
