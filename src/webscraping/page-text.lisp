@@ -2,17 +2,15 @@
   (load (merge-pathnames #P"utils.lisp" (or *load-pathname* #P""))))
 
 (defun text-boilerplate-p (tag)
-  "Elements dropped for plain-text extraction. The Markdown example keeps
-nav/header/footer because their link lists carry meaning; here we want only
-the article body. Named differently from MD-BOILERPLATE-P so both examples
-can be loaded in one core without clobbering each other."
+  "Elements dropped for plain-text extraction; unlike the Markdown example,
+nav/header/footer go. Named apart from MD-BOILERPLATE-P so both can load in
+one core."
   (member tag '("script" "style" "head" "nav" "header" "footer" "iframe" "noscript")
           :test #'string-equal))
 
 (defun get-element-spacing (tag text)
   "Wrap TEXT in newlines appropriate for TAG. CLEAN-WHITESPACE collapses
-over-long runs afterward, so each block only needs enough newlines to
-separate it from its neighbors."
+excess runs afterward, so each block only needs enough to separate it."
   (case (kw tag)
     ((:h1 :h2 :h3 :h4 :h5 :h6 :p :blockquote :ul :ol :pre)
      (format nil "~%~A~%~%" text))
@@ -33,9 +31,9 @@ separate it from its neighbors."
           do (write-string (get-clean-text child) s))))
 
 (defun get-clean-text (node)
-  "Recursively collect text from NODE, skipping boilerplate tags and
-inserting line breaks for block tags. <pre>/<code> keep their internal
-newlines; all other text is whitespace-normalized at the node level."
+  "Recursively collect text from NODE, skipping boilerplate and adding
+line breaks for block tags. <pre>/<code> keep their newlines; other text
+is space-normalized per node."
   (cond
     ((text-node-p node)
      (normalize-spaces (plump:text node)))

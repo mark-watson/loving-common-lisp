@@ -1,11 +1,8 @@
 ;;; Shared helpers for the web-scraping examples in this directory.
-;;; Each example loads this file first:
-;;;   (load (merge-pathnames #P"utils.lisp" (or *load-pathname* #P"")))
 
 (ql:quickload '(:drakma :plump :cl-ppcre) :silent t)
 
-;; DEFPARAMETER rather than DEFCONSTANT so re-loading these examples in one
-;; core does not signal a constant-redefinition error.
+;; DEFPARAMETER, not DEFCONSTANT, so reloading doesn't signal an error.
 (defparameter +whitespace+ '(#\Space #\Tab #\Newline #\Return)
   "Characters trimmed from the ends of extracted text.")
 
@@ -26,11 +23,9 @@
   (typep node 'plump:element))
 
 (defun fetch-html (url)
-  "Fetch URL, returning the body as a string, or NIL on failure.
-Drakma's default User-Agent is blocked by many sites, so we set our own.
-When a server omits the charset, Drakma decodes the body with
-*DRAKMA-DEFAULT-EXTERNAL-FORMAT* (Latin-1), which garbles UTF-8 text, so
-we bind it to UTF-8, by far the most common encoding on the web."
+  "Fetch URL as a string, or NIL on failure.
+Custom User-Agent (Drakma's default is widely blocked) and UTF-8 (its
+Latin-1 fallback garbles pages)."
   (handler-case
       (let ((drakma:*drakma-default-external-format* :utf-8))
         (drakma:http-request url
@@ -43,8 +38,7 @@ we bind it to UTF-8, by far the most common encoding on the web."
 
 (defun node-text (node)
   "Text of NODE's subtree, skipping comments.
-Do not use PLUMP:TEXT on an element for this: its deep walk also collects
-comment contents, so hidden text leaks into the output."
+PLUMP:TEXT on an element would also collect comment contents."
   (with-output-to-string (s)
     (labels ((walk (node)
                (cond
@@ -54,23 +48,18 @@ comment contents, so hidden text leaks into the output."
                         do (walk child))))))
       (walk node))))
 
-;; NOTE ON REGEX STRINGS: Common Lisp string tokens have no Python-style
-;; \n or \t escapes. Inside "...", a backslash merely makes the next
-;; character literal, so "\n" is the single character #\n (code 110), not
-;; a newline, and "[ \t]" is a class matching space and the letter t.
-;; Regex escapes therefore need double backslashes ("\\s+", "[ \\t]+"),
-;; and real newline characters must be built from #\Newline (string
-;; #\Newline) or ~% (format nil "~A~%") instead of "\n".
+;; CL strings have no \n or \t escapes: "\n" is the letter n, and regex
+;; "[ \t]" matches a space or the letter t. Use "\\s+"/"[ \\t]+" for regex
+;; whitespace, and build real newlines with #\Newline or ~%.
 
 (defun normalize-spaces (string)
-  "Collapse every run of whitespace, newlines included, into a single space.
-Block tags supply the newlines during assembly, so marker tokens (such as
-the old __H1__ hack) are not needed to protect them from CLEAN-WHITESPACE."
+  "Collapse every whitespace run, newlines included, to a single space.
+Block tags add newlines later, so marker tokens are unnecessary."
   (cl-ppcre:regex-replace-all "\\s+" string " "))
 
 (defun raw-text (node)
-  "Text of NODE's subtree that collapses spaces/tabs but keeps newlines,
-  and skips comments. For <pre>/<code>, where line structure is content."
+  "Text of NODE with spaces/tabs collapsed but newlines kept; comments are
+  skipped. For <pre>/<code>, where line structure is content."
   (cl-ppcre:regex-replace-all "[ \\t]+" (node-text node) " "))
 
 (defun escape-markdown (string)
@@ -82,17 +71,15 @@ the old __H1__ hack) are not needed to protect them from CLEAN-WHITESPACE."
 
 (defun clean-whitespace (text &key strip-indent)
   "Normalize newlines, drop whitespace-only lines, and collapse runs of
-blank lines to one. With STRIP-INDENT also remove leading spaces per line
-(safe for plain text; Markdown needs them for nested-list indentation).
-Text nodes are assumed to be normalized already by NORMALIZE-SPACES, so no
-space-collapse pass is needed here."
-  ;; Build replacement strings from #\Newline; see the escape warning above.
+blank lines to one. With STRIP-INDENT, strip leading spaces per line
+(plain text only; Markdown needs them for nested lists). Assumes
+NORMALIZE-SPACES already ran on text nodes."
+  ;; Build newlines from #\Newline; see the escape warning above.
   (let ((two-newlines (format nil "~A~A" (string #\Newline) (string #\Newline))))
     (when strip-indent
       (setf text (cl-ppcre:regex-replace-all "(?m)^[ \\t]+" text "")))
     (setf text (cl-ppcre:regex-replace-all "(?m)^[ \\t]+$" text ""))
     (setf text (cl-ppcre:regex-replace-all "(?m)[ \\t]+$" text ""))
-    ;; Match CRLF and lone CR as single units so Windows-sourced line
-    ;; endings collapse the same way Unix ones do.
+    ;; Match CRLF and lone CR as single units, like Unix newlines.
     (setf text (cl-ppcre:regex-replace-all "(?:\\r\\n|\\r|\\n){3,}" text two-newlines))
     (trim text)))

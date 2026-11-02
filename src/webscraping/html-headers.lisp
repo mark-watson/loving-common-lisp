@@ -4,8 +4,7 @@
 
 (defun fetch-and-print-headers (&optional (url "https://markwatson.com"))
   "Fetch URL and print the text of h1-h6 tags in document order.
-One comma-separated selector beats six round trips through the DOM, and
-NODE-TEXT keeps HTML comments out of the printed headers."
+One combined selector avoids six DOM walks; NODE-TEXT skips comments."
   (format t "Fetching ~A...~%" url)
   (let ((html (fetch-html url)))
     (when html

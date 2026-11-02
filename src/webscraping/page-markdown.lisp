@@ -2,10 +2,9 @@
   (load (merge-pathnames #P"utils.lisp" (or *load-pathname* #P""))))
 
 (defun md-boilerplate-p (tag)
-  "Elements removed before Markdown conversion. Unlike page-text.lisp,
-nav/header/footer are kept: their link lists are often the point of the
-conversion. Named apart from TEXT-BOILERPLATE-P so both examples can be
-loaded in one core without clobbering each other."
+  "Elements removed before Markdown conversion; nav/header/footer are kept
+for their links. Named apart from TEXT-BOILERPLATE-P so both can load in
+one core."
   (member (kw tag) '(:script :style :head :noscript :iframe) :test #'eq))
 
 (defun md-heading (level inner)
@@ -18,11 +17,9 @@ loaded in one core without clobbering each other."
 
 (defun html-to-markdown (node &optional (depth 0) (ordered nil) (index 1))
   "Recursively convert the plump HTML node NODE into Markdown.
-DEPTH counts enclosing lists (nested items indent two spaces per level),
-ORDERED is true inside an <ol>, and INDEX is an <li>'s position within its
-list. Text nodes are Markdown-escaped and whitespace-normalized up front;
-block tags contribute the newlines, so CLEAN-WHITESPACE needs no marker
-tokens to protect spacing."
+DEPTH is the enclosing list depth, ORDERED is true inside an <ol>, and
+INDEX is an <li>'s position in its list. Text is escaped/normalized up
+front; block tags supply the newlines."
   (cond
     ((text-node-p node)
      (normalize-spaces (escape-markdown (plump:text node))))
