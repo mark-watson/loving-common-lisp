@@ -46,6 +46,7 @@ This table maps each chapter file in `./manuscript` to its source code example d
 | `manuscript/text-adventure-game.md` | `src/text-adventure-game` |
 | `manuscript/symbolic-math.md` | `src/symbolic-math` |
 | `manuscript/webkit.md` | `src/webkit-cl` |
+| `manuscript/MCP_common_lisp.md` | `src/MCP_common_lisp` |
 | `manuscript/cache_engine.md` | `src/cache_engine` |
 | `manuscript/daily_use.md` | `src/daily_use` |
 | `manuscript/cl-ai-coding-agent.md` | `src/cl-ai-coding-agent` |

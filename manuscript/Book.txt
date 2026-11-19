@@ -72,5 +72,6 @@ part_08_macos_specific_code_experiments.md
 
 webkit.md
 macOS_osascript.md
+MCP_common_lisp.md
 
 book_wrapup.md
