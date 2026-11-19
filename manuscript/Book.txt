@@ -50,6 +50,7 @@ part_06_local_large_language_models.md
 
 karpathy.md
 litelm.md
+conditions_restarts.md
 llm-reasoners.md
 ollama.md
 ollama_image_processing.md
