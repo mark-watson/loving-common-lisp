@@ -83,7 +83,7 @@ Two little pure functions finish the plumbing. **provider-headers** builds a fix
   (concatenate 'string (or api-base (provider-base-url provider)) path))
 ```
 
-The **completion** entry point calls it with `"/chat/completions"` and **embedding** calls it with `"/embeddings"`. Because a per-call `:api-base` can override the host, and `:extra-headers` can add header pairs, you can point a known provider at a proxy, a mock server, or a test host without touching the registry at all. I use this trick constantly when writing tests.
+The **completion** entry point calls it with `"/chat/completions"` and **embedding** calls it with `"/embeddings"`. Because a per-call `:api-base` can override the host, and `:extra-headers` can add header pairs, you can point a known provider at a proxy, a mock server, or a test host without touching the registry at all. I use this trick constantly when writing tests. For request fields that only one provider understands, **completion** takes `:extra-body`, an alist appended to the JSON payload. For example, `:extra-body '(("reasoning_effort" . "none"))` turns off thinking for an Ollama reasoning model such as `qwen3.5:4b`.
 
 ## The Shared Send Path in completion
 

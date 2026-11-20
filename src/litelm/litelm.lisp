@@ -95,7 +95,7 @@ elsewhere, e.g. (setf litelm:*default-model* \"ollama/qwen3-vl:2b\").")
 
 (defun completion (model &key messages tools (stream nil) (tool-choice nil)
                               temperature max-tokens top-p
-                              api-key api-base extra-headers)
+                              api-key api-base extra-headers extra-body)
   "Send a chat completion to MODEL, a \"provider/model-name\" string.
 
 MODEL may be NIL, in which case *DEFAULT-MODEL* is used (the local oMLX server
@@ -103,6 +103,9 @@ by default). MESSAGES is a string or a list of (role content &rest options)
 messages. TOOLS is a list of (name description ((param type desc &key required
 enum) ...)). STREAM is nil, t (print deltas), or a function called with each
 content delta. TOOL-CHOICE is nil, :auto, :none, or :required.
+EXTRA-BODY is an alist of provider-specific request fields appended to the
+JSON payload, e.g. '((\"reasoning_effort\" . \"none\")) to turn off thinking
+for an Ollama reasoning model.
 
 Returns a RESPONSE struct; use RESPONSE-CONTENT and RESPONSE-TOOL-CALLS.
 Tool calls are returned, not executed — execution is the caller's job."
@@ -121,7 +124,8 @@ Tool calls are returned, not executed — execution is the caller's job."
               (when temperature `(("temperature" . ,temperature)))
               (when max-tokens `(("max_tokens" . ,max-tokens)))
               (when top-p `(("top_p" . ,top-p)))
-              (when stream `(("stream" . t))))))
+              (when stream `(("stream" . t)))
+              extra-body)))
       (if stream
           (let ((on-chunk (if (functionp stream)
                               stream

@@ -52,6 +52,7 @@ This table maps each chapter file in `./manuscript` to its source code example d
 | `manuscript/daily_use.md` | `src/daily_use` |
 | `manuscript/cl-ai-coding-agent.md` | `src/cl-ai-coding-agent` |
 | `manuscript/hacking_SBCL_repl.md` | (none) |
+| `manuscript/testing_evaluating_llm_code.md` | `src/llm-eval` |
 | `manuscript/Neural-Symbolic-Knowledge-Graph-Engine.md` | `src/nsk-neural-symbolic-graph` |
 | `manuscript/probability.md` | `src/Probability` |
 | `manuscript/book_wrapup.md` | (none) |

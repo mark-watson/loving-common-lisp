@@ -68,6 +68,7 @@ cache_engine.md
 daily_use.md
 cl-ai-coding-agent.md
 hacking_SBCL_repl.md
+testing_evaluating_llm_code.md
 
 part_08_macos_specific_code_experiments.md
 
