@@ -50,6 +50,7 @@ part_06_local_large_language_models.md
 
 karpathy.md
 litelm.md
+conditions_restarts.md
 llm-reasoners.md
 ollama.md
 ollama_image_processing.md
@@ -67,10 +68,12 @@ cache_engine.md
 daily_use.md
 cl-ai-coding-agent.md
 hacking_SBCL_repl.md
+testing_evaluating_llm_code.md
 
 part_08_macos_specific_code_experiments.md
 
 webkit.md
 macOS_osascript.md
+MCP_common_lisp.md
 
 book_wrapup.md

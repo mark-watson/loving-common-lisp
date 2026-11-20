@@ -12,7 +12,7 @@ If you would like to support my work please consider purchasing my books on [Lea
 
 # Preface
 
-This book has been a continual work in progress since 2011. This current edition is released May, 2026. I have used Common Lisp professionally since 1982 and I love the language!
+This book has been a continual work in progress since 2011. This current edition is released November, 2026. I have used Common Lisp professionally since 1982 and I love the language!
 
 I hope you have fun with this book and that you find the content useful for your own projects.
 
@@ -20,7 +20,15 @@ I hope you have fun with this book and that you find the content useful for your
 
 I have been using Common Lisp professionally since 1982 and also use Common Lisp for my own experiments. This book contains many little ideas and many little bits of code. If you already know Common Lisp then I recommend looking at the table of contents and simply starting with the topics that interest you the most.
 
-I usually add new chapters at the end of the book.
+The book has eight parts. I add each new chapter to the part where it fits best, so new material can appear anywhere in the table of contents.
+
+## New in This Edition
+
+This edition adds three chapters:
+
+- **Conditions, Restarts, and Resilient LLM Clients** (Part 6) covers the Common Lisp condition system, then uses restarts to make LLM calls survive rate limits, network failures, missing models, and malformed JSON.
+- **Testing and Evaluating LLM-Based Code** (Part 7) covers unit tests with FiveAM and fake models, plus an evaluation harness with a golden dataset, LLM-as-judge scoring, and a run history in SQLite. The examples evaluate the agentic RAG system from Part 7.
+- **Writing a Model Context Protocol (MCP) Server in Common Lisp** (Part 8) implements the MCP protocol from scratch and exposes the macOS automation code from the previous chapter as tools that Claude Code, Claude Desktop, and other MCP clients can call.
 
 ## Requests from the Author
 
@@ -78,7 +86,15 @@ Edit your file **~/.sbclrc** to add the following line of code:
 
     git clone https://github.com/mark-watson/loving-common-lisp.git
 
-You have now configured SBCL to work with my book examples. For other Common Lisp implementations, please edit the relevant configuration files:
+You have now configured SBCL to work with my book examples.
+
+Keep **~/.sbclrc** quiet: it should not print to standard output. The MCP server chapter talks to its client over standard output, and any text an init file prints there breaks the protocol. To check, run this command; it should print nothing:
+
+    echo | sbcl --noinform --non-interactive
+
+Many chapters in Parts 6 and 7 use local models through [Ollama](https://ollama.com). The code names each model it uses, and you install a model with `ollama pull`, for example `ollama pull llama3.2:3b`.
+
+For other Common Lisp implementations, please edit the relevant configuration files:
 
 ```text
 Common Lisp implementation startup files include:
